@@ -1,8 +1,8 @@
-import clientPromise from "../lib/mongodb";
+import clientPromise from "../../lib/mongodb";
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import Sidebar from '../components/Sidebar';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import Sidebar from '../../components/Sidebar';
 import { FaSearch } from 'react-icons/fa';
 
 export default function Products({ products }) {

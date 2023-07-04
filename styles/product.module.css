@@ -1,0 +1,10 @@
+.productContainer {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    background: #fff;
+    border-radius: 7px;
+    transition: all 250ms ease-out;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

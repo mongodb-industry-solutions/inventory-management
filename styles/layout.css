@@ -337,6 +337,16 @@ width: 15px;
 }
 
 .content {
+  display: flex;
+  flex-direction: column;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  grid-area: body / body / body / body;
+  position: relative;
+  overflow: scroll;
+  z-index: auto;
+  padding: 24px;
+  min-width: 0px;
   flex-grow: 1;
 }
 
