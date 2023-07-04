@@ -3,11 +3,18 @@ import clientPromise from "../lib/mongodb";
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Sidebar from '../components/Sidebar';
+import { FaSearch } from 'react-icons/fa';
 
 export default function Products({ products }) {
     return (
-
         <div>
+            <div className="search-bar">
+        <input className="search-input" type="text" placeholder=" Search..." />
+        <button className="search-button">
+          <FaSearch />
+        </button>
+      </div>
+
             <h1>Products</h1>
             <ul>
                 {products.map((product) => (

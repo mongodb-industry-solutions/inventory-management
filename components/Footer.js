@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 function Footer() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
+  const [currentPage, setCurrentPage] = useState('');
 
   const handleDropdownToggle = () => {
     setIsOpen(!isOpen);
@@ -13,6 +14,14 @@ function Footer() {
   const handleOptionClick = (option) => {
     setSelectedOption(option);
     setIsOpen(false);
+  };
+
+  const handleProductsClick = () => {
+    setCurrentPage('products');
+  };
+
+  const handleOrderHistoryClick = () => {
+    setCurrentPage('orderHistory');
   };
 
   return (
@@ -32,20 +41,32 @@ function Footer() {
         )}
 
         <div className="mongodb-button-container">
-            <button className="mongodb-button" onClick={() => console.log('Products button clicked')}>
-                Products
-            </button>
-            <button className="mongodb-button" onClick={() => console.log('Order History button clicked')}>
-                Order History
-            </button>
+          <button className="mongodb-button" onClick={handleProductsClick}>
+            Products
+          </button>
+          <button className="mongodb-button" onClick={handleOrderHistoryClick}>
+            Order History
+          </button>
         </div>
       </div>
 
-      
-     
+      {currentPage === 'products' && (
+        <div>
+          {/* Render the Products page */}
+   
+          {/* bunch of components */}
+        </div>
+      )}
+
+      {currentPage === 'orderHistory' && (
+        <div>
+          {/* Render the Order History page */}
+
+          {/* bunch of components */}
+        </div>
+      )}
     </div>
   );
 }
 
 export default Footer;
-
