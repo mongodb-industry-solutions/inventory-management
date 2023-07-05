@@ -19,7 +19,7 @@ export default function Products({ products }) {
             <ul>
                 {products.map((product) => (
                    <li key={product._id}>
-                   <h2>{product.name}</h2>
+                   <h2><a href={`http://localhost:3000/products/${product._id}`}>{product.name}</a></h2>
                    <h3>{product.code}</h3>
                    <p>{product.description}</p>
                  </li>
