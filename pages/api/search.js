@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-const uri = 'mongodb+srv://interns-mongo-retail-user:TleWsznbfY6ouuu4@ist-shared.n0kts.mongodb.net/?retryWrites=true&w=majority';
+const uri = MONGODB_URI;
 const dbName = 'interns_mongo_retail';
 const collectionName = 'products';
 
