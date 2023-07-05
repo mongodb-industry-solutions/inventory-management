@@ -1,0 +1,29 @@
+.progress-bar-container {
+    display: flex;
+}
+
+.progress-bar-reference {
+    display: flex;
+    height: 10px;
+    align-items: left;
+    border-radius: 5px;
+    border: 1px solid black;
+    width: 80%;
+  }
+  
+  .progress-bar-level {
+    height: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .progress-bar-level div {
+    height: 100%;
+    transition: width 0.3s ease-in-out;
+  }
+  
+  .progress-bar-label {
+    margin-left: 10px;
+    font-size: 14px;
+  }

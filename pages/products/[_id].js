@@ -5,7 +5,8 @@ import { ObjectId } from 'mongodb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShirt } from '@fortawesome/free-solid-svg-icons';
 
-import styles from '../../styles/product.module.css';
+import product_styles from '../../styles/product.module.css';
+import bar_styles from '../../styles/progressbar.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 
 export default function Product({ product }) {
@@ -26,7 +27,7 @@ export default function Product({ product }) {
     };
 
     return (
-        <div className={styles['product-detail-content']}>
+        <div className={product_styles['product-detail-content']}>
             <div class="icon">
                 <FontAwesomeIcon icon={faShirt} style={{ color: product.color.hex}}/>
             </div>
@@ -60,11 +61,11 @@ export default function Product({ product }) {
                     <td>{item.stock.find(stock => stock.location === 'warehouse')?.amount ?? 0}</td>
                     <td>{item.delivery_time.amount}</td>
                     <td>
-                        <div className={styles['progress-bar-container']}>
-                        <div className={styles['progress-bar-reference']}>
-                            <div className={styles['progress-bar-level']} style={{ background: progressBarColor, width: `${progressBarFill}%` }}></div>
+                        <div className={bar_styles['progress-bar-container']}>
+                        <div className={bar_styles['progress-bar-reference']}>
+                            <div className={bar_styles['progress-bar-level']} style={{ background: progressBarColor, width: `${progressBarFill}%` }}></div>
                         </div>
-                        <span className={styles['progress-bar-label']}>20</span>
+                        <span className={bar_styles['progress-bar-label']}>20</span>
                         </div>
                     </td>
                     </tr>
@@ -72,14 +73,14 @@ export default function Product({ product }) {
                 })}
                 </tbody>
             </table>
-            <div className={styles['progress-bar-container']}>
-                <div className={styles['progress-bar-reference']}>
-                    <div className={styles['progress-bar-level']} style={{ background: totalProgressBarColor, width: `${totalProgressBarFill}%` }}></div>
+            <div className={bar_styles['progress-bar-container']}>
+                <div className={bar_styles['progress-bar-reference']}>
+                    <div className={bar_styles['progress-bar-level']} style={{ background: totalProgressBarColor, width: `${totalProgressBarFill}%` }}></div>
                 </div>
-                <span className={styles['progress-bar-label']}>100</span>
+                <span className={bar_styles['progress-bar-label']}>100</span>
             </div>
             <button onClick={handleOpenPopup}>Open Popup</button>
-            {showPopup && <Popup onClose={handleClosePopup} />}
+            {showPopup && <Popup product={product} onClose={handleClosePopup} />}
         </div>
 
     );
