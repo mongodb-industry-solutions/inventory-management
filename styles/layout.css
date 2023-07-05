@@ -344,8 +344,9 @@ width: 15px;
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  align-items: center;
   border-radius: 50%;
+  right: 20px;
+  justify-content: center;
 }
 
 .search-input {
@@ -353,12 +354,12 @@ width: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 10px;
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
   align-items: center;
-  margin-left: 155px;
+  margin-left: 10px; /* Adjust this value as needed */
   margin-top: 10px;
   border-radius: 50px;
-  
 }
 
 .search-button {
@@ -374,4 +375,19 @@ width: 15px;
   align-items: center;
   justify-content: center;
   margin-top: 10px;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+  .search-input {
+    width: 100%;
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 576px) {
+  .search-input {
+    width: 100%;
+    max-width: 100px;
+  }
 }
