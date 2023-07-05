@@ -1,0 +1,46 @@
+import { MongoClient } from 'mongodb';
+
+const uri = 'mongodb+srv://interns-mongo-retail-user:TleWsznbfY6ouuu4@ist-shared.n0kts.mongodb.net/?retryWrites=true&w=majority';
+const dbName = 'interns_mongo_retail';
+const collectionName = 'products';
+
+export default async function handler(req, res) {
+  if (req.method !== 'GET') {
+    res.status(405).json({ error: 'Method Not Allowed' });
+    return;
+  }
+
+  const searchQuery = req.query.q;
+
+  try {
+    const client = new MongoClient(uri);
+    await client.connect();
+
+    const db = client.db(dbName);
+
+    const results = await db
+      .collection(collectionName)
+      .aggregate([
+        {
+          $search: {
+            index: 'default',
+            text: {
+              query: searchQuery,
+              path: {
+                wildcard: '*',
+              },
+            },
+          },
+        },
+        { $limit: 20 },
+      ])
+      .toArray();
+
+    res.status(200).json({ results });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    client.close();
+  }
+}

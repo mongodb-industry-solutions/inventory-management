@@ -6,12 +6,17 @@
     "start": "next start"
   },
   "dependencies": {
+    "dns": "^0.2.2",
+    "fs": "^0.0.1-security",
     "mongodb": "^4.8.1",
+    "mongodb-stitch-browser-sdk": "^4.8.0",
+    "net": "^1.0.2",
     "next": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
-    "tailwind": "^4.0.0"
+    "tailwind": "^4.0.0",
+    "tls": "^0.0.1"
   },
   "devDependencies": {
     "@types/node": "18.7.5",
