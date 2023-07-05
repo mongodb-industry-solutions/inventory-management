@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import clientPromise from '../../lib/mongodb';
 import { ObjectId } from 'mongodb';
 
@@ -5,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShirt } from '@fortawesome/free-solid-svg-icons';
 
 import styles from '../../styles/product.module.css';
+import Popup from '../../components/ReplenishmentPopup';
 
 export default function Product({ product }) {
 
@@ -12,7 +14,17 @@ export default function Product({ product }) {
     const totalStockThreshold = product.total_stock_sum.find(stock => stock.location === 'store')?.threshold ?? 50;
     const totalProgressBarColor = totalStockLevel >= totalStockThreshold ? 'green' : 'orange';
     const totalProgressBarFill = (totalStockLevel / 100) * 100;
-    console.log(totalProgressBarFill);
+    
+    const [showPopup, setShowPopup] = useState(false);
+
+    const handleOpenPopup = () => {
+        setShowPopup(true);
+    };
+
+    const handleClosePopup = () => {
+        setShowPopup(false);
+    };
+
     return (
         <div className={styles['product-detail-content']}>
             <div class="icon">
@@ -66,6 +78,8 @@ export default function Product({ product }) {
                 </div>
                 <span className={styles['progress-bar-label']}>100</span>
             </div>
+            <button onClick={handleOpenPopup}>Open Popup</button>
+            {showPopup && <Popup onClose={handleClosePopup} />}
         </div>
 
     );
