@@ -104,80 +104,80 @@ function Sidebar() {
         <label>
           <input
             type="checkbox"
-            checked={colors.includes('Green')}
-            onChange={() => handleColorChange('Green')}
+            checked={colors.includes('Light Green')}
+            onChange={() => handleColorChange('Light Green')}
           />
           <span> Light Green</span>
         </label>
         <label>
               <input
                 type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
+                checked={colors.includes('Dark Green')}
+                onChange={() => handleColorChange('Dark Green')}
               />
               <span>Dark Green</span>
             </label>
             <label>
               <input
                 type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
+                checked={colors.includes('Black')}
+                onChange={() => handleColorChange('Black')}
               />
               <span>Black</span>
             </label>
             <label>
               <input
                 type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
+                checked={colors.includes('Yellow')}
+                onChange={() => handleColorChange('Yellow')}
               />
               <span>Yellow</span>
             </label>
             <label>
               <input
                 type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
+                checked={colors.includes('Orange')}
+                onChange={() => handleColorChange('Orange')}
               />
               <span>Orange</span>
             </label>
             <label>
               <input
                 type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
+                checked={colors.includes('Purple')}
+                onChange={() => handleColorChange('Purple')}
               />
               <span>Purple</span>
             </label>
             <label>
               <input
                 type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
+                checked={colors.includes('Light Blue')}
+                onChange={() => handleColorChange('Light Blue')}
               />
               <span>Light Blue</span>
             </label>
             <label>
               <input
                 type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
+                checked={colors.includes('Pink')}
+                onChange={() => handleColorChange('Pink')}
               />
               <span>Pink</span>
             </label>
             <label>
               <input
                 type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
+                checked={colors.includes('Grey')}
+                onChange={() => handleColorChange('Grey')}
               />
               <span>Grey</span>
             </label>
             <label>
               <input
                 type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
+                checked={colors.includes('Light Brown')}
+                onChange={() => handleColorChange('Light Brown')}
               />
               <span>Light Brown</span>
             </label>
