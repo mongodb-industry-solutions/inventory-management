@@ -11,10 +11,9 @@ import Popup from '../../components/ReplenishmentPopup';
 
 export default function Product({ product }) {
 
-    const totalStockLevel = product.total_stock_sum.find(stock => stock.location === 'store')?.amount ?? 0;
-    const totalStockThreshold = product.total_stock_sum.find(stock => stock.location === 'store')?.threshold ?? 50;
-    const totalProgressBarColor = totalStockLevel >= totalStockThreshold ? 'green' : 'orange';
-    const totalProgressBarFill = (totalStockLevel / 100) * 100;
+    const totalStoreStock = product.total_stock_sum.find(stock => stock.location === 'store');
+    const totalProgressBarColor = totalStoreStock?.amount >= totalStoreStock?.threshold ? 'green' : 'orange';
+    const totalProgressBarFill = (totalStoreStock?.amount / totalStoreStock?.target) * 100;
     
     const [showPopup, setShowPopup] = useState(false);
 
@@ -28,8 +27,8 @@ export default function Product({ product }) {
 
     return (
         <div className={product_styles['product-detail-content']}>
-            <div className="icon">
-                <FontAwesomeIcon icon={faShirt} style={{ color: product.color.hex}}/>
+            <div className={product_styles['icon']}>
+                <FontAwesomeIcon icon={faShirt} style={{ color: product.color.hex, fontSize: '10rem'}}/>
             </div>
             <div className="details">
                 <h2 className="name">{product.name}</h2>
@@ -49,10 +48,10 @@ export default function Product({ product }) {
                 </thead>
                 <tbody>
                 {product.items.map((item, index) => {
-                    const stockLevel = item.stock.find(stock => stock.location === 'store')?.amount ?? 0;
-                    const stockThreshold = item.stock.find(stock => stock.location === 'store')?.threshold ?? 10;
-                    const progressBarColor = stockLevel >= stockThreshold ? 'green' : 'orange';
-                    const progressBarFill = (stockLevel / 20) * 100;
+                    const itemStoreStock = item.stock.find(stock => stock.location === 'store');
+                    const progressBarColor = itemStoreStock?.amount >= itemStoreStock?.threshold ? 'green' : 'orange';
+                    const progressBarFill = (itemStoreStock?.amount / itemStoreStock?.target) * 100;
+
                     return (
                     <tr key={index}>
                     <td>{item.size}</td>
@@ -65,7 +64,7 @@ export default function Product({ product }) {
                         <div className={bar_styles['progress-bar-reference']}>
                             <div className={bar_styles['progress-bar-level']} style={{ background: progressBarColor, width: `${progressBarFill}%` }}></div>
                         </div>
-                        <span className={bar_styles['progress-bar-label']}>20</span>
+                        <span className={bar_styles['progress-bar-label']}>{itemStoreStock?.target}</span>
                         </div>
                     </td>
                     </tr>

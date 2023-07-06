@@ -116,10 +116,9 @@ const ReplenishmentPopup = ({ product, onClose }) => {
           <tbody>
             {rows.map((row, index) => {
                 const item = product.items.find(item => item.size === rows[index].size);
-                const stockLevel = item?.stock.find(stock => stock.location === 'store')?.amount ?? 0;
-                const stockThreshold = item?.stock.find(stock => stock.location === 'store')?.threshold ?? 10;
-                const progressBarColor = stockLevel >= stockThreshold ? 'green' : 'orange';
-                const progressBarFill = (stockLevel / 20) * 100;
+                const itemStoreStock = item?.stock.find(stock => stock.location === 'store');
+                const progressBarColor = itemStoreStock?.amount >= itemStoreStock?.threshold ? 'green' : 'orange';
+                const progressBarFill = (itemStoreStock?.amount / itemStoreStock?.target) * 100;
 
                 return (
                 <tr key={index}>
@@ -144,7 +143,7 @@ const ReplenishmentPopup = ({ product, onClose }) => {
                         <div className={bar_styles['progress-bar-reference']}>
                             <div className={bar_styles['progress-bar-level']} style={{ background: progressBarColor, width: `${progressBarFill}%` }}></div>
                         </div>
-                        <span className={bar_styles['progress-bar-label']}>20</span>
+                        <span className={bar_styles['progress-bar-label']}>{itemStoreStock?.target}</span>
                         </div>
                     </td>
                     <td>
