@@ -16,5 +16,4 @@ db.products.updateMany(
         { "k.location": "store" }
       ]
     }
-  )
-  
+  );
