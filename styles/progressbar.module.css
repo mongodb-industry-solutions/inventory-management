@@ -18,12 +18,18 @@
     position: relative;
   }
   
-  .progress-bar-level div {
-    height: 100%;
-    transition: width 0.3s ease-in-out;
-  }
-  
   .progress-bar-label {
     margin-left: 10px;
     font-size: 14px;
+  }
+
+  .progress-bar-ordered {
+    position:relative;
+    background: repeating-linear-gradient(
+        45deg,
+        white,
+        white 5px,
+        green 5px,
+        green 10px
+        );
   }

@@ -12,8 +12,10 @@ import Popup from '../../components/ReplenishmentPopup';
 export default function Product({ product }) {
 
     const totalStoreStock = product.total_stock_sum.find(stock => stock.location === 'store');
+    const totalOrderedStock = product.total_stock_sum.find(stock => stock.location === 'ordered');
     const totalProgressBarColor = totalStoreStock?.amount >= totalStoreStock?.threshold ? 'green' : 'orange';
-    const totalProgressBarFill = (totalStoreStock?.amount / totalStoreStock?.target) * 100;
+    const totalProgressBarStoreFill = (totalStoreStock?.amount / totalStoreStock?.target) * 100;
+    const totalProgressBarOrderedFill = ((totalOrderedStock?.amount) / totalStoreStock?.target) * 100;
     
     const [showPopup, setShowPopup] = useState(false);
 
@@ -49,8 +51,10 @@ export default function Product({ product }) {
                 <tbody>
                 {product.items.map((item, index) => {
                     const itemStoreStock = item.stock.find(stock => stock.location === 'store');
+                    const itemOrderedStock = item.stock.find(stock => stock.location === 'ordered');
                     const progressBarColor = itemStoreStock?.amount >= itemStoreStock?.threshold ? 'green' : 'orange';
-                    const progressBarFill = (itemStoreStock?.amount / itemStoreStock?.target) * 100;
+                    const progressBarStoreFill = (itemStoreStock?.amount / itemStoreStock?.target) * 100;
+                    const progressBarOrderedFill = ((itemOrderedStock?.amount) / itemStoreStock?.target) * 100;
 
                     return (
                     <tr key={index}>
@@ -62,7 +66,8 @@ export default function Product({ product }) {
                     <td>
                         <div className={bar_styles['progress-bar-container']}>
                         <div className={bar_styles['progress-bar-reference']}>
-                            <div className={bar_styles['progress-bar-level']} style={{ background: progressBarColor, width: `${progressBarFill}%` }}></div>
+                            <div className={bar_styles['progress-bar-level']} style={{ background: progressBarColor, width: `${progressBarStoreFill}%` }}></div>
+                            <div className={bar_styles['progress-bar-ordered']} style={{ width: `${progressBarOrderedFill}%` }}></div>
                         </div>
                         <span className={bar_styles['progress-bar-label']}>{itemStoreStock?.target}</span>
                         </div>
@@ -74,7 +79,8 @@ export default function Product({ product }) {
             </table>
             <div className={bar_styles['progress-bar-container']}>
                 <div className={bar_styles['progress-bar-reference']}>
-                    <div className={bar_styles['progress-bar-level']} style={{ background: totalProgressBarColor, width: `${totalProgressBarFill}%` }}></div>
+                    <div className={bar_styles['progress-bar-level']} style={{ background: totalProgressBarColor, width: `${totalProgressBarStoreFill}%` }}></div>
+                    <div className={bar_styles['progress-bar-ordered']} style={{ width: `${totalProgressBarOrderedFill}%` }}></div>
                 </div>
                 <span className={bar_styles['progress-bar-label']}>100</span>
             </div>
