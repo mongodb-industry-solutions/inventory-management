@@ -7,15 +7,14 @@ import bar_styles from '../styles/progressbar.module.css';
 const ReplenishmentPopup = ({ product, onClose }) => {
 
     const order = {
-        order_number: 2,
         user_id: {
-            $oid: "649ef73a7827d12200b87895"
+            $oid: '649ef73a7827d12200b87895'
         },
         location: {
-            origin: "warehouse",
-            destination: "store"
+            origin: 'warehouse',
+            destination: 'store'
         },
-        placement_timestamp: "2023-07-01T10:30:00Z",
+        placement_timestamp: '',
         items: []
     }
 
@@ -71,10 +70,28 @@ const ReplenishmentPopup = ({ product, onClose }) => {
             update_timestamp: new Date().toISOString()
         };
 
+        order.placement_timestamp = new Date().toISOString();
         order.items = data;
         order.items.forEach(item => item.status.push(status));
 
         console.log(order);
+
+        try {
+            const response = await fetch('/api/createOrder', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ order }),
+              });
+            if (response.ok) {
+                console.log('Order saved successfully');
+            } else {
+                console.log('Error saving order');
+            }
+        } catch (e) {
+            console.error(e);
+        }
     };
 
     return (
