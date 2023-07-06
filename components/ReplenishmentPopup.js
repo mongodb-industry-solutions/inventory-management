@@ -6,23 +6,56 @@ import bar_styles from '../styles/progressbar.module.css';
 
 const ReplenishmentPopup = ({ product, onClose }) => {
 
-    const [rows, setRows] = useState([]);
+    const order = {
+        order_number: 2,
+        user_id: {
+            $oid: "649ef73a7827d12200b87895"
+        },
+        location: {
+            origin: "warehouse",
+            destination: "store"
+        },
+        placement_timestamp: "2023-07-01T10:30:00Z",
+        items: []
+    }
+
+    const [rows, setRows] = useState(order.items);
+   
 
     const handleAddRow = () => {
-        const defaultSize = product.items[0]?.size || '';
-        setRows([...rows, { size: defaultSize }]);
+        const item = product.items[0];
+
+        const newItem = {
+            amount: 0,
+            color: {
+                hex: product.color.hex,
+                name: product.color.name
+            },
+            delivery_time: item?.delivery_time,
+            product: {
+                id: {$oid: product._id},
+                name: product.name
+            },
+            size: item?.size || '',
+            sku: item?.sku || '',
+            status: []
+        }
+        setRows([...rows, newItem]);
     };
 
     const handleSizeChange = (index, newSize) => {
+        const newSku = product.items.find(item => item.size === newSize)?.sku;
+        const newDeliveryTime = product.items.find(item => item.size === newSize)?.delivery_time;
+
         setRows((prevRows) =>
-          prevRows.map((row, i) => (i === index ? { ...row, size: newSize } : row))
+          prevRows.map((row, i) => (i === index ? { ...row, size: newSize, sku: newSku, delivery_time: newDeliveryTime } : row))
         );
       };
     
     const handleAmountUpdate = (index, newAmount) => {
-    setRows((prevRows) =>
-        prevRows.map((row, i) => (i === index ? { ...row, amount: parseInt(newAmount, 10) } : row))
-    );
+        setRows((prevRows) =>
+            prevRows.map((row, i) => (i === index ? { ...row, amount: parseInt(newAmount, 10) } : row))
+        );
     };
 
     const handleDeleteRow = (index) => {
@@ -32,7 +65,16 @@ const ReplenishmentPopup = ({ product, onClose }) => {
     };
 
     const handleSaveOrder = async (data) => {
-        console.log(data);
+
+        const status = {
+            name: 'placed',
+            update_timestamp: new Date().toISOString()
+        };
+
+        order.items = data;
+        order.items.forEach(item => item.status.push(status));
+
+        console.log(order);
     };
 
     return (

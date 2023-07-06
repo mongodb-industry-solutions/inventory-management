@@ -28,7 +28,7 @@ export default function Product({ product }) {
 
     return (
         <div className={product_styles['product-detail-content']}>
-            <div class="icon">
+            <div className="icon">
                 <FontAwesomeIcon icon={faShirt} style={{ color: product.color.hex}}/>
             </div>
             <div className="details">
