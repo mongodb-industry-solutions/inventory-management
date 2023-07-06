@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-const uri = MONGODB_URI;
+const uri = process.env.MONGODB_URI;
 const dbName = 'interns_mongo_retail';
 const collectionName = 'products';
 
@@ -11,9 +11,10 @@ export default async function handler(req, res) {
   }
 
   const searchQuery = req.query.q;
+  let client;
 
   try {
-    const client = new MongoClient(uri);
+    client = new MongoClient(uri);
     await client.connect();
 
     const db = client.db(dbName);
