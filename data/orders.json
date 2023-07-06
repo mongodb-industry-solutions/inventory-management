@@ -1,0 +1,329 @@
+[
+    {
+      "order_number": 1,
+      "user_id": {"$oid": "649ef73a7827d12200b87895"},
+      "location": {
+        "origin": "warehouse",
+        "destination": "store"
+      },
+      "placement_timestamp": "2023-06-30T09:00:00Z",
+      "items": [
+        {
+          "product_name": "Green T-shirt",
+          "sku": "GRN001-XS",
+          "size": "XS",
+          "color": {
+            "name": "Green",
+            "hex": "#00FF00"
+          },
+          "amount": 5,
+          "delivery_time": {
+            "amount": 5,
+            "unit": "days"
+          },
+          "status": [
+            {
+              "name": "order placed",
+              "update_timestamp": "2023-07-05T09:00:00Z"
+            },
+            {
+              "name": "order arrived",
+              "update_timestamp": "2023-07-10T09:00:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order_number": 2,
+      "user_id": {"$oid": "649ef73a7827d12200b87895"},
+      "location": {
+        "origin": "warehouse",
+        "destination": "store"
+      },
+      "placement_timestamp": "2023-07-01T10:30:00Z",
+      "items": [
+        {
+          "product_name": "Blue T-shirt",
+          "sku": "BLU001-S",
+          "size": "S",
+          "color": {
+            "name": "Blue",
+            "hex": "#0000FF"
+          },
+          "amount": 3,
+          "delivery_time": {
+            "amount": 4,
+            "unit": "days"
+          },
+          "status": [
+            {
+              "name": "order placed",
+              "update_timestamp": "2023-07-05T10:30:00Z"
+            },
+            {
+              "name": "order arrived",
+              "update_timestamp": "2023-07-09T10:30:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order_number": 3,
+      "user_id": {"$oid": "649ef73a7827d12200b87895"},
+      "location": {
+        "origin": "warehouse",
+        "destination": "store"
+      },
+      "placement_timestamp": "2023-07-02T14:45:00Z",
+      "items": [
+        {
+          "product_name": "Red T-shirt",
+          "sku": "RED001-M",
+          "size": "M",
+          "color": {
+            "name": "Red",
+            "hex": "#FF0000"
+          },
+          "amount": 2,
+          "delivery_time": {
+            "amount": 3,
+            "unit": "days"
+          },
+          "status": [
+            {
+              "name": "order placed",
+              "update_timestamp": "2023-07-05T14:45:00Z"
+            },
+            {
+              "name": "order arrived",
+              "update_timestamp": "2023-07-08T14:45:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order_number": 4,
+      "user_id": {"$oid": "649ef73a7827d12200b87895"},
+      "location": {
+        "origin": "warehouse",
+        "destination": "store"
+      },
+      "placement_timestamp": "2023-07-03T16:20:00Z",
+      "items": [
+        {
+          "product_name": "Yellow T-shirt",
+          "sku": "YEL001-L",
+          "size": "L",
+          "color": {
+            "name": "Yellow",
+            "hex": "#FFFF00"
+          },
+          "amount": 4,
+          "delivery_time": {
+            "amount": 2,
+            "unit": "days"
+          },
+          "status": [
+            {
+              "name": "order placed",
+              "update_timestamp": "2023-07-05T16:20:00Z"
+            },
+            {
+              "name": "order arrived",
+              "update_timestamp": "2023-07-07T16:20:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order_number": 5,
+      "user_id": {"$oid": "649ef73a7827d12200b87895"},
+      "location": {
+        "origin": "warehouse",
+        "destination": "store"
+      },
+      "placement_timestamp": "2023-07-04T09:10:00Z",
+      "items": [
+        {
+          "product_name": "Black T-shirt",
+          "sku": "BLK001-XL",
+          "size": "XL",
+          "color": {
+            "name": "Black",
+            "hex": "#000000"
+          },
+          "amount": 6,
+          "delivery_time": {
+            "amount": 6,
+            "unit": "days"
+          },
+          "status": [
+            {
+              "name": "order placed",
+              "update_timestamp": "2023-07-10T09:10:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order_number": 6,
+      "user_id": {"$oid": "649ef73a7827d12200b87895"},
+      "location": {
+        "origin": "warehouse",
+        "destination": "store"
+      },
+      "placement_timestamp": "2023-07-05T11:40:00Z",
+      "items": [
+        {
+          "product_name": "Green T-shirt",
+          "sku": "GRN002-S",
+          "size": "S",
+          "color": {
+            "name": "Green",
+            "hex": "#00FF00"
+          },
+          "amount": 3,
+          "delivery_time": {
+            "amount": 5,
+            "unit": "days"
+          },
+          "status": [
+            {
+              "name": "order placed",
+              "update_timestamp": "2023-07-10T11:40:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order_number": 7,
+      "user_id": {"$oid": "649ef73a7827d12200b87895"},
+      "location": {
+        "origin": "warehouse",
+        "destination": "store"
+      },
+      "placement_timestamp": "2023-07-06T14:30:00Z",
+      "items": [
+        {
+          "product_name": "Blue T-shirt",
+          "sku": "BLU002-M",
+          "size": "M",
+          "color": {
+            "name": "Blue",
+            "hex": "#0000FF"
+          },
+          "amount": 4,
+          "delivery_time": {
+            "amount": 4,
+            "unit": "days"
+          },
+          "status": [
+            {
+              "name": "order placed",
+              "update_timestamp": "2023-07-10T14:30:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order_number": 8,
+      "user_id": {"$oid": "649ef73a7827d12200b87895"},
+      "location": {
+        "origin": "warehouse",
+        "destination": "store"
+      },
+      "placement_timestamp": "2023-07-07T17:00:00Z",
+      "items": [
+        {
+          "product_name": "Red T-shirt",
+          "sku": "RED002-L",
+          "size": "L",
+          "color": {
+            "name": "Red",
+            "hex": "#FF0000"
+          },
+          "amount": 2,
+          "delivery_time": {
+            "amount": 3,
+            "unit": "days"
+          },
+          "status": [
+            {
+              "name": "order placed",
+              "update_timestamp": "2023-07-10T17:00:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order_number": 9,
+      "user_id": {"$oid": "649ef73a7827d12200b87895"},
+      "location": {
+        "origin": "warehouse",
+        "destination": "store"
+      },
+      "placement_timestamp": "2023-07-09T10:15:00Z",
+      "items": [
+        {
+          "product_name": "Yellow T-shirt",
+          "sku": "YEL002-XL",
+          "size": "XL",
+          "color": {
+            "name": "Yellow",
+            "hex": "#FFFF00"
+          },
+          "amount": 3,
+          "delivery_time": {
+            "amount": 2,
+            "unit": "days"
+          },
+          "status": [
+            {
+              "name": "order placed",
+              "update_timestamp": "2023-07-11T10:15:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order_number": 10,
+      "user_id": {"$oid": "649ef73a7827d12200b87895"},
+      "location": {
+        "origin": "warehouse",
+        "destination": "store"
+      },
+      "placement_timestamp": "2023-07-10T12:30:00Z",
+      "items": [
+        {
+          "product_name": "Black T-shirt",
+          "sku": "BLK002-S",
+          "size": "S",
+          "color": {
+            "name": "Black",
+            "hex": "#000000"
+          },
+          "amount": 4,
+          "delivery_time": {
+            "amount": 6,
+            "unit": "days"
+          },
+          "status": [
+            {
+              "name": "order placed",
+              "update_timestamp": "2023-07-16T12:30:00Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+  
