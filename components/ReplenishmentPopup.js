@@ -86,6 +86,8 @@ const ReplenishmentPopup = ({ product, onClose }) => {
               });
             if (response.ok) {
                 console.log('Order saved successfully');
+                onClose();
+                setRows([]);
             } else {
                 console.log('Error saving order');
             }
