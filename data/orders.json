@@ -9,7 +9,10 @@
       "placement_timestamp": "2023-06-30T09:00:00Z",
       "items": [
         {
-          "product_name": "Green T-shirt",
+          "product": {
+            "name": "Green T-shirt",
+            "id": {"$oid": "649ef6647827d12200b8788f"}
+          },
           "sku": "GRN001-XS",
           "size": "XS",
           "color": {
