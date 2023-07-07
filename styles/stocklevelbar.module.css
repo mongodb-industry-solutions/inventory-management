@@ -1,8 +1,8 @@
-.progress-bar-container {
+.container {
     display: flex;
 }
 
-.progress-bar-reference {
+.target-level {
     display: flex;
     height: 10px;
     align-items: left;
@@ -11,19 +11,19 @@
     width: 80%;
   }
   
-  .progress-bar-level {
+  .store-level {
     height: 100%;
     border-radius: 5px;
     overflow: hidden;
     position: relative;
   }
   
-  .progress-bar-label {
+  .label {
     margin-left: 10px;
     font-size: 14px;
   }
 
-  .progress-bar-ordered {
+  .ordered-level {
     position:relative;
     background: repeating-linear-gradient(
         45deg,

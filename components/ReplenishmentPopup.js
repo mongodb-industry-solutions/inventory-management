@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import bar_styles from '../styles/progressbar.module.css';
+import StockLevelBar from './StockLevelBar';
 
 
 const ReplenishmentPopup = ({ product, onClose }) => {
@@ -116,9 +116,6 @@ const ReplenishmentPopup = ({ product, onClose }) => {
           <tbody>
             {rows.map((row, index) => {
                 const item = product.items.find(item => item.size === rows[index].size);
-                const itemStoreStock = item?.stock.find(stock => stock.location === 'store');
-                const progressBarColor = itemStoreStock?.amount >= itemStoreStock?.threshold ? 'green' : 'orange';
-                const progressBarFill = (itemStoreStock?.amount / itemStoreStock?.target) * 100;
 
                 return (
                 <tr key={index}>
@@ -139,12 +136,7 @@ const ReplenishmentPopup = ({ product, onClose }) => {
                         {item?.delivery_time.amount} {item?.delivery_time.unit}
                     </td>
                     <td>
-                        <div className={bar_styles['progress-bar-container']}>
-                        <div className={bar_styles['progress-bar-reference']}>
-                            <div className={bar_styles['progress-bar-level']} style={{ background: progressBarColor, width: `${progressBarFill}%` }}></div>
-                        </div>
-                        <span className={bar_styles['progress-bar-label']}>{itemStoreStock?.target}</span>
-                        </div>
+                        {<StockLevelBar stock={item?.stock} />}
                     </td>
                     <td>
                     <button onClick={() => handleDeleteRow(index)}>Delete</button>
