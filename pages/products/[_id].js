@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import  *  as  Realm  from  "realm-web";
 import clientPromise from '../../lib/mongodb';
 import { ObjectId } from 'mongodb';
 
@@ -9,15 +10,32 @@ import product_styles from '../../styles/product.module.css';
 import bar_styles from '../../styles/progressbar.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 
-export default function Product({ product }) {
+const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
+
+export default function Product({ preloadedProduct }) {
+    
+    const [product, setProduct] = useState(preloadedProduct);
+    const [showPopup, setShowPopup] = useState(false);
+
+    useEffect(() => {
+        const  login = async () => {
+        
+            await app.logIn(Realm.Credentials.anonymous());
+            const mongodb = app.currentUser.mongoClient("mongodb-atlas");
+            const collection = mongodb.db("interns_mongo_retail").collection("products");
+
+            for await (const  change  of  collection.watch({ $match: { 'fullDocument._id': preloadedProduct._id } })) {
+                setProduct(change.fullDocument);
+            }
+        }
+        login();
+    }, []);
 
     const totalStoreStock = product.total_stock_sum.find(stock => stock.location === 'store');
     const totalOrderedStock = product.total_stock_sum.find(stock => stock.location === 'ordered');
     const totalProgressBarColor = totalStoreStock?.amount >= totalStoreStock?.threshold ? 'green' : 'orange';
     const totalProgressBarStoreFill = (totalStoreStock?.amount / totalStoreStock?.target) * 100;
     const totalProgressBarOrderedFill = ((totalOrderedStock?.amount) / totalStoreStock?.target) * 100;
-    
-    const [showPopup, setShowPopup] = useState(false);
 
     const handleOpenPopup = () => {
         setShowPopup(true);
@@ -102,7 +120,7 @@ export async function getServerSideProps(context) {
             .findOne({ _id: ObjectId(params._id)});
 
         return {
-            props: { product: JSON.parse(JSON.stringify(product)) },
+            props: { preloadedProduct: JSON.parse(JSON.stringify(product)) },
         };
     } catch (e) {
         console.error(e);
