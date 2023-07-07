@@ -26,6 +26,8 @@ export default async (req, res) => {
                 let productID = item.product.id.$oid;
                 let sku = item.sku;
                 let amount = item.amount;
+
+                waitAndMoveToStore(item);
         
                 await db.collection("products").updateOne(
                     {
@@ -67,3 +69,50 @@ export default async (req, res) => {
         res.status(500).json({ error: 'Error creating order' });
     }
  };
+
+ async function waitAndMoveToStore(item) { 
+
+    try{
+        const client = await clientPromise;
+        const { ObjectId } = require('mongodb');
+        const db = client.db("interns_mongo_retail");
+
+        const productID = item.product.id.$oid;
+        const sku = item.sku;
+        const amount = item.amount;
+
+        if(item.delivery_time.unit === 'seconds'){
+            await new Promise(r => setTimeout(r, item.delivery_time.amount * 1000));
+
+            await db.collection("products").updateOne(
+                {
+                    "_id": new ObjectId(productID)
+                },
+                {
+                $inc: {
+                    "items.$[i].stock.$[j].amount": -amount,
+                    "items.$[i].stock.$[k].amount": amount,
+                    "total_stock_sum.$[j].amount": -amount,
+                    "total_stock_sum.$[k].amount": amount
+                }
+                },
+                {
+                    arrayFilters: [
+                        { "i.sku": sku },
+                        { "j.location": "ordered" },
+                        { "k.location": "store" }
+                    ]
+                }
+            );
+
+            console.log('Moved to store!');
+        }
+        else {
+            console.log('Error: time units not supported');
+        }
+    }
+    catch(e){
+
+    }
+
+}
