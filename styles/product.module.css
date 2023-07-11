@@ -15,15 +15,14 @@
     background: #fff;
     border-radius: 24px;
     width: 100%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-   /* background-color: #2196F3;*/
+   /*background-color: #2196F3;*/
 }
 
-/*
+
 .product-detail-content  > div {
     background-color: rgba(255, 255, 255, 0.8);
 }
-*/
+
 
 .name-price-wrapper {
     display: flex;

@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import StockLevelBar from './StockLevelBar';
 
+import styles from '../styles/popup.module.css';
+
 
 const ReplenishmentPopup = ({ product, onClose }) => {
 
@@ -97,7 +99,7 @@ const ReplenishmentPopup = ({ product, onClose }) => {
     };
 
     return (
-      <div className="popup">
+      <div className={styles["popup"]}>
         <div className="popup-content">
           {/* Add your popup content here */}
           <h2>Popup Content</h2>

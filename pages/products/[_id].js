@@ -40,6 +40,7 @@ export default function Product({ preloadedProduct }) {
     };
 
     return (
+        <>
         <div className={product_styles['product-detail-content']}>
             <div className={product_styles['icon']}>
                 <FontAwesomeIcon id="tshirt" icon={faShirt} style={{ color: product.color.hex, fontSize: '10rem', backgroundColor: 'rgb(249, 251, 250)', padding: '15px'}}/>
@@ -80,10 +81,10 @@ export default function Product({ preloadedProduct }) {
                 </tbody>
             </table>
             <button onClick={handleOpenPopup}>REPLENISH STOCK</button>
-                {showPopup && <Popup product={product} onClose={handleClosePopup} />}
             </div>
-            
         </div>
+        {showPopup && <Popup product={product} onClose={handleClosePopup} />}
+        </>
 
     );
 }
