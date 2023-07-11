@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import clientPromise from '../../lib/mongodb';
 
 const uri = process.env.MONGODB_URI;
 const dbName = 'interns_mongo_retail';
@@ -11,12 +12,16 @@ export default async function handler(req, res) {
   }
 
   const searchQuery = req.query.q;
+
+  if (!searchQuery) {
+    res.status(400).json({ error: 'Search query is required' });
+    return;
+  }
+
   let client;
 
   try {
-    client = new MongoClient(uri);
-    await client.connect();
-
+    client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     const db = client.db(dbName);
 
     const results = await db
@@ -42,6 +47,9 @@ export default async function handler(req, res) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   } finally {
-    client.close();
+    if (client) {
+      client.close();
+    }
   }
 }
+
