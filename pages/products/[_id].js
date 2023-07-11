@@ -42,7 +42,7 @@ export default function Product({ preloadedProduct }) {
     return (
         <div className={product_styles['product-detail-content']}>
             <div className={product_styles['icon']}>
-                <FontAwesomeIcon icon={faShirt} style={{ color: product.color.hex, fontSize: '10rem'}}/>
+                <FontAwesomeIcon id="tshirt" icon={faShirt} style={{ color: product.color.hex, fontSize: '10rem', backgroundColor: 'rgb(249, 251, 250)', padding: '15px'}}/>
             </div>
             <div className={product_styles["details"]}>
             <div className={product_styles["name-price-wrapper"]}>

@@ -40,14 +40,6 @@
     height: 105px;
 }
 
-.leafygreen-ui {
-  position: relative;
-    z-index: 0;
-    font-family: "Euclid Circular A", Akzidenz, "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background-color: rgb(255, 255, 255);
-    box-shadow: unset;
-}
-
 .content {
   display: flex;
     flex-direction: column;
@@ -58,6 +50,7 @@
     z-index: auto;
     padding: 24px;
     min-width: 0px;
+    margin-right: 24px;
   
 }
 
