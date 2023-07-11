@@ -1,9 +1,26 @@
 import { MongoClient } from 'mongodb';
 import clientPromise from '../../lib/mongodb';
 
-const uri = process.env.MONGODB_URI;
 const dbName = 'interns_mongo_retail';
 const collectionName = 'products';
+
+let cachedDb = null;
+
+async function connectToDatabase() {
+  if (cachedDb) {
+    return cachedDb;
+  }
+
+  const client = await MongoClient.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  const db = client.db(dbName);
+  cachedDb = db;
+
+  return db;
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -18,11 +35,8 @@ export default async function handler(req, res) {
     return;
   }
 
-  let client;
-
   try {
-    client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    const db = client.db(dbName);
+    const db = await connectToDatabase();
 
     const results = await db
       .collection(collectionName)
@@ -46,10 +60,6 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
-  } finally {
-    if (client) {
-      client.close();
-    }
   }
 }
 
