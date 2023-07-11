@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 
+import styles from '../styles/navbar.module.css';
+
 function Footer() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
@@ -25,26 +27,26 @@ function Footer() {
   };
 
   return (
-    <div className="layout-footer">
-      <div className="dropdown">
-        <img src="/images/houseLogo.png" alt="House Logo" className="house-logo" />
-        <button className="dropdown-toggle" onClick={handleDropdownToggle}>
+    <div className={styles["layout-footer"]}>
+      <div className={styles["dropdown"]}>
+        <img src="/images/houseLogo.png" alt="House Logo" className={styles["house-logo"]} />
+        <button className={styles["dropdown-toggle"]} onClick={handleDropdownToggle}>
           {selectedOption || 'Choose your store'}
-          <span className="dropdown-arrow"></span>
+          <span className={styles["dropdown-arrow"]}></span>
         </button>
         {isOpen && (
-          <div className="dropdown-menu">
+          <div className={styles["dropdown-menu"]}>
             <a href="#" onClick={() => handleOptionClick('Bogatell Store')}>
               Bogatell Store
             </a>
           </div>
         )}
 
-        <div className="mongodb-button-container">
-          <button className="mongodb-button" onClick={handleProductsClick}>
+        <div className={styles["mongodb-button-container"]}>
+          <button className={styles["mongodb-button"]} onClick={handleProductsClick}>
             Products
           </button>
-          <button className="mongodb-button" onClick={handleOrderHistoryClick}>
+          <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
             Order History
           </button>
         </div>

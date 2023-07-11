@@ -44,12 +44,16 @@ export default function Product({ preloadedProduct }) {
             <div className={product_styles['icon']}>
                 <FontAwesomeIcon icon={faShirt} style={{ color: product.color.hex, fontSize: '10rem'}}/>
             </div>
-            <div className="details">
-                <h2 className="name">{product.name}</h2>
-                <p className="code">{product.code}</p>
+            <div className={product_styles["details"]}>
+            <div className={product_styles["name-price-wrapper"]}>
+                <p className="name">{product.name}</p>
                 <p className="price">{product.price.amount} {product.price.currency}</p>
             </div>
-            <table className="table">
+                <p className="code">{product.code}</p>
+                {<StockLevelBar stock={product.total_stock_sum} />}
+            </div>
+            <div className={product_styles["table"]}>
+            <table>
                 <thead>
                 <tr>
                     <td>Size</td>
@@ -75,9 +79,10 @@ export default function Product({ preloadedProduct }) {
                     ))}
                 </tbody>
             </table>
-            {<StockLevelBar stock={product.total_stock_sum} />}
-            <button onClick={handleOpenPopup}>Open Popup</button>
-            {showPopup && <Popup product={product} onClose={handleClosePopup} />}
+            <button onClick={handleOpenPopup}>REPLENISH STOCK</button>
+                {showPopup && <Popup product={product} onClose={handleClosePopup} />}
+            </div>
+            
         </div>
 
     );

@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+#__next {
+  height: 100%;
+}
+
+body {
+  font-size: 14px;
+    line-height: 1.42857143;
+    background-color: #fff;
+    margin: 0;
+    display: block;
+}
+
+body, html {
+  height: 100%;
+  font-family: 'Euclid Circular A','Helvetica Neue',Helvetica,Arial,sans-serif;
+  color: #001e2b;
+  -webkit-font-smoothing: antialiased;
+}
