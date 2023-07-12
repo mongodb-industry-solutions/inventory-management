@@ -5,7 +5,6 @@ import Sidebar from '../components/Sidebar'
 
 export default function Products({ products, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState(products);
 
   const handleSearch = async () => {
@@ -23,75 +22,83 @@ export default function Products({ products, facets }) {
     }
   };
   
+  const handleSearchInputChange = (e) => {
+    const searchValue = e.target.value;
+    setSearchQuery(searchValue);
+  };
 
   useEffect(() => {
-    setSearchResults(products);
-  }, []);
+    if (searchQuery.length > 0) {
+      // Perform search as you type
+      const searchResults = products.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredProducts(searchResults);
+    } else {
+      setFilteredProducts(products);
+    }
+  }, [searchQuery, products]);
 
   const filterProducts = (sizesFilter, colorsFilter) => {
-    
+    // Filter products based on sizes and colors
     let updatedFilteredProducts = products.filter(product => {
-        const sizes = product.items.map((item) => item.size);
-        const colors = product.color ? [product.color.name] : [];
+      const sizes = product.items.map((item) => item.size);
+      const colors = product.color ? [product.color.name] : [];
 
-        const sizeMatch = sizesFilter.length === 0 || sizes.some(size => sizesFilter.includes(size));
-        const colorMatch = colorsFilter.length === 0 || colors.some(color => colorsFilter.includes(color));
+      const sizeMatch = sizesFilter.length === 0 || sizes.some(size => sizesFilter.includes(size));
+      const colorMatch = colorsFilter.length === 0 || colors.some(color => colorsFilter.includes(color));
 
-        return sizeMatch && colorMatch;
-        });
+      return sizeMatch && colorMatch;
+    });
     setFilteredProducts(updatedFilteredProducts);
     console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' products: ' + updatedFilteredProducts.length);
-   
   };
 
   return (
     <>
-    <Sidebar facets={facets} filterProducts={filterProducts}/>
-    <div className="content">
-      <div className="search-bar">
-        <input
-          className="search-input"
-          type="text"
-          placeholder=" Search..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              handleSearch();
-            }
-          }}
-        />
-        <button className="search-button" onClick={handleSearch}>
-          <FaSearch />
-        </button>
+      <Sidebar facets={facets} filterProducts={filterProducts} />
+      <div className="content">
+        <div className="search-bar">
+          <input
+            className="search-input"
+            type="text"
+            placeholder=" Search..."
+            value={searchQuery}
+            onChange={handleSearchInputChange}
+          />
+          <button className="search-button" onClick={handleSearch}>
+            <FaSearch />
+          </button>
+        </div>
+
+        <ul className="product-list">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <li key={product._id} className="product-item">
+                <a href={`/products/${product._id}`} className="product-link">
+                  <div className="shirt_icon">
+                    <FaTshirt color={product.color.hex} />
+                  </div>
+                  <h2>{product.name}</h2>
+                  <h3>{product.code}</h3>
+                  <p>{product.description}</p>
+                </a>
+              </li>
+            ))
+          ) : (
+            <li>No results found</li>
+          )}
+        </ul>
+
+        <style jsx>{`
+          .product-link {
+            text-decoration: none;
+            color: black;
+          }
+        `}</style>
       </div>
-
-      <ul className="product-list">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <li key={product._id} className="product-item">
-              <a href={`/products/${product._id}`} className="product-link">
-                <div className="shirt_icon">
-                  <FaTshirt color={product.color.hex} />
-                </div>
-                <h2>{product.name}</h2>
-                <h3>{product.code}</h3>
-                <p>{product.description}</p>
-              </a>
-            </li>
-          ))
-        ) : (
-          <li>No results found</li>
-        )}
-      </ul>
-
-      <style jsx>{`
-        .product-link {
-          text-decoration: none;
-          color: black;
-        }
-      `}</style>
-    </div>
     </>
   );
 }
