@@ -57,9 +57,11 @@
 .search-bar {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
-  align-items: center;
+  margin-bottom: 30px;
   border-radius: 50%;
+  right: 20px;
+  justify-content: center;
+
 }
 
 .search-input {
@@ -67,12 +69,12 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 10px;
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
   align-items: center;
-  margin-left: 155px;
+  margin-left: 10px; /* Adjust this value as needed */
   margin-top: 10px;
   border-radius: 50px;
-  
 }
 
 .search-button {
@@ -88,4 +90,64 @@
   align-items: center;
   justify-content: center;
   margin-top: 10px;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+  .search-input {
+    width: 100%;
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 576px) {
+  .search-input {
+    width: 100%;
+    max-width: 100px;
+  }
+}
+
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  justify-content: flex-start;
+}
+
+.product-item {
+  width: 200px;
+  margin-right: 30px;
+  margin-bottom: 30px;
+  background-color: #f7f7f7;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  margin-left: 50px;
+}
+
+.product-item:last-child {
+  margin-right: 0;
+}
+
+.product-item h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.product-item h3,
+.product-item p {
+  font-size: 14px;
+  margin: 0;
+}
+
+.shirt_icon {
+  text-align: center;
+  margin-bottom: 10px; /* Adjust the margin value as needed */
+}
+
+.shirt_icon svg {
+  width: 200px;
+  height: 200px;
 }
