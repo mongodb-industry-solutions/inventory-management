@@ -41,6 +41,7 @@ export default function Product({ preloadedProduct }) {
 
     return (
         <>
+        <div className="content">
         <div className={styles['product-detail-content']}>
             <div className={styles['icon']}>
                 <FontAwesomeIcon id="tshirt" icon={faShirt} style={{ color: product.color.hex, fontSize: '10rem', backgroundColor: 'rgb(249, 251, 250)', padding: '15px'}}/>
@@ -89,6 +90,7 @@ export default function Product({ preloadedProduct }) {
             </div>
         </div>
         {showPopup && <Popup product={product} onClose={handleClosePopup} />}
+        </div>
         </>
 
     );
