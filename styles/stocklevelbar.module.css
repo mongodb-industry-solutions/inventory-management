@@ -1,0 +1,35 @@
+.container {
+    display: flex;
+}
+
+.target-level {
+    display: flex;
+    height: 10px;
+    align-items: left;
+    border-radius: 5px;
+    border: 1px solid black;
+    width: 80%;
+  }
+  
+  .store-level {
+    height: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .label {
+    margin-left: 10px;
+    font-size: 14px;
+  }
+
+  .ordered-level {
+    position:relative;
+    background: repeating-linear-gradient(
+        45deg,
+        white,
+        white 5px,
+        green 5px,
+        green 10px
+        );
+  }
