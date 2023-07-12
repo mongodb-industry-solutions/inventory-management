@@ -15,6 +15,7 @@
     background: #fff;
     border-radius: 24px;
     width: 100%;
+    overflow: hidden;
    /*background-color: #2196F3;*/
 }
 
@@ -23,13 +24,6 @@
     background-color: rgba(255, 255, 255, 0.8);
 }
 
-
-.name-price-wrapper {
-    display: flex;
-    justify-content: space-between;
-    margin: 0;
-    padding: 0;
-}
 
 .table {
     grid-area: table;
@@ -47,7 +41,6 @@ border-collapse: collapse;
 .table thead tr {
     border-top: solid 2px #e8edeb;
     border-bottom: solid 2px #e8edeb;
-    font-size: 11px;
     color: #1c2d38;
     font-weight: 700;
 }
@@ -81,5 +74,37 @@ border-collapse: collapse;
 .details {
     grid-area: details;
     padding: 24px;
+}
+
+.name-price-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+}
+
+.circle {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+.full {
+    background-color: green;
+}
+
+.low {
+    background-color: orange;
+}
+
+.ordered {
+    background: repeating-linear-gradient(
+        45deg,
+        white,
+        white 2.5px,
+        green 2.5px,
+        green 5px
+        );
 }
   

@@ -6,7 +6,7 @@ import { ObjectId } from 'mongodb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShirt } from '@fortawesome/free-solid-svg-icons';
 
-import product_styles from '../../styles/product.module.css';
+import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
 
@@ -41,19 +41,19 @@ export default function Product({ preloadedProduct }) {
 
     return (
         <>
-        <div className={product_styles['product-detail-content']}>
-            <div className={product_styles['icon']}>
+        <div className={styles['product-detail-content']}>
+            <div className={styles['icon']}>
                 <FontAwesomeIcon id="tshirt" icon={faShirt} style={{ color: product.color.hex, fontSize: '10rem', backgroundColor: 'rgb(249, 251, 250)', padding: '15px'}}/>
             </div>
-            <div className={product_styles["details"]}>
-            <div className={product_styles["name-price-wrapper"]}>
+            <div className={styles["details"]}>
+            <div className={styles["name-price-wrapper"]}>
                 <p className="name">{product.name}</p>
                 <p className="price">{product.price.amount} {product.price.currency}</p>
             </div>
                 <p className="code">{product.code}</p>
                 {<StockLevelBar stock={product.total_stock_sum} />}
             </div>
-            <div className={product_styles["table"]}>
+            <div className={styles["table"]}>
             <table>
                 <thead>
                 <tr>
@@ -80,10 +80,15 @@ export default function Product({ preloadedProduct }) {
                     ))}
                 </tbody>
             </table>
+            <div className={styles["legend"]}>
+                <span className={`${styles["circle"]} ${styles["full"]}`}></span> <span>Full</span> &nbsp;&nbsp;
+                <span className={`${styles["circle"]} ${styles["low"]}`}></span> <span>Low</span> &nbsp;&nbsp;
+                <span className={`${styles["circle"]} ${styles["ordered"]}`}></span> <span>Ordered</span>
+            </div>
             <button onClick={handleOpenPopup}>REPLENISH STOCK</button>
             </div>
         </div>
-        {showPopup && <Popup product={product} onClose={handleClosePopup} />}
+        {showPopup && <Popup product={product} onClose={handleClosePopup} showPopup={showPopup} />}
         </>
 
     );

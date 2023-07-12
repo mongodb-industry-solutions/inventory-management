@@ -1,12 +1,14 @@
 'use client'
 
 import React, { useState } from 'react';
+import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
+
 import StockLevelBar from './StockLevelBar';
 
 import styles from '../styles/popup.module.css';
 
 
-const ReplenishmentPopup = ({ product, onClose }) => {
+const ReplenishmentPopup = ({ product, onClose, showPopup }) => {
 
     const order = {
         user_id: {
@@ -21,6 +23,8 @@ const ReplenishmentPopup = ({ product, onClose }) => {
     }
 
     const [rows, setRows] = useState(order.items);
+
+    const renderBackdrop = (props) => <div className={styles["backdrop"]} {...props} />;
    
 
     const handleAddRow = () => {
@@ -99,59 +103,71 @@ const ReplenishmentPopup = ({ product, onClose }) => {
     };
 
     return (
-      <div className={styles["popup"]}>
-        <div className="popup-content">
-          {/* Add your popup content here */}
-          <h2>Popup Content</h2>
-          <p>This is the content of the popup.</p>
-          <button onClick={handleAddRow}>Add Row</button>
-        <table>
-          <thead>
-            <tr>
-              <th>Size</th>
-              <th>Store</th>
-              <th>Order Amount</th>
-              <th>Delivery Time</th>
-              <th>Stock Level</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, index) => {
-                const item = product.items.find(item => item.size === rows[index].size);
+        <>
+        <div className={styles["backdrop"]}></div>
+        <div className={styles["popup"]}>
+            <div className={styles["popup-content"]}>
+                {/* Add your popup content here */}
+                <button className={styles["close-button"]} onClick={onClose}>
+                    <FaTimes className={styles["close-icon"]}/>
+                </button>
+                <h3>Replenish Stock</h3>
+                <div className={styles["table"]}>
+                    <table>
+                    <thead>
+                        <tr>
+                        <th>Size</th>
+                        <th>Store</th>
+                        <th>Order Amount</th>
+                        <th>Delivery Time</th>
+                        <th>Stock Level</th>
+                        <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rows.map((row, index) => {
+                            const item = product.items.find(item => item.size === rows[index].size);
 
-                return (
-                <tr key={index}>
-                    <td>
-                        <select value={row.size} onChange={(e) => handleSizeChange(index, e.target.value)}>{product.items.map((item) => (
-                            <option key={item.sku} value={item.size}>
-                            {item.size}
-                            </option>))}
-                        </select>
-                    </td>
-                    <td>
-                        {item?.stock.find(stock => stock.location === 'store')?.amount ?? 0}
-                    </td>
-                    <td>
-                        <input type="number" min="1" max="20" onChange={(e) => handleAmountUpdate(index, e.target.value)} />
-                    </td>
-                    <td>
-                        {item?.delivery_time.amount} {item?.delivery_time.unit}
-                    </td>
-                    <td>
-                        {<StockLevelBar stock={item?.stock} />}
-                    </td>
-                    <td>
-                    <button onClick={() => handleDeleteRow(index)}>Delete</button>
-                    </td>
-                </tr>
-                )
-            })}
-          </tbody>
-        </table>
-          <button onClick={onClose}>Close</button>
-          <button onClick={() => handleSaveOrder(rows)}>Save</button>
+                            return (
+                            <tr key={index}>
+                                <td>
+                                    <select value={row.size} onChange={(e) => handleSizeChange(index, e.target.value)}>{product.items.map((item) => (
+                                        <option key={item.sku} value={item.size}>
+                                        {item.size}
+                                        </option>))}
+                                    </select>
+                                </td>
+                                <td>
+                                    {item?.stock.find(stock => stock.location === 'store')?.amount ?? 0}
+                                </td>
+                                <td>
+                                    <input type="number" min="1" max="20" onChange={(e) => handleAmountUpdate(index, e.target.value)} />
+                                </td>
+                                <td>
+                                    {item?.delivery_time.amount} {item?.delivery_time.unit}
+                                </td>
+                                <td>
+                                    {<StockLevelBar stock={item?.stock} />}
+                                </td>
+                                <td>
+                                <button className={styles["delete-button"]} onClick={() => handleDeleteRow(index)}>
+                                    <FaTrash className={styles["delete-icon"]}/>
+                                </button>
+                                </td>
+                            </tr>
+                            )
+                        })}
+                    </tbody>
+                    </table>
+                    <button className={styles["add-button"]} onClick={handleAddRow}>
+                        <FaPlus className={styles["add-icon"]}/>
+                    </button>
+                    </div>
+                   
+                    <button className={styles["save-button"]} onClick={() => handleSaveOrder(rows)}>Save</button>
+            </div>
         </div>
-      </div>
+      </>
     );
   };
   
