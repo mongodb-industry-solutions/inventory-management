@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-
+import styles from '../styles/sidebar.module.css';
 
 function Sidebar({facets, filterProducts}) {
 
@@ -47,15 +47,15 @@ function Sidebar({facets, filterProducts}) {
   };
 
   return (
-    <div className={`sidebar ${isShrunk ? 'shrunk' : ''}`}>
-      <div className={`sidebar-header ${isShrunk ? 'shrunk' : ''}`}>
-        {isShrunk && <img src="/images/filters.png" alt="filtersLogo" className="filterslogo" />}
+    <div className={`${styles.sidebar} ${isShrunk ? styles["shrunk"] : ''}`}>
+      <div className={`${styles["sidebar-header"]} ${isShrunk ? styles["shrunk"]: ''}`}>
+        {isShrunk && <img src="/images/filters.png" alt="filtersLogo" className={styles["filterslogo"]} />}
         {!isShrunk && <h3>Filters</h3>}
       </div>
 
       {!isShrunk && (
         <>
-          <div className="size-filters">
+          <div className={styles["size-filters"]} >
             <h3>Size</h3>
             {facets[0].facet.sizesFacet.buckets.map((bucket) => (
               <label key={bucket._id}>
@@ -69,7 +69,7 @@ function Sidebar({facets, filterProducts}) {
             ))}
           </div>
 
-          <div className="color-filters">
+          <div className={styles["color-filters"]} >
             <h3>Color</h3>
             {facets[0].facet.colorsFacet.buckets.map((bucket) => (
               <label key={bucket._id}>
@@ -85,7 +85,7 @@ function Sidebar({facets, filterProducts}) {
         </>
       )}
 
-      <div className="toggle-button" onClick={toggleShrink}>
+      <div className={styles["toggle-button"]} onClick={toggleShrink}>
       {isShrunk ? (
     <FaChevronRight style={{ color: '2B664C' }} />
   ) : (
