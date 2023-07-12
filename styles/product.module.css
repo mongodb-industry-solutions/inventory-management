@@ -1,0 +1,117 @@
+.product-detail-content {
+    display: grid;
+    grid-template-areas: 
+        'icon table table'
+        'icon table table'
+        'details table table'
+    ;
+    gap: 15px;
+    padding: 15px;
+    box-shadow: rgba(0, 30, 43, 0.3) 0px 4px 10px -4px;
+    transition: border 150ms ease-in-out 0s, box-shadow;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(232, 237, 235);
+    background: #fff;
+    border-radius: 24px;
+    width: 100%;
+    overflow: hidden;
+    margin-top: 24px;
+   /*background-color: #2196F3;*/
+}
+
+
+.product-detail-content  > div {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+
+.table {
+    grid-area: table;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+.table table {
+flex-grow: 1;
+border-collapse: collapse;
+}
+
+.table thead tr {
+    border-top: solid 2px #e8edeb;
+    border-bottom: solid 2px #e8edeb;
+    color: #1c2d38;
+    font-weight: 700;
+}
+
+.table tbody tr {
+    border-bottom: solid 1px #e8edeb;
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+}
+
+  
+  .table button {
+    width: 150px;
+    margin-top: 10px;
+    margin-left: auto;
+    display: block;
+    color: #fff;
+    border: 1px solid #00684a;
+    background-color: #00684a;
+    border-radius: 6px;
+    font-weight: 700;
+  }
+
+.icon {
+    grid-area: icon;
+    text-align: center;
+}
+
+.icon-container {
+    background-color: rgb(249, 251, 250);
+}
+
+.details {
+    grid-area: details;
+    padding: 24px;
+}
+
+.name-price-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+}
+
+.circle {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+.full {
+    background-color: green;
+}
+
+.low {
+    background-color: orange;
+}
+
+.ordered {
+    background: repeating-linear-gradient(
+        45deg,
+        white,
+        white 2.5px,
+        green 2.5px,
+        green 5px
+        );
+}
+  

@@ -16,13 +16,21 @@
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+#__next {
+  height: 100%;
 }
 
+body {
+  font-size: 14px;
+    line-height: 1.42857143;
+    background-color: #fff;
+    margin: 0;
+    display: block;
+}
+
+body, html {
+  height: 100%;
+  font-family: 'Euclid Circular A','Helvetica Neue',Helvetica,Arial,sans-serif;
+  color: #001e2b;
+  -webkit-font-smoothing: antialiased;
+}

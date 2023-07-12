@@ -1,8 +1,5 @@
-import clientPromise from "../lib/mongodb";
+import clientPromise from "../../lib/mongodb";
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import Sidebar from '../components/Sidebar';
 import { FaSearch } from 'react-icons/fa';
 
 export default function Products({ products }) {
@@ -19,7 +16,7 @@ export default function Products({ products }) {
             <ul>
                 {products.map((product) => (
                    <li key={product._id}>
-                   <h2>{product.name}</h2>
+                   <h2><a href={`http://localhost:3000/products/${product._id}`}>{product.name}</a></h2>
                    <h3>{product.code}</h3>
                    <p>{product.description}</p>
                  </li>
@@ -47,5 +44,6 @@ export async function getServerSideProps() {
         };
     } catch (e) {
         console.error(e);
+        return { props: {ok: false, reason: "Server error"}};
     }
 }
