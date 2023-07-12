@@ -15,10 +15,7 @@ function MyApp({ Component, pageProps }) {
           <Header />
           <Navbar />
         </div>
-        <Sidebar />
-        <div className="content">
           <Component {...pageProps} />
-        </div>
        </div>
       </>
     );
