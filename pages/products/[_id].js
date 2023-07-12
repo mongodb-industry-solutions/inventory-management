@@ -88,7 +88,7 @@ export default function Product({ preloadedProduct }) {
             <button onClick={handleOpenPopup}>REPLENISH STOCK</button>
             </div>
         </div>
-        {showPopup && <Popup product={product} onClose={handleClosePopup} showPopup={showPopup} />}
+        {showPopup && <Popup product={product} onClose={handleClosePopup} />}
         </>
 
     );

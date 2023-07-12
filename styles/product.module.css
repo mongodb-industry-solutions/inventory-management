@@ -16,6 +16,7 @@
     border-radius: 24px;
     width: 100%;
     overflow: hidden;
+    margin-top: 24px;
    /*background-color: #2196F3;*/
 }
 
@@ -47,6 +48,12 @@ border-collapse: collapse;
 
 .table tbody tr {
     border-bottom: solid 1px #e8edeb;
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
 }
 
   

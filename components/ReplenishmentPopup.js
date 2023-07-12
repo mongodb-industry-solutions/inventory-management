@@ -8,7 +8,7 @@ import StockLevelBar from './StockLevelBar';
 import styles from '../styles/popup.module.css';
 
 
-const ReplenishmentPopup = ({ product, onClose, showPopup }) => {
+const ReplenishmentPopup = ({ product, onClose }) => {
 
     const order = {
         user_id: {
@@ -112,58 +112,62 @@ const ReplenishmentPopup = ({ product, onClose, showPopup }) => {
                     <FaTimes className={styles["close-icon"]}/>
                 </button>
                 <h3>Replenish Stock</h3>
-                <div className={styles["table"]}>
-                    <table>
-                    <thead>
-                        <tr>
-                        <th>Size</th>
-                        <th>Store</th>
-                        <th>Order Amount</th>
-                        <th>Delivery Time</th>
-                        <th>Stock Level</th>
-                        <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows.map((row, index) => {
-                            const item = product.items.find(item => item.size === rows[index].size);
+                <div className={styles["table-container"]}>
+                    <div className={styles["table-wrapper"]}>
+                        <table>
+                            <thead>
+                                <tr>
+                                <th>Size</th>
+                                <th>Store</th>
+                                <th>Order Amount</th>
+                                <th>Delivery Time</th>
+                                <th>Stock Level</th>
+                                <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {rows.map((row, index) => {
+                                    const item = product.items.find(item => item.size === rows[index].size);
 
-                            return (
-                            <tr key={index}>
-                                <td>
-                                    <select value={row.size} onChange={(e) => handleSizeChange(index, e.target.value)}>{product.items.map((item) => (
-                                        <option key={item.sku} value={item.size}>
-                                        {item.size}
-                                        </option>))}
-                                    </select>
-                                </td>
-                                <td>
-                                    {item?.stock.find(stock => stock.location === 'store')?.amount ?? 0}
-                                </td>
-                                <td>
-                                    <input type="number" min="1" max="20" onChange={(e) => handleAmountUpdate(index, e.target.value)} />
-                                </td>
-                                <td>
-                                    {item?.delivery_time.amount} {item?.delivery_time.unit}
-                                </td>
-                                <td>
-                                    {<StockLevelBar stock={item?.stock} />}
-                                </td>
-                                <td>
-                                <button className={styles["delete-button"]} onClick={() => handleDeleteRow(index)}>
-                                    <FaTrash className={styles["delete-icon"]}/>
-                                </button>
-                                </td>
-                            </tr>
-                            )
-                        })}
-                    </tbody>
-                    </table>
+                                    return (
+                                    <tr key={index}>
+                                        <td>
+                                            <select value={row.size} onChange={(e) => handleSizeChange(index, e.target.value)}>{product.items.map((item) => (
+                                                <option key={item.sku} value={item.size}>
+                                                {item.size}
+                                                </option>))}
+                                            </select>
+                                        </td>
+                                        <td>
+                                            {item?.stock.find(stock => stock.location === 'store')?.amount ?? 0}
+                                        </td>
+                                        <td>
+                                            <input type="number" min="1" max="20" onChange={(e) => handleAmountUpdate(index, e.target.value)} />
+                                        </td>
+                                        <td>
+                                            {item?.delivery_time.amount} {item?.delivery_time.unit}
+                                        </td>
+                                        <td>
+                                            {<StockLevelBar stock={item?.stock} />}
+                                        </td>
+                                        <td>
+                                        <button className={styles["delete-button"]} onClick={() => handleDeleteRow(index)}>
+                                            <FaTrash className={styles["delete-icon"]}/>
+                                        </button>
+                                        </td>
+                                    </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
                     <button className={styles["add-button"]} onClick={handleAddRow}>
                         <FaPlus className={styles["add-icon"]}/>
                     </button>
+                </div>
+                    <div className={styles["total-time"]}>
+                        TOTAL TIME OF DELIVERY: {rows.length > 0 ? Math.max(...rows.map(item => item.delivery_time.amount)) : 0} SECONDS
                     </div>
-                   
                     <button className={styles["save-button"]} onClick={() => handleSaveOrder(rows)}>Save</button>
             </div>
         </div>

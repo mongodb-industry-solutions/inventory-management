@@ -35,8 +35,7 @@
     width: 100vw;
     height: 100vh;
     z-index: 150;
-    background-color: #000;
-    opacity: 0.5;
+    background-color: rgba(0, 30, 43, 0.6);
   }
 
   .close-button {
@@ -63,29 +62,38 @@
     color: black;
   }
 
-.table{
+.table-container {
+  position: relative;
+}
+
+.table-wrapper{
+    max-height: 265px; /* Subtract the button height from the container height */
+    overflow-y: auto;
     position: relative;
     display: flex;
-    margin-top: 24px;
     padding-right: 35px;
+    padding-left: 35px;
 }
-.table table {
+.table-wrapper table {
     flex-grow: 1;
     border-collapse: collapse;
 }
 
-.table thead tr {
+.table-wrapper tr {
+ height:35px;
+}
+.table-wrapper thead tr {
     border-top: solid 2px #e8edeb;
     border-bottom: solid 2px #e8edeb;
     color: #1c2d38;
     font-weight: 700;
 }
 
-.table tbody tr {
+.table-wrapper tbody tr {
     border-bottom: solid 1px #e8edeb;
 }
 
-.table th, .table td {
+.table-wrapper th, .table-wrapper td {
     text-align: center;
     vertical-align: middle;
     position: relative;
@@ -93,7 +101,7 @@
 
 .add-button {
     position: absolute;
-    bottom: -50px; /* Adjust the distance from the bottom */
+    bottom: -35px; /* Adjust the distance from the bottom */
     right: 50px; /* Adjust the distance from the right */
     display: flex;
     justify-content: center;
@@ -127,8 +135,8 @@
 
 .save-button {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 24px;
+    right: 24px;
     width: 150px;
     margin-left: auto;
     display: block;
@@ -136,5 +144,14 @@
     border: 1px solid #00684a;
     background-color: #00684a;
     border-radius: 6px;
+    font-weight: 700;
+  }
+
+  .total-time {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    font-size: 13px;
+    margin-right: auto;
     font-weight: 700;
   }
