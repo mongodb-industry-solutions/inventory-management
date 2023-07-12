@@ -1,24 +1,26 @@
 import clientPromise from "../lib/mongodb";
 import { useState, useEffect } from 'react';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
-import Sidebar from '../components/Sidebar'
+import Sidebar from '../components/Sidebar';
+import Fuse from 'fuse.js';
 
 export default function Products({ products, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(products);
 
-  const handleSearch = async () => {
-    try {
-      const response = await fetch(`/api/search?q=${searchQuery}`);
-      const data = await response.json();
-  
-      if (response.ok) {
-        setFilteredProducts(data.results); // Update the filteredProducts state with the search results
-      } else {
-        console.error(data.error);
-      }
-    } catch (error) {
-      console.error(error);
+  const handleSearch = () => {
+    if (searchQuery.length > 0) {
+      const options = {
+        keys: ['name', 'code', 'description'],
+        includeScore: true,
+        threshold: 0.4, // Adjust this value to control the tolerance for typos
+      };
+
+      const fuse = new Fuse(products, options);
+      const searchResults = fuse.search(searchQuery).map(result => result.item);
+      setFilteredProducts(searchResults);
+    } else {
+      setFilteredProducts(products);
     }
   };
   
@@ -28,18 +30,8 @@ export default function Products({ products, facets }) {
   };
 
   useEffect(() => {
-    if (searchQuery.length > 0) {
-      // Perform search as you type
-      const searchResults = products.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredProducts(searchResults);
-    } else {
-      setFilteredProducts(products);
-    }
-  }, [searchQuery, products]);
+    handleSearch();
+  }, [searchQuery]);
 
   const filterProducts = (sizesFilter, colorsFilter) => {
     // Filter products based on sizes and colors
