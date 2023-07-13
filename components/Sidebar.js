@@ -14,18 +14,24 @@ function Sidebar({facets, filterProducts}) {
   
 
 
-    const handleSizeChange = (event) => {
-        const size = event;
-        let updatedSelectedSizes = selectedSizes;
-
-        if (selectedSizes.includes(size)) {
-            updatedSelectedSizes = selectedSizes.filter((g) => g !== size);
-          setSelectedSizes(updatedSelectedSizes);
-        } else {
-            updatedSelectedSizes = [...selectedSizes, size];
-          setSelectedSizes(updatedSelectedSizes);
-        }
-        filterProducts(updatedSelectedSizes, selectedColors);
+  const handleSizeChange = (event) => {
+    const size = event;
+    let updatedSelectedSizes = selectedSizes;
+  
+    if (selectedSizes.includes(size)) {
+      updatedSelectedSizes = selectedSizes.filter((g) => g !== size);
+    } else {
+      updatedSelectedSizes = [...selectedSizes, size];
+    }
+    setSelectedSizes(updatedSelectedSizes);
+  
+    // Sort the selected sizes according to the desired order
+    const sortedSizes = updatedSelectedSizes.sort((a, b) => {
+      const sizeOrder = ['XS', 'S', 'M', 'L', 'XL'];
+      return sizeOrder.indexOf(a) - sizeOrder.indexOf(b);
+    });
+  
+    filterProducts(sortedSizes, selectedColors);
       };
     
       const handleColorChange = (event) => {
@@ -57,16 +63,21 @@ function Sidebar({facets, filterProducts}) {
         <>
           <div className={styles["size-filters"]} >
             <h3>Size</h3>
-            {facets[0].facet.sizesFacet.buckets.map((bucket) => (
-              <label key={bucket._id}>
-                <input
-                  type="checkbox"
-                  checked={selectedSizes.includes(bucket._id)}
-                  onChange={() => handleSizeChange(bucket._id)}
-                />
-                <span>{bucket._id}</span>
-              </label>
-            ))}
+            {facets[0].facet.sizesFacet.buckets
+  .sort((a, b) => {
+    const sizeOrder = ['XS', 'S', 'M', 'L', 'XL'];
+    return sizeOrder.indexOf(a._id) - sizeOrder.indexOf(b._id);
+  })
+  .map((bucket) => (
+    <label key={bucket._id}>
+      <input
+        type="checkbox"
+        checked={selectedSizes.includes(bucket._id)}
+        onChange={() => handleSizeChange(bucket._id)}
+      />
+      <span>{bucket._id}</span>
+    </label>
+  ))}
           </div>
 
           <div className={styles["color-filters"]} >
