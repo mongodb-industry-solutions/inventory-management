@@ -1,191 +1,102 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
+import styles from '../styles/sidebar.module.css';
 
+function Sidebar({facets, filterProducts}) {
 
-function Sidebar() {
-  const [sizes, setSizes] = useState([]);
-  const [colors, setColors] = useState([]);
   const [isShrunk, setIsShrunk] = useState(false);
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
 
-  const handleSizeChange = (size) => {
-    if (sizes.includes(size)) {
-      setSizes(sizes.filter((s) => s !== size));
-    } else {
-      setSizes([...sizes, size]);
-    }
-  };
+  
 
-  const handleColorChange = (color) => {
-    if (colors.includes(color)) {
-      setColors(colors.filter((c) => c !== color));
+
+  const handleSizeChange = (event) => {
+    const size = event;
+    let updatedSelectedSizes = selectedSizes;
+  
+    if (selectedSizes.includes(size)) {
+      updatedSelectedSizes = selectedSizes.filter((g) => g !== size);
     } else {
-      setColors([...colors, color]);
+      updatedSelectedSizes = [...selectedSizes, size];
     }
-  };
+    setSelectedSizes(updatedSelectedSizes);
+  
+    // Sort the selected sizes according to the desired order
+    const sortedSizes = updatedSelectedSizes.sort((a, b) => {
+      const sizeOrder = ['XS', 'S', 'M', 'L', 'XL'];
+      return sizeOrder.indexOf(a) - sizeOrder.indexOf(b);
+    });
+  
+    filterProducts(sortedSizes, selectedColors);
+      };
+    
+      const handleColorChange = (event) => {
+        const color = event;
+        let updatedSelectedColors = selectedColors;
+
+        if (selectedColors.includes(color)) {
+          updatedSelectedColors = selectedColors.filter((y) => y !== color);
+          setSelectedColors(updatedSelectedColors);
+        } else {
+          updatedSelectedColors = [...selectedColors, color];
+            setSelectedColors(updatedSelectedColors);
+        }
+        filterProducts(selectedSizes, updatedSelectedColors);
+      };
 
   const toggleShrink = () => {
     setIsShrunk(!isShrunk);
   };
 
   return (
-    <div className={`sidebar ${isShrunk ? 'shrunk' : ''}`}>
-      <div className={`sidebar-header ${isShrunk ? 'shrunk' : ''}`}>
-        {isShrunk && <img src="/images/filters.png" alt="filtersLogo" className="filterslogo" />}
+    <div className={`${styles.sidebar} ${isShrunk ? styles["shrunk"] : ''}`}>
+      <div className={`${styles["sidebar-header"]} ${isShrunk ? styles["shrunk"]: ''}`}>
+        {isShrunk && <img src="/images/filters.png" alt="filtersLogo" className={styles["filterslogo"]} />}
         {!isShrunk && <h3>Filters</h3>}
       </div>
 
       {!isShrunk && (
         <>
-          <div className="size-filters">
+          <div className={styles["size-filters"]} >
             <h3>Size</h3>
-            <label>
-              <input
-                type="checkbox"
-                checked={sizes.includes('XS')}
-                onChange={() => handleSizeChange('XS')}
-              />
-              <span>XS</span>
-            </label>
-            <label>
-          <input
-            type="checkbox"
-            checked={sizes.includes('S')}
-            onChange={() => handleSizeChange('S')}
-          />
-          <span>S</span>
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={sizes.includes('M')}
-            onChange={() => handleSizeChange('M')}
-          />
-          <span>M</span>
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={sizes.includes('L')}
-            onChange={() => handleSizeChange('L')}
-          />
-          <span>L</span>
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={sizes.includes('XL')}
-            onChange={() => handleSizeChange('XL')}
-          />
-          <span>XL</span>
-        </label>
+            {facets[0].facet.sizesFacet.buckets
+  .sort((a, b) => {
+    const sizeOrder = ['XS', 'S', 'M', 'L', 'XL'];
+    return sizeOrder.indexOf(a._id) - sizeOrder.indexOf(b._id);
+  })
+  .map((bucket) => (
+    <label key={bucket._id}>
+      <input
+        type="checkbox"
+        checked={selectedSizes.includes(bucket._id)}
+        onChange={() => handleSizeChange(bucket._id)}
+      />
+      <span>{bucket._id}</span>
+    </label>
+  ))}
           </div>
 
-          <div className="color-filters">
+          <div className={styles["color-filters"]} >
             <h3>Color</h3>
-            <label>
-              <input
-                type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
-              />
-              <span>Red</span>
-            </label>
-            <label>
-          <input
-            type="checkbox"
-            checked={colors.includes('Blue')}
-            onChange={() => handleColorChange('Blue')}
-          />
-          <span>Blue</span>
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={colors.includes('Green')}
-            onChange={() => handleColorChange('Green')}
-          />
-          <span> Light Green</span>
-        </label>
-        <label>
-              <input
-                type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
-              />
-              <span>Dark Green</span>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
-              />
-              <span>Black</span>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
-              />
-              <span>Yellow</span>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
-              />
-              <span>Orange</span>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
-              />
-              <span>Purple</span>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
-              />
-              <span>Light Blue</span>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
-              />
-              <span>Pink</span>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
-              />
-              <span>Grey</span>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={colors.includes('Red')}
-                onChange={() => handleColorChange('Red')}
-              />
-              <span>Light Brown</span>
-            </label>
+            {facets[0].facet.colorsFacet.buckets.map((bucket) => (
+              <label key={bucket._id}>
+                <input
+                  type="checkbox"
+                  checked={selectedColors.includes(bucket._id)}
+                  onChange={() => handleColorChange(bucket._id)}
+                />
+                <span>{bucket._id}</span>
+              </label>
+            ))}
           </div>
         </>
       )}
 
-      <div className="toggle-button" onClick={toggleShrink}>
+      <div className={styles["toggle-button"]} onClick={toggleShrink}>
       {isShrunk ? (
     <FaChevronRight style={{ color: '2B664C' }} />
   ) : (

@@ -1,0 +1,757 @@
+[
+    {
+        "name": "Green T-shirt",
+        "color": {
+            "name": "Green",
+            "hex": "#00FF00"
+        },
+        "code": "GRN001",
+        "description": "A comfortable green T-shirt",
+        "price": {
+            "amount": 20,
+            "currency": "EUR"
+        },
+        "popularity_index": 8,
+        "items": [
+            {
+                "sku": "GRN001-XS",
+                "size": "XS",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 15,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "GRN001-S",
+                "size": "S",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 10,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "GRN001-M",
+                "size": "M",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 5,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "GRN001-L",
+                "size": "L",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 10,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "GRN001-XL",
+                "size": "XL",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 15,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            }
+        ],
+        "total_stock_sum": [
+            {
+                "location": "store",
+                "target": 100,
+                "amount": 55
+            },
+            {
+                "location": "ordered",
+                "amount": 0
+            },
+            {
+                "location": "warehouse",
+                "amount": 400
+            }
+        ]
+    },
+    {
+        "name": "Blue T-shirt",
+        "color": {
+            "name": "Blue",
+            "hex": "#0000FF"
+        },
+        "code": "BLU001",
+        "description": "A comfortable blue T-shirt",
+        "price": {
+            "amount": 20,
+            "currency": "EUR"
+        },
+        "popularity_index": 5,
+        "items": [
+            {
+                "sku": "BLU001-XS",
+                "size": "XS",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 15,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "BLUE001-S",
+                "size": "S",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 10,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "BLU001-M",
+                "size": "M",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 5,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "BLU001-L",
+                "size": "L",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 10,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "BLU001-XL",
+                "size": "XL",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 15,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            }
+        ],
+        "total_stock_sum": [
+            {
+                "location": "store",
+                "target": 100,
+                "amount": 55
+            },
+            {
+                "location": "ordered",
+                "amount": 0
+            },
+            {
+                "location": "warehouse",
+                "amount": 400
+            }
+        ]
+    },
+    {
+        "name": "Red T-shirt",
+        "color": {
+            "name": "Red",
+            "hex": "#FF0000"
+        },
+        "code": "RED001",
+        "description": "A comfortable red T-shirt",
+        "price": {
+            "amount": 20,
+            "currency": "EUR"
+        },
+        "popularity_index": 3,
+        "items": [
+            {
+                "sku": "RED001-XS",
+                "size": "XS",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 15,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "RED001-S",
+                "size": "S",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 10,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "RED001-M",
+                "size": "M",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 5,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "RED001-L",
+                "size": "L",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 10,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "RED001-XL",
+                "size": "XL",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 15,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            }
+        ],
+        "total_stock_sum": [
+            {
+                "location": "store",
+                "target": 100,
+                "amount": 55
+            },
+            {
+                "location": "ordered",
+                "amount": 0
+            },
+            {
+                "location": "warehouse",
+                "amount": 400
+            }
+        ]
+    },
+    {
+        "name": "White T-shirt",
+        "color": {
+            "name": "White",
+            "hex": "#FFFFFF"
+        },
+        "code": "WHT001",
+        "description": "A comfortable white T-shirt",
+        "price": {
+            "amount": 20,
+            "currency": "EUR"
+        },
+        "popularity_index": 8,
+        "items": [
+            {
+                "sku": "WHT001-XS",
+                "size": "XS",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 15,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "WHT001-S",
+                "size": "S",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 10,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "WHT001-M",
+                "size": "M",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 5,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "WHT001-L",
+                "size": "L",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 10,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "WHT001-XL",
+                "size": "XL",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 15,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            }
+        ],
+        "total_stock_sum": [
+            {
+                "location": "store",
+                "target": 100,
+                "amount": 55
+            },
+            {
+                "location": "ordered",
+                "amount": 0
+            },
+            {
+                "location": "warehouse",
+                "amount": 400
+            }
+        ]
+    },
+    {
+        "name": "Black T-shirt",
+        "color": {
+            "name": "Black",
+            "hex": "#000000"
+        },
+        "code": "BLK001",
+        "description": "A comfortable green T-shirt",
+        "price": {
+            "amount": 20,
+            "currency": "EUR"
+        },
+        "popularity_index": 8,
+        "items": [
+            {
+                "sku": "BLK001-XS",
+                "size": "XS",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 15,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "BLK001-S",
+                "size": "S",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 10,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "BLK001-M",
+                "size": "M",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 5,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "BLK001-L",
+                "size": "L",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 10,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            },
+            {
+                "sku": "BLK001-XL",
+                "size": "XL",
+                "delivery_time": {
+                    "amount": 3,
+                    "unit": "seconds"
+                },
+                "stock": [
+                    {
+                        "location": "store",
+                        "target": 20,
+                        "amount": 15,
+                        "threshold": 10
+                    },
+                    {
+                        "location": "ordered",
+                        "amount": 0
+                    },
+                    {
+                        "location": "warehouse",
+                        "amount": 80
+                    }
+                ]
+            }
+        ],
+        "total_stock_sum": [
+            {
+                "location": "store",
+                "target": 20,
+                "amount": 55
+            },
+            {
+                "location": "ordered",
+                "amount": 0
+            },
+            {
+                "location": "warehouse",
+                "amount": 400
+            }
+        ]
+    }
+]
