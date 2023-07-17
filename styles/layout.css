@@ -72,7 +72,7 @@
   width: 100%;
   max-width: 500px;
   align-items: center;
-  margin-left: 10px; /* Adjust this value as needed */
+  margin-left: 10px; 
   margin-top: 10px;
   border-radius: 50px;
 }
@@ -153,7 +153,7 @@
 
 .shirt_icon {
   text-align: center;
-  margin-bottom: 10px; /* Adjust the margin value as needed */
+  margin-bottom: 10px;
 }
 
 .shirt_icon svg {
@@ -177,8 +177,8 @@
 
 .buttons {
   display: flex;
-  justify-content: flex-start; /* Move buttons to the right */
-  margin-left: 2rem; /* Adjusted margin value for spacing */
+  justify-content: flex-start; 
+  margin-left: 2rem; 
 }
 
   .sidebar-button {
@@ -202,7 +202,7 @@
   }
 
   .sidebar-button:not(:last-child) {
-    margin-right: 0rem; /* Adjusted margin value for space between buttons */
+    margin-right: 0rem; 
   }
 
   .sidebar-button:hover {
@@ -216,8 +216,13 @@
   }
   
   .sidebar-button:focus {
-    background-color: #d9d9d9; /* Change background color on focus */
+    background-color: #d9d9d9; 
     outline: none;
   }
   
 
+  .selected {
+    background-color: grey;
+    color: white; 
+  }
+  

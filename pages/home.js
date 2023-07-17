@@ -110,8 +110,8 @@ export default function Products({ products, facets }) {
         <div className="order-by-container">
           <p className="order-by-text">Order by:</p>
           <div className="buttons">
-            <button className="sidebar-button" onClick={handleSortByPopularity}>Most Popular</button>
-            <button className="sidebar-button" onClick={handleSortByLowStock}>Low on Stock Items</button>
+            <button className={`sidebar-button ${sortBy === 'popularity' ? 'selected' : ''}`} onClick={handleSortByPopularity}>Most Popular</button>
+            <button className={`sidebar-button ${sortBy === 'lowStock' ? 'selected' : ''}`} onClick={handleSortByLowStock}>Low on Stock Items</button>
           </div>
         </div>
 
