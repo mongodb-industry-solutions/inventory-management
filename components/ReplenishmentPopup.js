@@ -24,9 +24,6 @@ const ReplenishmentPopup = ({ product, onClose }) => {
 
     const [rows, setRows] = useState(order.items);
 
-    const renderBackdrop = (props) => <div className={styles["backdrop"]} {...props} />;
-   
-
     const handleAddRow = () => {
         const item = product.items[0];
 
