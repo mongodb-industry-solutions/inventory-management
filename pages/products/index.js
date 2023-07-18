@@ -1,7 +1,8 @@
 import clientPromise from "../../lib/mongodb";
 import { useState, useEffect } from 'react';
-import { FaSearch, FaTshirt } from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
+import ProductBox from '../../components/ProductBox';
 import Fuse from 'fuse.js';
 
 export default function Products({ products, facets }) {
@@ -68,28 +69,12 @@ export default function Products({ products, facets }) {
         <ul className="product-list">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
-              <li key={product._id} className="product-item">
-                <a href={`/products/${product._id}`} className="product-link">
-                  <div className="shirt_icon">
-                    <FaTshirt color={product.color.hex} />
-                  </div>
-                  <h2>{product.name}</h2>
-                  <h3>{product.code}</h3>
-                  <p>{product.description}</p>
-                </a>
-              </li>
+              <ProductBox key={product._id} product={product}/>
             ))
           ) : (
             <li>No results found</li>
           )}
         </ul>
-
-        <style jsx>{`
-          .product-link {
-            text-decoration: none;
-            color: black;
-          }
-        `}</style>
       </div>
     </>
   );
