@@ -15,17 +15,18 @@ export default function Products({ products, facets }) {
       const options = {
         keys: ['name', 'code', 'description'],
         includeScore: true,
-        threshold: 0.4,
+        threshold: 0.4, // Adjust this value to control the tolerance for typos
       };
-  
+
       const fuse = new Fuse(products, options);
-      const searchResults = fuse.search(searchQuery).map((result) => result.item);
+      const searchResults = fuse.search(searchQuery).map(result => result.item);
       setFilteredProducts(searchResults);
+      setSortedProducts(searchResults);
     } else {
       setFilteredProducts(products);
+      setSortedProducts(products);
     }
   };
-  
 
   const handleSearchInputChange = (e) => {
     const searchValue = e.target.value;
@@ -34,7 +35,6 @@ export default function Products({ products, facets }) {
 
   useEffect(() => {
     handleSearch();
-    setSortedProducts(filteredProducts);
   }, [searchQuery]);
 
   const filterProducts = (sizesFilter, colorsFilter) => {
@@ -66,7 +66,7 @@ export default function Products({ products, facets }) {
       [...prevProducts].sort((a, b) => {
         const totalStockSumA = a.total_stock_sum.find(stock => stock.location === 'store');
         const totalStockSumB = b.total_stock_sum.find(stock => stock.location === 'store');
-  
+
         if (!totalStockSumA && !totalStockSumB) {
           return 0;
         }
@@ -76,18 +76,21 @@ export default function Products({ products, facets }) {
         if (!totalStockSumB) {
           return -1;
         }
-  
-        if (totalStockSumA.amount === totalStockSumB.amount) {
+
+        const lowStockSizesCountA = a.items.filter(item => item.stock.some(stock => stock.location === 'store' && stock.amount < stock.threshold)).length;
+        const lowStockSizesCountB = b.items.filter(item => item.stock.some(stock => stock.location === 'store' && stock.amount < stock.threshold)).length;
+
+        const scoreA = lowStockSizesCountA * (totalStockSumA.target - totalStockSumA.amount);
+        const scoreB = lowStockSizesCountB * (totalStockSumB.target - totalStockSumB.amount);
+
+        if (scoreA === scoreB) {
           return totalStockSumA.location.localeCompare(totalStockSumB.location);
         }
-  
-        return totalStockSumA.amount - totalStockSumB.amount;
+
+        return scoreB - scoreA;
       })
     );
   };
-  
-  
-  
 
   console.log('Filtered products:', filteredProducts);
 
@@ -110,40 +113,38 @@ export default function Products({ products, facets }) {
         <div className="order-by-container">
           <p className="order-by-text">Order by:</p>
           <div className="buttons">
-            <button className={`sidebar-button ${sortBy === 'popularity' ? 'selected' : ''}`} onClick={handleSortByPopularity}>Most Popular</button>
-            <button className={`sidebar-button ${sortBy === 'lowStock' ? 'selected' : ''}`} onClick={handleSortByLowStock}>Low on Stock Items</button>
+            <button className="sidebar-button" onClick={handleSortByPopularity}>Most Popular</button>
+            <button className="sidebar-button" onClick={handleSortByLowStock}>Low on Stock Items</button>
           </div>
         </div>
 
         <ul className="product-list">
-  {filteredProducts.length > 0 ? (
-    sortedProducts.map((product) => (
-      <li key={product._id} className="product-item">
-        <a href={`/products/${product._id}`} className="product-link">
-          <div className="shirt_icon">
-            <FaTshirt color={product.color.hex} />
-          </div>
-          <div className="product-info">
-            <div className="name-price-wrapper">
-              <div className="name-wrapper">
-                <h2>{product.name}</h2>
-                <h3>{product.code}</h3>
-              </div>
-              <div className="price-wrapper">
-                <p className="price">{product.price.amount} {product.price.currency}</p>
-              </div>
-            </div>
-            <p>{product.description}</p>
-          </div>
-        </a>
-      </li>
-    ))
-  ) : (
-    <li>No results found</li>
-  )}
-</ul>
-
-
+          {sortedProducts.length > 0 ? (
+            sortedProducts.map((product) => (
+              <li key={product._id} className="product-item">
+                <a href={`/products/${product._id}`} className="product-link">
+                  <div className="shirt_icon">
+                    <FaTshirt color={product.color.hex} />
+                  </div>
+                  <div className="product-info">
+                    <div className="name-price-wrapper">
+                      <div className="name-wrapper">
+                        <h2>{product.name}</h2>
+                        <h3>{product.code}</h3>
+                      </div>
+                      <div className="price-wrapper">
+                        <p className="price">{product.price.amount} {product.price.currency}</p>
+                      </div>
+                    </div>
+                    <p>{product.description}</p>
+                  </div>
+                </a>
+              </li>
+            ))
+          ) : (
+            <li>No results found</li>
+          )}
+        </ul>
 
         <style jsx>{`
           .product-link {
