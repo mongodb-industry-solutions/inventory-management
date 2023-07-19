@@ -41,9 +41,6 @@ const ProductBox = ({ product }) => {
         }
     }
 
-    console.log(product.color.name + ': itemStockStatus: ' + itemStockStatus + ' totalStockStatus: ' + totalStockStatus);
-
-
     return (
         <>
             <li className={styles["product-item"]}>

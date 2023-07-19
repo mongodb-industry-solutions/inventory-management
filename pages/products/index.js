@@ -1,9 +1,14 @@
 import clientPromise from "../../lib/mongodb";
 import { useState, useEffect } from 'react';
+import  *  as  Realm  from  "realm-web";
+
 import { FaSearch } from 'react-icons/fa';
+
 import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
 import Fuse from 'fuse.js';
+
+const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
 
 export default function Products({ products, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,6 +36,24 @@ export default function Products({ products, facets }) {
   };
 
   useEffect(() => {
+    const  login = async () => {
+        
+      await app.logIn(Realm.Credentials.anonymous());
+      const mongodb = app.currentUser.mongoClient("mongodb-atlas");
+      const collection = mongodb.db("interns_mongo_retail").collection("products");
+      let updatedProduct = null;
+      for await (const  change  of  collection.watch({})) {
+        updatedProduct = change.fullDocument;
+        updatedProduct._id = updatedProduct._id.toString();
+
+        setFilteredProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === updatedProduct._id ? updatedProduct : product
+          )
+        );
+      }
+    }
+    login();
     handleSearch();
   }, [searchQuery]);
 
@@ -46,7 +69,6 @@ export default function Products({ products, facets }) {
       return sizeMatch && colorMatch;
     });
     setFilteredProducts(updatedFilteredProducts);
-    console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' products: ' + updatedFilteredProducts.length);
   };
 
   return (
