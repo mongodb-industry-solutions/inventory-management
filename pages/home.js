@@ -95,7 +95,7 @@ export default function Products({ products, facets }) {
 
   return (
     <>
-      <Sidebar facets={facets} filterProducts={filterProducts} />
+      <Sidebar facets={facets} filterProducts={filterProducts} page="products"/>
       <div className="content">
         <div className="search-bar">
           <input

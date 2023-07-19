@@ -5,7 +5,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import styles from '../styles/sidebar.module.css';
 
-function Sidebar({facets, filterProducts}) {
+function Sidebar({facets, filterProducts, filterOrders, page}) {
 
   const [isShrunk, setIsShrunk] = useState(false);
   const [selectedSizes, setSelectedSizes] = useState([]);
@@ -31,7 +31,11 @@ function Sidebar({facets, filterProducts}) {
       return sizeOrder.indexOf(a) - sizeOrder.indexOf(b);
     });
   
-    filterProducts(sortedSizes, selectedColors);
+    if (page === 'products') {
+      filterProducts(sortedSizes, selectedColors);
+    } else if (page === 'orders') {
+      filterOrders(sortedSizes, selectedColors);
+    }
       };
     
       const handleColorChange = (event) => {
@@ -45,7 +49,11 @@ function Sidebar({facets, filterProducts}) {
           updatedSelectedColors = [...selectedColors, color];
             setSelectedColors(updatedSelectedColors);
         }
-        filterProducts(selectedSizes, updatedSelectedColors);
+        if (page === 'products') {
+          filterProducts(selectedSizes, updatedSelectedColors);
+        } else if (page === 'orders') {
+          filterOrders(selectedSizes, updatedSelectedColors);
+        }
       };
 
   const toggleShrink = () => {

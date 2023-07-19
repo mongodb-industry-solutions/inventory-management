@@ -42,7 +42,7 @@ export default function Orders({ orders, facets }) {
     // Filter orders based on sizes and colors
     let updatedFilteredOrders = orders.filter(order => {
       const sizes = order.items.map((item) => item.size);
-      const colors = order.color ? [order.color.name] : [];
+      const colors = order.items.map((item) => item.color?.name);
 
       const sizeMatch = sizesFilter.length === 0 || sizes.some(size => sizesFilter.includes(size));
       const colorMatch = colorsFilter.length === 0 || colors.some(color => colorsFilter.includes(color));
@@ -56,7 +56,7 @@ export default function Orders({ orders, facets }) {
 
   return (
     <>
-      <Sidebar facets={facets} filterOrders={filterOrders} />
+      <Sidebar facets={facets} filterOrders={filterOrders} page="orders"/>
       <div className="content">
       <div className="search-bar">
           <input
@@ -124,7 +124,7 @@ export async function getServerSideProps() {
           index: "internsmongoretail-ordersfacets",
           facet: {
             facets: {
-              colorsFacet: { type: "string", path: "color.name" },
+              colorsFacet: { type: "string", path: "items.color.name" },
               sizesFacet: { type: "string", path: "items.size" },
             },
           },
@@ -143,7 +143,7 @@ export async function getServerSideProps() {
       .toArray();
 
     return {
-      props: { orders: JSON.parse(JSON.stringify(orders)), facets: JSON.parse(JSON.stringify(facets)) },
+      props: { orders: JSON.parse(JSON.stringify(orders)), facets: JSON.parse(JSON.stringify(facets)), page: 'orders', },
     };
   } catch (e) {
     console.error(e);
