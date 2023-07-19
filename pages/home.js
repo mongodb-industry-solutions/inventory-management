@@ -10,18 +10,17 @@ export default function Products({ products, facets }) {
   const [sortedProducts, setSortedProducts] = useState(products);
   const [sortBy, setSortBy] = useState('');
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchQuery.length > 0) {
-      const options = {
-        keys: ['name', 'code', 'description'],
-        includeScore: true,
-        threshold: 0.4, // Adjust this value to control the tolerance for typos
-      };
-
-      const fuse = new Fuse(products, options);
-      const searchResults = fuse.search(searchQuery).map(result => result.item);
-      setFilteredProducts(searchResults);
-      setSortedProducts(searchResults);
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
+        const data = await response.json();
+        const searchResults = data.results;
+        setFilteredProducts(searchResults);
+        setSortedProducts(searchResults);
+      } catch (error) {
+        console.error(error);
+      }
     } else {
       setFilteredProducts(products);
       setSortedProducts(products);
