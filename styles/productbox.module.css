@@ -7,6 +7,7 @@
     border-radius: 4px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     margin-left: 50px;
+    position: relative;
   }
   
   .product-item:last-child {
@@ -37,4 +38,24 @@
   .product-link {
     text-decoration: none;
     color: inherit;
+  }
+
+  .alert-label {
+    position: absolute;
+    top: 14px; /* Adjust the top position to position the label vertically */
+    right: 14px; /* Adjust the right position to position the label horizontally */
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 24px;
+  }
+
+  .low {
+    background-color: red;
+
+  }
+
+  .ordered {
+    background-color: orange;
   }
