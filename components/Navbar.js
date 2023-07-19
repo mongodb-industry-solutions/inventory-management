@@ -47,9 +47,10 @@ function Footer() {
           <button className={styles["mongodb-button"]} onClick={handleProductsClick}>
             Products
           </button></a>
+          <a href="/orderHistory">
           <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
             Order History
-          </button>
+          </button></a>
         </div>
       </div>
 
