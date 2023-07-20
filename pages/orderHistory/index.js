@@ -2,7 +2,6 @@ import clientPromise from "../../lib/mongodb";
 import { useState, useEffect } from 'react';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
-import Fuse from 'fuse.js';
 
 export default function Orders({ orders, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -88,7 +87,9 @@ export default function Orders({ orders, facets }) {
             {filteredOrders.length > 0 ? (
               sortedOrders.map(order => (
                 <tr key={order._id} className="order-row">
+        
                   <td className="order-icon"><FaTshirt style={{ color: order.items[0]?.color?.hex || 'black' }} /></td>
+               
                   <td>{order.order_number}</td>
                   <td>{order.items[0]?.product_name}</td>
                   <td>{order.items[0]?.sku}</td>
@@ -113,10 +114,40 @@ export default function Orders({ orders, facets }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ query }) {
   try {
     const client = await clientPromise;
     const db = client.db("interns_mongo_retail");
+    const searchQuery = query.q || '';
+
+    let orders;
+
+    if (searchQuery) {
+      const searchAgg = [
+      {
+      $search: {
+      index: 'default',
+      text: {
+      query: searchQuery,
+      path: {
+      wildcard: '*',
+      },
+      fuzzy: {
+      maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
+      },
+      },
+      },
+      },
+      ];
+      
+      
+      orders = await db.collection("orders").aggregate(searchAgg).toArray();
+      } else {
+      orders = await db.collection("orders").find({}).toArray();
+      }
+      
+
+
 
     const agg = [
       {
@@ -137,10 +168,7 @@ export async function getServerSideProps() {
       .aggregate(agg)
       .toArray();
 
-    let orders = await db
-      .collection("orders")
-      .find({})
-      .toArray();
+  
 
     return {
       props: { orders: JSON.parse(JSON.stringify(orders)), facets: JSON.parse(JSON.stringify(facets)), page: 'orders', },
@@ -152,3 +180,4 @@ export async function getServerSideProps() {
     };
   }
 }
+
