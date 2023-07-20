@@ -49,6 +49,9 @@ export default async function handler(req, res) {
               path: {
                 wildcard: '*',
               },
+              fuzzy: {
+                maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
+                },
             },
           },
         },

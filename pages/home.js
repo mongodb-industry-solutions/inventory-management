@@ -2,7 +2,6 @@ import clientPromise from "../lib/mongodb";
 import { useState, useEffect } from 'react';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
 import Sidebar from '../components/Sidebar';
-import Fuse from 'fuse.js';
 
 export default function Products({ products, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,6 +25,7 @@ export default function Products({ products, facets }) {
       setSortedProducts(products);
     }
   };
+  
 
   const handleSearchInputChange = (e) => {
     const searchValue = e.target.value;
@@ -34,6 +34,7 @@ export default function Products({ products, facets }) {
 
   useEffect(() => {
     handleSearch();
+    setSortedProducts(filteredProducts);
   }, [searchQuery]);
 
   const filterProducts = (sizesFilter, colorsFilter) => {
@@ -65,7 +66,7 @@ export default function Products({ products, facets }) {
       [...prevProducts].sort((a, b) => {
         const totalStockSumA = a.total_stock_sum.find(stock => stock.location === 'store');
         const totalStockSumB = b.total_stock_sum.find(stock => stock.location === 'store');
-
+  
         if (!totalStockSumA && !totalStockSumB) {
           return 0;
         }
@@ -75,21 +76,18 @@ export default function Products({ products, facets }) {
         if (!totalStockSumB) {
           return -1;
         }
-
-        const lowStockSizesCountA = a.items.filter(item => item.stock.some(stock => stock.location === 'store' && stock.amount < stock.threshold)).length;
-        const lowStockSizesCountB = b.items.filter(item => item.stock.some(stock => stock.location === 'store' && stock.amount < stock.threshold)).length;
-
-        const scoreA = lowStockSizesCountA * (totalStockSumA.target - totalStockSumA.amount);
-        const scoreB = lowStockSizesCountB * (totalStockSumB.target - totalStockSumB.amount);
-
-        if (scoreA === scoreB) {
+  
+        if (totalStockSumA.amount === totalStockSumB.amount) {
           return totalStockSumA.location.localeCompare(totalStockSumB.location);
         }
-
-        return scoreB - scoreA;
+  
+        return totalStockSumA.amount - totalStockSumB.amount;
       })
     );
   };
+  
+  
+  
 
   console.log('Filtered products:', filteredProducts);
 
@@ -112,38 +110,40 @@ export default function Products({ products, facets }) {
         <div className="order-by-container">
           <p className="order-by-text">Order by:</p>
           <div className="buttons">
-            <button className="sidebar-button" onClick={handleSortByPopularity}>Most Popular</button>
-            <button className="sidebar-button" onClick={handleSortByLowStock}>Low on Stock Items</button>
+            <button className={`sidebar-button ${sortBy === 'popularity' ? 'selected' : ''}`} onClick={handleSortByPopularity}>Most Popular</button>
+            <button className={`sidebar-button ${sortBy === 'lowStock' ? 'selected' : ''}`} onClick={handleSortByLowStock}>Low on Stock Items</button>
           </div>
         </div>
 
         <ul className="product-list">
-          {sortedProducts.length > 0 ? (
-            sortedProducts.map((product) => (
-              <li key={product._id} className="product-item">
-                <a href={`/products/${product._id}`} className="product-link">
-                  <div className="shirt_icon">
-                    <FaTshirt color={product.color.hex} />
-                  </div>
-                  <div className="product-info">
-                    <div className="name-price-wrapper">
-                      <div className="name-wrapper">
-                        <h2>{product.name}</h2>
-                        <h3>{product.code}</h3>
-                      </div>
-                      <div className="price-wrapper">
-                        <p className="price">{product.price.amount} {product.price.currency}</p>
-                      </div>
-                    </div>
-                    <p>{product.description}</p>
-                  </div>
-                </a>
-              </li>
-            ))
-          ) : (
-            <li>No results found</li>
-          )}
-        </ul>
+  {filteredProducts.length > 0 ? (
+    sortedProducts.map((product) => (
+      <li key={product._id} className="product-item">
+        <a href={`/products/${product._id}`} className="product-link">
+          <div className="shirt_icon">
+            <FaTshirt color={product.color.hex} />
+          </div>
+          <div className="product-info">
+            <div className="name-price-wrapper">
+              <div className="name-wrapper">
+                <h2>{product.name}</h2>
+                <h3>{product.code}</h3>
+              </div>
+              <div className="price-wrapper">
+                <p className="price">{product.price.amount} {product.price.currency}</p>
+              </div>
+            </div>
+            <p>{product.description}</p>
+          </div>
+        </a>
+      </li>
+    ))
+  ) : (
+    <li>No results found</li>
+  )}
+</ul>
+
+
 
         <style jsx>{`
           .product-link {
@@ -156,10 +156,35 @@ export default function Products({ products, facets }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ query }) {
   try {
     const client = await clientPromise;
     const db = client.db("interns_mongo_retail");
+    const searchQuery = query.q || '';
+
+    let products;
+    if (searchQuery) {
+      const searchAgg = [
+        {
+          $search: {
+            index: 'default',
+            text: {
+              query: searchQuery,
+              path: {
+                wildcard: '*',
+              },
+              fuzzy: {
+                maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
+              },
+            },
+          },
+        },
+      ];
+
+      products = await db.collection("products").aggregate(searchAgg).toArray();
+    } else {
+      products = await db.collection("products").find({}).toArray();
+    }
 
     const agg = [
       {
@@ -178,11 +203,6 @@ export async function getServerSideProps() {
     const facets = await db
       .collection("products")
       .aggregate(agg)
-      .toArray();
-
-    let products = await db
-      .collection("products")
-      .find({})
       .toArray();
 
     return {

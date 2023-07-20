@@ -2,7 +2,6 @@ import clientPromise from "../../lib/mongodb";
 import { useState, useEffect } from 'react';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
-import Fuse from 'fuse.js';
 
 export default function Products({ products, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -157,10 +156,35 @@ export default function Products({ products, facets }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ query }) {
   try {
     const client = await clientPromise;
     const db = client.db("interns_mongo_retail");
+    const searchQuery = query.q || '';
+
+    let products;
+    if (searchQuery) {
+      const searchAgg = [
+        {
+          $search: {
+            index: 'default',
+            text: {
+              query: searchQuery,
+              path: {
+                wildcard: '*',
+              },
+              fuzzy: {
+                maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
+              },
+            },
+          },
+        },
+      ];
+
+      products = await db.collection("products").aggregate(searchAgg).toArray();
+    } else {
+      products = await db.collection("products").find({}).toArray();
+    }
 
     const agg = [
       {
@@ -181,13 +205,8 @@ export async function getServerSideProps() {
       .aggregate(agg)
       .toArray();
 
-    let products = await db
-      .collection("products")
-      .find({})
-      .toArray();
-
     return {
-      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)) },
+      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)), page: 'products', },
     };
   } catch (e) {
     console.error(e);
