@@ -25,7 +25,9 @@ export default function Orders({ orders, facets }) {
     }
   };
   
-  
+
+
+
   
   const handleSearchInputChange = (e) => {
     const searchValue = e.target.value;
