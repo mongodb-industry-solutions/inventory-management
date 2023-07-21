@@ -116,3 +116,12 @@
   justify-content: flex-start;
   margin-bottom: 800px;
 }
+
+.alert-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+}
