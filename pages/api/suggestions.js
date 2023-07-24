@@ -42,7 +42,7 @@ export default async function handler(req, res) {
       },
       {
         $project: {
-          suggestion: '$name', // Map 'name' field to 'suggestion' for consistency
+          suggestion: { $concat: ['$name', ' - ', '$code'] }, // Concatenate name and code for the suggestion
           _id: 0,
         },
       },
