@@ -67,6 +67,7 @@ border-collapse: collapse;
     background-color: #00684a;
     border-radius: 6px;
     font-weight: 700;
+    cursor: pointer;
   }
 
 .icon {

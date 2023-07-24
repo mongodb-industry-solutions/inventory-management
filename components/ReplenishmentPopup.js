@@ -77,8 +77,6 @@ const ReplenishmentPopup = ({ product, onClose }) => {
         order.items = data;
         order.items.forEach(item => item.status.push(status));
 
-        console.log(order);
-
         try {
             const response = await fetch('/api/createOrder', {
                 method: 'POST',
@@ -94,12 +92,15 @@ const ReplenishmentPopup = ({ product, onClose }) => {
 
                 const fetchPromises = [];
 
+                const data = await response.json();
+                const orderId = data.orderId;
+
                 //Move to store
                 for (let i = 0; i < order.items?.length; i++) {
                     let item = order.items[i];
 
                     try {
-                        fetchPromises.push(fetch('/api/moveToStore', {
+                        fetchPromises.push(fetch(`/api/moveToStore?order_id=${orderId}`, {
                             method: 'POST',
                             headers: {
                               'Content-Type': 'application/json',
@@ -107,7 +108,7 @@ const ReplenishmentPopup = ({ product, onClose }) => {
                             body: JSON.stringify({ item }),
                           }));
                         if (response.ok) {
-                            console.log(item.sku + ' moved to store successfully.');
+                            //console.log(item.sku + ' moved to store successfully.');
                         } else {
                             console.log('Error moving to store item ' + item.sku + '.');
                         }

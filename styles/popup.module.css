@@ -155,3 +155,7 @@
     margin-right: auto;
     font-weight: 700;
   }
+
+  .popup button {
+    cursor: pointer;
+  }
