@@ -15,6 +15,8 @@ export default function Products({ products, facets }) {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(products);
+  const [sortedProducts, setSortedProducts] = useState(products);
+  const [sortBy, setSortBy] = useState('');
   const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
@@ -59,17 +61,18 @@ export default function Products({ products, facets }) {
       const options = {
         keys: ['name', 'code', 'description'],
         includeScore: true,
-        threshold: 0.4, // Adjust this value to control the tolerance for typos
+        threshold: 0.4,
       };
-
+  
       const fuse = new Fuse(products, options);
-      const searchResults = fuse.search(searchQuery).map(result => result.item);
+      const searchResults = fuse.search(searchQuery).map((result) => result.item);
       setFilteredProducts(searchResults);
     } else {
       setFilteredProducts(products);
     }
   };
   
+
   const handleSearchInputChange = (e) => {
     const searchValue = e.target.value;
     setSearchQuery(searchValue);
@@ -87,6 +90,8 @@ export default function Products({ products, facets }) {
       return sizeMatch && colorMatch;
     });
     setFilteredProducts(updatedFilteredProducts);
+    setSortedProducts(updatedFilteredProducts); // Update sorted products when filters change
+    //console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' products: ' + updatedFilteredProducts.length);
   };
 
   const handleAlertClose = (sku) => {
@@ -105,6 +110,44 @@ export default function Products({ products, facets }) {
     });
   };
 
+  const handleSortByPopularity = () => {
+    console.log('Sorting by popularity');
+    setSortBy('popularity');
+    setSortedProducts(prevProducts => [...prevProducts].sort((a, b) => b.popularity_index - a.popularity_index));
+  };
+
+  const handleSortByLowStock = () => {
+    console.log('Sorting by low stock');
+    setSortBy('lowStock');
+    setSortedProducts(prevProducts =>
+      [...prevProducts].sort((a, b) => {
+        const totalStockSumA = a.total_stock_sum.find(stock => stock.location === 'store');
+        const totalStockSumB = b.total_stock_sum.find(stock => stock.location === 'store');
+  
+        if (!totalStockSumA && !totalStockSumB) {
+          return 0;
+        }
+        if (!totalStockSumA) {
+          return 1;
+        }
+        if (!totalStockSumB) {
+          return -1;
+        }
+  
+        if (totalStockSumA.amount === totalStockSumB.amount) {
+          return totalStockSumA.location.localeCompare(totalStockSumB.location);
+        }
+  
+        return totalStockSumA.amount - totalStockSumB.amount;
+      })
+    );
+  };
+  
+  
+  
+
+  console.log('Filtered products:', filteredProducts);
+
   return (
     <>
       <Sidebar facets={facets} filterProducts={filterProducts} />
@@ -121,10 +164,17 @@ export default function Products({ products, facets }) {
             <FaSearch />
           </button>
         </div>
+        <div className="order-by-container">
+          <p className="order-by-text">Order by:</p>
+          <div className="buttons">
+            <button className={`sidebar-button ${sortBy === 'popularity' ? 'selected' : ''}`} onClick={handleSortByPopularity}>Most Popular</button>
+            <button className={`sidebar-button ${sortBy === 'lowStock' ? 'selected' : ''}`} onClick={handleSortByLowStock}>Low on Stock Items</button>
+          </div>
+        </div>
 
         <ul className="product-list">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
+          {sortedProducts.length > 0 ? (
+            sortedProducts.map((product) => (
               <ProductBox key={product._id} product={product}/>
             ))
           ) : (
@@ -146,30 +196,32 @@ export async function getServerSideProps() {
     const client = await clientPromise;
     const db = client.db("interns_mongo_retail");
 
-    const agg = [{$searchMeta: {
-      index: "internsmongoretail-productfacets",
-      facet: {
-        facets: {
-          colorsFacet: {type: "string", path: "color.name"},
-          sizesFacet: {type: "string", path: "items.size"}
-        }
-      }
-    }}];
+    const agg = [
+      {
+        $searchMeta: {
+          index: "internsmongoretail-productfacets",
+          facet: {
+            facets: {
+              colorsFacet: { type: "string", path: "color.name" },
+              sizesFacet: { type: "string", path: "items.size" },
+            },
+          },
+        },
+      },
+    ];
 
     const facets = await db
       .collection("products")
       .aggregate(agg)
       .toArray();
 
-    const products = await db
+    let products = await db
       .collection("products")
       .find({})
-      .sort({ popularity_index: -1 })
-      .limit(20)
       .toArray();
 
     return {
-      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets))},
+      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)) },
     };
   } catch (e) {
     console.error(e);
