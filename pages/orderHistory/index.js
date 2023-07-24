@@ -1,5 +1,5 @@
 import clientPromise from "../../lib/mongodb";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 
@@ -7,6 +7,12 @@ export default function Orders({ orders, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredOrders, setFilteredOrders] = useState(orders);
   const [sortedOrders, setSortedOrders] = useState(orders);
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+
+  // Create refs for the input element and suggestions list
+  const inputRef = useRef(null);
+  const suggestionsRef = useRef(null);
 
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
@@ -26,12 +32,24 @@ export default function Orders({ orders, facets }) {
   };
   
 
-
-
-  
-  const handleSearchInputChange = (e) => {
+  const handleSearchInputChange = async (e) => {
     const searchValue = e.target.value;
     setSearchQuery(searchValue);
+  
+    if (searchValue.length > 0) {
+      try {
+        const response = await fetch(`/api/suggestions_orderhistory?q=${encodeURIComponent(searchValue)}`);
+        const data = await response.json();
+        setSuggestions(data.suggestions);
+      } catch (error) {
+        console.error(error);
+        setSuggestions([]); // Set an empty array if there's an error to prevent undefined value
+      }
+    } else {
+      setSuggestions([]);
+    }
+
+    setSelectedSuggestionIndex(-1);
   };
   
   useEffect(() => {
@@ -55,22 +73,94 @@ export default function Orders({ orders, facets }) {
     console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' orders: ' + updatedFilteredOrders.length);
   };
 
+  const handleKeyDown = (e) => {
+    // Check if the input element is focused
+    const isInputFocused = document.activeElement === inputRef.current;
+
+    if (isInputFocused && suggestions.length > 0) {
+      const lastIndex = suggestions.length - 1;
+
+      // Check if the user pressed the down arrow key
+      if (e.key === "ArrowDown") {
+        e.preventDefault(); // Prevents scrolling the page
+
+        // If no suggestion is selected, select the first one (index 0)
+        if (selectedSuggestionIndex === null) {
+          setSelectedSuggestionIndex(0);
+        } else {
+          // If not at the last suggestion, move to the next one
+          setSelectedSuggestionIndex((prevIndex) =>
+            prevIndex < lastIndex ? prevIndex + 1 : lastIndex
+          );
+        }
+      }
+
+      // Check if the user pressed the up arrow key
+      if (e.key === "ArrowUp") {
+        e.preventDefault(); // Prevents scrolling the page
+
+        // If no suggestion is selected, do nothing
+        if (selectedSuggestionIndex !== null) {
+          // If not at the first suggestion, move to the previous one
+          setSelectedSuggestionIndex((prevIndex) =>
+            prevIndex > 0 ? prevIndex - 1 : 0
+          );
+        }
+      }
+
+      // Check if the user pressed the Enter key
+      if (e.key === "Enter") {
+        e.preventDefault(); // Prevents form submission or other default behavior
+        if (selectedSuggestionIndex !== null && selectedSuggestionIndex >= 0) {
+          // If a suggestion is selected, use its value as the search query
+          setSearchQuery(suggestions[selectedSuggestionIndex]);
+          setSuggestions([]); // Hide the suggestions
+        }
+      }
+    }
+  };
+
+
   return (
     <>
       <Sidebar facets={facets} filterOrders={filterOrders} page="orders"/>
       <div className="content">
       <div className="search-bar">
           <input
+            ref={inputRef} // Attach the ref to the input element
             className="search-input"
             type="text"
             placeholder=" Search..."
             value={searchQuery}
             onChange={handleSearchInputChange}
+            onKeyDown={handleKeyDown} // Add the onKeyDown event handler
           />
           <button className="search-button" onClick={handleSearch}>
             <FaSearch />
           </button>
         </div>
+
+        {/* Display autocomplete suggestions */}
+        {suggestions.length > 0 && (
+          <ul className="autocomplete-list" ref={suggestionsRef} tabIndex={0} onKeyDown={handleKeyDown}>
+            {suggestions.map((suggestion, index) => (
+              <li key={suggestion} className="autocomplete-item">
+                <button
+                  className={`autocomplete-button ${
+                    index === selectedSuggestionIndex ? "selected" : ""
+                  }`}
+                  onClick={() => {
+                    setSearchQuery(suggestion);
+                    setSuggestions([]); // Hide the suggestions
+                  }}
+                >
+                  {suggestion}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
         <table className="order-table">
           <thead>
             <tr>
