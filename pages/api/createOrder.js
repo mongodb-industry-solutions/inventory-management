@@ -7,6 +7,7 @@ export default async (req, res) => {
         const db = client.db("interns_mongo_retail");
 
         const { order } = req.body;
+        var insertOrderResponse = null;
 
         const transactionOptions = {
             readConcern: { level: 'snapshot' },
@@ -19,7 +20,7 @@ export default async (req, res) => {
         try{
             session.startTransaction(transactionOptions);
 
-            await db.collection("orders").insertOne(order, { session });
+            insertOrderResponse = await db.collection("orders").insertOne(order, { session });
 
             for (let i = 0; i < order.items?.length; i++) {
                 let item = order.items[i];
@@ -59,7 +60,7 @@ export default async (req, res) => {
         finally{
             await session.endSession();
         }
-        res.status(200).json({ success: true });
+        res.status(200).json({ success: true, orderId: insertOrderResponse.insertedId });
     } catch (e) {
         console.error(e);
         res.status(500).json({ error: 'Error creating order' });
