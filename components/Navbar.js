@@ -6,7 +6,7 @@ import styles from '../styles/navbar.module.css';
 
 function Footer() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOption, setSelectedOption] = useState('Bogatell Store');
   const [currentPage, setCurrentPage] = useState('');
 
   const handleDropdownToggle = () => {
