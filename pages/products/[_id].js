@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import  *  as  Realm  from  "realm-web";
 import clientPromise from '../../lib/mongodb';
 import { ObjectId } from 'mongodb';
+import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShirt } from '@fortawesome/free-solid-svg-icons';
@@ -16,6 +17,16 @@ export default function Product({ preloadedProduct }) {
     
     const [product, setProduct] = useState(preloadedProduct);
     const [showPopup, setShowPopup] = useState(false);
+    
+    const sdk = new ChartsEmbedSDK({ baseUrl: 'https://charts.mongodb.com/charts-jeffn-zsdtj' });
+    const dashboardDiv = useRef(null);
+    const [rendered, setRendered] = useState(false);
+    const [dashboard] = useState(sdk.createDashboard({ dashboardId: '64b518b0-a789-4f02-8764-b33d0c08bc61', widthMode: 'scale', heightMode: 'scale'}));
+
+    useEffect(() => {
+        dashboard.render(dashboardDiv.current).then(() => setRendered(true)).catch(err => console.log("Error during Charts rendering.", err));
+      }, [dashboard]);
+    
 
     useEffect(() => {
         const  login = async () => {
@@ -88,7 +99,9 @@ export default function Product({ preloadedProduct }) {
             </div>
             <button onClick={handleOpenPopup}>REPLENISH STOCK</button>
             </div>
+            <div className={styles["dashboard"]} ref={dashboardDiv}/>
         </div>
+        
         {showPopup && <Popup product={product} onClose={handleClosePopup} />}
         </div>
         </>

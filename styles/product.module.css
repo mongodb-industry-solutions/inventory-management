@@ -115,4 +115,9 @@ border-collapse: collapse;
         green 5px
         );
 }
+
+.dashboard {
+    width: 90vh;
+    height: 400px;
+}
   
