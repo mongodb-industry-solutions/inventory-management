@@ -7,7 +7,6 @@ import { FaSearch } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
 import AlertBanner from '../../components/AlertBanner';
-import Fuse from 'fuse.js';
 
 const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
 
@@ -56,17 +55,17 @@ export default function Products({ products, facets }) {
     handleSearch();
   }, [searchQuery]);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchQuery.length > 0) {
-      const options = {
-        keys: ['name', 'code', 'description'],
-        includeScore: true,
-        threshold: 0.4,
-      };
-  
-      const fuse = new Fuse(products, options);
-      const searchResults = fuse.search(searchQuery).map((result) => result.item);
-      setFilteredProducts(searchResults);
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
+        const data = await response.json();
+        const searchResults = data.results;
+        setFilteredProducts(searchResults);
+        setSortedProducts(searchResults);
+      } catch (error) {
+        console.error(error);
+      }
     } else {
       setFilteredProducts(products);
     }
@@ -150,7 +149,7 @@ export default function Products({ products, facets }) {
 
   return (
     <>
-      <Sidebar facets={facets} filterProducts={filterProducts} />
+      <Sidebar facets={facets} filterProducts={filterProducts} page="products"/>
       <div className="content">
         <div className="search-bar">
           <input
@@ -191,10 +190,35 @@ export default function Products({ products, facets }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ query }) {
   try {
     const client = await clientPromise;
     const db = client.db("interns_mongo_retail");
+    const searchQuery = query.q || '';
+
+    let products;
+    if (searchQuery) {
+      const searchAgg = [
+        {
+          $search: {
+            index: 'default',
+            text: {
+              query: searchQuery,
+              path: {
+                wildcard: '*',
+              },
+              fuzzy: {
+                maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
+              },
+            },
+          },
+        },
+      ];
+
+      products = await db.collection("products").aggregate(searchAgg).toArray();
+    } else {
+      products = await db.collection("products").find({}).toArray();
+    }
 
     const agg = [
       {
@@ -213,11 +237,6 @@ export async function getServerSideProps() {
     const facets = await db
       .collection("products")
       .aggregate(agg)
-      .toArray();
-
-    let products = await db
-      .collection("products")
-      .find({})
       .toArray();
 
     return {
