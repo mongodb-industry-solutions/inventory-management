@@ -134,29 +134,34 @@ export default function Products({ products, facets }) {
   const handleSortByLowStock = () => {
     console.log('Sorting by low stock');
     setSortBy('lowStock');
-    setSortedProducts(prevProducts =>
-      [...prevProducts].sort((a, b) => {
-        const totalStockSumA = a.total_stock_sum.find(stock => stock.location === 'store');
-        const totalStockSumB = b.total_stock_sum.find(stock => stock.location === 'store');
+    setSortedProducts((prevProducts) => {
+      const sortedProducts = [...prevProducts].sort((a, b) => {
+        const countLowStockSizes = (product) =>
+          product.items.reduce((count, item) => (item.stock[0].amount < 10 ? count + 1 : count), 0);
   
-        if (!totalStockSumA && !totalStockSumB) {
-          return 0;
-        }
-        if (!totalStockSumA) {
-          return 1;
-        }
-        if (!totalStockSumB) {
-          return -1;
-        }
+        const lowStockSizesA = countLowStockSizes(a);
+        const lowStockSizesB = countLowStockSizes(b);
   
-        if (totalStockSumA.amount === totalStockSumB.amount) {
-          return totalStockSumA.location.localeCompare(totalStockSumB.location);
+        if (lowStockSizesA > 0 && lowStockSizesB === 0) {
+          return -1; // Prioritize 'a' if it has at least one low stock size and 'b' doesn't
+        } else if (lowStockSizesA === 0 && lowStockSizesB > 0) {
+          return 1; // Prioritize 'b' if it has at least one low stock size and 'a' doesn't
+        } else if (lowStockSizesA !== lowStockSizesB) {
+          return lowStockSizesB - lowStockSizesA;
+        } else {
+          // If both have the same count of low stock sizes, sort by total stock amount
+          const totalStockAmount = (product) =>
+            product.items.reduce((total, item) => total + item.stock[0].amount, 0);
+          const totalStockA = totalStockAmount(a);
+          const totalStockB = totalStockAmount(b);
+          return totalStockA - totalStockB; // Higher total stock amount will appear last
         }
+      });
   
-        return totalStockSumA.amount - totalStockSumB.amount;
-      })
-    );
+      return sortedProducts;
+    });
   };
+  
   
   
   
