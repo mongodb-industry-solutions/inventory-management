@@ -73,6 +73,13 @@ export default function Orders({ orders, facets }) {
     console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' orders: ' + updatedFilteredOrders.length);
   };
 
+  const handleInputKeyUp = (e) => {
+    // Listen for the keyup event and clear the suggestions if the input value is empty
+    if (e.target.value === '') {
+      setSuggestions([]);
+    }
+  };
+
   const handleKeyDown = (e) => {
     // Check if the input element is focused
     const isInputFocused = document.activeElement === inputRef.current;
@@ -134,6 +141,7 @@ export default function Orders({ orders, facets }) {
             value={searchQuery}
             onChange={handleSearchInputChange}
             onKeyDown={handleKeyDown} // Add the onKeyDown event handler
+            onKeyUp={handleInputKeyUp}
           />
           <button className="search-button" onClick={handleSearch}>
             <FaSearch />
