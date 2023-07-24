@@ -13,8 +13,7 @@ const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
 export default function Products({ products, facets }) {
   
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState(products);
-  const [sortedProducts, setSortedProducts] = useState(products);
+  const [displayProducts, setDisplayProducts] = useState(products);
   const [sortBy, setSortBy] = useState('');
   const [alerts, setAlerts] = useState([]);
 
@@ -30,7 +29,7 @@ export default function Products({ products, facets }) {
         updatedProduct = change.fullDocument;
         updatedProduct._id = updatedProduct._id.toString();
 
-        setFilteredProducts((prevProducts) =>
+        setDisplayProducts((prevProducts) =>
           prevProducts.map((product) =>
             product._id === updatedProduct._id ? updatedProduct : product
           )
@@ -61,13 +60,12 @@ export default function Products({ products, facets }) {
         const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
         const data = await response.json();
         const searchResults = data.results;
-        setFilteredProducts(searchResults);
-        setSortedProducts(searchResults);
+        setDisplayProducts(searchResults);
       } catch (error) {
         console.error(error);
       }
     } else {
-      setFilteredProducts(products);
+      setDisplayProducts(products);
     }
   };
   
@@ -88,8 +86,7 @@ export default function Products({ products, facets }) {
 
       return sizeMatch && colorMatch;
     });
-    setFilteredProducts(updatedFilteredProducts);
-    setSortedProducts(updatedFilteredProducts); // Update sorted products when filters change
+    setDisplayProducts(updatedFilteredProducts); // Update sorted products when filters change
     //console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' products: ' + updatedFilteredProducts.length);
   };
 
@@ -112,13 +109,13 @@ export default function Products({ products, facets }) {
   const handleSortByPopularity = () => {
     console.log('Sorting by popularity');
     setSortBy('popularity');
-    setSortedProducts(prevProducts => [...prevProducts].sort((a, b) => b.popularity_index - a.popularity_index));
+    setDisplayProducts(prevProducts => [...prevProducts].sort((a, b) => b.popularity_index - a.popularity_index));
   };
 
   const handleSortByLowStock = () => {
     console.log('Sorting by low stock');
     setSortBy('lowStock');
-    setSortedProducts(prevProducts =>
+    setDisplayProducts(prevProducts =>
       [...prevProducts].sort((a, b) => {
         const totalStockSumA = a.total_stock_sum.find(stock => stock.location === 'store');
         const totalStockSumB = b.total_stock_sum.find(stock => stock.location === 'store');
@@ -142,10 +139,7 @@ export default function Products({ products, facets }) {
     );
   };
   
-  
-  
-
-  console.log('Filtered products:', filteredProducts);
+  //console.log('Filtered products:', filteredProducts);
 
   return (
     <>
@@ -172,8 +166,8 @@ export default function Products({ products, facets }) {
         </div>
 
         <ul className="product-list">
-          {sortedProducts.length > 0 ? (
-            sortedProducts.map((product) => (
+          {displayProducts.length > 0 ? (
+            displayProducts.map((product) => (
               <ProductBox key={product._id} product={product}/>
             ))
           ) : (
