@@ -10,7 +10,8 @@ export default function Products({ products, facets }) {
   const [sortBy, setSortBy] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
-  
+
+
   // Create a ref for the input element
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
@@ -52,7 +53,23 @@ export default function Products({ products, facets }) {
 
     setSelectedSuggestionIndex(-1);
   };
+
+  const handleInput = (e) => {
+    // Listen for the input event and clear the suggestions if the input value is empty
+    if (e.target.value === '') {
+      setSuggestions([]);
+    }
+  };
   
+  
+const handleInputKeyUp = (e) => {
+  // Listen for the keyup event and clear the suggestions if the input value is empty
+  if (e.target.value === '') {
+    setSuggestions([]);
+  }
+};
+
+
   const handleKeyDown = (e) => {
     // Check if the input element is focused
     const isInputFocused = document.activeElement === inputRef.current;
@@ -183,6 +200,8 @@ export default function Products({ products, facets }) {
             value={searchQuery}
             onChange={handleSearchInputChange}
             onKeyDown={handleKeyDown}
+            onInput={handleInput} 
+            onKeyUp={handleInputKeyUp}
           />
           <button className="search-button" onClick={handleSearch}>
             <FaSearch />
