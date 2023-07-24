@@ -1,13 +1,59 @@
 import clientPromise from "../lib/mongodb";
 import { useState, useEffect } from 'react';
-import { FaSearch, FaTshirt } from 'react-icons/fa';
+import  *  as  Realm  from  "realm-web";
+
+import { FaSearch } from 'react-icons/fa';
+
 import Sidebar from '../components/Sidebar';
+import ProductBox from '../components/ProductBox';
+import AlertBanner from '../components/AlertBanner';
+
+const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
 
 export default function Products({ products, facets }) {
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [sortedProducts, setSortedProducts] = useState(products);
   const [sortBy, setSortBy] = useState('');
+  const [alerts, setAlerts] = useState([]);
+
+  useEffect(() => {
+    const  login = async () => {
+        
+      await app.logIn(Realm.Credentials.anonymous());
+      const mongodb = app.currentUser.mongoClient("mongodb-atlas");
+      const collection = mongodb.db("interns_mongo_retail").collection("products");
+      let updatedProduct = null;
+      
+      for await (const  change  of  collection.watch()) {
+        updatedProduct = change.fullDocument;
+        updatedProduct._id = updatedProduct._id.toString();
+
+        setFilteredProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === updatedProduct._id ? updatedProduct : product
+          )
+        );
+
+        const pattern = /^items\.(\d+)\.stock/;
+        for(const key of Object.keys(change.updateDescription.updatedFields)){
+          if (pattern.test(key)) {
+            let item = updatedProduct.items[parseInt(key.match(pattern)[1], 10)];
+            let itemStoreStock = item.stock.find(stock => stock.location === 'store');
+            
+            if(itemStoreStock.amount < itemStoreStock.threshold) {
+              item.product_id = updatedProduct._id;
+              addAlert(item);
+            }
+          }
+        }
+
+      }
+    }
+    login();
+    handleSearch();
+  }, [searchQuery]);
 
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
@@ -22,7 +68,6 @@ export default function Products({ products, facets }) {
       }
     } else {
       setFilteredProducts(products);
-      setSortedProducts(products);
     }
   };
   
@@ -31,11 +76,6 @@ export default function Products({ products, facets }) {
     const searchValue = e.target.value;
     setSearchQuery(searchValue);
   };
-
-  useEffect(() => {
-    handleSearch();
-    setSortedProducts(filteredProducts);
-  }, [searchQuery]);
 
   const filterProducts = (sizesFilter, colorsFilter) => {
     // Filter products based on sizes and colors
@@ -50,7 +90,23 @@ export default function Products({ products, facets }) {
     });
     setFilteredProducts(updatedFilteredProducts);
     setSortedProducts(updatedFilteredProducts); // Update sorted products when filters change
-    console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' products: ' + updatedFilteredProducts.length);
+    //console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' products: ' + updatedFilteredProducts.length);
+  };
+
+  const handleAlertClose = (sku) => {
+    setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.sku !== sku));
+  };
+
+  // Function to add a new alert to the list
+  const addAlert = (item) => {
+
+    setAlerts((prevAlerts) => {
+      if (prevAlerts.some((alert) => alert.sku === item.sku)) {
+        return prevAlerts;
+      } else {
+        return [item, ...prevAlerts].slice(0, 3);
+      }
+    });
   };
 
   const handleSortByPopularity = () => {
@@ -116,41 +172,19 @@ export default function Products({ products, facets }) {
         </div>
 
         <ul className="product-list">
-  {filteredProducts.length > 0 ? (
-    sortedProducts.map((product) => (
-      <li key={product._id} className="product-item">
-        <a href={`/products/${product._id}`} className="product-link">
-          <div className="shirt_icon">
-            <FaTshirt color={product.color.hex} />
-          </div>
-          <div className="product-info">
-            <div className="name-price-wrapper">
-              <div className="name-wrapper">
-                <h2>{product.name}</h2>
-                <h3>{product.code}</h3>
-              </div>
-              <div className="price-wrapper">
-                <p className="price">{product.price.amount} {product.price.currency}</p>
-              </div>
-            </div>
-            <p>{product.description}</p>
-          </div>
-        </a>
-      </li>
-    ))
-  ) : (
-    <li>No results found</li>
-  )}
-</ul>
-
-
-
-        <style jsx>{`
-          .product-link {
-            text-decoration: none;
-            color: black;
-          }
-        `}</style>
+          {sortedProducts.length > 0 ? (
+            sortedProducts.map((product) => (
+              <ProductBox key={product._id} product={product}/>
+            ))
+          ) : (
+            <li>No results found</li>
+          )}
+        </ul>
+      </div>
+      <div className="alert-container">
+        {alerts.map((item) => (
+          <AlertBanner key={item.sku} item={item} onClose={() => handleAlertClose(item.sku)} />
+        ))}
       </div>
     </>
   );

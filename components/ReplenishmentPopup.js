@@ -24,9 +24,6 @@ const ReplenishmentPopup = ({ product, onClose }) => {
 
     const [rows, setRows] = useState(order.items);
 
-    const renderBackdrop = (props) => <div className={styles["backdrop"]} {...props} />;
-   
-
     const handleAddRow = () => {
         const item = product.items[0];
 
@@ -94,6 +91,32 @@ const ReplenishmentPopup = ({ product, onClose }) => {
                 console.log('Order saved successfully');
                 onClose();
                 setRows([]);
+
+                const fetchPromises = [];
+
+                //Move to store
+                for (let i = 0; i < order.items?.length; i++) {
+                    let item = order.items[i];
+
+                    try {
+                        fetchPromises.push(fetch('/api/moveToStore', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ item }),
+                          }));
+                        if (response.ok) {
+                            console.log(item.sku + ' moved to store successfully.');
+                        } else {
+                            console.log('Error moving to store item ' + item.sku + '.');
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+                await Promise.all(fetchPromises);
+
             } else {
                 console.log('Error saving order');
             }
