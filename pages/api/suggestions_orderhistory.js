@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       {
         $match: {
           $or: [
-            { "items.product_name": { $regex: searchQuery, $options: "i" } }, // Search by product names
+            { "items.product.name": { $regex: searchQuery, $options: "i" } }, // Search by product names
             { "items.sku": { $regex: searchQuery, $options: "i" } } // Search by SKUs
           ]
         }
@@ -38,8 +38,8 @@ export default async function handler(req, res) {
         $project: {
           suggestion: {
             $concat: [
-              "$items.product_name",
-              { $cond: [{ $ne: ["$items.product_name", null] }, " - ", ""] },
+              "$items.product.name",
+              { $cond: [{ $ne: ["$items.product.name", null] }, " - ", ""] },
               { $ifNull: ["$items.sku", ""] }
             ]
           }
