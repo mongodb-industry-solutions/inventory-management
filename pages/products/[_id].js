@@ -73,7 +73,7 @@ export default function Product({ preloadedProduct }) {
                     <td>{item.stock.find(stock => stock.location === 'store')?.amount ?? 0}</td>
                     <td>{item.stock.find(stock => stock.location === 'ordered')?.amount ?? 0}</td>
                     <td>{item.stock.find(stock => stock.location === 'warehouse')?.amount ?? 0}</td>
-                    <td>{item.delivery_time.amount}</td>
+                    <td>{item.delivery_time.amount} {item.delivery_time.unit}</td>
                     <td>
                         {<StockLevelBar stock={item.stock} />}
                     </td>
