@@ -21,7 +21,13 @@ export default function Product({ preloadedProduct }) {
     const sdk = new ChartsEmbedSDK({ baseUrl: 'https://charts.mongodb.com/charts-jeffn-zsdtj' });
     const dashboardDiv = useRef(null);
     const [rendered, setRendered] = useState(false);
-    const [dashboard] = useState(sdk.createDashboard({ dashboardId: '64b518b0-a789-4f02-8764-b33d0c08bc61', widthMode: 'scale', heightMode: 'scale'}));
+    const [dashboard] = useState(sdk.createDashboard({ 
+        dashboardId: '64b518b0-a789-4f02-8764-b33d0c08bc61', 
+        filter: {'items': {$elemMatch: {'product.id.$oid': preloadedProduct._id}}},
+        widthMode: 'scale', 
+        heightMode: 'scale', 
+        background: '#fff'
+    }));
 
     useEffect(() => {
         dashboard.render(dashboardDiv.current).then(() => setRendered(true)).catch(err => console.log("Error during Charts rendering.", err));
@@ -48,6 +54,7 @@ export default function Product({ preloadedProduct }) {
 
     const handleClosePopup = () => {
         setShowPopup(false);
+        dashboard.refresh();
     };
 
     return (
@@ -99,8 +106,8 @@ export default function Product({ preloadedProduct }) {
             </div>
             <button onClick={handleOpenPopup}>REPLENISH STOCK</button>
             </div>
-            <div className={styles["dashboard"]} ref={dashboardDiv}/>
         </div>
+        <div className={styles["dashboard"]} ref={dashboardDiv}/>
         
         {showPopup && <Popup product={product} onClose={handleClosePopup} />}
         </div>
