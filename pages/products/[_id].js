@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import  *  as  Realm  from  "realm-web";
 import clientPromise from '../../lib/mongodb';
-import { ObjectId } from 'mongodb';
+import { ObjectId } from "bson"
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -23,7 +23,7 @@ export default function Product({ preloadedProduct }) {
     const [rendered, setRendered] = useState(false);
     const [dashboard] = useState(sdk.createDashboard({ 
         dashboardId: '64b518b0-a789-4f02-8764-b33d0c08bc61', 
-        filter: {'items': {$elemMatch: {'product.id.$oid': preloadedProduct._id}}},
+        filter: {'items.product.id': ObjectId(preloadedProduct._id)},
         widthMode: 'scale', 
         heightMode: 'scale', 
         background: '#fff'
