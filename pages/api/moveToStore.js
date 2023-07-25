@@ -9,7 +9,7 @@ export default async (req, res) => {
         const { item } = req.body;
         const orderID = req.query.order_id;
         
-        const productID = item.product.id.$oid;
+        const productID = item.product.id;
         const sku = item.sku;
         const amount = item.amount;
 
@@ -18,7 +18,7 @@ export default async (req, res) => {
 
             const status = {
                 name: 'arrived',
-                update_timestamp: new Date().toISOString()
+                update_timestamp: new Date()
             };
 
                 await db.collection("products").updateOne(
