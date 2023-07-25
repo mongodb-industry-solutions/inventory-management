@@ -15,8 +15,14 @@ export default function Products({ products, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [displayProducts, setDisplayProducts] = useState(products);
   const [sortBy, setSortBy] = useState('');
-  const [alerts, setAlerts] = useState([]);
-
+   const [alerts, setAlerts] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
+  
+  // Create a ref for the input element
+  const inputRef = useRef(null);
+  const suggestionsRef = useRef(null);
+  
   useEffect(() => {
     const  login = async () => {
         
@@ -70,10 +76,76 @@ export default function Products({ products, facets }) {
   };
   
 
-  const handleSearchInputChange = (e) => {
+  const handleSearchInputChange = async (e) => {
     const searchValue = e.target.value;
     setSearchQuery(searchValue);
+  
+    if (searchValue.length > 0) {
+      try {
+        const response = await fetch(`/api/suggestions?q=${encodeURIComponent(searchValue)}`);
+        const data = await response.json();
+        setSuggestions(data.suggestions);
+      } catch (error) {
+        console.error(error);
+        setSuggestions([]); // Set an empty array if there's an error to prevent undefined value
+      }
+    } else {
+      setSuggestions([]);
+    }
+
+    setSelectedSuggestionIndex(-1);
   };
+  
+  const handleKeyDown = (e) => {
+    // Check if the input element is focused
+    const isInputFocused = document.activeElement === inputRef.current;
+
+    if (isInputFocused && suggestions.length > 0) {
+      const lastIndex = suggestions.length - 1;
+
+      // Check if the user pressed the down arrow key
+      if (e.key === "ArrowDown") {
+        e.preventDefault(); // Prevents scrolling the page
+
+        // If no suggestion is selected, select the first one (index 0)
+        if (selectedSuggestionIndex === null) {
+          setSelectedSuggestionIndex(0);
+        } else {
+          // If not at the last suggestion, move to the next one
+          setSelectedSuggestionIndex((prevIndex) =>
+            prevIndex < lastIndex ? prevIndex + 1 : lastIndex
+          );
+        }
+      }
+
+      // Check if the user pressed the up arrow key
+      if (e.key === "ArrowUp") {
+        e.preventDefault(); // Prevents scrolling the page
+
+        // If no suggestion is selected, do nothing
+        if (selectedSuggestionIndex !== null) {
+          // If not at the first suggestion, move to the previous one
+          setSelectedSuggestionIndex((prevIndex) =>
+            prevIndex > 0 ? prevIndex - 1 : 0
+          );
+        }
+      }
+
+      // Check if the user pressed the Enter key
+      if (e.key === "Enter") {
+        e.preventDefault(); // Prevents form submission or other default behavior
+        if (selectedSuggestionIndex !== null && selectedSuggestionIndex >= 0) {
+          // If a suggestion is selected, use its value as the search query
+          setSearchQuery(suggestions[selectedSuggestionIndex]);
+          setSuggestions([]); // Hide the suggestions
+        }
+      }
+    }
+  };
+
+  
+  
+  
 
   const filterProducts = (sizesFilter, colorsFilter) => {
     // Filter products based on sizes and colors
@@ -115,31 +187,34 @@ export default function Products({ products, facets }) {
   const handleSortByLowStock = () => {
     console.log('Sorting by low stock');
     setSortBy('lowStock');
+
     setDisplayProducts(prevProducts =>
       [...prevProducts].sort((a, b) => {
         const totalStockSumA = a.total_stock_sum.find(stock => stock.location === 'store');
         const totalStockSumB = b.total_stock_sum.find(stock => stock.location === 'store');
   
-        if (!totalStockSumA && !totalStockSumB) {
-          return 0;
-        }
-        if (!totalStockSumA) {
-          return 1;
-        }
-        if (!totalStockSumB) {
-          return -1;
-        }
+        const lowStockSizesA = countLowStockSizes(a);
+        const lowStockSizesB = countLowStockSizes(b);
   
-        if (totalStockSumA.amount === totalStockSumB.amount) {
-          return totalStockSumA.location.localeCompare(totalStockSumB.location);
+        if (lowStockSizesA > 0 && lowStockSizesB === 0) {
+          return -1; // Prioritize 'a' if it has at least one low stock size and 'b' doesn't
+        } else if (lowStockSizesA === 0 && lowStockSizesB > 0) {
+          return 1; // Prioritize 'b' if it has at least one low stock size and 'a' doesn't
+        } else if (lowStockSizesA !== lowStockSizesB) {
+          return lowStockSizesB - lowStockSizesA;
+        } else {
+          // If both have the same count of low stock sizes, sort by total stock amount
+          const totalStockAmount = (product) =>
+            product.items.reduce((total, item) => total + item.stock[0].amount, 0);
+          const totalStockA = totalStockAmount(a);
+          const totalStockB = totalStockAmount(b);
+          return totalStockA - totalStockB; // Higher total stock amount will appear last
         }
+      });
   
-        return totalStockSumA.amount - totalStockSumB.amount;
-      })
-    );
+      return sortedProducts;
+    });
   };
-  
-  //console.log('Filtered products:', filteredProducts);
 
   return (
     <>
@@ -147,16 +222,42 @@ export default function Products({ products, facets }) {
       <div className="content">
         <div className="search-bar">
           <input
+            ref={inputRef} // Attach the ref to the input element
             className="search-input"
             type="text"
             placeholder=" Search..."
             value={searchQuery}
             onChange={handleSearchInputChange}
+            onKeyDown={handleKeyDown}
           />
           <button className="search-button" onClick={handleSearch}>
             <FaSearch />
           </button>
         </div>
+
+           {/* Display autocomplete suggestions */}
+           { suggestions.length > 0 && (
+  <ul className="autocomplete-list" ref={suggestionsRef} tabIndex={0} onKeyDown={handleKeyDown}>
+    { suggestions.map((suggestion, index) => (
+      <li key={suggestion} className="autocomplete-item">
+        <button
+          className={`autocomplete-button ${
+            index === selectedSuggestionIndex ? "selected" : ""
+          }`}
+          onClick={() => {
+            setSearchQuery(suggestion);
+            setSuggestions([]);
+          }}
+        >
+          {suggestion}
+        </button>
+      </li>
+    ))}
+  </ul>
+)}
+
+
+
         <div className="order-by-container">
           <p className="order-by-text">Order by:</p>
           <div className="buttons">

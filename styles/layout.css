@@ -224,3 +224,77 @@
   .order-icon svg {
     font-size: 150px;
   }
+
+ /* Style the dropdown list */
+.autocomplete-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.autocomplete-list {
+  position: relative;
+  left: 50%;
+  transform: translateX(-52%);
+  z-index: 1;
+  width: 100%;
+  max-width: 500px;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #ffffff;
+
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 12px;
+  margin-top: -30px;
+ 
+}
+
+/* Show the autocomplete list when the input field has focus */
+.search-input:focus + .autocomplete-container .autocomplete-list {
+  display: block;
+}
+
+/* Rest of the styles for .autocomplete-item and .autocomplete-button */
+.autocomplete-item {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.autocomplete-item:hover {
+  background-color: #f5f5f5;
+}
+
+.autocomplete-button {
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f5f5f5;
+  text-align: left;
+  font-size: 11px;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+  .autocomplete-list {
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 576px) {
+  .autocomplete-list {
+    max-width: 100px;
+  }
+}
+
+.autocomplete-button.selected {
+  background-color: #f0f0f0; 
+
+}
