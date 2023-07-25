@@ -132,6 +132,7 @@ export default function Orders({ orders, facets }) {
     <>
       <Sidebar facets={facets} filterOrders={filterOrders} page="orders"/>
       <div className="content">
+
       <div className="search-bar">
           <input
             ref={inputRef} // Attach the ref to the input element
@@ -168,8 +169,8 @@ export default function Orders({ orders, facets }) {
             ))}
           </ul>
         )}
-
-        <table className="order-table">
+    
+    <table className="order-table">
           <thead>
             <tr>
               <th>Item</th>
@@ -209,6 +210,7 @@ export default function Orders({ orders, facets }) {
             )}
           </tbody>
         </table>
+       
       </div>
     </>
   );

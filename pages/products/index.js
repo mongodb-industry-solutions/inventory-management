@@ -214,6 +214,13 @@ export default function Products({ products, facets }) {
     });
   };
 
+  const handleInputKeyUp = (e) => {
+    // Listen for the keyup event and clear the suggestions if the input value is empty
+    if (e.target.value === '') {
+      setSuggestions([]);
+    }
+  };
+
   return (
     <>
       <Sidebar facets={facets} filterProducts={filterProducts} page="products"/>
@@ -227,6 +234,7 @@ export default function Products({ products, facets }) {
             value={searchQuery}
             onChange={handleSearchInputChange}
             onKeyDown={handleKeyDown}
+            onKeyUp={handleInputKeyUp}
           />
           <button className="search-button" onClick={handleSearch}>
             <FaSearch />
