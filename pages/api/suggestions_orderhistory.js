@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       {
         $match: {
           $or: [
-            { "items.product_name": { $regex: searchQuery, $options: "i" } }, // Search by product names
+            { "items.product.name": { $regex: searchQuery, $options: "i" } }, // Search by product names
             { "items.sku": { $regex: searchQuery, $options: "i" } } // Search by SKUs
           ]
         }

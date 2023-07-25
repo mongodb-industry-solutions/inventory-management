@@ -187,12 +187,10 @@ export default function Products({ products, facets }) {
   const handleSortByLowStock = () => {
     console.log('Sorting by low stock');
     setSortBy('lowStock');
-
-    setDisplayProducts(prevProducts =>
-      [...prevProducts].sort((a, b) => {
-        const totalStockSumA = a.total_stock_sum.find(stock => stock.location === 'store');
-        const totalStockSumB = b.total_stock_sum.find(stock => stock.location === 'store');
-  
+    setDisplayProducts((prevProducts) => {
+      const displayedProducts = [...prevProducts].sort((a, b) => {
+        const countLowStockSizes = (product) =>
+          product.items.reduce((count, item) => (item.stock[0].amount < 10 ? count + 1 : count), 0);
         const lowStockSizesA = countLowStockSizes(a);
         const lowStockSizesB = countLowStockSizes(b);
   
@@ -212,9 +210,18 @@ export default function Products({ products, facets }) {
         }
       });
   
-      return sortedProducts;
+      return displayedProducts;
     });
   };
+
+  const handleInputKeyUp = (e) => {
+    // Listen for the keyup event and clear the suggestions if the input value is empty
+    if (e.target.value === '') {
+      setSuggestions([]);
+    }
+  };
+
+
 
   return (
     <>
@@ -229,6 +236,7 @@ export default function Products({ products, facets }) {
             value={searchQuery}
             onChange={handleSearchInputChange}
             onKeyDown={handleKeyDown}
+            onKeyUp={handleInputKeyUp}
           />
           <button className="search-button" onClick={handleSearch}>
             <FaSearch />
