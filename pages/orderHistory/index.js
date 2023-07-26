@@ -9,6 +9,20 @@ export default function Orders({ orders, facets }) {
   const [sortedOrders, setSortedOrders] = useState(orders);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Set the number of items per page
+  const [currentPage, setCurrentPage] = useState(1); // Set the initial current page to 1
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+
+  // Function to handle pagination control clicks
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Calculate the start and end index for items to display on the current page
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
 
   // Create refs for the input element and suggestions list
   const inputRef = useRef(null);
@@ -187,10 +201,14 @@ export default function Orders({ orders, facets }) {
           </thead>
           <tbody>
             {filteredOrders.length > 0 ? (
-              sortedOrders.map(order => (
+              sortedOrders.slice(startIndex, endIndex).map(order => (
                 <tr key={order._id} className="order-row">
         
-                  <td className="order-icon"><FaTshirt style={{ color: order.items[0]?.color?.hex || 'black' }} /></td>
+                  <td className="order-icon">
+                    <div className="shirt-icon-background" >
+                     <FaTshirt style={{ color: order.items[0]?.color?.hex || 'black' }} />
+                    </div>
+                  </td>
                
                   <td>{order.order_number}</td>
                   <td>{order.items[0]?.product_name}</td>
@@ -211,6 +229,18 @@ export default function Orders({ orders, facets }) {
             )}
           </tbody>
         </table>
+        <div className="pagination">
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+          <button
+            key={pageNumber}
+            className={pageNumber === currentPage ? 'active' : ''}
+            onClick={() => handlePageChange(pageNumber)}
+          >
+            {pageNumber}
+          </button>
+        ))}
+      </div>
+
         </div>
       </div>
     </>
