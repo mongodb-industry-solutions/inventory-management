@@ -35,7 +35,7 @@ const ReplenishmentPopup = ({ product, onClose }) => {
             },
             delivery_time: item?.delivery_time,
             product: {
-                id: {$oid: product._id},
+                id: product._id,
                 name: product.name
             },
             size: item?.size || '',
@@ -68,15 +68,8 @@ const ReplenishmentPopup = ({ product, onClose }) => {
 
     const handleSaveOrder = async (data) => {
 
-        const status = {
-            name: 'placed',
-            update_timestamp: new Date().toISOString()
-        };
-
-        order.placement_timestamp = new Date().toISOString();
         order.items = data;
-        order.items.forEach(item => item.status.push(status));
-
+        
         try {
             const response = await fetch('/api/createOrder', {
                 method: 'POST',
