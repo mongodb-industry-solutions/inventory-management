@@ -299,5 +299,7 @@
 
 }
 
-
-  
+.table-container {
+  flex: 1; 
+  overflow-anchor: auto;
+}

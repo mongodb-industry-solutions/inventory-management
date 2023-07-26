@@ -68,6 +68,7 @@ export default function Orders({ orders, facets }) {
 
       return sizeMatch && colorMatch;
     });
+
     setFilteredOrders(updatedFilteredOrders);
     setSortedOrders(updatedFilteredOrders); // Update sorted orders when filters change
     console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' orders: ' + updatedFilteredOrders.length);
@@ -169,7 +170,7 @@ export default function Orders({ orders, facets }) {
             ))}
           </ul>
         )}
-    
+     <div className="table-container"> 
     <table className="order-table">
           <thead>
             <tr>
@@ -210,7 +211,7 @@ export default function Orders({ orders, facets }) {
             )}
           </tbody>
         </table>
-       
+        </div>
       </div>
     </>
   );
@@ -282,4 +283,3 @@ export async function getServerSideProps({ query }) {
     };
   }
 }
-
