@@ -299,5 +299,42 @@
 
 }
 
+.table-container {
+  flex: 1; 
+  overflow-anchor: auto;
+}
 
-  
+/* Add this CSS in your stylesheets or style section */
+.shirt-icon-background {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px; /* Set a fixed width */
+  height: 175px; /* Set a fixed height */
+  border-radius: 4px; /* Adjust the border-radius to create a rounded square */
+  background-color: #f0f0f0; /* Set a default background color if needed */
+}
+
+/* pagination.css */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 12px;
+  margin: 0 4px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  color: #333;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.pagination button.active {
+  background-color: #4DB33D;
+  color: #fff;
+}
