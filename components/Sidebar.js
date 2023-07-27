@@ -5,7 +5,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import styles from '../styles/sidebar.module.css';
 
-function Sidebar({facets, filterProducts, filterOrders, page}) {
+function Sidebar({facets, filterProducts, filterOrders, page }) {
 
   const [isShrunk, setIsShrunk] = useState(false);
   const [selectedSizes, setSelectedSizes] = useState([]);
