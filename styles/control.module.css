@@ -1,0 +1,37 @@
+.container {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+}
+
+.catalog {
+    float: left;
+    width: 70%;
+    border: 1px solid #000;
+    max-height: 70vh; /* Set the maximum height of the menu */
+    overflow-y: auto;
+}
+
+.shopping-cart {
+    float: left;
+    width: 30%;
+    border: 1px solid #000;
+    max-height: 70vh; /* Set the maximum height of the menu */
+    overflow-y: auto;
+}
+
+.product-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.product-cell {
+    width: 300px;
+}
+
+.item-table {
+    width: 100%;
+}
+
+.product-table tbody td{
+    border: 1px solid #000;
+}
