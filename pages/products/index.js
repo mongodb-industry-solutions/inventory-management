@@ -18,11 +18,16 @@ export default function Products({ products, facets }) {
    const [alerts, setAlerts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   
   // Create a ref for the input element
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
-  
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   useEffect(() => {
     const  login = async () => {
         
@@ -223,8 +228,8 @@ export default function Products({ products, facets }) {
 
   return (
     <>
-      <Sidebar facets={facets} filterProducts={filterProducts} page="products"/>
-      <div className="content">
+      <div className='content'>
+      <Sidebar facets={facets} filterProducts={filterProducts} page="products" />
         <div className="search-bar">
           <input
             ref={inputRef} // Attach the ref to the input element
@@ -263,16 +268,17 @@ export default function Products({ products, facets }) {
 )}
 
 
-
-        <div className="order-by-container">
+  <div className="order-by-container">
           <p className="order-by-text">Order by:</p>
           <div className="buttons">
             <button className={`sidebar-button ${sortBy === 'popularity' ? 'selected' : ''}`} onClick={handleSortByPopularity}>Most Popular</button>
             <button className={`sidebar-button ${sortBy === 'lowStock' ? 'selected' : ''}`} onClick={handleSortByLowStock}>Low on Stock Items</button>
           </div>
         </div>
+        
 
         <ul className="product-list">
+        
           {displayProducts.length > 0 ? (
             displayProducts.map((product) => (
               <ProductBox key={product._id} product={product}/>

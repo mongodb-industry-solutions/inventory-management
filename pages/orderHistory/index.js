@@ -218,7 +218,7 @@ export default function Orders({ orders, facets }) {
                   <td>{order.items[0]?.status?.[0]?.update_timestamp}</td>
                   <td>{order.items[0]?.status?.[1]?.update_timestamp}</td>
                   <td>
-                    {order.items[0]?.status?.find(status => status.name === 'order arrived')?.name || 'order placed'}
+                    {order.items[0]?.status?.find(status => status.name === 'arrived')?.name || 'placed'}
                   </td>
                 </tr>
               ))
