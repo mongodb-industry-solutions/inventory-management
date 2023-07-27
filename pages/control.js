@@ -45,14 +45,14 @@ export default function Control({ products }) {
         setCartItems([]);
       };
 
-      const handleResetProductStock = async (productId) => {
+      const handleResetProductStock = async (productIdList) => {
         try {
             const response = await fetch('/api/resetProductStock', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ productId }),
+                body: JSON.stringify(productIdList),
               });
               if (response.ok) {
                 console.log('Order saved successfully');
@@ -72,7 +72,12 @@ export default function Control({ products }) {
                 <div className={styles["container"]}>
                 <div className={styles["catalog"]}>
                     <h2>Catalog</h2>
-                    <button className={styles["reset-all-button"]}>Reset All</button>
+                    <button 
+                        className={styles["reset-all-button"]}
+                        onClick={() => handleResetProductStock(products.map((product) => product._id))}
+                    >
+                        Reset All
+                    </button>
                     <div className={styles["table-wrapper"]}>
                         <table className={styles["product-table"]}>
                         <tbody>
@@ -82,7 +87,7 @@ export default function Control({ products }) {
                                 <ProductBox key={product._id} product={product}/>
                                 <button 
                                     className={styles["reset-button"]} 
-                                    onClick={() => handleResetProductStock(product._id)}
+                                    onClick={() => handleResetProductStock([product._id])}
                                 >
                                     Reset Stock
                                 </button>

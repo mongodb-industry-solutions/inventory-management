@@ -6,7 +6,11 @@ export default async (req, res) => {
         const { ObjectId } = require('mongodb');
         const db = client.db("interns_mongo_retail");
 
-        const { productId } = req.body;
+        const productIdList  = req.body;
+
+        if (!Array.isArray(productIdList)) {
+            console.log("productIds should be an array");
+          }
 
         const xsStock = [
             {"location": "store","amount": 15,"threshold": 10,"target": 20},
@@ -38,32 +42,36 @@ export default async (req, res) => {
             {"location": "ordered","amount": 0},
             {"location": "warehouse","amount": 400}
         ];
-
-        await db.collection("products").updateOne(
-            {
-                "_id": new ObjectId(productId)
-            },
-            {
-                $set: {
-                    "items.$[xs].stock": xsStock,
-                    "items.$[s].stock": sStock,
-                    "items.$[m].stock": mStock,
-                    "items.$[l].stock": lStock,
-                    "items.$[xl].stock": xlStock,
-                    "total_stock_sum": totalStock
+        const updatePromises = productIdList.map(async (productId) => {
+            const result =  db.collection("products").updateOne(
+                {
+                    "_id": new ObjectId(productId)
+                },
+                {
+                    $set: {
+                        "items.$[xs].stock": xsStock,
+                        "items.$[s].stock": sStock,
+                        "items.$[m].stock": mStock,
+                        "items.$[l].stock": lStock,
+                        "items.$[xl].stock": xlStock,
+                        "total_stock_sum": totalStock
+                    }
+                },
+                {
+                    arrayFilters: [
+                        { "xs.size": "XS" },
+                        { "s.size": "S" },
+                        { "m.size": "M" },
+                        { "l.size": "L" },
+                        { "xl.size": "XL" }
+                    ]
                 }
-            },
-            {
-                arrayFilters: [
-                    { "xs.size": "XS" },
-                    { "s.size": "S" },
-                    { "m.size": "M" },
-                    { "l.size": "L" },
-                    { "xl.size": "XL" }
-                ]
-            }
-        );
-        res.status(200).json({ success: true });
+            );
+            return result;
+        });
+
+        const updateResults = await Promise.all(updatePromises);
+        res.status(200).json({ success: true , updatedCount: updateResults.length });
     }
     catch (e) {
         console.error(e);
