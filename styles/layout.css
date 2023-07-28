@@ -51,6 +51,9 @@
     padding: 24px;
     min-width: 0px;
     margin-right: 24px;
+    
+
+
   
 }
 
@@ -115,6 +118,7 @@
   margin: 0;
   justify-content: flex-start;
   margin-bottom: 800px;
+  margin-left:150px;
 }
 
 .alert-container {
@@ -131,6 +135,9 @@
   flex-direction: column;
   align-items: flex-start;
   margin-bottom: 1rem;
+  margin-left: 150px;
+
+  
 }
 
 .order-by-text {
@@ -163,6 +170,8 @@
     height: 15px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1); 
     margin-left: 1rem;
+  
+   
 
   }
 
@@ -192,9 +201,10 @@
   }
   
   .order-table {
-    width: 100%;
+    width: 2280px;
     border-collapse: collapse;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    margin-left: 210px;
   }
   
   .order-row {
@@ -338,3 +348,6 @@
   background-color: #4DB33D;
   color: #fff;
 }
+
+
+

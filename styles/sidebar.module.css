@@ -1,14 +1,18 @@
 .sidebar {
     background-color: #fbfcfc;
     width: 184px;
-    position: relative;
+    
     transition: width 0.3s ease;
     grid-area: side-nav / side-nav / side-nav / side-nav;
     overflow-y: visible;
     list-style: none;
     z-index: 1;
     padding-left: 24px;
-    
+    position: fixed;
+    top: 110px; /* Adjust this value if needed to control the vertical position */
+    bottom: 0; /* Adjust this value if needed to control the vertical position */
+    left: 0;
+
   }
   
   .sidebar.shrunk {
