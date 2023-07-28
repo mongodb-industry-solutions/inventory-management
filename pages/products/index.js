@@ -18,7 +18,7 @@ export default function Products({ products, facets }) {
    const [alerts, setAlerts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+ 
   
   // Create a ref for the input element
   const inputRef = useRef(null);
