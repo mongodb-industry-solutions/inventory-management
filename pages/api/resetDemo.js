@@ -8,15 +8,11 @@ export default async (req, res) => {
 
         const productIdList  = req.body;
 
-        if (!Array.isArray(productIdList)) {
-            console.log("productIds should be an array");
-          }
-
         const xsStock = [
             {"location": "store","amount": 15,"threshold": 10,"target": 20},
             {"location": "ordered","amount": 0},
             {"location": "warehouse","amount": 80}
-          ];
+        ];
         const sStock = [
             {"location": "store","amount": 10,"threshold": 10,"target": 20},
             {"location": "ordered","amount": 0},
@@ -42,36 +38,33 @@ export default async (req, res) => {
             {"location": "ordered","amount": 0},
             {"location": "warehouse","amount": 400}
         ];
-        const updatePromises = productIdList.map(async (productId) => {
-            const result =  db.collection("products").updateOne(
-                {
-                    "_id": new ObjectId(productId)
-                },
-                {
-                    $set: {
-                        "items.$[xs].stock": xsStock,
-                        "items.$[s].stock": sStock,
-                        "items.$[m].stock": mStock,
-                        "items.$[l].stock": lStock,
-                        "items.$[xl].stock": xlStock,
-                        "total_stock_sum": totalStock
-                    }
-                },
-                {
-                    arrayFilters: [
-                        { "xs.size": "XS" },
-                        { "s.size": "S" },
-                        { "m.size": "M" },
-                        { "l.size": "L" },
-                        { "xl.size": "XL" }
-                    ]
-                }
-            );
-            return result;
-        });
 
-        const updateResults = await Promise.all(updatePromises);
-        res.status(200).json({ success: true , updatedCount: updateResults.length });
+        const bulkUpdateOps = productIdList.map((productId) => ({
+            updateOne: {
+                filter: { "_id": new ObjectId(productId) },
+                update: { $set: {
+                    "items.$[xs].stock": xsStock,
+                    "items.$[s].stock": sStock,
+                    "items.$[m].stock": mStock,
+                    "items.$[l].stock": lStock,
+                    "items.$[xl].stock": xlStock,
+                    "total_stock_sum": totalStock
+                } },
+                arrayFilters: [
+                    { "xs.size": "XS" },
+                    { "s.size": "S" },
+                    { "m.size": "M" },
+                    { "l.size": "L" },
+                    { "xl.size": "XL" }
+                ]
+            },
+        }));
+        
+        // Perform the bulk write operation to update the items
+        const bulkWriteResult = await db.collection("products").bulkWrite(bulkUpdateOps);
+
+        console.log(`Updated ${bulkWriteResult.modifiedCount} products in the collection.`);
+        res.status(200).json({ success: true });
     }
     catch (e) {
         console.error(e);
