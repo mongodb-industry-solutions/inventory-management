@@ -12,6 +12,43 @@ const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
 export default function Control({ preloadedProducts }) { 
     
     const [products, setProducts] = useState(preloadedProducts);
+    const [isSelling, setIsSelling] = useState(false); // State to keep track of sale status
+  
+  // Function to handle the button click to start or stop sales
+  const handleSaleButtonClick = () => {
+    setIsSelling((prevIsSelling) => !prevIsSelling); // Toggle the sale status
+  };
+
+  const performRandomSale = async () => {
+    const colors = [...new Set(products.map((product) => product.color.name))];
+    const sizes = [...new Set(products.flatMap((product) => product.items.map((item) => item.size)))];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
+    const randomQuantity = Math.floor(Math.random() * 5) + 1;
+  
+    try {
+      // Perform the sale using await and Promise
+      const result = await new Promise((resolve, reject) => {
+        fetch(`/api/simulateSale?color=${randomColor}&size=${randomSize}&quantity=${randomQuantity}`)
+          .then((response) => response.json())
+          .then((data) => resolve(data))
+          .catch((error) => reject(error));
+      });
+  
+      console.log(result.message);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+
+  useEffect(() => {
+    // Start or stop selling based on the isSelling state
+    if (isSelling) {
+      const saleInterval = setInterval(performRandomSale, 8000); // 8 seconds in milliseconds
+      return () => clearInterval(saleInterval);
+    }
+  }, [isSelling]);
 
     useEffect(() => {
         const  login = async () => {
@@ -171,6 +208,11 @@ export default function Control({ preloadedProducts }) {
         <>
         <div className="content">
                 <h1>Control Panel</h1>
+                <div className="button-container">
+        <button className="sale-button" onClick={handleSaleButtonClick}>
+          {isSelling ? "Stop Selling" : "Start Selling"}
+        </button>
+        </div>
                 <div className={styles["catalog"]}>
                 <button 
                         className={styles["reset-demo-button"]}

@@ -349,5 +349,35 @@
   color: #fff;
 }
 
+/* Assuming this is your CSS file or added styles in your component */
+.sale-button {
+  /* Add MongoDB green color */
+  background-color: #4db33d;
 
+  /* Add other MongoDB specific styles like padding, border, etc. */
+  padding: 6px 12px;
+  border: none;
+  border-radius: 10px;
+  width: 100px;
+  /* Make the text color white for better contrast */
+  color: #fff;
+
+  /* Optional: Add hover effect */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Optional: Hover effect, change color on hover */
+.sale-button:hover {
+  background-color: #399d2e;
+}
+
+.button-container {
+  display: flex;
+
+  margin-right: 10px;
+  margin-bottom: 10px;
+  
+
+}
 
