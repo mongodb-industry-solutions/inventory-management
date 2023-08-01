@@ -1,5 +1,6 @@
 import { MongoClient } from 'mongodb';
 import clientPromise from '../../lib/mongodb';
+import { random } from 'lodash';
 
 const dbName = 'interns_mongo_retail';
 const collectionName = 'products';
@@ -47,6 +48,7 @@ async function performSale(productsCollection, salesCollection, color, size, qua
       size: size,
       sku: sizeItem.sku,
       quantity: quantity,
+      channel: random(0, 1) ? 'online' : 'in-store', // Generate a random value of either 'online' or 'in-store'
       timestamp: new Date(),
     };
     await salesCollection.insertOne(saleData);
