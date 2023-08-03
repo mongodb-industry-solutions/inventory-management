@@ -57,6 +57,25 @@ export default function Product({ preloadedProduct }) {
         dashboard.refresh();
     };
 
+    const handleToggleAutoreplenishment = async () => {
+        try {
+            const response = await fetch(`/api/setAutoreplenishment?product_id=${preloadedProduct._id}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(!product.autoreplenishment),
+              });
+            if (response.ok) {
+                console.log('Autoreplenishment toggled successfully');
+            } else {
+                console.log('Error toggling autoreplenishment');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     return (
         <>
         <div className="content">
@@ -65,13 +84,15 @@ export default function Product({ preloadedProduct }) {
                 <FontAwesomeIcon id="tshirt" icon={faShirt} style={{ color: product.color.hex, fontSize: '10rem', backgroundColor: 'rgb(249, 251, 250)', padding: '15px'}}/>
             </div>
             <div className={styles["details"]}>
-            <div className={styles["name-price-wrapper"]}>
                 <p className="name">{product.name}</p>
                 <p className="price">{product.price.amount} {product.price.currency}</p>
-            </div>
                 <p className="code">{product.code}</p>
                 {<StockLevelBar stock={product.total_stock_sum} />}
             </div>
+            <label className={styles["switch"]}>
+                <input type="checkbox" checked={product.autoreplenishment} onChange={handleToggleAutoreplenishment}/>
+                <span className={styles["slider"]}></span>
+            </label>
             <div className={styles["table"]}>
             <table>
                 <thead>
