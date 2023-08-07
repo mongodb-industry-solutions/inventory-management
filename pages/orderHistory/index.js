@@ -184,19 +184,19 @@ export default function Orders({ orders, facets }) {
             ))}
           </ul>
         )}
-     <div className="table-container"> 
-    <table className="order-table">
+     <div className="table-container" > 
+    <table className="order-table" >
           <thead>
             <tr>
-              <th>Item</th>
-              <th>Order ID</th>
-              <th>Name</th>
-              <th>SKU</th>
-              <th>Size</th>
-              <th>Amount</th>
-              <th>Placement Date</th>
-              <th>Arrival Date</th>
-              <th>Status</th>
+            <th style={{ width: '15%' }}>Item</th>
+            <th style={{ width: '5%' }}>Order ID</th>
+            <th style={{ width: '10%' }}>Name</th>
+            <th style={{ width: '10%' }}>SKU</th>
+            <th style={{ width: '5%' }}>Size</th>
+            <th style={{ width: '5%' }}>Amount</th>
+            <th style={{ width: '20%' }}>Placement Date</th>
+            <th style={{ width: '20%' }}>Arrival Date</th>
+            <th style={{ width: '5%' }}>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -211,7 +211,7 @@ export default function Orders({ orders, facets }) {
                   </td>
                
                   <td>{order.order_number}</td>
-                  <td>{order.items[0]?.product_name}</td>
+                  <td>{order.items[0]?.product.name}</td>
                   <td>{order.items[0]?.sku}</td>
                   <td>{order.items[0]?.size}</td>
                   <td>{order.items[0]?.amount}</td>

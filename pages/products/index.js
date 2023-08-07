@@ -245,7 +245,7 @@ export default function Products({ products, facets }) {
             <FaSearch />
           </button>
         </div>
-
+        
            {/* Display autocomplete suggestions */}
            { suggestions.length > 0 && (
   <ul className="autocomplete-list" ref={suggestionsRef} tabIndex={0} onKeyDown={handleKeyDown}>
