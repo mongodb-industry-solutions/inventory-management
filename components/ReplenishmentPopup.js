@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
 
@@ -25,26 +25,64 @@ const ReplenishmentPopup = ({ product, onClose }) => {
 
     const [rows, setRows] = useState(order.items);
 
-    const handleAddRow = () => {
-        const item = product.items[0];
-        const itemStoreStock = item?.stock.find(stock => stock.location === 'store');
+    useEffect(() => {
 
-        const newItem = {
-            amount: Math.max(0,itemStoreStock.target - itemStoreStock.amount),
-            color: {
-                hex: product.color.hex,
-                name: product.color.name
-            },
-            delivery_time: item?.delivery_time,
-            product: {
-                id: product._id,
-                name: product.name
-            },
-            size: item?.size || '',
-            sku: item?.sku || '',
-            status: []
+        const lowStockRows = [];
+
+        for(const item of product.items) {
+            const itemStoreStock = item?.stock.find(stock => stock.location === 'store');
+
+            if( itemStoreStock.amount < itemStoreStock.threshold) {
+                var newItem = {
+                    amount: Math.max(0,itemStoreStock.target - itemStoreStock.amount),
+                    color: {
+                        hex: product.color.hex,
+                        name: product.color.name
+                    },
+                    delivery_time: item?.delivery_time,
+                    product: {
+                        id: product._id,
+                        name: product.name
+                    },
+                    size: item?.size || '',
+                    sku: item?.sku || '',
+                    status: []
+                }
+                lowStockRows.push(newItem);
+            }
         }
-        setRows([...rows, newItem]);
+
+        setRows([...rows, ...lowStockRows]);
+    }
+    , []);
+
+    const handleAddRow = () => {
+
+        const newItemSize = product.items.find(
+            (item) => !rows.some((rowItem) => rowItem.size === item.size)
+          )?.size;
+
+        if (newItemSize) {
+            const item = product.items.find((item) => item.size === newItemSize);
+            const itemStoreStock = item?.stock.find(stock => stock.location === 'store');
+
+            const newItem = {
+                amount: Math.max(0,itemStoreStock.target - itemStoreStock.amount),
+                color: {
+                    hex: product.color.hex,
+                    name: product.color.name
+                },
+                delivery_time: item?.delivery_time,
+                product: {
+                    id: product._id,
+                    name: product.name
+                },
+                size: item?.size || '',
+                sku: item?.sku || '',
+                status: []
+            }
+            setRows([...rows, newItem]);
+        }
     };
 
     const handleSizeChange = (index, newSize) => {
@@ -158,7 +196,11 @@ const ReplenishmentPopup = ({ product, onClose }) => {
                                             <Select 
                                                     value={{label: row.size, value: row.size}}
                                                     onChange={(selectedOption) => handleSizeChange(index, selectedOption.value)}
-                                                    options={product.items.map((item) => ({
+                                                    options={product.items
+                                                        .filter((item) => {
+                                                            return !rows.some((rowItem) => rowItem.size === item.size);
+                                                        })
+                                                        .map((item) => ({
                                                         label: item.size,
                                                         value: item.size,
                                                     }))}
