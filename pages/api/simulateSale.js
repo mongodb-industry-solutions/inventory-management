@@ -16,12 +16,13 @@ async function performSale(productsCollection, salesCollection, color, size, qua
   
     const sizeItem = product.items.find((item) => item.size === size);
     const availableStock = sizeItem.stock[0].amount;
+    const availableTotalStock = product.total_stock_sum.find(stock => stock.location === 'store').amount;
   
-    if (availableStock <= 0) {
+    if (availableStock <= 0 || availableTotalStock <= 0) {
       return { message: `Product with color '${color}' and size '${size}' is out of stock.` };
     }
   
-    if (availableStock < quantity) {
+    if (availableStock < quantity || availableTotalStock < quantity) {
       return { message: `Insufficient stock for color '${color}' and size '${size}'. Available stock: ${sizeItem.stock[0].amount}` };
     }
   
@@ -32,11 +33,17 @@ async function performSale(productsCollection, salesCollection, color, size, qua
         'items.size': size,
         'items.stock.location': 'store',
       },
-      { $inc: { 'items.$[item].stock.$[elem].amount': -quantity } },
+      { 
+        $inc: { 
+          'items.$[item].stock.$[elem].amount': -quantity,
+          'total_stock_sum.$[stock].amount': -quantity,
+         } 
+        },
       {
         arrayFilters: [
           { 'item.size': size }, // Filter the correct 'items' element based on the size
           { 'elem.location': 'store' }, // Filter the correct 'stock' element based on location
+          { 'stock.location': 'store' }, // Filter the correct 'total_stock_sum' element based on location
         ],
       }
     );
