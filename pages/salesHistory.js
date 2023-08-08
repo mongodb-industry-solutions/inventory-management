@@ -71,22 +71,23 @@ export default function Sales({ sales, facets }) {
       }, [searchQuery]);
 
       const filterSales = (sizesFilter, colorsFilter) => {
+        console.log('Filtering sales with sizes:', sizesFilter, 'and colors:', colorsFilter);
+        
         // Filter orders based on sizes and colors
         let updatedFilteredSales = sales.filter(sale => {
-          const sizes = sale.items.map((item) => item.size);
-          const colors = sale.items.map((item) => item.color?.name);
-    
-          const sizeMatch = sizesFilter.length === 0 || sizes.some(size => sizesFilter.includes(size));
-          const colorMatch = colorsFilter.length === 0 || colors.some(color => colorsFilter.includes(color));
-    
+          const size = sale.size; // Get the size directly from the sale object
+          const color = sale.color; // Get the color directly from the sale object
+      
+          const sizeMatch = sizesFilter.length === 0 || sizesFilter.includes(size);
+          const colorMatch = colorsFilter.length === 0 || colorsFilter.includes(color);
+      
           return sizeMatch && colorMatch;
         });
-    
+      
         setFilteredSales(updatedFilteredSales);
         setSortedSales(updatedFilteredSales); // Update sorted orders when filters change
         console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' orders: ' + updatedFilteredSales.length);
       };
-
       const handleInputKeyUp = (e) => {
         // Listen for the keyup event and clear the suggestions if the input value is empty
         if (e.target.value === '') {
@@ -241,11 +242,11 @@ export async function getServerSideProps() {
       const agg = [
         {
           $searchMeta: {
-            index: "internsmongoretail-productfacets",
+            index: "internsmongoretail-salesfacets",
             facet: {
               facets: {
-                colorsFacet: { type: "string", path: "color.name" },
-                sizesFacet: { type: "string", path: "items.size" },
+                colorsFacet: { type: "string", path: "color" },
+                sizesFacet: { type: "string", path: "size" },
               },
             },
           },
@@ -253,7 +254,7 @@ export async function getServerSideProps() {
       ];
   
       const facets = await db
-        .collection("products")
+        .collection("sales")
         .aggregate(agg)
         .toArray();
   
@@ -273,3 +274,5 @@ export async function getServerSideProps() {
       };
     }
   }
+
+  
