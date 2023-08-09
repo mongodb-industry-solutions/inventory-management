@@ -142,9 +142,21 @@ export default function Orders({ orders, facets }) {
     }
   };
 
-  const handleReorder = async (data) => {
+  const handleReorder = async (item) => {
 
-    order.items = data;
+    const order = {
+      user_id: {
+          $oid: '649ef73a7827d12200b87895'
+      },
+      location: {
+          origin: 'warehouse',
+          destination: 'store'
+      },
+      placement_timestamp: '',
+      items: []
+  };
+
+    order.items.push(item);
     
     try {
         const response = await fetch('/api/createOrder', {
@@ -275,7 +287,7 @@ export default function Orders({ orders, facets }) {
                     {order.items?.status?.find(status => status.name === 'arrived')?.name || 'placed'}
                   </td>
                   <td>
-                    <button className="reorder-button" onClick={() => handleReorder(order)}>Reorder</button>
+                    <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
                   </td>
                 </tr>
               ))
