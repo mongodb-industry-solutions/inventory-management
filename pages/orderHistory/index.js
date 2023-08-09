@@ -11,6 +11,7 @@ export default function Orders({ orders, facets }) {
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Set the number of items per page
   const [currentPage, setCurrentPage] = useState(1); // Set the initial current page to 1
+  const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
 
   // Calculate the total number of pages
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
@@ -74,11 +75,11 @@ export default function Orders({ orders, facets }) {
   const filterOrders = (sizesFilter, colorsFilter) => {
     // Filter orders based on sizes and colors
     let updatedFilteredOrders = orders.filter(order => {
-      const sizes = order.items.map((item) => item.size);
-      const colors = order.items.map((item) => item.color?.name);
+      const size = order.items.size;
+      const color = order.items.color?.name;
 
-      const sizeMatch = sizesFilter.length === 0 || sizes.some(size => sizesFilter.includes(size));
-      const colorMatch = colorsFilter.length === 0 || colors.some(color => colorsFilter.includes(color));
+      const sizeMatch = sizesFilter.length === 0 || sizesFilter.includes(size);
+      const colorMatch = colorsFilter.length === 0 || colorsFilter.includes(color);
 
       return sizeMatch && colorMatch;
     });
@@ -142,6 +143,75 @@ export default function Orders({ orders, facets }) {
     }
   };
 
+  const handleSave = async () => {
+    setSaveSuccessMessage(true);
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+    setSaveSuccessMessage(false);
+  };
+
+  const handleReorder = async (item) => {
+
+    const order = {
+      user_id: {
+          $oid: '649ef73a7827d12200b87895'
+      },
+      location: {
+          origin: 'warehouse',
+          destination: 'store'
+      },
+      placement_timestamp: '',
+      items: []
+  };
+
+    order.items.push(item);
+    
+    try {
+        const response = await fetch('/api/createOrder', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ order }),
+          });
+        if (response.ok) {
+            handleSave();
+
+            const fetchPromises = [];
+
+            const data = await response.json();
+            const orderId = data.orderId;
+
+            //Move to store
+            for (let i = 0; i < order.items?.length; i++) {
+                let item = order.items[i];
+
+                try {
+                    fetchPromises.push(fetch(`/api/moveToStore?order_id=${orderId}`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ item }),
+                      }));
+                    if (response.ok) {
+                        //console.log(item.sku + ' moved to store successfully.');
+                    } else {
+                        console.log('Error moving to store item ' + item.sku + '.');
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+            await Promise.all(fetchPromises);
+
+        } else {
+            console.log('Error saving order');
+        }
+    } catch (e) {
+        console.error(e);
+    }
+};
+
 
   return (
     <>
@@ -194,31 +264,36 @@ export default function Orders({ orders, facets }) {
             <th style={{ width: '10%' }}>SKU</th>
             <th style={{ width: '5%' }}>Size</th>
             <th style={{ width: '5%' }}>Amount</th>
-            <th style={{ width: '20%' }}>Placement Date</th>
-            <th style={{ width: '20%' }}>Arrival Date</th>
+            <th style={{ width: '17.5%' }}>Placement Date</th>
+            <th style={{ width: '17.5%' }}>Arrival Date</th>
             <th style={{ width: '5%' }}>Status</th>
+            <th style={{ width: '5%' }}></th>
+
             </tr>
           </thead>
           <tbody>
             {filteredOrders.length > 0 ? (
               sortedOrders.slice(startIndex, endIndex).map(order => (
-                <tr key={order._id} className="order-row">
+                <tr key={order._id + order.items.sku} className="order-row">
         
                   <td className="order-icon">
                     <div className="shirt-icon-background" >
-                     <FaTshirt style={{ color: order.items[0]?.color?.hex || 'black' }} />
+                     <FaTshirt style={{ color: order.items?.color?.hex || 'black' }} />
                     </div>
                   </td>
                
                   <td>{order.order_number}</td>
-                  <td>{order.items[0]?.product.name}</td>
-                  <td>{order.items[0]?.sku}</td>
-                  <td>{order.items[0]?.size}</td>
-                  <td>{order.items[0]?.amount}</td>
-                  <td>{order.items[0]?.status?.[0]?.update_timestamp}</td>
-                  <td>{order.items[0]?.status?.[1]?.update_timestamp}</td>
+                  <td>{order.items?.product_name}</td>
+                  <td>{order.items?.sku}</td>
+                  <td>{order.items?.size}</td>
+                  <td>{order.items?.amount}</td>
+                  <td>{order.items?.status?.[0]?.update_timestamp}</td>
+                  <td>{order.items?.status?.[1]?.update_timestamp}</td>
                   <td>
-                    {order.items[0]?.status?.find(status => status.name === 'arrived')?.name || 'placed'}
+                    {order.items?.status?.find(status => status.name === 'arrived')?.name || 'placed'}
+                  </td>
+                  <td>
+                    <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
                   </td>
                 </tr>
               ))
@@ -242,6 +317,11 @@ export default function Orders({ orders, facets }) {
       </div>
 
         </div>
+        {saveSuccessMessage && (
+            <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
+                Order placed successfully
+            </div>
+        )}
       </div>
     </>
   );
@@ -254,6 +334,14 @@ export async function getServerSideProps({ query }) {
     const searchQuery = query.q || '';
 
     let orders;
+
+    const unwind = [
+      {
+        '$unwind': {
+          'path': '$items'
+        }
+      }
+    ];
 
     if (searchQuery) {
       const searchAgg = [
@@ -270,13 +358,18 @@ export async function getServerSideProps({ query }) {
       },
       },
       },
-      },
+      },{
+        '$unwind': {
+          'path': '$items'
+        }
+      }
       ];
       
       
+
       orders = await db.collection("orders").aggregate(searchAgg).toArray();
       } else {
-      orders = await db.collection("orders").find({}).toArray();
+      orders = await db.collection("orders").aggregate(unwind).toArray();
       }
       
 
