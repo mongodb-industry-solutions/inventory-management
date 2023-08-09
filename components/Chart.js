@@ -1,0 +1,28 @@
+import React, { useEffect, useRef, useState } from 'react';
+import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
+
+const Chart = ({ filter, chartId, height, width }) => {
+    const sdk = new ChartsEmbedSDK({ baseUrl: 'https://charts.mongodb.com/charts-jeffn-zsdtj' });
+    const chartDiv = useRef(null);
+    const [rendered, setRendered] = useState(false);
+    const [chart] = useState(sdk.createChart({ chartId: chartId, height: height, width: width, theme: "light" }));
+
+    useEffect(() => {
+        chart.render(chartDiv.current).then(() => setRendered(true)).catch(err => console.log("Error during Charts rendering.", err));
+    }, [chart]);
+
+    useEffect(() => {
+        if (rendered) {
+            if (filter === null) {
+                // Apply a filter that represents all data
+                chart.setFilter({}).catch(err => console.log("Error while applying all data filter.", err));
+            } else {
+                chart.setFilter(filter).catch(err => console.log("Error while filtering.", err));
+            }
+        }
+    }, [chart, filter, rendered]);
+
+    return <div className="chart" ref={chartDiv} />;
+};
+
+export default Chart;

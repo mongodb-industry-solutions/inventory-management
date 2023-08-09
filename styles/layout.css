@@ -201,10 +201,11 @@
   }
   
   .order-table {
-    width: 2280px;
+    width: 88%;
     border-collapse: collapse;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     margin-left: 210px;
+    table-layout: fixed;
   }
   
   .order-row {
@@ -224,15 +225,15 @@
     padding: 5px;
     text-align: center;
   }
-  
+
   .order-icon {
-    width: 300px;
-    height: 200px;
+    width: 50px;
+    height: 40px;
     text-align: center;
   }
   
   .order-icon svg {
-    font-size: 150px;
+    font-size: 50px;
   }
 
  /* Style the dropdown list */
@@ -319,8 +320,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 200px; /* Set a fixed width */
-  height: 175px; /* Set a fixed height */
+  width: 100px; /* Set a fixed width */
+  height: 90px; /* Set a fixed height */
   border-radius: 4px; /* Adjust the border-radius to create a rounded square */
   background-color: #f0f0f0; /* Set a default background color if needed */
 }
@@ -381,6 +382,246 @@
 
 }
 
+.dashboard-container {
+  display: flex;
+  flex-direction: row; /* Change to row to place charts side by side */
+  align-items: center;
+  min-height: 100vh;
+  margin-left: 20px;
+}
+
+.filter-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 20px;
+  margin-top: 150px;
+}
+
+.filter-dropdown {
+  background-color: #f4f4f4;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #333333;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.filter-dropdown:focus {
+  outline: none;
+  background-color: #e2e2e2;
+}
+
+/* Style dropdown arrow */
+.filter-dropdown::after {
+  content: "▼";
+  font-size: 10px;
+  margin-left: 8px;
+}
+
+/* Hover effect */
+.filter-dropdown:hover {
+  background-color: #e2e2e2;
+}
+
+
+.chart-container {
+  display: flex;
+  flex-direction: row; /* Change to row to place charts side by side */
+  gap: 20px; /* Adjust the gap between charts */
+  margin-top: 20px; /* Add margin at the top of charts */
+}
+
+.chart-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Adjust the gap between charts in a column */
+}
+
+/* Dashboard.css */
+
+.App {
+  text-align: center;
+  font-family: 'Lexend', Arial, sans-serif;
+}
+
+.title {
+  font-size: 24px;
+  margin: 10px 0;
+}
+
+.subtitle {
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.elem { 
+  overflow: hidden;
+  display: inline-block;
+  width: 100px;
+  height: 20px;
+  margin: 8px 0;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #333333;
+  margin-left: 50px;
+  
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0;
+  font-family: Arial, sans-serif;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.radio-input {
+  margin-right: 5px;
+}
+
+.chart-container {
+  margin-top: 20px;
+
+}
+
+.charts {
+  margin-left: 50px;
+  margin-right: 10px;
+  display: flex;
+  flex-wrap: wrap; /* Allow charts to wrap to the next line when needed */
+  justify-content: flex-start; /* Align charts to the left side */
+  margin-top: 20px;
+
+
+}
+
+.chart-container {
+  flex: 1; /* Allow charts to take up equal space */
+  max-width: calc(50% - 20px); /* Adjust based on your desired spacing */
+  margin: 10px; /* Add spacing between charts */
+  
+
+}
+
+.chart {
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Adjust the shadow properties as needed */
+  margin: 10px; /* Add spacing between charts */
+}
+
+.dashboard-container {
+  display: flex;
+  align-items: flex-start; /* Align items vertically at the top */
+  margin-top: 150px;
+
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-right: 20px; /* Add spacing between dropdown and charts */
+  align-items: center;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  background-color: #f0f0f0; /* Light grey background */
+  margin-top: 30px;
+
+  border-radius: 4px;
+  width: 120px;
+  height: 30px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  z-index: 1;
+  border-radius: 4px;
+}
+
+.dropdown-menu-option {
+  padding: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-menu-option:hover {
+  background-color: #f0f0f0; /* Highlight on hover */
+}
+
+.radio-option {
+  margin-bottom: 10px; /* Add spacing between radio options */
+}
+
+.chevron {
+  position: flex;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 10px; /* Adjust the font size as needed */
+  cursor: pointer;
+  border-radius: 5px; /* Add rounded corners to the chevron */
+  padding: 4px; /* Add some padding to the chevron for spacing */
+  color: #808080;
+  margin-left: 20px;
+  margin-top: 19px;
+}
+
+
+.chevron.up {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filter-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 20px; /* Add spacing between filter buttons and charts */
+}
+
+.clear-filters-button {
+  margin-top: 30px;
+  background-color: #13aa52;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  margin-bottom: -15px; /* Add spacing between buttons */
+  color: white;
+  padding: 10px 15px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
 .reorder-button {
     width: 100px;
     color: #fff;
@@ -390,3 +631,4 @@
     font-weight: 700;
     cursor: pointer;
 }
+
