@@ -40,9 +40,15 @@ export default function Product({ preloadedProduct }) {
             await app.logIn(Realm.Credentials.anonymous());
             const mongodb = app.currentUser.mongoClient("mongodb-atlas");
             const collection = mongodb.db("interns_mongo_retail").collection("products");
-
+            let updatedProduct = null;
+            
             for await (const  change  of  collection.watch({ $match: { 'fullDocument._id': preloadedProduct._id } })) {
-                setProduct(change.fullDocument);
+                updatedProduct = change.fullDocument;
+                updatedProduct._id = updatedProduct._id.toString();
+
+                if( updatedProduct._id === preloadedProduct._id) {
+                    setProduct(updatedProduct);
+                }
             }
         }
         login();
