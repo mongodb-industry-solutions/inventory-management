@@ -11,6 +11,7 @@ export default function Orders({ orders, facets }) {
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Set the number of items per page
   const [currentPage, setCurrentPage] = useState(1); // Set the initial current page to 1
+  const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
 
   // Calculate the total number of pages
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
@@ -142,6 +143,12 @@ export default function Orders({ orders, facets }) {
     }
   };
 
+  const handleSave = async () => {
+    setSaveSuccessMessage(true);
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+    setSaveSuccessMessage(false);
+  };
+
   const handleReorder = async (item) => {
 
     const order = {
@@ -167,9 +174,7 @@ export default function Orders({ orders, facets }) {
             body: JSON.stringify({ order }),
           });
         if (response.ok) {
-            console.log('Order saved successfully');
-            onClose();
-            setRows([]);
+            handleSave();
 
             const fetchPromises = [];
 
@@ -311,6 +316,11 @@ export default function Orders({ orders, facets }) {
       </div>
 
         </div>
+        {saveSuccessMessage && (
+            <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
+                Order placed successfully
+            </div>
+        )}
       </div>
     </>
   );
