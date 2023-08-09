@@ -10,6 +10,7 @@ import { faShirt } from '@fortawesome/free-solid-svg-icons';
 import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
+import { set } from 'lodash';
 
 const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
 
@@ -17,6 +18,7 @@ export default function Product({ preloadedProduct }) {
     
     const [product, setProduct] = useState(preloadedProduct);
     const [showPopup, setShowPopup] = useState(false);
+    const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
     
     const sdk = new ChartsEmbedSDK({ baseUrl: 'https://charts.mongodb.com/charts-jeffn-zsdtj' });
     const dashboardDiv = useRef(null);
@@ -62,6 +64,12 @@ export default function Product({ preloadedProduct }) {
         setShowPopup(false);
         dashboard.refresh();
     };
+
+    const handleSave = async () => {
+        setSaveSuccessMessage(true);
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        setSaveSuccessMessage(false);
+      };
 
     const handleToggleAutoreplenishment = async () => {
         try {
@@ -136,7 +144,12 @@ export default function Product({ preloadedProduct }) {
         </div>
         <div className={styles["dashboard"]} ref={dashboardDiv}/>
         
-        {showPopup && <Popup product={product} onClose={handleClosePopup} />}
+        {showPopup && <Popup product={product} onClose={handleClosePopup} onSave={handleSave}/>}
+        {saveSuccessMessage && (
+            <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
+                Order placed successfully
+            </div>
+        )}
         </div>
         </>
 

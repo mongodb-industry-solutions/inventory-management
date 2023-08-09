@@ -9,7 +9,7 @@ import StockLevelBar from './StockLevelBar';
 import styles from '../styles/popup.module.css';
 
 
-const ReplenishmentPopup = ({ product, onClose }) => {
+const ReplenishmentPopup = ({ product, onClose, onSave }) => {
 
     const order = {
         user_id: {
@@ -124,6 +124,7 @@ const ReplenishmentPopup = ({ product, onClose }) => {
             if (response.ok) {
                 console.log('Order saved successfully');
                 onClose();
+                onSave();
                 setRows([]);
 
                 const fetchPromises = [];
