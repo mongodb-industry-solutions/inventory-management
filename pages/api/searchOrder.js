@@ -55,6 +55,10 @@ export default async function handler(req, res) {
                 },
             },
           },
+        },{
+          '$unwind': {
+            'path': '$items'
+          }
         },
         { $limit: 20 },
       ])

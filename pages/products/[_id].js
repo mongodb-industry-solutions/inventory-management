@@ -10,6 +10,7 @@ import { faShirt } from '@fortawesome/free-solid-svg-icons';
 import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
+import { set } from 'lodash';
 
 const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
 
@@ -17,6 +18,7 @@ export default function Product({ preloadedProduct }) {
     
     const [product, setProduct] = useState(preloadedProduct);
     const [showPopup, setShowPopup] = useState(false);
+    const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
     
     const sdk = new ChartsEmbedSDK({ baseUrl: 'https://charts.mongodb.com/charts-jeffn-zsdtj' });
     const dashboardDiv = useRef(null);
@@ -40,9 +42,15 @@ export default function Product({ preloadedProduct }) {
             await app.logIn(Realm.Credentials.anonymous());
             const mongodb = app.currentUser.mongoClient("mongodb-atlas");
             const collection = mongodb.db("interns_mongo_retail").collection("products");
-
+            let updatedProduct = null;
+            
             for await (const  change  of  collection.watch({ $match: { 'fullDocument._id': preloadedProduct._id } })) {
-                setProduct(change.fullDocument);
+                updatedProduct = change.fullDocument;
+                updatedProduct._id = updatedProduct._id.toString();
+
+                if( updatedProduct._id === preloadedProduct._id) {
+                    setProduct(updatedProduct);
+                }
             }
         }
         login();
@@ -57,6 +65,31 @@ export default function Product({ preloadedProduct }) {
         dashboard.refresh();
     };
 
+    const handleSave = async () => {
+        setSaveSuccessMessage(true);
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        setSaveSuccessMessage(false);
+      };
+
+    const handleToggleAutoreplenishment = async () => {
+        try {
+            const response = await fetch(`/api/setAutoreplenishment?product_id=${preloadedProduct._id}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(!product.autoreplenishment),
+              });
+            if (response.ok) {
+                console.log('Autoreplenishment toggled successfully');
+            } else {
+                console.log('Error toggling autoreplenishment');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     return (
         <>
         <div className="content">
@@ -65,13 +98,15 @@ export default function Product({ preloadedProduct }) {
                 <FontAwesomeIcon id="tshirt" icon={faShirt} style={{ color: product.color.hex, fontSize: '10rem', backgroundColor: 'rgb(249, 251, 250)', padding: '15px'}}/>
             </div>
             <div className={styles["details"]}>
-            <div className={styles["name-price-wrapper"]}>
                 <p className="name">{product.name}</p>
                 <p className="price">{product.price.amount} {product.price.currency}</p>
-            </div>
                 <p className="code">{product.code}</p>
                 {<StockLevelBar stock={product.total_stock_sum} />}
             </div>
+            <label className={styles["switch"]}>
+                <input type="checkbox" checked={product.autoreplenishment} onChange={handleToggleAutoreplenishment}/>
+                <span className={styles["slider"]}></span>
+            </label>
             <div className={styles["table"]}>
             <table>
                 <thead>
@@ -109,7 +144,12 @@ export default function Product({ preloadedProduct }) {
         </div>
         <div className={styles["dashboard"]} ref={dashboardDiv}/>
         
-        {showPopup && <Popup product={product} onClose={handleClosePopup} />}
+        {showPopup && <Popup product={product} onClose={handleClosePopup} onSave={handleSave}/>}
+        {saveSuccessMessage && (
+            <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
+                Order placed successfully
+            </div>
+        )}
         </div>
         </>
 
