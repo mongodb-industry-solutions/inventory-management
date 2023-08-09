@@ -191,7 +191,7 @@ export default function Sales({ sales, facets }) {
               <th>Size</th>
               <th>Amount</th>
               <th>Channel</th>
-              <th>Selling Date</th>
+              <th>Sale Date</th>
             </tr>
           </thead>
           <tbody>
