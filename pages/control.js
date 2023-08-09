@@ -13,6 +13,7 @@ export default function Control({ preloadedProducts }) {
     
     const [products, setProducts] = useState(preloadedProducts);
     const [isSelling, setIsSelling] = useState(false); // State to keep track of sale status
+    const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
   
   // Function to handle the button click to start or stop sales
   const handleSaleButtonClick = () => {
@@ -175,6 +176,9 @@ export default function Control({ preloadedProducts }) {
                 });
                 if (response.ok) {
                     console.log('Product reset successfully');
+                    setSaveSuccessMessage(true);
+                    await new Promise((resolve) => setTimeout(resolve, 4000));
+                    setSaveSuccessMessage(false);
                 } else { 
                     console.log('Error resetting product stock');
                 }
@@ -195,6 +199,9 @@ export default function Control({ preloadedProducts }) {
                 });
                 if (response.ok) {
                     console.log('Product stock saved successfully');
+                    setSaveSuccessMessage(true);
+                    await new Promise((resolve) => setTimeout(resolve, 4000));
+                    setSaveSuccessMessage(false);
                 } else { 
                     console.log('Error saving updated product stock');
                 }
@@ -299,6 +306,11 @@ export default function Control({ preloadedProducts }) {
                         </table>
                     </div>
                 </div>
+                {saveSuccessMessage && (
+                    <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
+                        Stock reset successfully
+                    </div>
+                )}
         </div>
         </>
     );
