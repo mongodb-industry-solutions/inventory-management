@@ -381,3 +381,12 @@
 
 }
 
+.reorder-button {
+    width: 100px;
+    color: #fff;
+    border: 1px solid #00684a;
+    background-color: #00684a;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+}
