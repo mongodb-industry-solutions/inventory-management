@@ -42,6 +42,7 @@ export default async function handler(req, res) {
     const results = await db
       .collection(collectionName)
       .aggregate([
+        
         {
           $search: {
             index: 'default',
