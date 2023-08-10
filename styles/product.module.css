@@ -77,6 +77,11 @@ border-collapse: collapse;
 
 .icon-container {
     background-color: rgb(249, 251, 250);
+    position: relative;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    
 }
 
 .details {
@@ -180,4 +185,12 @@ border-collapse: collapse;
     color: 'white'; 
     padding: '10px';
     z-index: 1000000;
+  }
+
+  .leaf {
+    position: absolute;
+    top: 65px;
+    right: 120px;
+    height: 23px;
+    width: 11px;
   }

@@ -19,6 +19,13 @@ export default function Product({ preloadedProduct }) {
     const [product, setProduct] = useState(preloadedProduct);
     const [showPopup, setShowPopup] = useState(false);
     const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
+
+    const lightColors = [
+        '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
+        '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9'
+    ];
+
+    const leafUrl = lightColors.includes(product.color.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
     
     const sdk = new ChartsEmbedSDK({ baseUrl: 'https://charts.mongodb.com/charts-jeffn-zsdtj' });
     const dashboardDiv = useRef(null);
@@ -95,7 +102,10 @@ export default function Product({ preloadedProduct }) {
         <div className="content">
         <div className={styles['product-detail-content']}>
             <div className={styles['icon']}>
+                <div className={styles["icon-container"]}>
                 <FontAwesomeIcon id="tshirt" icon={faShirt} style={{ color: product.color.hex, fontSize: '10rem', backgroundColor: 'rgb(249, 251, 250)', padding: '15px'}}/>
+                <img src={leafUrl} alt="Leaf" className={styles["leaf"]}/>
+                </div>
             </div>
             <div className={styles["details"]}>
                 <p className="name">{product.name}</p>
