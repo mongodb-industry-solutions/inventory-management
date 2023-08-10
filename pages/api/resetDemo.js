@@ -48,7 +48,8 @@ export default async (req, res) => {
                     "items.$[m].stock": mStock,
                     "items.$[l].stock": lStock,
                     "items.$[xl].stock": xlStock,
-                    "total_stock_sum": totalStock
+                    "total_stock_sum": totalStock,
+                    "autoreplenishment": false
                 } },
                 arrayFilters: [
                     { "xs.size": "XS" },
