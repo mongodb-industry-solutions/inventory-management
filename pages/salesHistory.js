@@ -141,6 +141,25 @@ export default function Sales({ sales, facets }) {
           }
         }
       };
+
+      function formatTimestamp(timestamp) {
+        if (!timestamp) return ""; // Handle cases where timestamp is missing or undefined
+      
+        const date = new Date(timestamp);
+      
+        const options = {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: true,
+        };
+      
+        return date.toLocaleString('en-US', options); // Format the date for display
+      }
+      
       
     return(
         <>
@@ -208,7 +227,7 @@ export default function Sales({ sales, facets }) {
                   <td>{sale.size}</td>
                   <td>{sale.quantity}</td>
                   <td>{sale.channel}</td>
-                  <td>{sale.timestamp}</td>
+                  <td>{formatTimestamp(sale.timestamp)}</td>
                 </tr>
               ))
             ) : (
