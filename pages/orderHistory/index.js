@@ -13,6 +13,11 @@ export default function Orders({ orders, facets }) {
   const [currentPage, setCurrentPage] = useState(1); // Set the initial current page to 1
   const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
 
+  const lightColors = [
+    '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
+    '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9'
+  ];
+
   // Calculate the total number of pages
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
@@ -279,6 +284,7 @@ export default function Orders({ orders, facets }) {
                   <td className="order-icon">
                     <div className="shirt-icon-background" >
                      <FaTshirt style={{ color: order.items?.color?.hex || 'black' }} />
+                     <img src={lightColors.includes(order.items?.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf"/>
                     </div>
                   </td>
                
