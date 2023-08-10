@@ -1,23 +1,51 @@
-import { useEffect, useState } from "react";
-import Chart from "../components/Chart";
+import { useEffect, useState, useRef } from "react";
+import  *  as  Realm  from  "realm-web";
+import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
+import styles from '../styles/dashboard.module.css';
+
+const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
 
 const Dashboard = () => {
     const channelOptions = ['Online', 'In-store'];
     const [selectedChannel, setSelectedChannel] = useState('All'); // Default to 'All'
-    const [filterChannel, setFilterChannel] = useState(null); // No initial filter
     const [menuOpen, setMenuOpen] = useState(false);
     const [filterName, setFilterName] = useState("Channel"); // Initial filter name
 
+    const sdk = new ChartsEmbedSDK({ baseUrl: 'https://charts.mongodb.com/charts-jeffn-zsdtj' });
+    const dashboardDiv = useRef(null);
+    const [rendered, setRendered] = useState(false);
+    const [dashboard] = useState(sdk.createDashboard({ 
+        dashboardId: '64c90e0d-a307-4906-8621-2b3f5811ad4c',
+        widthMode: 'scale', 
+        heightMode: 'scale', 
+        background: '#fff'
+    }));
+
+    useEffect(() => {
+      dashboard.render(dashboardDiv.current).then(() => setRendered(true)).catch(err => console.log("Error during Charts rendering.", err));
+    }, [dashboard]);
 
     useEffect(() => {
       if (selectedChannel === 'All') {
-        setFilterChannel(null); // No filter when 'All' is selected
         setFilterName("Channel");
       } else {
-        setFilterChannel({ "channel": selectedChannel });
         setFilterName(selectedChannel);
       }
     }, [selectedChannel]);
+
+    useEffect(() => {
+      const  login = async () => {
+      
+          await app.logIn(Realm.Credentials.anonymous());
+          const mongodb = app.currentUser.mongoClient("mongodb-atlas");
+          const collection = mongodb.db("interns_mongo_retail").collection("sales");
+          
+          for await (const  change  of  collection.watch({})) {
+            dashboard.refresh();
+          }
+      }
+      login();
+  }, []);
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -26,12 +54,13 @@ const Dashboard = () => {
     const handleChannelChange = (value) => {
         setSelectedChannel(value);
         toggleMenu();
+        dashboard.setFilter({ "channel": value }).catch(err => console.log("Error while filtering.", err));
     };
     
     const handleClearFilters = () => {
         setSelectedChannel('All');
-        setFilterChannel(null);
         setFilterName('Channel');
+        dashboard.setFilter({}).catch(err => console.log("Error while clearing filters.", err));
     };
 
   return (
@@ -73,38 +102,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      
-
-      <div className="charts">
-        <Chart
-          className="chart"
-          height={'500px'}
-          width={'600px'}
-          filter={filterChannel}
-          chartId={'64c9111c-ccec-427c-86e7-a15ee70ef1eb'}
-        />
-            <Chart 
-        className="chart"
-        height={'500px'} 
-        width={'600px'} 
-        filter={filterChannel} 
-        chartId={'64ca6af3-29c8-4893-8c16-98c441c70ccf'}
-        />
-        <Chart 
-        className="chart"
-        height={'500px'} 
-        width={'600px'} 
-        filter={filterChannel} 
-        chartId={'64ca7284-ee91-45d4-8a86-d7325b7ff8cb'}
-        />
-        <Chart 
-        className="chart"
-        height={'500px'} 
-        width={'600px'} 
-        filter={filterChannel} 
-        chartId={'64ca763c-13b1-4dab-804f-9e6d6a33ca87'}
-        />
-         </div>
+      <div className={styles["dashboard"]} ref={dashboardDiv}/>
       </div>
     </div>
   );
