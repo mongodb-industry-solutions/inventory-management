@@ -61,7 +61,7 @@ const ProductBox = ({ product }) => {
                     <p>{product.description}</p>
                     {
                         itemStockStatus == 'low' || totalStockStatus == 'low' ? 
-                            <span className={`${styles['alert-label']} ${styles['low']}`}>LOW ON STOCK</span> : 
+                            <span className={`${styles['alert-label']} ${styles['low']}`}>LOW STOCK</span> : 
                             itemStockStatus == 'ordered' || totalStockStatus == 'ordered' ? 
                                 <span className={`${styles['alert-label']} ${styles['ordered']}`}>ORDERED STOCK</span> : 
                                 null
