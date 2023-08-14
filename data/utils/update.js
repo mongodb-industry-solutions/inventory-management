@@ -278,3 +278,13 @@ db.orders.aggregate([
       "stocks",
   },
 ])
+
+//Change delivery times
+db.products.updatMany(
+  { },
+  [
+    { 
+      $set: { "items.delivery_time.amount": 8 }
+    }
+  ]
+);
