@@ -280,11 +280,15 @@ db.orders.aggregate([
 ])
 
 //Change delivery times
-db.products.updatMany(
+db.products.updateMany(
   { },
-  [
     { 
-      $set: { "items.delivery_time.amount": 8 }
+      $set: { "items.$[i].delivery_time.amount": 7 }
+    },
+    {
+      arrayFilters: [
+        { "i.size": "XL" }
+      ]
     }
-  ]
+  
 );
