@@ -59,3 +59,11 @@
   .ordered {
     background-color: orange;
   }
+
+  .leaf {
+    position: absolute;
+    top: 85px;
+    right: 85px;
+    height: 23px;
+    width: 11px;
+  }

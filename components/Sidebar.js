@@ -10,8 +10,7 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
   const [isShrunk, setIsShrunk] = useState(false);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
-
-  
+  const [numColorsToShow, setNumColorsToShow] = useState(10);
 
 
   const handleSizeChange = (event) => {
@@ -64,6 +63,14 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
     setIsShrunk(!isShrunk);
   };
 
+  const handleExpand = () => {
+    setNumColorsToShow(numColorsToShow + 10);
+  };
+
+  const handleCollapse = () => {
+    setNumColorsToShow(10);
+  };
+
   return (
     <div className={`${styles.sidebar} ${isShrunk ? styles["shrunk"] : ''}`}>
       <div className={`${styles["sidebar-header"]} ${isShrunk ? styles["shrunk"]: ''}`}>
@@ -94,17 +101,25 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
 
           <div className={styles["color-filters"]} >
             <h3>Color</h3>
-            {console.log(facets[0].facet.colorsFacet.buckets)} 
-            {facets[0].facet.colorsFacet.buckets.map((bucket) => (
-              <label key={bucket._id}>
-                <input
-                  type="checkbox"
-                  checked={selectedColors.includes(bucket._id)}
-                  onChange={() => handleColorChange(bucket._id)}
-                />
-                <span>{bucket._id}</span>
-              </label>
-            ))}
+            <div className={styles["color-list"]}>
+              {facets[0].facet.colorsFacet.buckets.slice(0, numColorsToShow).map((bucket) => (
+                <label key={bucket._id}>
+                  <input
+                    type="checkbox"
+                    checked={selectedColors.includes(bucket._id)}
+                    onChange={() => handleColorChange(bucket._id)}
+                  />
+                  <span>{bucket._id}</span>
+                </label>
+              ))}
+              {numColorsToShow < facets[0].facet.colorsFacet.buckets.length && (
+                <button onClick={handleExpand}>Load More</button>
+              )}
+
+              {numColorsToShow >= facets[0].facet.colorsFacet.buckets.length && facets[0].facet.colorsFacet.buckets.length > 10  && (
+                <button onClick={handleCollapse}>Load Less</button>
+              )}
+            </div>
           </div>
         </>
       )}

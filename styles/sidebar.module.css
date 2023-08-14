@@ -131,3 +131,22 @@
   .toggle-button:hover {
     background-color: #ddd;
   }
+
+  .color-list {
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+
+  .color-list button {
+    font-size: 10px;
+    color: #5e5555;
+    cursor: pointer;
+    border: none;
+    background: none;
+    text-decoration: underline;
+  }
+
+  .color-list::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}

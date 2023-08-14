@@ -324,6 +324,15 @@
   height: 90px; /* Set a fixed height */
   border-radius: 4px; /* Adjust the border-radius to create a rounded square */
   background-color: #f0f0f0; /* Set a default background color if needed */
+  position: relative;
+}
+
+.leaf {
+  position: absolute;
+  top: 37px;
+  right: 43px;
+  height: 10px;
+  width: 5px;
 }
 
 /* pagination.css */
