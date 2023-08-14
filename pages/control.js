@@ -46,7 +46,7 @@ export default function Control({ preloadedProducts }) {
   useEffect(() => {
     // Start or stop selling based on the isSelling state
     if (isSelling) {
-      const saleInterval = setInterval(performRandomSale, 8000); // 8 seconds in milliseconds
+      const saleInterval = setInterval(performRandomSale, 5000); // 5 seconds in milliseconds
       return () => clearInterval(saleInterval);
     }
   }, [isSelling]);
