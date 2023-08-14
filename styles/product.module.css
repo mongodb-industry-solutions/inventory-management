@@ -194,3 +194,18 @@ border-collapse: collapse;
     height: 23px;
     width: 11px;
   }
+
+  .switch-container {
+    display: flex;
+    align-items: center;
+    margin-top: 24px;
+  }
+
+  .switch-text {
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: capitalize;
+    font-family: "Euclid Circular A", Akzidenz, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: rgb(0, 30, 43);
+    margin-right: 16px;
+  }
