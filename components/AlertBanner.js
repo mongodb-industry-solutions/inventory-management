@@ -29,7 +29,7 @@ const AlertBanner = ({ item, onClose }) => {
               <a href={`/products/${item.product_id}`}>
                 {item.sku}
               </a> 
-              &nbsp; is low on stock!
+              &nbsp; is low stock!
             </span>
             <button className={styles["close-btn"]} onClick={handleClose}>
               <FontAwesomeIcon icon={faCircleXmark} />
