@@ -112,11 +112,14 @@ export default function Product({ preloadedProduct }) {
                 <p className="price">{product.price.amount} {product.price.currency}</p>
                 <p className="code">{product.code}</p>
                 {<StockLevelBar stock={product.total_stock_sum} />}
+                <div className={styles["switch-container"]}>
+                    <span className={styles["switch-text"]}>Autoreplenishment</span>
+                    <label className={styles["switch"]}>
+                        <input type="checkbox" checked={product.autoreplenishment} onChange={handleToggleAutoreplenishment}/>
+                        <span className={styles["slider"]}></span>
+                    </label>
+                </div>
             </div>
-            <label className={styles["switch"]}>
-                <input type="checkbox" checked={product.autoreplenishment} onChange={handleToggleAutoreplenishment}/>
-                <span className={styles["slider"]}></span>
-            </label>
             <div className={styles["table"]}>
             <table>
                 <thead>
