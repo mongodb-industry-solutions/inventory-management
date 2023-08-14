@@ -113,11 +113,11 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
                 </label>
               ))}
               {numColorsToShow < facets[0].facet.colorsFacet.buckets.length && (
-                <button onClick={handleExpand}>Load More</button>
+                <button onClick={handleExpand}>Show More</button>
               )}
 
               {numColorsToShow >= facets[0].facet.colorsFacet.buckets.length && facets[0].facet.colorsFacet.buckets.length > 10  && (
-                <button onClick={handleCollapse}>Load Less</button>
+                <button onClick={handleCollapse}>Show Less</button>
               )}
             </div>
           </div>
