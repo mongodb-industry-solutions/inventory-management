@@ -333,7 +333,7 @@ export async function getServerSideProps({ query }) {
           index: "internsmongoretail-productfacets",
           facet: {
             facets: {
-              colorsFacet: { type: "string", path: "color.name" },
+              colorsFacet: { type: "string", path: "color.name", numBuckets: 20 },
               sizesFacet: { type: "string", path: "items.size" },
             },
           },
@@ -345,6 +345,8 @@ export async function getServerSideProps({ query }) {
       .collection("products")
       .aggregate(agg)
       .toArray();
+
+      console.log('Facets:', facets); 
 
     return {
       props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)) },

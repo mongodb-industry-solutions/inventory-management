@@ -94,6 +94,7 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
 
           <div className={styles["color-filters"]} >
             <h3>Color</h3>
+            {console.log(facets[0].facet.colorsFacet.buckets)} 
             {facets[0].facet.colorsFacet.buckets.map((bucket) => (
               <label key={bucket._id}>
                 <input
