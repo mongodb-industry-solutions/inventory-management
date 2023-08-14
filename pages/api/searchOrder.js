@@ -61,11 +61,7 @@ export default async function handler(req, res) {
             'path': '$items'
           }
         },
-        {
-          $sort: {
-            'items.status.0.update_timestamp': -1,
-          },
-        },
+       
         { $limit: 20 },
       ])
       .toArray();
