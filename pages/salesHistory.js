@@ -265,7 +265,7 @@ export async function getServerSideProps() {
             index: "internsmongoretail-salesfacets",
             facet: {
               facets: {
-                colorsFacet: { type: "string", path: "color" },
+                colorsFacet: { type: "string", path: "color", numBuckets: 20 },
                 sizesFacet: { type: "string", path: "size" },
               },
             },
