@@ -81,7 +81,7 @@ export default function Sales({ sales, facets }) {
         // Filter orders based on sizes and colors
         let updatedFilteredSales = sales.filter(sale => {
           const size = sale.size; // Get the size directly from the sale object
-          const color = sale.color; // Get the color directly from the sale object
+          const color = sale.color.name; // Get the color directly from the sale object
       
           const sizeMatch = sizesFilter.length === 0 || sizesFilter.includes(size);
           const colorMatch = colorsFilter.length === 0 || colorsFilter.includes(color);
@@ -225,8 +225,8 @@ export default function Sales({ sales, facets }) {
 
                   <td className="order-icon">
                     <div className="shirt-icon-background" >
-                    <FaTshirt style={{ color: sale.color.toLowerCase() === 'green' ? '#00FF00' : (sale.color || 'black') }} />
-                    <img src={lightColors.includes(sale.color) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf"/>
+                      <FaTshirt style={{ color: sale.color?.hex || '#000000' }} />
+                      <img src={lightColors.includes(sale.color) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf"/>
                     </div>
                   </td>
                   <td>{sale.sku}</td>
@@ -271,7 +271,7 @@ export async function getServerSideProps() {
             index: "internsmongoretail-salesfacets",
             facet: {
               facets: {
-                colorsFacet: { type: "string", path: "color", numBuckets: 20 },
+                colorsFacet: { type: "string", path: "color.name", numBuckets: 20 },
                 sizesFacet: { type: "string", path: "size" },
               },
             },
