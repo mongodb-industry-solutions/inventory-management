@@ -226,7 +226,7 @@ export default function Sales({ sales, facets }) {
                   <td className="order-icon">
                     <div className="shirt-icon-background" >
                       <FaTshirt style={{ color: sale.color?.hex || '#000000' }} />
-                      <img src={lightColors.includes(sale.color) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf"/>
+                      <img src={lightColors.includes(sale.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf"/>
                     </div>
                   </td>
                   <td>{sale.sku}</td>
