@@ -8,33 +8,13 @@ export default async (req, res) => {
 
         const productIdList  = req.body;
 
-        const xsStock = [
-            {"location": "store","amount": 15,"threshold": 10,"target": 20},
-            {"location": "ordered","amount": 0},
-            {"location": "warehouse","amount": 80}
-        ];
-        const sStock = [
-            {"location": "store","amount": 10,"threshold": 10,"target": 20},
-            {"location": "ordered","amount": 0},
-            {"location": "warehouse","amount": 80}
-        ];
-        const mStock = [
-            {"location": "store","amount": 5,"threshold": 10,"target": 20},
-            {"location": "ordered","amount": 0},
-            {"location": "warehouse","amount": 80}
-        ];
-        const lStock = [
-            {"location": "store","amount": 10,"threshold": 10,"target": 20},
-            {"location": "ordered","amount": 0},
-            {"location": "warehouse","amount": 80}
-        ];
-        const xlStock = [
-            {"location": "store","amount": 15,"threshold": 10,"target": 20},
+        const stock = [
+            {"location": "store","amount": 20,"threshold": 10,"target": 20},
             {"location": "ordered","amount": 0},
             {"location": "warehouse","amount": 80}
         ];
         const totalStock = [
-            {"location": "store","amount": 55,"threshold": 50,"target": 100},
+            {"location": "store","amount": 100,"threshold": 50,"target": 100},
             {"location": "ordered","amount": 0},
             {"location": "warehouse","amount": 400}
         ];
@@ -43,21 +23,10 @@ export default async (req, res) => {
             updateOne: {
                 filter: { "_id": new ObjectId(productId) },
                 update: { $set: {
-                    "items.$[xs].stock": xsStock,
-                    "items.$[s].stock": sStock,
-                    "items.$[m].stock": mStock,
-                    "items.$[l].stock": lStock,
-                    "items.$[xl].stock": xlStock,
+                    "items.$[].stock": stock,
                     "total_stock_sum": totalStock,
                     "autoreplenishment": false
-                } },
-                arrayFilters: [
-                    { "xs.size": "XS" },
-                    { "s.size": "S" },
-                    { "m.size": "M" },
-                    { "l.size": "L" },
-                    { "xl.size": "XL" }
-                ]
+                } }
             },
         }));
         
