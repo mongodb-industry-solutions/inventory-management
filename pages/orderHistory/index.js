@@ -359,7 +359,10 @@ export async function getServerSideProps({ query }) {
         '$unwind': {
           'path': '$items'
         }
-      }
+      },
+      {
+        $sort: { 'items.status.0.update_timestamp': -1 } // Sort by newest orders first
+      },
     ];
 
     if (searchQuery) {
@@ -376,17 +379,22 @@ export async function getServerSideProps({ query }) {
       maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
       },
       },
+      
       },
+      
       },{
         '$unwind': {
           'path': '$items'
         }
-      }
+      },
+      {
+        $sort: { 'items.status.0.update_timestamp': -1 } // Sort by newest orders first
+      },
       ];
       
       
 
-      orders = await db.collection("orders").aggregate(searchAgg).sort({ "items.0.status.0.update_timestamp": -1 }).toArray();
+      orders = await db.collection("orders").aggregate(searchAgg).toArray();
       } else {
       orders = await db.collection("orders").aggregate(unwind).toArray();
       }
