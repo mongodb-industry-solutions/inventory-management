@@ -217,6 +217,25 @@ export default function Orders({ orders, facets }) {
     }
 };
 
+function formatTimestamp(timestamp) {
+  if (!timestamp) return ""; // Handle cases where timestamp is missing or undefined
+
+  const date = new Date(timestamp);
+
+  const options = {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: true,
+  };
+
+  return date.toLocaleString('en-US', options); // Format the date for display
+}
+
+
 
   return (
     <>
@@ -293,8 +312,8 @@ export default function Orders({ orders, facets }) {
                   <td>{order.items?.sku}</td>
                   <td>{order.items?.size}</td>
                   <td>{order.items?.amount}</td>
-                  <td>{order.items?.status?.[0]?.update_timestamp}</td>
-                  <td>{order.items?.status?.[1]?.update_timestamp}</td>
+                  <td>{formatTimestamp(order.items?.status?.[0]?.update_timestamp)}</td>
+                  <td>{formatTimestamp(order.items?.status?.[1]?.update_timestamp)}</td>
                   <td>
                     {order.items?.status?.find(status => status.name === 'arrived')?.name || 'placed'}
                   </td>
@@ -346,7 +365,10 @@ export async function getServerSideProps({ query }) {
         '$unwind': {
           'path': '$items'
         }
-      }
+      },
+      {
+        $sort: { 'items.status.0.update_timestamp': -1 } // Sort by newest orders first
+      },
     ];
 
     if (searchQuery) {
@@ -363,12 +385,17 @@ export async function getServerSideProps({ query }) {
       maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
       },
       },
+      
       },
+      
       },{
         '$unwind': {
           'path': '$items'
         }
-      }
+      },
+      {
+        $sort: { 'items.status.0.update_timestamp': -1 } // Sort by newest orders first
+      },
       ];
       
       
@@ -377,7 +404,8 @@ export async function getServerSideProps({ query }) {
       } else {
       orders = await db.collection("orders").aggregate(unwind).toArray();
       }
-      
+
+
 
 
 
