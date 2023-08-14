@@ -39,6 +39,9 @@ function Footer() {
             <a href="#" onClick={() => handleOptionClick('Bogatell Store')}>
               Bogatell Store
             </a>
+            <a >
+            <span className={`${styles["non-clickable-option"]}`} style={{ color: 'grey' }}>Gracia Store</span>
+            </a>
           </div>
         )}
 

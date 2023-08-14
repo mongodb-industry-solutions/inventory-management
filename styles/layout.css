@@ -631,3 +631,8 @@
     cursor: pointer;
 }
 
+.faded {
+  opacity: 0.5; /* Adjust the opacity value to control the fading effect */
+  color: grey; /* Setting the font color to grey */
+  /* You can also apply other styles like text-decoration, font-size, etc. */
+}
