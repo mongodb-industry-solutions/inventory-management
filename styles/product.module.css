@@ -77,6 +77,11 @@ border-collapse: collapse;
 
 .icon-container {
     background-color: rgb(249, 251, 250);
+    position: relative;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    
 }
 
 .details {
@@ -180,4 +185,27 @@ border-collapse: collapse;
     color: 'white'; 
     padding: '10px';
     z-index: 1000000;
+  }
+
+  .leaf {
+    position: absolute;
+    top: 65px;
+    right: 120px;
+    height: 23px;
+    width: 11px;
+  }
+
+  .switch-container {
+    display: flex;
+    align-items: center;
+    margin-top: 24px;
+  }
+
+  .switch-text {
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: capitalize;
+    font-family: "Euclid Circular A", Akzidenz, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: rgb(0, 30, 43);
+    margin-right: 16px;
   }
