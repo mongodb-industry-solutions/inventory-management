@@ -415,7 +415,7 @@ export async function getServerSideProps({ query }) {
           index: "internsmongoretail-ordersfacets",
           facet: {
             facets: {
-              colorsFacet: { type: "string", path: "items.color.name" },
+              colorsFacet: { type: "string", path: "items.color.name", numBuckets: 20 },
               sizesFacet: { type: "string", path: "items.size" },
             },
           },

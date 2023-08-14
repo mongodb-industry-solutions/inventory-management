@@ -206,7 +206,7 @@ export default function Sales({ sales, facets }) {
             ))}
           </ul>
         )}
-        
+          <div className="table-container" > 
             <table className="order-table">
           <thead>
             <tr>
@@ -243,6 +243,7 @@ export default function Sales({ sales, facets }) {
             )}
           </tbody>
         </table>
+        </div>
         <div className="pagination">
         {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
           <button
@@ -270,7 +271,7 @@ export async function getServerSideProps() {
             index: "internsmongoretail-salesfacets",
             facet: {
               facets: {
-                colorsFacet: { type: "string", path: "color" },
+                colorsFacet: { type: "string", path: "color", numBuckets: 20 },
                 sizesFacet: { type: "string", path: "size" },
               },
             },
