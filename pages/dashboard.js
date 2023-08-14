@@ -25,7 +25,7 @@ const Dashboard = () => {
       dashboard.render(dashboardDiv.current).then(() => setRendered(true)).catch(err => console.log("Error during Charts rendering.", err));
 
       if (dashboardDiv.current) {
-        dashboardDiv.current.style.height = "900px"; // Adjust the height value as needed
+        dashboardDiv.current.style.height = "900px"; 
     }
     }, [dashboard]);
 
