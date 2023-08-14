@@ -10,7 +10,6 @@ import { faShirt } from '@fortawesome/free-solid-svg-icons';
 import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
-import { set } from 'lodash';
 
 const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
 
