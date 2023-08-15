@@ -308,7 +308,7 @@ function formatTimestamp(timestamp) {
                   </td>
                
                   <td>{order.order_number}</td>
-                  <td>{order.items?.product_name}</td>
+                  <td>{order.items?.product.name}</td>
                   <td>{order.items?.sku}</td>
                   <td>{order.items?.size}</td>
                   <td>{order.items?.amount}</td>
