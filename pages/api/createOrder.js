@@ -7,6 +7,18 @@ export default async (req, res) => {
         const db = client.db("interns_mongo_retail");
 
         const { order } = req.body;
+        const placementTimestamp = new Date();
+
+        const status = {
+            name: 'placed',
+            update_timestamp: placementTimestamp
+        };
+
+        order.placement_timestamp = placementTimestamp;
+        order.items.forEach(item => item.status.push(status));
+        order.items.forEach(item => item.product.id = new ObjectId(item.product.id));
+
+        var insertOrderResponse = null;
 
         const transactionOptions = {
             readConcern: { level: 'snapshot' },
@@ -19,11 +31,11 @@ export default async (req, res) => {
         try{
             session.startTransaction(transactionOptions);
 
-            await db.collection("orders").insertOne(order, { session });
+            insertOrderResponse = await db.collection("orders").insertOne(order, { session });
 
             for (let i = 0; i < order.items?.length; i++) {
                 let item = order.items[i];
-                let productID = item.product.id.$oid;
+                let productID = item.product.id;
                 let sku = item.sku;
                 let amount = item.amount;
         
@@ -59,7 +71,7 @@ export default async (req, res) => {
         finally{
             await session.endSession();
         }
-        res.status(200).json({ success: true });
+        res.status(200).json({ success: true, orderId: insertOrderResponse.insertedId });
     } catch (e) {
         console.error(e);
         res.status(500).json({ error: 'Error creating order' });

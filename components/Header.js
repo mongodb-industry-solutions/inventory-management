@@ -7,7 +7,7 @@ import styles from '../styles/header.module.css';
 function Header() {
   return (
     <div className={styles["layout-header"]}>
-      <a href="/home"><img src="/images/logo.png" alt="Logo" className={styles["logo"]}/></a>
+      <a href="/products"><img src="/images/logo_v1.png" alt="Logo" className={styles["logo"]}/></a>
       <div className={styles["user-info"]}>
         <img src="/images/userAvatar.png" alt="User Avatar" className={styles["user-avatar"]} />
         <div>
