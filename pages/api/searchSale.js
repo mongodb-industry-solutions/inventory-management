@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb';
 import clientPromise from '../../lib/mongodb';
 
 const dbName = 'interns_mongo_retail';
-const collectionName = 'products';
+const collectionName = 'sales';
 
 let cachedDb = null;
 
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
               },
               fuzzy: {
                 maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
-              },
+                },
             },
           },
         },
@@ -66,3 +66,4 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+

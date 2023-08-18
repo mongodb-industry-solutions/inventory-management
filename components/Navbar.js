@@ -6,7 +6,7 @@ import styles from '../styles/navbar.module.css';
 
 function Footer() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOption, setSelectedOption] = useState('Bogatell Store');
   const [currentPage, setCurrentPage] = useState('');
 
   const handleDropdownToggle = () => {
@@ -39,17 +39,29 @@ function Footer() {
             <a href="#" onClick={() => handleOptionClick('Bogatell Store')}>
               Bogatell Store
             </a>
+            <a >
+            <span className={`${styles["non-clickable-option"]}`} style={{ color: 'grey' }}>Gracia Store</span>
+            </a>
           </div>
         )}
 
         <div className={styles["mongodb-button-container"]}>
         <a href="/products">
           <button className={styles["mongodb-button"]} onClick={handleProductsClick}>
-            Products
+            Real-time Inventory
           </button></a>
+          <a href="/orderHistory">
           <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
-            Order History
-          </button>
+            Orders
+          </button></a>
+          <a href="/salesHistory">
+          <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
+            Sales Events
+          </button></a>
+          <a href="/dashboard">
+          <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
+            Analytics
+          </button></a>
         </div>
       </div>
 

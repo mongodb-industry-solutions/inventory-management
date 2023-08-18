@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Select from 'react-select';
 import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
 
 import StockLevelBar from './StockLevelBar';
@@ -8,7 +9,7 @@ import StockLevelBar from './StockLevelBar';
 import styles from '../styles/popup.module.css';
 
 
-const ReplenishmentPopup = ({ product, onClose }) => {
+const ReplenishmentPopup = ({ product, onClose, onSave }) => {
 
     const order = {
         user_id: {
@@ -24,36 +25,75 @@ const ReplenishmentPopup = ({ product, onClose }) => {
 
     const [rows, setRows] = useState(order.items);
 
-    const renderBackdrop = (props) => <div className={styles["backdrop"]} {...props} />;
-   
+    useEffect(() => {
+
+        const lowStockRows = [];
+
+        for(const item of product.items) {
+            const itemStoreStock = item?.stock.find(stock => stock.location === 'store');
+
+            if( itemStoreStock.amount < itemStoreStock.threshold) {
+                var newItem = {
+                    amount: Math.max(0,itemStoreStock.target - itemStoreStock.amount),
+                    color: {
+                        hex: product.color.hex,
+                        name: product.color.name
+                    },
+                    delivery_time: item?.delivery_time,
+                    product: {
+                        id: product._id,
+                        name: product.name
+                    },
+                    size: item?.size || '',
+                    sku: item?.sku || '',
+                    status: []
+                }
+                lowStockRows.push(newItem);
+            }
+        }
+
+        setRows([...rows, ...lowStockRows]);
+    }
+    , []);
 
     const handleAddRow = () => {
-        const item = product.items[0];
 
-        const newItem = {
-            amount: 0,
-            color: {
-                hex: product.color.hex,
-                name: product.color.name
-            },
-            delivery_time: item?.delivery_time,
-            product: {
-                id: {$oid: product._id},
-                name: product.name
-            },
-            size: item?.size || '',
-            sku: item?.sku || '',
-            status: []
+        const newItemSize = product.items.find(
+            (item) => !rows.some((rowItem) => rowItem.size === item.size)
+          )?.size;
+
+        if (newItemSize) {
+            const item = product.items.find((item) => item.size === newItemSize);
+            const itemStoreStock = item?.stock.find(stock => stock.location === 'store');
+
+            const newItem = {
+                amount: Math.max(0,itemStoreStock.target - itemStoreStock.amount),
+                color: {
+                    hex: product.color.hex,
+                    name: product.color.name
+                },
+                delivery_time: item?.delivery_time,
+                product: {
+                    id: product._id,
+                    name: product.name
+                },
+                size: item?.size || '',
+                sku: item?.sku || '',
+                status: []
+            }
+            setRows([...rows, newItem]);
         }
-        setRows([...rows, newItem]);
     };
 
     const handleSizeChange = (index, newSize) => {
-        const newSku = product.items.find(item => item.size === newSize)?.sku;
-        const newDeliveryTime = product.items.find(item => item.size === newSize)?.delivery_time;
+        const newItem = product.items.find(item => item.size === newSize);
+        const newItemStoreStock = newItem?.stock.find(stock => stock.location === 'store');
+        const newSku = newItem?.sku;
+        const newDeliveryTime = newItem?.delivery_time;
+        const newAmount =  Math.max(0,newItemStoreStock.target - newItemStoreStock.amount);
 
         setRows((prevRows) =>
-          prevRows.map((row, i) => (i === index ? { ...row, size: newSize, sku: newSku, delivery_time: newDeliveryTime } : row))
+          prevRows.map((row, i) => (i === index ? { ...row, size: newSize, amount: newAmount, sku: newSku, delivery_time: newDeliveryTime } : row))
         );
       };
     
@@ -71,17 +111,8 @@ const ReplenishmentPopup = ({ product, onClose }) => {
 
     const handleSaveOrder = async (data) => {
 
-        const status = {
-            name: 'placed',
-            update_timestamp: new Date().toISOString()
-        };
-
-        order.placement_timestamp = new Date().toISOString();
         order.items = data;
-        order.items.forEach(item => item.status.push(status));
-
-        console.log(order);
-
+        
         try {
             const response = await fetch('/api/createOrder', {
                 method: 'POST',
@@ -93,16 +124,20 @@ const ReplenishmentPopup = ({ product, onClose }) => {
             if (response.ok) {
                 console.log('Order saved successfully');
                 onClose();
+                onSave();
                 setRows([]);
 
                 const fetchPromises = [];
+
+                const data = await response.json();
+                const orderId = data.orderId;
 
                 //Move to store
                 for (let i = 0; i < order.items?.length; i++) {
                     let item = order.items[i];
 
                     try {
-                        fetchPromises.push(fetch('/api/moveToStore', {
+                        fetchPromises.push(fetch(`/api/moveToStore?order_id=${orderId}`, {
                             method: 'POST',
                             headers: {
                               'Content-Type': 'application/json',
@@ -110,7 +145,7 @@ const ReplenishmentPopup = ({ product, onClose }) => {
                             body: JSON.stringify({ item }),
                           }));
                         if (response.ok) {
-                            console.log(item.sku + ' moved to store successfully.');
+                            //console.log(item.sku + ' moved to store successfully.');
                         } else {
                             console.log('Error moving to store item ' + item.sku + '.');
                         }
@@ -154,21 +189,40 @@ const ReplenishmentPopup = ({ product, onClose }) => {
                             <tbody>
                                 {rows.map((row, index) => {
                                     const item = product.items.find(item => item.size === rows[index].size);
+                                    const itemStoreStock = item?.stock.find(stock => stock.location === 'store');
 
                                     return (
                                     <tr key={index}>
                                         <td>
-                                            <select value={row.size} onChange={(e) => handleSizeChange(index, e.target.value)}>{product.items.map((item) => (
-                                                <option key={item.sku} value={item.size}>
-                                                {item.size}
-                                                </option>))}
-                                            </select>
+                                            <Select 
+                                                    value={{label: row.size, value: row.size}}
+                                                    onChange={(selectedOption) => handleSizeChange(index, selectedOption.value)}
+                                                    options={product.items
+                                                        .filter((item) => {
+                                                            return !rows.some((rowItem) => rowItem.size === item.size);
+                                                        })
+                                                        .map((item) => ({
+                                                        label: item.size,
+                                                        value: item.size,
+                                                    }))}
+                                                    menuPortalTarget={document.body}
+                                                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                                />
                                         </td>
                                         <td>
-                                            {item?.stock.find(stock => stock.location === 'store')?.amount ?? 0}
+                                            {itemStoreStock?.amount ?? 0}
                                         </td>
-                                        <td>
-                                            <input type="number" min="1" max="20" onChange={(e) => handleAmountUpdate(index, e.target.value)} />
+                                        <td className={styles["select-column"]}>
+                                                <Select 
+                                                    value={{label: rows[index].amount.toString(), value: rows[index].amount}}
+                                                    onChange={(selectedOption) => handleAmountUpdate(index, parseInt(selectedOption.value))}
+                                                    options={[...Array(Math.max(0, itemStoreStock?.target - itemStoreStock?.amount) + 1).keys()].map((value) => ({
+                                                        label: value.toString(),
+                                                        value: value,
+                                                    }))}
+                                                    menuPortalTarget={document.body}
+                                                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                                />
                                         </td>
                                         <td>
                                             {item?.delivery_time.amount} {item?.delivery_time.unit}

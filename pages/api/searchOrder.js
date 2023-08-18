@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb';
 import clientPromise from '../../lib/mongodb';
 
 const dbName = 'interns_mongo_retail';
-const collectionName = 'products';
+const collectionName = 'orders';
 
 let cachedDb = null;
 
@@ -42,6 +42,7 @@ export default async function handler(req, res) {
     const results = await db
       .collection(collectionName)
       .aggregate([
+        
         {
           $search: {
             index: 'default',
@@ -52,10 +53,15 @@ export default async function handler(req, res) {
               },
               fuzzy: {
                 maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
-              },
+                },
             },
           },
+        },{
+          '$unwind': {
+            'path': '$items'
+          }
         },
+       
         { $limit: 20 },
       ])
       .toArray();
@@ -66,3 +72,4 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+
