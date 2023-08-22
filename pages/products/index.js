@@ -8,9 +8,7 @@ import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
 import AlertBanner from '../../components/AlertBanner';
 
-const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
-
-export default function Products({ products, facets }) {
+export default function Products({ products, facets, realmAppId }) {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [displayProducts, setDisplayProducts] = useState(products);
@@ -18,6 +16,7 @@ export default function Products({ products, facets }) {
    const [alerts, setAlerts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
+  const  app = new  Realm.App({ id: realmAppId });
  
   
   // Create a ref for the input element
@@ -299,6 +298,11 @@ export default function Products({ products, facets }) {
 
 export async function getServerSideProps({ query }) {
   try {
+    if (!process.env.REALM_APP_ID) {
+      throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
+    }
+    const realmAppId = process.env.REALM_APP_ID;
+    
     const client = await clientPromise;
     const db = client.db("interns_mongo_retail");
     const searchQuery = query.q || '';
@@ -347,7 +351,7 @@ export async function getServerSideProps({ query }) {
       .toArray();
 
     return {
-      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)) },
+      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)), realmAppId: realmAppId },
     };
   } catch (e) {
     console.error(e);
