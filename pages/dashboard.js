@@ -3,19 +3,18 @@ import  *  as  Realm  from  "realm-web";
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
 import styles from '../styles/dashboard.module.css';
 
-const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
-
-const Dashboard = () => {
+const Dashboard = ({ realmAppId, baseUrl, dashboardId }) => {
     const channelOptions = ['Online', 'In-store'];
     const [selectedChannel, setSelectedChannel] = useState('All'); // Default to 'All'
     const [menuOpen, setMenuOpen] = useState(false);
     const [filterName, setFilterName] = useState("Channel"); // Initial filter name
+    const  app = new  Realm.App({ id: realmAppId });
 
-    const sdk = new ChartsEmbedSDK({ baseUrl: 'https://charts.mongodb.com/charts-jeffn-zsdtj' });
+    const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl });
     const dashboardDiv = useRef(null);
     const [rendered, setRendered] = useState(false);
     const [dashboard] = useState(sdk.createDashboard({ 
-        dashboardId: '64c90e0d-a307-4906-8621-2b3f5811ad4c',
+        dashboardId: dashboardId,
         widthMode: 'scale', 
         heightMode: 'scale', 
         background: '#fff'
@@ -111,6 +110,31 @@ const Dashboard = () => {
     </div>
   );
 };
+
+export async function getServerSideProps(context) {
+  try {
+
+    if (!process.env.REALM_APP_ID) {
+      throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
+    }
+    if (!process.env.CHARTS_EMBED_SDK_BASEURL) {
+      throw new Error('Invalid/Missing environment variables: "CHARTS_EMBED_SDK_BASEURL"')
+    }
+    if (!process.env.DASHBOARD_ID_GENERAL) {
+      throw new Error('Invalid/Missing environment variables: "DASHBOARD_ID_GENERAL"')
+    }
+    const realmAppId = process.env.REALM_APP_ID;
+    const baseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
+    const dashboardId = process.env.DASHBOARD_ID_GENERAL;
+
+    return {
+        props: { realmAppId: realmAppId, baseUrl: baseUrl, dashboardId: dashboardId },
+    };
+  } catch (e) {
+    console.error(e);
+    return { props: {ok: false, reason: "Server error"}};
+  }
+}
 
 export default Dashboard;
 

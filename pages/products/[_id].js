@@ -11,13 +11,12 @@ import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
 
-const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
-
-export default function Product({ preloadedProduct }) {
+export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboardId }) {
     
     const [product, setProduct] = useState(preloadedProduct);
     const [showPopup, setShowPopup] = useState(false);
     const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
+    const  app = new  Realm.App({ id: realmAppId });
 
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
@@ -26,11 +25,11 @@ export default function Product({ preloadedProduct }) {
 
     const leafUrl = lightColors.includes(product.color.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
     
-    const sdk = new ChartsEmbedSDK({ baseUrl: 'https://charts.mongodb.com/charts-jeffn-zsdtj' });
+    const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl});
     const dashboardDiv = useRef(null);
     const [rendered, setRendered] = useState(false);
     const [dashboard] = useState(sdk.createDashboard({ 
-        dashboardId: '64b518b0-a789-4f02-8764-b33d0c08bc61', 
+        dashboardId: dashboardId, 
         filter: {'items.product.id': ObjectId(preloadedProduct._id)},
         widthMode: 'scale', 
         heightMode: 'scale', 
@@ -170,6 +169,20 @@ export default function Product({ preloadedProduct }) {
 
 export async function getServerSideProps(context) {
     try {
+        if (!process.env.REALM_APP_ID) {
+            throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
+        }
+        if (!process.env.CHARTS_EMBED_SDK_BASEURL) {
+            throw new Error('Invalid/Missing environment variables: "CHARTS_EMBED_SDK_BASEURL"')
+        }
+        if (!process.env.DASHBOARD_ID_GENERAL) {
+            throw new Error('Invalid/Missing environment variables: "DASHBOARD_ID_GENERAL"')
+        }
+
+        const realmAppId = process.env.REALM_APP_ID;
+        const baseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
+        const dashboardId = process.env.DASHBOARD_ID_PRODUCT;
+
         const { req, params } = context;
         const client = await clientPromise;
         const db = client.db("interns_mongo_retail");
@@ -179,7 +192,7 @@ export async function getServerSideProps(context) {
             .findOne({ _id: ObjectId(params._id)});
 
         return {
-            props: { preloadedProduct: JSON.parse(JSON.stringify(product)) },
+            props: { preloadedProduct: JSON.parse(JSON.stringify(product)), realmAppId: realmAppId, baseUrl: baseUrl, dashboardId: dashboardId },
         };
     } catch (e) {
         console.error(e);

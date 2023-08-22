@@ -7,13 +7,12 @@ import StockLevelBar from "../components/StockLevelBar";
 
 import styles from "../styles/control.module.css";
 
-const  app = new  Realm.App({ id:  "interns-mongo-retail-app-nghfn"});
-
-export default function Control({ preloadedProducts }) { 
+export default function Control({ preloadedProducts, realmAppId }) { 
     
     const [products, setProducts] = useState(preloadedProducts);
     const [isSelling, setIsSelling] = useState(false); // State to keep track of sale status
     const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
+    const  app = new  Realm.App({ id: realmAppId });
   
   // Function to handle the button click to start or stop sales
   const handleSaleButtonClick = () => {
@@ -318,6 +317,11 @@ export default function Control({ preloadedProducts }) {
 
 export async function getServerSideProps() {
     try {
+        if (!process.env.REALM_APP_ID) {
+            throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
+        }
+        const realmAppId = process.env.REALM_APP_ID;
+
         const client = await clientPromise;
         const db = client.db("interns_mongo_retail");
 
@@ -327,7 +331,7 @@ export async function getServerSideProps() {
             .toArray();
 
         return {
-            props: { preloadedProducts: JSON.parse(JSON.stringify(products)) },
+            props: { preloadedProducts: JSON.parse(JSON.stringify(products)), realmAppId: realmAppId },
         };
     } catch (e) {
         console.error(e);
