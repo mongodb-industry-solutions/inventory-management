@@ -11,7 +11,7 @@ import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
 
-export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboardId }) {
+export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboardId, databaseName }) {
     
     const [product, setProduct] = useState(preloadedProduct);
     const [showPopup, setShowPopup] = useState(false);
@@ -46,7 +46,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
         
             await app.logIn(Realm.Credentials.anonymous());
             const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-            const collection = mongodb.db("interns_mongo_retail").collection("products");
+            const collection = mongodb.db(databaseName).collection("products");
             let updatedProduct = null;
             
             for await (const  change  of  collection.watch({ $match: { 'fullDocument._id': preloadedProduct._id } })) {
@@ -178,21 +178,25 @@ export async function getServerSideProps(context) {
         if (!process.env.DASHBOARD_ID_GENERAL) {
             throw new Error('Invalid/Missing environment variables: "DASHBOARD_ID_GENERAL"')
         }
+        if (!process.env.MONGODB_DATABASE_NAME) {
+            throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
+        }
 
+        const dbName = process.env.MONGODB_DATABASE_NAME;
         const realmAppId = process.env.REALM_APP_ID;
         const baseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
         const dashboardId = process.env.DASHBOARD_ID_PRODUCT;
 
         const { req, params } = context;
         const client = await clientPromise;
-        const db = client.db("interns_mongo_retail");
+        const db = client.db(dbName);
 
         const product = await db
             .collection("products")
             .findOne({ _id: ObjectId(params._id)});
 
         return {
-            props: { preloadedProduct: JSON.parse(JSON.stringify(product)), realmAppId: realmAppId, baseUrl: baseUrl, dashboardId: dashboardId },
+            props: { preloadedProduct: JSON.parse(JSON.stringify(product)), realmAppId: realmAppId, baseUrl: baseUrl, dashboardId: dashboardId, databaseName: dbName },
         };
     } catch (e) {
         console.error(e);

@@ -3,7 +3,7 @@ import  *  as  Realm  from  "realm-web";
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
 import styles from '../styles/dashboard.module.css';
 
-const Dashboard = ({ realmAppId, baseUrl, dashboardId }) => {
+const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
     const channelOptions = ['Online', 'In-store'];
     const [selectedChannel, setSelectedChannel] = useState('All'); // Default to 'All'
     const [menuOpen, setMenuOpen] = useState(false);
@@ -41,7 +41,7 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId }) => {
       
           await app.logIn(Realm.Credentials.anonymous());
           const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-          const collection = mongodb.db("interns_mongo_retail").collection("sales");
+          const collection = mongodb.db(databaseName).collection("sales");
           
           for await (const  change  of  collection.watch({})) {
             dashboard.refresh();
@@ -123,12 +123,17 @@ export async function getServerSideProps(context) {
     if (!process.env.DASHBOARD_ID_GENERAL) {
       throw new Error('Invalid/Missing environment variables: "DASHBOARD_ID_GENERAL"')
     }
+    if (!process.env.MONGODB_DATABASE_NAME) {
+      throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
+    }
+
+    const dbName = process.env.MONGODB_DATABASE_NAME;
     const realmAppId = process.env.REALM_APP_ID;
     const baseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
     const dashboardId = process.env.DASHBOARD_ID_GENERAL;
 
     return {
-        props: { realmAppId: realmAppId, baseUrl: baseUrl, dashboardId: dashboardId },
+        props: { realmAppId: realmAppId, baseUrl: baseUrl, dashboardId: dashboardId, databaseName: dbName },
     };
   } catch (e) {
     console.error(e);
