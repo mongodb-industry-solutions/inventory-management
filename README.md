@@ -39,13 +39,11 @@ To get started with MongoDB Atlas, follow these steps to set up your cluster and
    ```
    
 > **Note**
-> 
 > You will need this to set up your environment variables later (`MONGODB_URI`).
 
 
 3. Proceed to the "Browse Collections" section in your MongoDB Atlas dashboard. Create a new database, choosing a name that suits your application, such as "inventory_management".
 > **Note**
->
 > You will need this to set up your environment variables later (`MONGODB_DATABASE_NAME`).
 
 4. Inside the newly created database, set up three collections:
@@ -69,7 +67,6 @@ To enable real-time capabilities for your Next.js application, follow these step
    my-app-name-xxxxx
    ```
 > **Note**
->
 > You will need this to set up your environment variables later (REALM_APP_ID).
 
 4. In the sidebar menu under "Data access", navigate to "Rules". Locate your database and grant "Search" permissions to both the *products* and *sales* collections.
@@ -94,7 +91,6 @@ Follow these steps to configure search indexes for full-text search and filter f
    - After a few moments, your index will be ready for use. While you wait, you can proceed to create the other two search indexes for the *orders* and *sales* collections.
   
 > **Important**
->
 > The name of the index must be the same in order for the application to be able to work properly. 
 
 4. Now, let's proceed to create the indexes required for the filter facets. Note that this process is slightly different from creating default search indexes:
@@ -124,7 +120,6 @@ Follow these steps to configure search indexes for full-text search and filter f
    - Confirm "Create Index". The indexing process will take some time. You can create indexes for other collections while waiting for the indexing to complete.
   
 > **Important**
-> 
 > The name of the index must be the same in order for the application to be able to work properly. 
 
 By setting up these search indexes and filter facets, your application will gain powerful search and filtering capabilities, making it more user-friendly and efficient in managing inventory data.
@@ -147,7 +142,6 @@ Enhance your application's visualization and analytics capabilities with Atlas C
 5. Repeat the same process for both the general and product dashboards. Note that the "Base URL" will be the same for both dashboards.
 
 > **Note**
->
 > You will need this to set up your environment variables later (`CHARTS_EMBED_SDK_BASEURL`, `DASHBOARD_ID_PRODUCT`, `DASHBOARD_ID_GENERAL`).
 
 Setting up Atlas Charts will provide you with visually appealing and insightful dashboards to monitor product information and overall analytics, enhancing your decision-making process and improving the efficiency of your inventory management system.
