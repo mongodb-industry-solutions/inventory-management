@@ -354,8 +354,13 @@ function formatTimestamp(timestamp) {
 
 export async function getServerSideProps({ query }) {
   try {
+    if (!process.env.MONGODB_DATABASE_NAME) {
+      throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
+    }
+
+    const dbName = process.env.MONGODB_DATABASE_NAME;
     const client = await clientPromise;
-    const db = client.db("interns_mongo_retail");
+    const db = client.db(dbName);
     const searchQuery = query.q || '';
 
     let orders;
