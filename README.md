@@ -67,7 +67,7 @@ To enable real-time capabilities for your Next.js application, follow these step
    my-app-name-xxxxx
    ```
 > **Note**
-> You will need this to set up your environment variables later (REALM_APP_ID).
+> You will need this to set up your environment variables later (`REALM_APP_ID`).
 
 4. In the sidebar menu under "Data access", navigate to "Rules". Locate your database and grant "Search" permissions to both the *products* and *sales* collections.
 
