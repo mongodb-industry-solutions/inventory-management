@@ -37,10 +37,16 @@ To get started with MongoDB Atlas, follow these steps to set up your cluster and
    ```
    mongodb+srv://<username>:<password>@cluster-name.n0kts.mongodb.net/?retryWrites=true&w=majority
    ```
-   [!NOTE] You will need this to set up your environment variables later (`MONGODB_URI`).
+   
+> **Note**
+> 
+> You will need this to set up your environment variables later (`MONGODB_URI`).
+
 
 3. Proceed to the "Browse Collections" section in your MongoDB Atlas dashboard. Create a new database, choosing a name that suits your application, such as "inventory_management".
-    [!NOTE] You will need this to set up your environment variables later (`MONGODB_DATABASE_NAME`).
+> **Note**
+>
+> You will need this to set up your environment variables later (`MONGODB_DATABASE_NAME`).
 
 4. Inside the newly created database, set up three collections:
    - **Products**: This collection will store your product and stock data.
@@ -62,7 +68,9 @@ To enable real-time capabilities for your Next.js application, follow these step
    ```
    my-app-name-xxxxx
    ```
- [!NOTE] You will need this to set up your environment variables later (REALM_APP_ID).
+> **Note**
+>
+> You will need this to set up your environment variables later (REALM_APP_ID).
 
 4. In the sidebar menu under "Data access", navigate to "Rules". Locate your database and grant "Search" permissions to both the *products* and *sales* collections.
 
@@ -81,15 +89,17 @@ Follow these steps to configure search indexes for full-text search and filter f
    - Click "Create Index" in the top right corner of the screen.
    - You can choose to use either the Visual or JSON editor. For the purposes of this tutorial, let's stick with the Visual Editor. Click "Next".
    - Leave the index name as "default".
-   [!IMPORTANT] The name of the index must be the same in order for the application to be able to work properly. 
    - Select your database and choose one of the three collections created (e.g., *products*).
    - Keep the default Index Configurations unchanged and click "Create Index".
    - After a few moments, your index will be ready for use. While you wait, you can proceed to create the other two search indexes for the *orders* and *sales* collections.
+  
+> **Important**
+>
+> The name of the index must be the same in order for the application to be able to work properly. 
 
 4. Now, let's proceed to create the indexes required for the filter facets. Note that this process is slightly different from creating default search indexes:
    - Click "Create Index" again, select the Visual Editor, and click "Next".
    - Name this index "facets".
-   [!IMPORTANT] The name of the index must be the same in order for the application to be able to work properly. 
    - Select your database and one of the three collections for which you're creating these types of indexes. Click "Next".
    - Choose "Refine Your Index", deactivate "Dynamic Mapping", and add the Field Mappings as specified below for each collection:
 
@@ -112,6 +122,10 @@ Follow these steps to configure search indexes for full-text search and filter f
      | size       | StringFacet  |
 
    - Confirm "Create Index". The indexing process will take some time. You can create indexes for other collections while waiting for the indexing to complete.
+  
+> **Important**
+> 
+> The name of the index must be the same in order for the application to be able to work properly. 
 
 By setting up these search indexes and filter facets, your application will gain powerful search and filtering capabilities, making it more user-friendly and efficient in managing inventory data.
 
@@ -132,7 +146,9 @@ Enhance your application's visualization and analytics capabilities with Atlas C
 
 5. Repeat the same process for both the general and product dashboards. Note that the "Base URL" will be the same for both dashboards.
 
-[!NOTE] You will need this to set up your environment variables later (`CHARTS_EMBED_SDK_BASEURL`, `DASHBOARD_ID_PRODUCT`, `DASHBOARD_ID_GENERAL`).
+> **Note**
+>
+> You will need this to set up your environment variables later (`CHARTS_EMBED_SDK_BASEURL`, `DASHBOARD_ID_PRODUCT`, `DASHBOARD_ID_GENERAL`).
 
 Setting up Atlas Charts will provide you with visually appealing and insightful dashboards to monitor product information and overall analytics, enhancing your decision-making process and improving the efficiency of your inventory management system.
 
