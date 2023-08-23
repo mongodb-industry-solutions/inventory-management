@@ -2,7 +2,11 @@ import { MongoClient } from 'mongodb';
 import clientPromise from '../../lib/mongodb';
 import { random } from 'lodash';
 
-const dbName = 'interns_mongo_retail';
+if (!process.env.MONGODB_DATABASE_NAME) {
+  throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
+}
+
+const dbName = process.env.MONGODB_DATABASE_NAME;
 const collectionName = 'products';
 
 async function performSale(productsCollection, salesCollection, color, size, quantity) {

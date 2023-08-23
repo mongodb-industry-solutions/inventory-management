@@ -2,9 +2,15 @@ import clientPromise from '../../lib/mongodb';
 
 export default async (req, res) => {
     try {
+
+        if (!process.env.MONGODB_DATABASE_NAME) {
+            throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
+        }
+
+        const dbName = process.env.MONGODB_DATABASE_NAME;
         const client = await clientPromise;
         const { ObjectId } = require('mongodb');
-        const db = client.db("interns_mongo_retail");
+        const db = client.db(dbName);
 
         const { order } = req.body;
         const placementTimestamp = new Date();

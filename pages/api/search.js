@@ -1,7 +1,11 @@
 import { MongoClient } from 'mongodb';
 import clientPromise from '../../lib/mongodb';
 
-const dbName = 'interns_mongo_retail';
+if (!process.env.MONGODB_DATABASE_NAME) {
+  throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
+}
+
+const dbName = process.env.MONGODB_DATABASE_NAME;
 const collectionName = 'products';
 
 let cachedDb = null;
