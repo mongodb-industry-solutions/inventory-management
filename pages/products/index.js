@@ -8,7 +8,7 @@ import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
 import AlertBanner from '../../components/AlertBanner';
 
-export default function Products({ products, facets, realmAppId }) {
+export default function Products({ products, facets, realmAppId, databaseName }) {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [displayProducts, setDisplayProducts] = useState(products);
@@ -32,7 +32,7 @@ export default function Products({ products, facets, realmAppId }) {
         
       await app.logIn(Realm.Credentials.anonymous());
       const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-      const collection = mongodb.db("interns_mongo_retail").collection("products");
+      const collection = mongodb.db(databaseName).collection("products");
       let updatedProduct = null;
       
       for await (const  change  of  collection.watch()) {
@@ -301,10 +301,15 @@ export async function getServerSideProps({ query }) {
     if (!process.env.REALM_APP_ID) {
       throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
     }
+    if (!process.env.MONGODB_DATABASE_NAME) {
+      throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
+    }
+
+    const dbName = process.env.MONGODB_DATABASE_NAME;
     const realmAppId = process.env.REALM_APP_ID;
     
     const client = await clientPromise;
-    const db = client.db("interns_mongo_retail");
+    const db = client.db(dbName);
     const searchQuery = query.q || '';
 
     let products;
@@ -351,7 +356,7 @@ export async function getServerSideProps({ query }) {
       .toArray();
 
     return {
-      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)), realmAppId: realmAppId },
+      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)), realmAppId: realmAppId, databaseName: dbName },
     };
   } catch (e) {
     console.error(e);

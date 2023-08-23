@@ -7,7 +7,7 @@ import StockLevelBar from "../components/StockLevelBar";
 
 import styles from "../styles/control.module.css";
 
-export default function Control({ preloadedProducts, realmAppId }) { 
+export default function Control({ preloadedProducts, realmAppId, databaseName }) { 
     
     const [products, setProducts] = useState(preloadedProducts);
     const [isSelling, setIsSelling] = useState(false); // State to keep track of sale status
@@ -55,7 +55,7 @@ export default function Control({ preloadedProducts, realmAppId }) {
         
             await app.logIn(Realm.Credentials.anonymous());
             const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-            const collection = mongodb.db("interns_mongo_retail").collection("products");
+            const collection = mongodb.db(databaseName).collection("products");
 
             for await (const  change  of  collection.watch()) {
 
@@ -320,10 +320,15 @@ export async function getServerSideProps() {
         if (!process.env.REALM_APP_ID) {
             throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
         }
+        if (!process.env.MONGODB_DATABASE_NAME) {
+            throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
+        }
+
+        const dbName = process.env.MONGODB_DATABASE_NAME;
         const realmAppId = process.env.REALM_APP_ID;
 
         const client = await clientPromise;
-        const db = client.db("interns_mongo_retail");
+        const db = client.db(dbName);
 
         const products = await db
             .collection("products")
@@ -331,7 +336,7 @@ export async function getServerSideProps() {
             .toArray();
 
         return {
-            props: { preloadedProducts: JSON.parse(JSON.stringify(products)), realmAppId: realmAppId },
+            props: { preloadedProducts: JSON.parse(JSON.stringify(products)), realmAppId: realmAppId, databaseName: dbName },
         };
     } catch (e) {
         console.error(e);
