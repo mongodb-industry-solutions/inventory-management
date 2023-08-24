@@ -417,7 +417,7 @@ export async function getServerSideProps({ query }) {
     const agg = [
       {
         $searchMeta: {
-          index: "internsmongoretail-ordersfacets",
+          index: "facets",
           facet: {
             facets: {
               colorsFacet: { type: "string", path: "items.color.name", numBuckets: 20 },
