@@ -1,161 +1,177 @@
 .popup {
- position: fixed;
- width: 80%;
- height: 50%;
- padding: 50px;
- z-index: 200;
+  position: fixed;
+  width: 80%;
+  height: 50%;
+  padding: 50px;
+  z-index: 200;
   top: 50%;
   left: 50%;
   /* bring your own prefixes */
   transform: translate(-50%, -50%);
   background-color: rgb(249, 251, 250);
   box-shadow: rgba(0, 30, 43, 0.3) 0px 4px 10px -4px;
-    transition: border 150ms ease-in-out 0s, box-shadow;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(232, 237, 235);
-    background: #fff;
-    border-radius: 24px;
+  transition: border 150ms ease-in-out 0s, box-shadow;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(232, 237, 235);
+  background: #fff;
+  border-radius: 24px;
 }
+
 .popup-content h3 {
-    font-family: "Euclid Circular A", Akzidenz, "Helvetica Neue", Helvetica, Arial, sans-serif;
-    border-bottom: 1px solid rgb(232, 237, 235);
-    font-weight: 200;
-    line-height: 1.4;
-    font-size: 24px;
-    padding-bottom: 10px;
+  font-family: "Euclid Circular A", Akzidenz, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border-bottom: 1px solid rgb(232, 237, 235);
+  font-weight: 200;
+  line-height: 1.4;
+  font-size: 24px;
+  padding-bottom: 10px;
 }
 
 .backdrop {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 150;
-    background-color: rgba(0, 30, 43, 0.6);
-  }
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 150;
+  background-color: rgba(0, 30, 43, 0.6);
+}
 
-  .close-button {
-    background: none;
-    color: rgb(92, 108, 117);
-    font-size: 16px;
-    width: 28px;
-    height: 28px;
-    border: none;
-    padding: 0;
-    margin-left: auto;
-    margin-bottom: -30px;
-    margin-top: -30px;
-    margin-right: -30px;
-    display: block;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: color 150ms ease-in-out 0s;
-    padding-top: 5px;
-  }
+.close-button {
+  background: none;
+  color: rgb(92, 108, 117);
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  padding: 0;
+  margin-left: auto;
+  margin-bottom: -30px;
+  margin-top: -30px;
+  margin-right: -30px;
+  display: block;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 150ms ease-in-out 0s;
+  padding-top: 5px;
+}
 
-  .close-button:hover {
-    background-color: rgba(92, 108, 117, 0.15);
-    color: black;
-  }
+.close-button:hover {
+  background-color: rgba(92, 108, 117, 0.15);
+  color: black;
+}
 
 .table-container {
   position: relative;
 }
 
-.table-wrapper{
-    max-height: 265px; /* Subtract the button height from the container height */
-    overflow-y: auto;
-    position: relative;
-    display: flex;
-    padding-right: 35px;
-    padding-left: 35px;
+.table-wrapper {
+  max-height: 265px;
+  /* Subtract the button height from the container height */
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  padding-right: 35px;
+  padding-left: 35px;
 }
+
 .table-wrapper table {
-    flex-grow: 1;
-    border-collapse: collapse;
+  flex-grow: 1;
+  border-collapse: collapse;
 }
 
 .table-wrapper tr {
- height:35px;
+  height: 35px;
 }
+
 .table-wrapper thead tr {
-    border-top: solid 2px #e8edeb;
-    border-bottom: solid 2px #e8edeb;
-    color: #1c2d38;
-    font-weight: 700;
+  border-top: solid 2px #e8edeb;
+  border-bottom: solid 2px #e8edeb;
+  color: #1c2d38;
+  font-weight: 700;
 }
 
 .table-wrapper tbody tr {
-    border-bottom: solid 1px #e8edeb;
+  border-bottom: solid 1px #e8edeb;
 }
 
-.table-wrapper th, .table-wrapper td {
-    text-align: center;
-    vertical-align: middle;
-    position: relative;
+.table-wrapper th,
+.table-wrapper td {
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
 }
 
 .add-button {
-    position: absolute;
-    bottom: -35px; /* Adjust the distance from the bottom */
-    right: 50px; /* Adjust the distance from the right */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: green;
-    color: white;
-    font-size: 16px;
-    width: 28px;
-    height: 28px;
-    border: none;
-    padding: 0;
-    border-radius: 50%;
-  }
+  position: absolute;
+  bottom: -35px;
+  /* Adjust the distance from the bottom */
+  right: 50px;
+  /* Adjust the distance from the right */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(139, 14, 201);
+  color: white;
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  padding: 0;
+  border-radius: 50%;
+}
 
-  .delete-button {
-    position: absolute;
-    justify-content: center;
-    align-items: center;
-    background: none;
-    color: rgb(92, 108, 117);
-    font-size: 16px;
-    width: 28px;
-    height: 28px;
-    border: none;
-    padding: 0;
-    border-radius: 50%;
-    top: 50%;
-  right: -35px; /* Adjust the distance from the right */
-  transform: translateY(-50%); /* Center the button vertically */
-  }
+.delete-button {
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  color: rgb(92, 108, 117);
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  padding: 0;
+  border-radius: 50%;
+  top: 50%;
+  right: -35px;
+  /* Adjust the distance from the right */
+  transform: translateY(-50%);
+  /* Center the button vertically */
+}
 
 .save-button {
-    position: absolute;
-    bottom: 24px;
-    right: 24px;
-    width: 150px;
-    margin-left: auto;
-    display: block;
-    color: #fff;
-    border: 1px solid #00684a;
-    background-color: #00684a;
-    border-radius: 6px;
-    font-weight: 700;
-  }
+  color: rgb(139, 14, 201);
+  border: 1px solid #d5d5d5;
+  background-color: #ffffff;
+  padding: 6px;
+  border-radius: 20px;
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 70px;
+  margin-left: auto;
+  display: block;
 
-  .total-time {
-    position: absolute;
-    bottom: 24px;
-    left: 24px;
-    font-size: 13px;
-    margin-right: auto;
-    font-weight: 700;
-  }
+  font-weight: 700;
+}
 
-  .popup button {
-    cursor: pointer;
-  }
+.save-button:hover {
+  color: #ffffff;
+  background-color:  rgb(139, 14, 201);
+}
+
+.total-time {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  font-size: 13px;
+  margin-right: auto;
+  font-weight: 700;
+}
+
+.popup button {
+  cursor: pointer;
+}

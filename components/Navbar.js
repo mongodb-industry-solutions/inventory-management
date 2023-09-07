@@ -26,6 +26,18 @@ function Footer() {
     setCurrentPage('orderHistory');
   };
 
+  //Info pop-up
+  const [showInfoPopup, setShowInfoPopup] = useState(false);
+
+  const handleInfoButtonClick = () => {
+    setShowInfoPopup(true);
+  };
+
+  const handlePopupClose = () => {
+    setShowInfoPopup(false);
+  };
+
+
   return (
     <div className={styles["layout-footer"]}>
       <div className={styles["dropdown"]}>
@@ -40,35 +52,47 @@ function Footer() {
               Bogatell Store
             </a>
             <a >
-            <span className={`${styles["non-clickable-option"]}`} style={{ color: 'grey' }}>Gracia Store</span>
+              <span className={`${styles["non-clickable-option"]}`} style={{ color: 'grey' }}>Gracia Store</span>
             </a>
           </div>
         )}
 
         <div className={styles["mongodb-button-container"]}>
-        <a href="/products">
-          <button className={styles["mongodb-button"]} onClick={handleProductsClick}>
-            Real-time Inventory
-          </button></a>
+          <a href="/products">
+            <button className={styles["mongodb-button"]} onClick={handleProductsClick}>
+              Real-time Inventory
+            </button></a>
           <a href="/orderHistory">
-          <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
-            Orders
-          </button></a>
+            <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
+              Orders
+            </button></a>
           <a href="/salesHistory">
-          <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
-            Sales Events
-          </button></a>
+            <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
+              Sales Events
+            </button></a>
           <a href="/dashboard">
-          <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
-            Analytics
-          </button></a>
+            <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
+              Analytics
+            </button></a>
         </div>
+
+        <div className="flex justify-center items-center mb-4 mt-0">
+          <button
+            type="button"
+            onClick={handleInfoButtonClick}
+            className={styles["info-button"]}
+          >
+            <img src="/images/info.png" alt="Info" className={styles["info-icon"]} />
+          </button>
+        </div>
+
       </div>
 
+      
       {currentPage === 'products' && (
         <div>
           {/* Render the Products page */}
-   
+
           {/* bunch of components */}
         </div>
       )}
@@ -80,7 +104,20 @@ function Footer() {
           {/* bunch of components */}
         </div>
       )}
+
+{showInfoPopup && (
+        <div
+          
+          onClick={handlePopupClose}
+        >
+          <div className={styles["architecture-container"]}>
+            <img src="/images/inv_architecture.png" alt="Architecture" className={styles["architecture-img"]} />
+          </div>
+        </div>
+      )}
+
     </div>
+    
   );
 }
 
