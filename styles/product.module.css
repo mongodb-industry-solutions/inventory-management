@@ -61,19 +61,13 @@ border-collapse: collapse;
     width: 150px;
     margin-top: 10px;
     margin-left: auto;
-    padding: 5px;
     display: block;
-    color: rgb(139, 14, 201);
-    border: 1px solid #b1b1b1;
-    background-color: #ffffff;
-    border-radius: 20px;
+    color: #fff;
+    border: 1px solid #00684a;
+    background-color: #00684a;
+    border-radius: 6px;
     font-weight: 700;
     cursor: pointer;
-  }
-
-  .table button:hover {
-    color: #ffffff;
-    background-color:  rgb(139, 14, 201);
   }
 
 .icon {
