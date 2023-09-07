@@ -14,8 +14,8 @@ export default function Orders({ orders, facets }) {
   const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
 
   const lightColors = [
-    '#B1FF05', '#E9FF99', '#B45AF2', '#F2C5EE',
-    '#00D2FF', '#A6FFEC', '#FFE212', '#FFEEA9'
+    '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
+    '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9'
   ];
 
   // Calculate the total number of pages
@@ -50,12 +50,12 @@ export default function Orders({ orders, facets }) {
       setSortedOrders(orders);
     }
   };
-
+  
 
   const handleSearchInputChange = async (e) => {
     const searchValue = e.target.value;
     setSearchQuery(searchValue);
-
+  
     if (searchValue.length > 0) {
       try {
         const response = await fetch(`/api/suggestions_orderhistory?q=${encodeURIComponent(searchValue)}`);
@@ -71,11 +71,11 @@ export default function Orders({ orders, facets }) {
 
     setSelectedSuggestionIndex(-1);
   };
-
+  
   useEffect(() => {
     handleSearch();
   }, [searchQuery]);
-
+  
 
   const filterOrders = (sizesFilter, colorsFilter) => {
     // Filter orders based on sizes and colors
@@ -158,91 +158,91 @@ export default function Orders({ orders, facets }) {
 
     const order = {
       user_id: {
-        $oid: '649ef73a7827d12200b87895'
+          $oid: '649ef73a7827d12200b87895'
       },
       location: {
-        origin: 'warehouse',
-        destination: 'store'
+          origin: 'warehouse',
+          destination: 'store'
       },
       placement_timestamp: '',
       items: []
-    };
-
-    order.items.push(item);
-
-    try {
-      const response = await fetch('/api/createOrder', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ order }),
-      });
-      if (response.ok) {
-        handleSave();
-
-        const fetchPromises = [];
-
-        const data = await response.json();
-        const orderId = data.orderId;
-
-        //Move to store
-        for (let i = 0; i < order.items?.length; i++) {
-          let item = order.items[i];
-
-          try {
-            fetchPromises.push(fetch(`/api/moveToStore?order_id=${orderId}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ item }),
-            }));
-            if (response.ok) {
-              //console.log(item.sku + ' moved to store successfully.');
-            } else {
-              console.log('Error moving to store item ' + item.sku + '.');
-            }
-          } catch (e) {
-            console.error(e);
-          }
-        }
-        await Promise.all(fetchPromises);
-
-      } else {
-        console.log('Error saving order');
-      }
-    } catch (e) {
-      console.error(e);
-    }
   };
 
-  function formatTimestamp(timestamp) {
-    if (!timestamp) return ""; // Handle cases where timestamp is missing or undefined
+    order.items.push(item);
+    
+    try {
+        const response = await fetch('/api/createOrder', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ order }),
+          });
+        if (response.ok) {
+            handleSave();
 
-    const date = new Date(timestamp);
+            const fetchPromises = [];
 
-    const options = {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-      hour12: true,
-    };
+            const data = await response.json();
+            const orderId = data.orderId;
 
-    return date.toLocaleString('en-US', options); // Format the date for display
-  }
+            //Move to store
+            for (let i = 0; i < order.items?.length; i++) {
+                let item = order.items[i];
+
+                try {
+                    fetchPromises.push(fetch(`/api/moveToStore?order_id=${orderId}`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ item }),
+                      }));
+                    if (response.ok) {
+                        //console.log(item.sku + ' moved to store successfully.');
+                    } else {
+                        console.log('Error moving to store item ' + item.sku + '.');
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+            await Promise.all(fetchPromises);
+
+        } else {
+            console.log('Error saving order');
+        }
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+function formatTimestamp(timestamp) {
+  if (!timestamp) return ""; // Handle cases where timestamp is missing or undefined
+
+  const date = new Date(timestamp);
+
+  const options = {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: true,
+  };
+
+  return date.toLocaleString('en-US', options); // Format the date for display
+}
 
 
 
   return (
     <>
-      <Sidebar facets={facets} filterOrders={filterOrders} page="orders" />
+      <Sidebar facets={facets} filterOrders={filterOrders} page="orders"/>
       <div className="content">
 
-        <div className="search-bar">
+      <div className="search-bar">
           <input
             ref={inputRef} // Attach the ref to the input element
             className="search-input"
@@ -264,8 +264,9 @@ export default function Orders({ orders, facets }) {
             {suggestions.map((suggestion, index) => (
               <li key={suggestion} className="autocomplete-item">
                 <button
-                  className={`autocomplete-button ${index === selectedSuggestionIndex ? "selected" : ""
-                    }`}
+                  className={`autocomplete-button ${
+                    index === selectedSuggestionIndex ? "selected" : ""
+                  }`}
                   onClick={() => {
                     setSearchQuery(suggestion);
                     setSuggestions([]); // Hide the suggestions
@@ -277,81 +278,74 @@ export default function Orders({ orders, facets }) {
             ))}
           </ul>
         )}
-        <div className="table-container" >
-          <table className="order-table" >
-            <thead>
-              <tr>
-                <th style={{ width: '10%' }}>Item</th>
-                <th style={{ width: '5%' }}>Order ID</th>
-                <th style={{ width: '12%' }}>Name</th>
-                <th style={{ width: '7%' }}>SKU</th>
-                <th style={{ width: '5%' }}>Size</th>
-                <th style={{ width: '5%' }}>Amount</th>
-                <th style={{ width: '12%' }}>Placement Date</th>
-                <th style={{ width: '12%' }}>Arrival Date</th>
-                <th style={{ width: '5%' }}>Status</th>
-                <th style={{ width: '5%' }}></th>
+     <div className="table-container" > 
+    <table className="order-table" >
+          <thead>
+            <tr>
+            <th style={{ width: '15%' }}>Item</th>
+            <th style={{ width: '5%' }}>Order ID</th>
+            <th style={{ width: '10%' }}>Name</th>
+            <th style={{ width: '10%' }}>SKU</th>
+            <th style={{ width: '5%' }}>Size</th>
+            <th style={{ width: '5%' }}>Amount</th>
+            <th style={{ width: '17.5%' }}>Placement Date</th>
+            <th style={{ width: '17.5%' }}>Arrival Date</th>
+            <th style={{ width: '5%' }}>Status</th>
+            <th style={{ width: '5%' }}></th>
 
-              </tr>
-            </thead>
-            <tbody>
-              {filteredOrders.length > 0 ? (
-                sortedOrders.slice(startIndex, endIndex).map(order => (
-                  <tr key={order._id + order.items.sku} className="order-row">
-
-                    <td className="order-icon">
-                      <div className="shirt-icon-background" >
-                        <FaTshirt style={{ color: order.items?.color?.hex || 'black' }} />
-                        <img src={lightColors.includes(order.items?.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf" />
-                      </div>
-                    </td>
-
-                    <td>{order.order_number}</td>
-                    <td>{order.items?.product.name}</td>
-                    <td>{order.items?.sku}</td>
-                    <td>{order.items?.size}</td>
-                    <td>{order.items?.amount}</td>
-                    <td>{formatTimestamp(order.items?.status?.[0]?.update_timestamp)}</td>
-                    <td>{formatTimestamp(order.items?.status?.[1]?.update_timestamp)}</td>
-                    <td>
-                  {/*  {order.items?.status?.find(status => status.name === 'arrived')?.name || 'placed'}  */}
-
-                      {order.items?.status?.find(status => status.name === 'arrived')?.name === 'arrived' ? (
-                         <span className="arrived">arrived</span>
-                         ) : (
-                           <span className="placed">placed</span>
-                      )}
-                      
-                    </td>
-                    <td>
-                      <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="8">No results found</td>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredOrders.length > 0 ? (
+              sortedOrders.slice(startIndex, endIndex).map(order => (
+                <tr key={order._id + order.items.sku} className="order-row">
+        
+                  <td className="order-icon">
+                    <div className="shirt-icon-background" >
+                     <FaTshirt style={{ color: order.items?.color?.hex || 'black' }} />
+                     <img src={lightColors.includes(order.items?.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf"/>
+                    </div>
+                  </td>
+               
+                  <td>{order.order_number}</td>
+                  <td>{order.items?.product.name}</td>
+                  <td>{order.items?.sku}</td>
+                  <td>{order.items?.size}</td>
+                  <td>{order.items?.amount}</td>
+                  <td>{formatTimestamp(order.items?.status?.[0]?.update_timestamp)}</td>
+                  <td>{formatTimestamp(order.items?.status?.[1]?.update_timestamp)}</td>
+                  <td>
+                    {order.items?.status?.find(status => status.name === 'arrived')?.name || 'placed'}
+                  </td>
+                  <td>
+                    <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
+                  </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-          <div className="pagination">
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-              <button
-                key={pageNumber}
-                className={pageNumber === currentPage ? 'active' : ''}
-                onClick={() => handlePageChange(pageNumber)}
-              >
-                {pageNumber}
-              </button>
-            ))}
-          </div>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8">No results found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        <div className="pagination">
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+          <button
+            key={pageNumber}
+            className={pageNumber === currentPage ? 'active' : ''}
+            onClick={() => handlePageChange(pageNumber)}
+          >
+            {pageNumber}
+          </button>
+        ))}
+      </div>
 
         </div>
         {saveSuccessMessage && (
-          <div style={{ position: 'fixed', top: 134, right: 34, background: '#C7ECC2', color: '#1A6510', padding: '10px', animation: 'fadeInOut 0.8s' }}>
-            Order placed successfully!
-          </div>
+            <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
+                Order placed successfully
+            </div>
         )}
       </div>
     </>
@@ -384,37 +378,37 @@ export async function getServerSideProps({ query }) {
 
     if (searchQuery) {
       const searchAgg = [
-        {
-          $search: {
-            index: 'default',
-            text: {
-              query: searchQuery,
-              path: {
-                wildcard: '*',
-              },
-              fuzzy: {
-                maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
-              },
-            },
-
-          },
-
-        }, {
-          '$unwind': {
-            'path': '$items'
-          }
-        },
-        {
-          $sort: { 'items.status.0.update_timestamp': -1 } // Sort by newest orders first
-        },
+      {
+      $search: {
+      index: 'default',
+      text: {
+      query: searchQuery,
+      path: {
+      wildcard: '*',
+      },
+      fuzzy: {
+      maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
+      },
+      },
+      
+      },
+      
+      },{
+        '$unwind': {
+          'path': '$items'
+        }
+      },
+      {
+        $sort: { 'items.status.0.update_timestamp': -1 } // Sort by newest orders first
+      },
       ];
-
-
+      
+      
 
       orders = await db.collection("orders").aggregate(searchAgg).toArray();
-    } else {
+      } else {
       orders = await db.collection("orders").aggregate(unwind).toArray();
-    }
+      }
 
 
 
@@ -439,7 +433,7 @@ export async function getServerSideProps({ query }) {
       .aggregate(agg)
       .toArray();
 
-
+  
 
     return {
       props: { orders: JSON.parse(JSON.stringify(orders)), facets: JSON.parse(JSON.stringify(facets)), page: 'orders', },
