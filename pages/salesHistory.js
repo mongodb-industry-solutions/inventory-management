@@ -290,43 +290,43 @@ export async function getServerSideProps() {
       throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
     }
 
-    const dbName = process.env.MONGODB_DATABASE_NAME;
-    const client = await clientPromise;
-    const db = client.db(dbName);
-
-    const agg = [
-      {
-        $searchMeta: {
-          index: "internsmongoretail-salesfacets",
-          facet: {
-            facets: {
-              colorsFacet: { type: "string", path: "color.name", numBuckets: 20 },
-              sizesFacet: { type: "string", path: "size" },
+      const dbName = process.env.MONGODB_DATABASE_NAME;
+      const client = await clientPromise;
+      const db = client.db(dbName);
+  
+      const agg = [
+        {
+          $searchMeta: {
+            index: "internsmongoretail-salesfacets",
+            facet: {
+              facets: {
+                colorsFacet: { type: "string", path: "color.name", numBuckets: 20 },
+                sizesFacet: { type: "string", path: "size" },
+              },
             },
           },
         },
-      },
-    ];
-
-    const facets = await db
-      .collection("sales")
-      .aggregate(agg)
-      .toArray();
-
-    let sales = await db
-      .collection("sales")
-      .find({})
-      .sort({ timestamp: -1 })
-      .toArray();
-
-    return {
-      props: { sales: JSON.parse(JSON.stringify(sales)), facets: JSON.parse(JSON.stringify(facets)) },
-    };
-  } catch (e) {
-    console.error(e);
-    return {
-      props: { sales: [] },
-    };
+      ];
+  
+      const facets = await db
+        .collection("sales")
+        .aggregate(agg)
+        .toArray();
+  
+      let sales = await db
+        .collection("sales")
+        .find({})
+        .sort({ timestamp: -1 })
+        .toArray();
+  
+      return {
+        props: { sales: JSON.parse(JSON.stringify(sales)), facets: JSON.parse(JSON.stringify(facets)) },
+      };
+    } catch (e) {
+      console.error(e);
+      return {
+        props: { sales: [] },
+      };
+    }
   }
-}
 
