@@ -71,9 +71,7 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
         <div className="dashboard-container">
             <div className="filters">
                 <div className="filter-buttons">
-                    <button className="clear-filters-button" onClick={handleClearFilters}>
-                        Clear Filters
-                    </button>
+                    
                     <div className="dropdown">
                         <button className="dropdown-toggle" onClick={toggleMenu}>
                             {filterName}
@@ -104,6 +102,9 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
                     )}
           </div>
         </div>
+        <button className="clear-filters-button" onClick={handleClearFilters}>
+                        Clear Filters
+                    </button>
       </div>
       <div className={styles["dashboard"]} ref={dashboardDiv}/>
       </div>
