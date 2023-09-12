@@ -282,14 +282,14 @@ function formatTimestamp(timestamp) {
     <table className="order-table" >
           <thead>
             <tr>
-            <th style={{ width: '15%' }}>Item</th>
+            <th style={{ width: '10%' }}>Item</th>
             <th style={{ width: '5%' }}>Order ID</th>
-            <th style={{ width: '10%' }}>Name</th>
-            <th style={{ width: '10%' }}>SKU</th>
+            <th style={{ width: '12%' }}>Name</th>
+            <th style={{ width: '7%' }}>SKU</th>
             <th style={{ width: '5%' }}>Size</th>
             <th style={{ width: '5%' }}>Amount</th>
-            <th style={{ width: '17.5%' }}>Placement Date</th>
-            <th style={{ width: '17.5%' }}>Arrival Date</th>
+            <th style={{ width: '12%' }}>Placement Date</th>
+            <th style={{ width: '12%' }}>Arrival Date</th>
             <th style={{ width: '5%' }}>Status</th>
             <th style={{ width: '5%' }}></th>
 
@@ -315,7 +315,14 @@ function formatTimestamp(timestamp) {
                   <td>{formatTimestamp(order.items?.status?.[0]?.update_timestamp)}</td>
                   <td>{formatTimestamp(order.items?.status?.[1]?.update_timestamp)}</td>
                   <td>
-                    {order.items?.status?.find(status => status.name === 'arrived')?.name || 'placed'}
+                   {/*{order.items?.status?.find(status => status.name === 'arrived')?.name || 'placed'}*/} 
+
+                   {order.items?.status?.find(status => status.name === 'arrived')?.name === 'arrived' ? (
+                         <span className="arrived">arrived</span>
+                         ) : (
+                           <span className="placed">placed</span>
+                      )}
+
                   </td>
                   <td>
                     <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
@@ -343,7 +350,7 @@ function formatTimestamp(timestamp) {
 
         </div>
         {saveSuccessMessage && (
-            <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
+            <div style={{ position: 'fixed', top: 134, right: 34, background: '#C7ECC2', color: '#1A6510', padding: '10px', animation: 'fadeInOut 0.5s'}}>
                 Order placed successfully
             </div>
         )}

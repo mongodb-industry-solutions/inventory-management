@@ -103,7 +103,7 @@
   
   .filterslogo {
     height: 16px;
-    width: 16px;
+    width: 22px;
     padding-top: 16px;
   }
   
@@ -112,7 +112,7 @@
     bottom: 0;
     right: 0;
     padding: 10px;
-    background-color: #eee;
+    background-color: #ffffff;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -129,7 +129,7 @@
   
   
   .toggle-button:hover {
-    background-color: #ddd;
+    background-color: #c07cf1;
   }
 
   .color-list {
