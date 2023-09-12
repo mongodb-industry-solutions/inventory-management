@@ -106,7 +106,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: green;
+    background: rgb(139, 14, 201);
     color: white;
     font-size: 16px;
     width: 28px;
@@ -133,18 +133,25 @@
   transform: translateY(-50%); /* Center the button vertically */
   }
 
-.save-button {
+  .save-button {
+    color: rgb(139, 14, 201);
+    border: 1px solid #d5d5d5;
+    background-color: #ffffff;
+    padding: 6px;
+    border-radius: 20px;
     position: absolute;
     bottom: 24px;
     right: 24px;
-    width: 150px;
+    width: 70px;
     margin-left: auto;
     display: block;
-    color: #fff;
-    border: 1px solid #00684a;
-    background-color: #00684a;
-    border-radius: 6px;
+  
     font-weight: 700;
+  }
+  
+  .save-button:hover {
+    color: #ffffff;
+    background-color:  rgb(139, 14, 201);
   }
 
   .total-time {
