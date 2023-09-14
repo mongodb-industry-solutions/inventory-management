@@ -20,7 +20,7 @@
 .popup-content h3 {
     font-family: "Euclid Circular A", Akzidenz, "Helvetica Neue", Helvetica, Arial, sans-serif;
     border-bottom: 1px solid rgb(232, 237, 235);
-    font-weight: 200;
+    font-weight: 500;
     line-height: 1.4;
     font-size: 24px;
     padding-bottom: 10px;
@@ -42,8 +42,8 @@
     background: none;
     color: rgb(92, 108, 117);
     font-size: 16px;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border: none;
     padding: 0;
     margin-left: auto;
@@ -58,8 +58,9 @@
   }
 
   .close-button:hover {
-    background-color: rgba(92, 108, 117, 0.15);
-    color: black;
+  /*background-color: rgba(242, 4, 4);
+  */
+    color: red;
   }
 
 .table-container {
@@ -83,8 +84,8 @@
  height:35px;
 }
 .table-wrapper thead tr {
-    border-top: solid 2px #e8edeb;
-    border-bottom: solid 2px #e8edeb;
+    /*border-top: solid 2px #e8edeb;
+    border-bottom: solid 2px #e8edeb;*/
     color: #1c2d38;
     font-weight: 700;
 }
