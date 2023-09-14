@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import styles from '../styles/navbar.module.css';
 
@@ -37,6 +37,23 @@ function Footer() {
     setShowInfoPopup(false);
   };
 
+  /* Navigation bold when on page */
+  useEffect(() => {
+    // Get the current URL path
+    const currentPath = window.location.pathname;
+
+    // Set the currentPage based on the URL path
+    if (currentPath === '/products') {
+      setCurrentPage('products');
+    } else if (currentPath === '/orderHistory') {
+      setCurrentPage('orderHistory');
+    } else if (currentPath === '/salesHistory') {
+      setCurrentPage('salesHistory');
+    } else if (currentPath === '/dashboard') {
+      setCurrentPage('dashboard');
+    }
+  }, []);
+
   return (
     <div className={styles["layout-footer"]}>
       <div className={styles["dropdown"]}>
@@ -56,24 +73,49 @@ function Footer() {
           </div>
         )}
 
-        <div className={styles["mongodb-button-container"]}>
-          <a href="/products">
-            <button className={styles["mongodb-button"]} onClick={handleProductsClick}>
-              Real-time Inventory
-            </button></a>
-          <a href="/orderHistory">
-            <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
-              Orders
-            </button></a>
-          <a href="/salesHistory">
-            <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
-              Sales Events
-            </button></a>
-          <a href="/dashboard">
-            <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
-              Analytics
-            </button></a>
-        </div>
+<div className={styles["mongodb-button-container"]}>
+  <a href="/products">
+    <button
+      className={`${styles["mongodb-button"]} ${
+        currentPage === 'products' ? styles["bold-text"] : ''
+      }`}
+      onClick={handleProductsClick}
+    >
+      Real-time Inventory
+    </button>
+  </a>
+  <a href="/orderHistory">
+    <button
+      className={`${styles["mongodb-button"]} ${
+        currentPage === 'orderHistory' ? styles["bold-text"] : ''
+      }`}
+      onClick={handleOrderHistoryClick}
+    >
+      Orders
+    </button>
+  </a>
+  <a href="/salesHistory">
+    <button
+      className={`${styles["mongodb-button"]} ${
+        currentPage === 'salesHistory' ? styles["bold-text"] : ''
+      }`}
+      onClick={handleOrderHistoryClick}
+    >
+      Sales Events
+    </button>
+  </a>
+  <a href="/dashboard">
+    <button
+      className={`${styles["mongodb-button"]} ${
+        currentPage === 'dashboard' ? styles["bold-text"] : ''
+      }`}
+      onClick={handleOrderHistoryClick}
+    >
+      Analytics
+    </button>
+  </a>
+</div>
+
 
         <div className="flex justify-center items-center mb-4 mt-0">
           <button

@@ -40,8 +40,8 @@ border-collapse: collapse;
 }
 
 .table thead tr {
-    border-top: solid 2px #e8edeb;
-    border-bottom: solid 2px #e8edeb;
+   /* border-top: solid 2px #e8edeb;
+    border-bottom: solid 2px #e8edeb;*/
     color: #1c2d38;
     font-weight: 700;
 }
@@ -96,18 +96,18 @@ border-collapse: collapse;
 }
 
 .circle {
-    height: 12px;
-    width: 12px;
+    height: 14px;
+    width: 14px;
     border-radius: 50%;
     display: inline-block;
   }
 
 .full {
-    background-color: green;
+    background-color: #00684A;
 }
 
 .low {
-    background-color: orange;
+    background-color: #FFC010;
 }
 
 .ordered {

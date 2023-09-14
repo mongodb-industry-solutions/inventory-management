@@ -208,14 +208,14 @@
   .order-table {
     width: 88%;
     border-collapse: collapse;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);*/
     margin-left: 210px;
     table-layout: fixed;
   }
   
   .order-row {
     background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s ease-in-out;
     padding: 10px 0;
 
