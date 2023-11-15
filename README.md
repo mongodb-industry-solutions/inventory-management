@@ -72,9 +72,11 @@ To enable real-time capabilities for your Next.js application, follow these step
 > **Note**
 > You will need the App ID to set up your environment variables later (`REALM_APP_ID`).
 
-4. In the sidebar menu under "Data access", navigate to "Rules". Locate your database and under the *products* and *sales* collections click "readAll" and then click "add preset role". Please, remember to click "review draft and deploy".
+4. Give access to the 2 collections that we want to monitor in real-time: *products*, for low-stock alerts, and *sales*, for real-time analytics.
+   - In the sidebar menu under "Data access", navigate to "Rules". Locate your database, under the *products* collection click "readAll", and then click "add preset role". Please, remember to click "review draft and deploy".
+   - After the access rule for the first collection has been deployed, repeat the same process for the *sales* collection. 
 
-5. Proceed to the "Authentication" section. Enable the option to "Allow users to log in anonymously". This will provide a simple way for users to interact with your app without requiring explicit authentication. Again, remember to click "review draft and deploy".
+6. Proceed to the "Authentication" section. Enable the option to "Allow users to log in anonymously". This will provide a simple way for users to interact with your app without requiring explicit authentication. Again, remember to click "review draft and deploy".
 
 For a more comprehensive guide on this process, you can refer to the tutorial [Real-Time Data in a React JavaScript Front-End with Change Streams](https://www.mongodb.com/developer/products/mongodb/real-time-data-javascript/).
 
@@ -211,14 +213,14 @@ Now you have successfully cloned the GitHub repository to your local machine. Yo
 
 ### Set up Environment Variables
 
-Copy the `env.local.example` file in this directory to `.env.local` (which will be ignored by Git) as seem below:
+Copy the `env.local.example` file in this directory to `.env.local` (which will be ignored by Git) as seen below:
 
 ```bash
 cp .env.local.example .env.local
 ```
-Now open this file in your preferred IDE and update et each variable on `.env.local`.
+Now open this file in your preferred IDE and update each variable on `.env.local`.
 
-Remember all of the notes you took earlier? Grab them because you’ll use it hear now! Remember to remove any spaces after the equal sign. 
+Remember all of the notes you took earlier? Grab them because you’ll use them now! Remember to remove any spaces after the equal sign. 
 
 For macOS users, you can navigate to your file or open it from the terminal by running:
 
@@ -256,12 +258,12 @@ For detailed instructions on how to set up your [Atlas Charts](https://www.mongo
 
 ### Enable Real-Time Analytics (Optional)
 
-1. To create a general analytics dashbaord based on sales, we will need generate sales data. Navigate to the control panel in your app by clicking: 
+1. To create a general analytics dashboard based on sales, we will need to generate sales data. Navigate to the control panel in your app by clicking: 
 [http://localhost:3000/control](http://localhost:3000/control)
-2. Then click the “start selling” button. When you “start selling”, remember to not close this window as selling will only work when the window is open. This will simulate a sale every 5 seconds, so we reccomend letting it run for a couple of minutes. 
-3. In the meantime, navigate back to Atlas Charts to create a general analytics dashboard. For example you can create a line graph that displays sales over the last hour, minute by minute. Now you’ll see live data coming in, offering you real-time insights! 
+2. Then click the “start selling” button. When you “start selling”, remember to not close this window as selling will only work when the window is open. This will simulate a sale every 5 seconds, so we recommend letting it run for a couple of minutes. 
+3. In the meantime, navigate back to Atlas Charts to create a general analytics dashboard. For example, you can create a line graph that displays sales over the last hour, minute by minute. Now you’ll see live data coming in, offering you real-time insights! 
 
-Your app is ready to go! For the first time, you may need to refresh the website to see the updates charts, but after that the charts will update automatically syncing with the new sales. 
+Your app is ready to go! For the first time, you may need to refresh the website to see the updated charts, but after that, the charts will update automatically syncing with the new sales. 
 
 
 ### Set Up Additional Indexes (Optional)
