@@ -37,12 +37,12 @@ To get started with MongoDB Atlas, follow these steps to set up your cluster and
    mongodb+srv://<username>:<password>@cluster-name.n0kts.mongodb.net/?retryWrites=true&w=majority
    ```
    
-> **Note**
+> [!Note]
 > You will need the connection string to set up your environment variables later (`MONGODB_URI`).
 
 
 2. Proceed to the "Browse Collections" section in your MongoDB Atlas dashboard. If it’s the first time creating a database in MongoDB, click “add my own data”. Create a new database, choosing a database name that suits your application, such as "inventory_management". For the collection name call it “products”. Ignore additional preferences.
-> **Note**
+> [!Note]
 > You will need the database name to set up your environment variables later (`MONGODB_DATABASE_NAME`).
 
 3. Inside the newly created database, set up three collections:
@@ -52,7 +52,7 @@ To get started with MongoDB Atlas, follow these steps to set up your cluster and
 
 4. For the initial setup, you can manually create products within the "products" collection. Ensure that you follow the defined data schema. If you prefer, you can load predefined products available. Copy the content of [/data/product_sample.json](https://github.com/mongodb-industry-solutions/Inventory_mgmt/blob/main/data/product_sample.json) if you want to load one document, or load the entire sample set by using the [/data/products.json](https://github.com/mongodb-industry-solutions/Inventory_mgmt/blob/main/data/products.json) file. You can insert these documents into the product collection using tools such as [MongoDB Atlas](https://www.mongodb.com/docs/atlas/atlas-ui/documents/), [MongoDB Compass](https://www.mongodb.com/docs/compass/current/documents/insert/), or [MongoShell](https://www.mongodb.com/docs/mongodb-shell/crud/insert/). 
 
->**Warning**
+> [!Warning]
 > If you are using MongoDB Atlas, keep in mind that you can only insert one document at a time. You can use MongoDB Compass and MongoDB Shell to insert multiple documents at a time. 
 
 
@@ -69,7 +69,7 @@ To enable real-time capabilities for your Next.js application, follow these step
    ```
    myappname-xxxxx
    ```
-> **Note**
+> [!Note]
 > You will need the App ID to set up your environment variables later (`REALM_APP_ID`).
 
 4. Give access to the 2 collections that we want to monitor in real-time: *products*, for low-stock alerts, and *sales*, for real-time analytics.
@@ -95,7 +95,7 @@ Follow these steps to configure search indexes for full-text search and filter f
    - Keep the default Index Configurations unchanged and click "Create Index".
    - After a few moments, your index will be ready for use. While you wait, you can proceed to create the other two search indexes for the *orders* and *sales* collections.
   
-> **Important**
+> [!Important]
 > The name of the index must be the same in order for the application to be able to work properly. 
 
 4. Now, let's proceed to create the indexes required for the filter facets. Note that this process is slightly different from creating default search indexes:
@@ -124,7 +124,7 @@ Follow these steps to configure search indexes for full-text search and filter f
 
    - Click save and then confirm "Create Search Index". The indexing process will take some time. You can create indexes for other collections while waiting for the indexing to complete
   
-> **Important**
+> [!Important]
 > The name of the index must be the same in order for the application to be able to work properly. 
 
 By setting up these search indexes and filter facets, your application will gain powerful search and filtering capabilities, making it more user-friendly and efficient in managing inventory data.
@@ -145,7 +145,7 @@ Enhance your application's visualization and analytics capabilities with Atlas C
 
 5. Repeat the same process for the general dashboard. Select products again, as we will update this once the app has generated data.  Note that the "Base URL" will be the same for both dashboards but the “dashboard ID” will be different so please take note of it.
 
-> **Note**
+> [!Note]
 > You will need the base URL and dashboard IDs to set up your environment variables later (`CHARTS_EMBED_SDK_BASEURL`, `DASHBOARD_ID_PRODUCT`, `DASHBOARD_ID_GENERAL`).
 
 Setting up Atlas Charts will provide you with visually appealing and insightful dashboards to monitor product information and overall analytics, enhancing your decision-making process and improving the efficiency of your inventory management system.
