@@ -1,8 +1,9 @@
 /* FUNCTION */
 exports = async function (changeEvent) {
 
-    const ordercollection = context.services.get("IST-Shared").db(changeEvent.ns.db).collection("orders");
-    const productcollection = context.services.get("IST-Shared").db(changeEvent.ns.db).collection(changeEvent.ns.coll);
+    /*TODO: Update the service name with your actual cluster name.*/
+    const ordercollection = context.services.get("<your-cluster-name>").db(changeEvent.ns.db).collection("orders");
+    const productcollection = context.services.get("<your-cluster-name>").db(changeEvent.ns.db).collection(changeEvent.ns.coll);
 
     const pattern = /^items\.(\d+)\.stock.0.amount/;
 
