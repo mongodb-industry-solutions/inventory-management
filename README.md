@@ -9,8 +9,8 @@ The architecture we're about to set up is depicted in the diagram below:
 
 If you want to learn more about Inventory Management and Event-Driven Architectures, visit the following pages:
 - [How to Enhance Inventory Management with Real-Time Data Strategies](https://www.mongodb.com/blog/post/how-enhance-inventory-management-real-time-data-strategies)
-- How to Build An Event-Driven Inventory Management System Using MongoDB Atlas (Coming Soon!)
-- Youtube Video (Coming Soon!) 
+- [Build An Inventory Management System Using MongoDB Atlas](https://www.mongodb.com/developer/products/atlas/build-inventory-management-system-using-mongodb-atlas/)
+- [Youtube Video](https://www.youtube.com/watch?v=TgpJnWwm8rg)
  
  Let's get started!
 
