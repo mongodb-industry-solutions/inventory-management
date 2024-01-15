@@ -1,10 +1,58 @@
-[
-    {
-    "name": "Alejandra",
-    "surname": "García",
-    "title": "Store Manager",
-    "store": {
+[{
+  "_id": {
+    "$oid": "65a546ae4a8f64e8f88fb89c"
+  },
+  "name": "Eddie",
+  "surname": "Grant",
+  "title": "Store Manager",
+  "permissions": {
+    "stores": [
+      {
+        "store_id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        },
+        "role": "manager",
         "name": "Bogatell Store"
-    }
-   }
-]
+      }
+    ],
+    "areas": []
+  }
+},
+{
+  "_id": {
+    "$oid": "65a546ae4a8f64e8f88fb89d"
+  },
+  "name": "Alejandra",
+  "surname": "García",
+  "title": "Store Manager",
+  "permissions": {
+    "stores": [
+      {
+        "store_id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        },
+        "role": "manager",
+        "name": "Glòries Store"
+      }
+    ],
+    "areas": []
+  }
+},
+{
+  "_id": {
+    "$oid": "65a546ae4a8f64e8f88fb89e"
+  },
+  "name": "Meritxell",
+  "surname": "Torres",
+  "title": "Area Manager",
+  "permissions": {
+    "stores": [],
+    "areas": [
+      {
+        "name": "Spain",
+        "code": "ES",
+        "role": "manager"
+      }
+    ]
+  }
+}]
