@@ -33,6 +33,7 @@
     -webkit-box-align: center;
     align-items: center;
     gap: 12px;
+    padding-right: 8px;
   }
   
   .user-details {
@@ -61,4 +62,37 @@
     font-size: 13px; 
     color: #777;
     margin: 0px; 
+  }
+
+  .dropdown-container {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #e8ede9;
+    padding: 8px;
+    min-width: 160px;
+  }
+
+  .user-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid #ccc; /* Add a gray line at the top of the list */
+  }
+  
+  .user-list li {
+    cursor: pointer;
+    padding: 8px;
+    transition: background-color 0.3s;
+    border-bottom: 1px solid #ccc; /* Add a gray line below each list item */
+  }
+  
+  .user-list li:first-child {
+    border-top: none; /* Remove the top border for the first list item */
+  }
+  
+  .user-list li:hover {
+    background-color: #f0f0f0;
   }
