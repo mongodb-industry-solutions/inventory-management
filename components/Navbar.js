@@ -2,12 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 
+import { useUser } from '../context/UserContext';
+
 import styles from '../styles/navbar.module.css';
 
 function Footer() {
+
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('Bogatell Store');
+  const [selectedOption, setSelectedOption] = useState('');
   const [currentPage, setCurrentPage] = useState('');
+
+  const { selectedUser } = useUser();
 
   const handleDropdownToggle = () => {
     setIsOpen(!isOpen);
@@ -42,6 +47,8 @@ function Footer() {
     // Get the current URL path
     const currentPath = window.location.pathname;
 
+    setSelectedOption(selectedUser?.permissions?.stores[0]?.name);
+
     // Set the currentPage based on the URL path
     if (currentPath === '/products') {
       setCurrentPage('products');
@@ -52,7 +59,7 @@ function Footer() {
     } else if (currentPath === '/dashboard') {
       setCurrentPage('dashboard');
     }
-  }, []);
+  }, [selectedUser]);
 
   return (
     <div className={styles["layout-footer"]}>
@@ -64,12 +71,11 @@ function Footer() {
         </button>
         {isOpen && (
           <div className={styles["dropdown-menu"]}>
-            <a href="#" onClick={() => handleOptionClick('Bogatell Store')}>
-              Bogatell Store
-            </a>
-            <a >
-              <span className={`${styles["non-clickable-option"]}`} style={{ color: 'grey' }}>Gracia Store</span>
-            </a>
+            {selectedUser?.permissions?.stores.map((store) => (
+              <a key={store.store_id} href="#" onClick={() => handleOptionClick(store.name)}>
+                {store.name}
+              </a>
+            ))}
           </div>
         )}
 
