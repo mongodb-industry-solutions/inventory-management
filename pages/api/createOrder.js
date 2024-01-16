@@ -23,6 +23,7 @@ export default async (req, res) => {
         order.placement_timestamp = placementTimestamp;
         order.items.forEach(item => item.status.push(status));
         order.items.forEach(item => item.product.id = new ObjectId(item.product.id));
+        order.user_id = new ObjectId(order.user_id);
 
         var insertOrderResponse = null;
 
