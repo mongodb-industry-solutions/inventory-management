@@ -1,4 +1,5 @@
 import clientPromise from '../../lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 export default async (req, res) => {
     try {
@@ -9,7 +10,6 @@ export default async (req, res) => {
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
         const client = await clientPromise;
-        const { ObjectId } = require('mongodb');
         const db = client.db(dbName);
 
         const { order } = req.body;
@@ -24,6 +24,7 @@ export default async (req, res) => {
         order.items.forEach(item => item.status.push(status));
         order.items.forEach(item => item.product.id = new ObjectId(item.product.id));
         order.user_id = new ObjectId(order.user_id);
+        order.location.destination._id = new ObjectId(order.location.destination._id);
 
         var insertOrderResponse = null;
 

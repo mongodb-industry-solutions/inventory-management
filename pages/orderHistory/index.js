@@ -1,5 +1,7 @@
 import clientPromise from "../../lib/mongodb";
 import { useState, useEffect, useRef } from 'react';
+import { ObjectId } from 'mongodb';
+import { useUser } from '../../context/UserContext';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 
@@ -20,6 +22,12 @@ export default function Orders({ orders, facets }) {
 
   // Calculate the total number of pages
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+
+  const { selectedUser } = useUser();
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchQuery]);
 
   // Function to handle pagination control clicks
   const handlePageChange = (pageNumber) => {
@@ -71,10 +79,6 @@ export default function Orders({ orders, facets }) {
 
     setSelectedSuggestionIndex(-1);
   };
-  
-  useEffect(() => {
-    handleSearch();
-  }, [searchQuery]);
   
 
   const filterOrders = (sizesFilter, colorsFilter) => {
@@ -157,16 +161,21 @@ export default function Orders({ orders, facets }) {
   const handleReorder = async (item) => {
 
     const order = {
-      user_id: {
-          $oid: '649ef73a7827d12200b87895'
-      },
+      user_id: selectedUser?._id,
       location: {
-          origin: 'warehouse',
-          destination: 'store'
+        origin: {
+            type: 'warehouse'
+        },
+        destination: {
+            type: 'store',
+            _id: selectedUser?.permissions?.stores[0]?.store_id,
+            name: selectedUser?.permissions?.stores[0]?.name,
+            area_code: selectedUser?.permissions?.stores[0]?.area_code
+        }
       },
       placement_timestamp: '',
       items: []
-  };
+    };
 
     order.items.push(item);
     
@@ -359,7 +368,8 @@ function formatTimestamp(timestamp) {
   );
 }
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps(context) {
+  
   try {
     if (!process.env.MONGODB_DATABASE_NAME) {
       throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
@@ -368,11 +378,13 @@ export async function getServerSideProps({ query }) {
     const dbName = process.env.MONGODB_DATABASE_NAME;
     const client = await clientPromise;
     const db = client.db(dbName);
-    const searchQuery = query.q || '';
+
+    const { query } = context;
+    const storeId = query.store;
 
     let orders;
 
-    const unwind = [
+    const agg = [
       {
         '$unwind': {
           'path': '$items'
@@ -383,45 +395,20 @@ export async function getServerSideProps({ query }) {
       },
     ];
 
-    if (searchQuery) {
-      const searchAgg = [
-      {
-      $search: {
-      index: 'default',
-      text: {
-      query: searchQuery,
-      path: {
-      wildcard: '*',
-      },
-      fuzzy: {
-      maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
-      },
-      },
-      
-      },
-      
-      },{
-        '$unwind': {
-          'path': '$items'
+    if (storeId) {
+      agg.unshift({
+        $match: {
+          'location.destination._id': new ObjectId(storeId)
         }
-      },
-      {
-        $sort: { 'items.status.0.update_timestamp': -1 } // Sort by newest orders first
-      },
-      ];
-      
-      
+      });
+    }
 
-      orders = await db.collection("orders").aggregate(searchAgg).toArray();
-      } else {
-      orders = await db.collection("orders").aggregate(unwind).toArray();
-      }
+    orders = await db
+      .collection("orders")
+      .aggregate(agg)
+      .toArray();
 
-
-
-
-
-    const agg = [
+    const facetsAgg = [
       {
         $searchMeta: {
           index: "facets",
@@ -437,10 +424,8 @@ export async function getServerSideProps({ query }) {
 
     const facets = await db
       .collection("orders")
-      .aggregate(agg)
+      .aggregate(facetsAgg)
       .toArray();
-
-  
 
     return {
       props: { orders: JSON.parse(JSON.stringify(orders)), facets: JSON.parse(JSON.stringify(facets)), page: 'orders', },

@@ -1,15 +1,14 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-
 import { useUser } from '../context/UserContext';
-
 import styles from '../styles/navbar.module.css';
 
 function Footer() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
+  const [selectedStoreId, setSelectedStoreId] = useState('');
   const [currentPage, setCurrentPage] = useState('');
 
   const { selectedUser } = useUser();
@@ -48,6 +47,7 @@ function Footer() {
     const currentPath = window.location.pathname;
 
     setSelectedOption(selectedUser?.permissions?.stores[0]?.name);
+    setSelectedStoreId(selectedUser?.permissions?.stores[0]?.store_id);
 
     // Set the currentPage based on the URL path
     if (currentPath === '/products') {
@@ -90,7 +90,7 @@ function Footer() {
       Real-time Inventory
     </button>
   </a>
-  <a href="/orderHistory">
+  <a href={selectedStoreId ? `/orderHistory?store=${selectedStoreId}` : "/orderHistory"}>
     <button
       className={`${styles["mongodb-button"]} ${
         currentPage === 'orderHistory' ? styles["bold-text"] : ''

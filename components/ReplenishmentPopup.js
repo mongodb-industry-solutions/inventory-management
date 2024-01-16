@@ -15,8 +15,15 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
     const order = {
         user_id:  selectedUser?._id,
         location: {
-            origin: 'warehouse',
-            destination: 'store'
+            origin: {
+                type: 'warehouse'
+            },
+            destination: {
+                type: 'store',
+                _id: selectedUser?.permissions?.stores[0]?.store_id,
+                name: selectedUser?.permissions?.stores[0]?.name,
+                area_code: selectedUser?.permissions?.stores[0]?.area_code
+            }
         },
         placement_timestamp: '',
         items: []
