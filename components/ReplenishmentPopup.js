@@ -3,18 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
-
+import { useUser } from '../context/UserContext';
 import StockLevelBar from './StockLevelBar';
-
 import styles from '../styles/popup.module.css';
 
 
 const ReplenishmentPopup = ({ product, onClose, onSave }) => {
 
+    const { selectedUser } = useUser();
+
     const order = {
-        user_id: {
-            $oid: '649ef73a7827d12200b87895'
-        },
+        user_id:  selectedUser?._id,
         location: {
             origin: 'warehouse',
             destination: 'store'
