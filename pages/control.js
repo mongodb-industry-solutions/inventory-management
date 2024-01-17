@@ -7,48 +7,23 @@ import StockLevelBar from "../components/StockLevelBar";
 
 import styles from "../styles/control.module.css";
 
-export default function Control({ preloadedProducts, realmAppId, databaseName }) { 
+export default function Control({ preloadedProducts, stores, realmAppId, databaseName }) { 
     
     const [products, setProducts] = useState(preloadedProducts);
     const [isSelling, setIsSelling] = useState(false); // State to keep track of sale status
     const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
+    const [selectedStore, setSelectedStore] = useState('');
+    const [onlineToInStoreRatio, setOnlineToInStoreRatio] = useState(0.5);
+
     const  app = new  Realm.App({ id: realmAppId });
-  
-  // Function to handle the button click to start or stop sales
-  const handleSaleButtonClick = () => {
-    setIsSelling((prevIsSelling) => !prevIsSelling); // Toggle the sale status
-  };
 
-  const performRandomSale = async () => {
-    const colors = [...new Set(products.map((product) => product.color.name))];
-    const sizes = [...new Set(products.flatMap((product) => product.items.map((item) => item.size)))];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
-    const randomQuantity = Math.floor(Math.random() * 5) + 1;
-  
-    try {
-      // Perform the sale using await and Promise
-      const result = await new Promise((resolve, reject) => {
-        fetch(`/api/simulateSale?color=${randomColor}&size=${randomSize}&quantity=${randomQuantity}`)
-          .then((response) => response.json())
-          .then((data) => resolve(data))
-          .catch((error) => reject(error));
-      });
-  
-      console.log(result.message);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  
-
-  useEffect(() => {
-    // Start or stop selling based on the isSelling state
-    if (isSelling) {
-      const saleInterval = setInterval(performRandomSale, 5000); // 5 seconds in milliseconds
-      return () => clearInterval(saleInterval);
-    }
-  }, [isSelling]);
+    useEffect(() => {
+        // Start or stop selling based on the isSelling state
+        if (isSelling) {
+        const saleInterval = setInterval(performRandomSale, 5000); // 5 seconds in milliseconds
+        return () => clearInterval(saleInterval);
+        }
+    }, [isSelling]);
 
     useEffect(() => {
         const  login = async () => {
@@ -76,6 +51,57 @@ export default function Control({ preloadedProducts, realmAppId, databaseName })
         }
         login();
     }, []);
+
+    const handleStoreChange = (store) => {
+        setSelectedStore(store.target.value);
+    };
+
+    const handleRatioChange = (event) => {
+        // Validate that the entered value is between 0 and 1
+        const newValue = event.target.value;
+        if (!isNaN(newValue) && newValue >= 0 && newValue <= 1) {
+          setOnlineToInStoreRatio(newValue);
+        }
+      };
+
+     // Function to handle the button click to start or stop sales
+    const handleSaleButtonClick = () => {
+        setIsSelling((prevIsSelling) => !prevIsSelling); // Toggle the sale status
+    };
+
+    const performRandomSale = async () => {
+        const colors = [...new Set(products.map((product) => product.color.name))];
+        const sizes = [...new Set(products.flatMap((product) => product.items.map((item) => item.size)))];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
+        const randomQuantity = Math.floor(Math.random() * 5) + 1;
+        const randomChannel = Math.random() < onlineToInStoreRatio ? 'online' : 'in-store';
+        var store_id = '';
+        var store_name = '';
+
+        if (!selectedStore && stores.length > 0) {
+            const randomIdx = Math.floor(Math.random() * stores.length);
+            store_id = stores[randomIdx]._id;
+            store_name = stores[randomIdx].name;
+        } else {
+            store_id = selectedStore;
+            store_name = stores.find(store => store._id === selectedStore).name;
+        }
+    
+        try {
+        // Perform the sale using await and Promise
+        const result = await new Promise((resolve, reject) => {
+            fetch(`/api/simulateSale?color=${randomColor}&size=${randomSize}&quantity=${randomQuantity}&store_id=${store_id}&store_name=${store_name}&channel=${randomChannel}`)
+            .then((response) => response.json())
+            .then((data) => resolve(data))
+            .catch((error) => reject(error));
+        });
+    
+        console.log(result.message);
+        } catch (error) {
+        console.error(error);
+        }
+    };
 
     /* 
         Mode: 
@@ -218,6 +244,26 @@ export default function Control({ preloadedProducts, realmAppId, databaseName })
         <button className="sale-button" onClick={handleSaleButtonClick}>
           {isSelling ? "Stop Selling" : "Start Selling"}
         </button>
+        <select id="storeDropdown" value={selectedStore} disabled={isSelling} onChange={handleStoreChange}>
+            <option value={''}>All</option>
+            {stores.map(store => (
+                <option key={store._id} value={store._id}>
+                    {store.name}
+                </option>
+            ))}
+        </select>
+        <label htmlFor="ratioInput">Online to In-store Ratio:</label>
+        <input
+            type="number"
+            id="ratioInput"
+            value={onlineToInStoreRatio}
+            disabled={isSelling}
+            onChange={handleRatioChange}
+            min="0"
+            max="1"
+            step="0.1"
+        />
+
         </div>
                 <div className={styles["catalog"]}>
                 <button 
@@ -334,9 +380,14 @@ export async function getServerSideProps() {
             .collection("products")
             .find({})
             .toArray();
+        
+        const stores = await db
+            .collection("stores")
+            .find({})
+            .toArray();
 
         return {
-            props: { preloadedProducts: JSON.parse(JSON.stringify(products)), realmAppId: realmAppId, databaseName: dbName },
+            props: { preloadedProducts: JSON.parse(JSON.stringify(products)), stores: JSON.parse(JSON.stringify(stores)), realmAppId: realmAppId, databaseName: dbName },
         };
     } catch (e) {
         console.error(e);

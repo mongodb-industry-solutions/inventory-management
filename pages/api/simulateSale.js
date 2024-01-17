@@ -1,6 +1,5 @@
-import { MongoClient } from 'mongodb';
 import clientPromise from '../../lib/mongodb';
-import { random } from 'lodash';
+import { ObjectId } from 'mongodb';
 
 if (!process.env.MONGODB_DATABASE_NAME) {
   throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
@@ -9,8 +8,8 @@ if (!process.env.MONGODB_DATABASE_NAME) {
 const dbName = process.env.MONGODB_DATABASE_NAME;
 const collectionName = 'products';
 
-async function performSale(productsCollection, salesCollection, color, size, quantity) {
-  console.log(`Performing sale: Color: ${color}, Size: ${size}, Quantity: ${quantity}`);
+async function performSale(productsCollection, salesCollection, color, size, quantity, store_id, store_name, channel) {
+  console.log(`Performing sale: Color: ${color}, Size: ${size}, Quantity: ${quantity}, Store: ${store_name}, Channel: ${channel}`);
 
   const product = await productsCollection.findOne({ 'color.name': color, 'items.size': size });
 
@@ -52,6 +51,7 @@ async function performSale(productsCollection, salesCollection, color, size, qua
     }
   );
 
+
   // Save the sales data to the new collection
   const saleData = {
     product_id: product._id,
@@ -63,9 +63,18 @@ async function performSale(productsCollection, salesCollection, color, size, qua
     size: size,
     sku: sizeItem.sku,
     quantity: quantity,
-    channel: random(0, 1) ? 'online' : 'in-store', // Generate a random value of either 'online' or 'in-store'
+    channel: channel, // Generate a random value of either 'online' or 'in-store'
     timestamp: new Date(),
   };
+
+  // If in-store add store field
+  if(channel == 'in-store'){
+    saleData.store = {
+      store_id: new ObjectId(store_id),
+      name: store_name
+    };
+  }
+
   await salesCollection.insertOne(saleData);
 
   return {
@@ -84,6 +93,9 @@ export default async function handler(req, res) {
   const color = req.query.color;
   const size = req.query.size;
   const quantity = parseInt(req.query.quantity, 10); // Parse the quantity to an integer
+  const store_id = req.query.store_id;
+  const store_name = req.query.store_name;
+  const channel = req.query.channel;
 
   if (!color || !size || isNaN(quantity) || quantity <= 0) {
     res.status(400).json({ error: 'Valid color, size, and positive quantity query parameters are required' });
@@ -96,7 +108,7 @@ export default async function handler(req, res) {
     const productsCollection = db.collection(collectionName);
     const salesCollection = db.collection('sales'); // Get the 'sales' collection
 
-    const result = await performSale(productsCollection, salesCollection, color, size, quantity); // Pass both collections
+    const result = await performSale(productsCollection, salesCollection, color, size, quantity, store_id, store_name, channel); // Pass both collections
     res.status(200).json(result);
   } catch (error) {
     console.error(error);
