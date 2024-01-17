@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import clientPromise from "../lib/mongodb";
+import { useRouter } from 'next/router';
+import { ObjectId } from 'mongodb';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
 import Sidebar from '../components/Sidebar';
 
@@ -18,10 +20,15 @@ export default function Sales({ sales, facets }) {
     '#00D2FF', '#A6FFEC', '#FFE212', '#FFEEA9'
   ];
 
+  const router = useRouter();
   
   // Create refs for the input element and suggestions list
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchQuery,  router.asPath]);
 
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
@@ -59,10 +66,6 @@ export default function Sales({ sales, facets }) {
 
     setSelectedSuggestionIndex(-1);
   };
-
-  useEffect(() => {
-    handleSearch();
-  }, [searchQuery]);
 
   const filterSales = (sizesFilter, colorsFilter) => {
     console.log('Filtering sales with sizes:', sizesFilter, 'and colors:', colorsFilter);
@@ -284,7 +287,7 @@ export default function Sales({ sales, facets }) {
   )
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   try {
 
     if (!process.env.MONGODB_DATABASE_NAME) {
@@ -295,7 +298,22 @@ export async function getServerSideProps() {
     const client = await clientPromise;
     const db = client.db(dbName);
 
+    const { query } = context;
+    const storeId = query.store;
+
     const agg = [
+      { $sort: {'timestamp': -1 } },
+    ];
+
+    if (storeId) {
+      agg.unshift({
+        $match: {
+          'store.store_id': new ObjectId(storeId)
+        }
+      });
+    }
+
+    const facetsAgg = [
       {
         $searchMeta: {
           index: "facets",
@@ -311,13 +329,12 @@ export async function getServerSideProps() {
 
     const facets = await db
       .collection("sales")
-      .aggregate(agg)
+      .aggregate(facetsAgg)
       .toArray();
 
-    let sales = await db
+    const sales = await db
       .collection("sales")
-      .find({})
-      .sort({ timestamp: -1 })
+      .aggregate(agg)
       .toArray();
 
     return {

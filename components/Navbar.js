@@ -100,7 +100,7 @@ function Footer() {
       Orders
     </button>
   </a>
-  <a href="/salesHistory">
+  <a href={selectedStoreId ? `/salesHistory?store=${selectedStoreId}` : "/salesHistory"}>
     <button
       className={`${styles["mongodb-button"]} ${
         currentPage === 'salesHistory' ? styles["bold-text"] : ''
