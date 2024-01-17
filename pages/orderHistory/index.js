@@ -1,5 +1,6 @@
 import clientPromise from "../../lib/mongodb";
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
 import { ObjectId } from 'mongodb';
 import { useUser } from '../../context/UserContext';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
@@ -23,11 +24,12 @@ export default function Orders({ orders, facets }) {
   // Calculate the total number of pages
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
+  const router = useRouter();
   const { selectedUser } = useUser();
 
   useEffect(() => {
     handleSearch();
-  }, [searchQuery]);
+  }, [searchQuery, router.asPath]);
 
   // Function to handle pagination control clicks
   const handlePageChange = (pageNumber) => {

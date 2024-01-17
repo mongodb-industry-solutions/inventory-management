@@ -1,14 +1,17 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-
+import { useRouter } from 'next/router';
 import { useUser } from '../context/UserContext';
-
 import styles from '../styles/header.module.css';
 
 function Header() {
 
   const [usersList, setUsersList] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+
+  const router = useRouter();
+  const { store, ...otherQueryParams } = router.query;
+
 
   const { selectedUser, setUser } = useUser();
 
@@ -40,7 +43,21 @@ function Header() {
 
   const handleUserSelection = (selectedUser) => {
     setUser(selectedUser);
+
+    var updatedQueryParams = { ...otherQueryParams };
+
+    // Update store query param on user change
+    if(selectedUser.permissions.stores?.[0]){
+      updatedQueryParams = { ...otherQueryParams, store: selectedUser.permissions.stores[0].store_id };
+    }
+
+    router.push({
+      pathname: router.pathname,
+      query: updatedQueryParams,
+    });
+
     setShowDropdown(false);
+
   };
 
 
