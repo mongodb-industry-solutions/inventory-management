@@ -8,7 +8,6 @@ export default async (req, res) => {
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
         const client = await clientPromise;
-        const { ObjectId } = require('mongodb');
         const db = client.db(dbName);
 
         const users = await db

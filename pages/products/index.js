@@ -23,10 +23,6 @@ export default function Products({ products, facets, realmAppId, databaseName })
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
   useEffect(() => {
     const  login = async () => {
         
