@@ -1,5 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import  *  as  Realm  from  "realm-web";
+import { useRouter } from 'next/router';
+import { useUser } from '../context/UserContext';
+import { ObjectId } from "bson"
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
 import styles from '../styles/dashboard.module.css';
 
@@ -8,20 +11,36 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
     const [selectedChannel, setSelectedChannel] = useState('All'); // Default to 'All'
     const [menuOpen, setMenuOpen] = useState(false);
     const [filterName, setFilterName] = useState("Channel"); // Initial filter name
+    const [rendered, setRendered] = useState(false);
+
     const  app = new  Realm.App({ id: realmAppId });
+
+    const router = useRouter();
+    const { selectedUser } = useUser();
 
     const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl });
     const dashboardDiv = useRef(null);
-    const [rendered, setRendered] = useState(false);
+
+    let storeFilter = {};
+
+    if (selectedUser?.permissions.stores[0]) {
+        storeFilter= { $or: [
+          {'location.destination._id': ObjectId(selectedUser.permissions.stores[0].store_id)}
+          ,{'store.store_id': ObjectId(selectedUser.permissions.stores[0].store_id)}
+        ]};
+    };
     const [dashboard] = useState(sdk.createDashboard({ 
         dashboardId: dashboardId,
         widthMode: 'scale', 
+        filter: storeFilter,
         heightMode: 'scale', 
         background: '#fff'
     }));
 
     useEffect(() => {
-      dashboard.render(dashboardDiv.current).then(() => setRendered(true)).catch(err => console.log("Error during Charts rendering.", err));
+      dashboard.render(dashboardDiv.current)
+        .then(() => setRendered(true))
+        .catch(err => console.log("Error during Charts rendering.", err));
 
       if (dashboardDiv.current) {
         dashboardDiv.current.style.height = "900px"; 
@@ -49,6 +68,13 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
       }
       login();
   }, []);
+
+  useEffect(() => {
+    if (rendered) {
+        dashboard.setFilter(storeFilter);
+        dashboard.refresh();
+    }
+  }, [router.asPath]);
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
