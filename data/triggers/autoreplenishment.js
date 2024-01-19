@@ -5,14 +5,18 @@ exports = async function (changeEvent) {
     const ordercollection = context.services.get("<your-cluster-name>").db(changeEvent.ns.db).collection("orders");
     const productcollection = context.services.get("<your-cluster-name>").db(changeEvent.ns.db).collection(changeEvent.ns.coll);
 
-    const pattern = /^items\.(\d+)\.stock.0.amount/;
+    const pattern = /^items\.(\d+)\.stock/;
+    console.log("Update fileds: " + JSON.stringify(changeEvent.updateDescription.updatedFields));
 
     for (const key of Object.keys(changeEvent.updateDescription.updatedFields)) {
         if (pattern.test(key)) {
             let item = changeEvent.fullDocument.items[parseInt(key.match(pattern)[1], 10)];
             let itemStoreStock = item.stock.find(stock => stock.location === 'store');
+            
+            let itemBeforeChange = changeEvent.fullDocumentBeforeChange.items[parseInt(key.match(pattern)[1], 10)];
+            let itemBeforeChangeStoreStock = itemBeforeChange.stock.find(stock => stock.location === 'store');
 
-            if (itemStoreStock.amount < itemStoreStock.threshold) {
+            if (itemStoreStock.amount < itemStoreStock.threshold && itemStoreStock.amount < itemBeforeChangeStoreStock.amount) {
 
                 var replenishAmount = itemStoreStock.target - itemStoreStock.amount;
                 
@@ -26,7 +30,11 @@ exports = async function (changeEvent) {
                     items: [
                         {
                             amount: replenishAmount,
-                            color: item.color,
+                            color: {
+                              name: changeEvent.fullDocument.color.name,
+                              hex: changeEvent.fullDocument.color.hex
+                            },
+  
                             delivery_time: item.delivery_time,
                             product: {
                                 id: changeEvent.fullDocument._id,
