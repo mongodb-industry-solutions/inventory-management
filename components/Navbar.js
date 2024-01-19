@@ -110,7 +110,7 @@ function Footer() {
       Sales Events
     </button>
   </a>
-  <a href="/dashboard">
+  <a href={selectedStoreId ? `/dashboard?store=${selectedStoreId}` : "/dashboard"}>
     <button
       className={`${styles["mongodb-button"]} ${
         currentPage === 'dashboard' ? styles["bold-text"] : ''

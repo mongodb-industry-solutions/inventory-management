@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import  *  as  Realm  from  "realm-web";
 import clientPromise from '../../lib/mongodb';
+import { useRouter } from 'next/router';
+import { useUser } from '../../context/UserContext';
 import { ObjectId } from "bson"
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShirt } from '@fortawesome/free-solid-svg-icons';
-
 import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
@@ -18,26 +18,38 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
     const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
     const  app = new  Realm.App({ id: realmAppId });
 
+    const router = useRouter();
+    const { selectedUser } = useUser();
+
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
         '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9'
     ];
 
     const leafUrl = lightColors.includes(product.color.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
+
+    const productFilter = {'items.product.id': ObjectId(preloadedProduct._id)};
+    let storeFilter = {};
+    //Add store filter if exists
+    if (selectedUser?.permissions.stores[0]) {
+        storeFilter= { 'location.destination._id': ObjectId(selectedUser.permissions.stores[0].store_id)};
+    }
     
     const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl});
     const dashboardDiv = useRef(null);
     const [rendered, setRendered] = useState(false);
     const [dashboard] = useState(sdk.createDashboard({ 
         dashboardId: dashboardId, 
-        filter: {'items.product.id': ObjectId(preloadedProduct._id)},
+        filter: { $and: [productFilter, storeFilter]},
         widthMode: 'scale', 
         heightMode: 'scale', 
         background: '#fff'
     }));
 
     useEffect(() => {
-        dashboard.render(dashboardDiv.current).then(() => setRendered(true)).catch(err => console.log("Error during Charts rendering.", err));
+        dashboard.render(dashboardDiv.current)
+            .then(() => setRendered(true))
+            .catch(err => console.log("Error during Charts rendering.", err));
       }, [dashboard]);
     
 
@@ -60,6 +72,13 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
         }
         login();
     }, []);
+
+    useEffect(() => {
+        if (rendered) {
+            dashboard.setFilter({ $and: [productFilter, storeFilter]});
+            dashboard.refresh();
+        }
+    }, [router.asPath]);
 
     const handleOpenPopup = () => {
         setShowPopup(true);
