@@ -13,6 +13,8 @@ export default async (req, res) => {
         const db = client.db(dbName);
 
         const { order } = req.body;
+        const storeId = new ObjectId(req.query.store_id);
+
         const placementTimestamp = new Date();
 
         const status = {
@@ -54,16 +56,16 @@ export default async (req, res) => {
                     {
                     $inc: {
                         "items.$[i].stock.$[j].amount": -amount,
-                        "items.$[i].stock.$[k].amount": amount,
+                        "items.$[i].stock.$[k].ordered": amount,
                         "total_stock_sum.$[j].amount": -amount,
-                        "total_stock_sum.$[k].amount": amount
+                        "total_stock_sum.$[k].ordered": amount
                     }
                     },
                     {
                     arrayFilters: [
                         { "i.sku": sku },
-                        { "j.location": "warehouse" },
-                        { "k.location": "ordered" }
+                        { "j.location.type": "warehouse" },
+                        { "k.location.id": storeId }
                     ],
                      session 
                     }

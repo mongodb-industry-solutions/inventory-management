@@ -80,7 +80,7 @@ function Footer() {
         )}
 
 <div className={styles["mongodb-button-container"]}>
-  <a href="/products">
+  <a href={selectedStoreId ? `/products?store=${selectedStoreId}` : "/products"}>
     <button
       className={`${styles["mongodb-button"]} ${
         currentPage === 'products' ? styles["bold-text"] : ''

@@ -1,5 +1,5 @@
 {
-    "name": "Black T-shirt",
+    "name": "White T-shirt",
     "color": {
       "name": "White",
       "hex": "#FFFFFF"
@@ -23,7 +23,7 @@
             {
                 "location": {
                     "type": "store",
-                    "location_id": {
+                    "id": {
                         "$oid": "65a545fb4a8f64e8f88fb896"
                     }
                 },
@@ -35,7 +35,7 @@
             {
                 "location": {
                   "type": "store",
-                  "location_id": {
+                  "id": {
                       "$oid": "65a545fb4a8f64e8f88fb897"
                   }
                 },
@@ -63,7 +63,7 @@
             {
                 "location": {
                     "type": "store",
-                    "location_id": {
+                    "id": {
                         "$oid": "65a545fb4a8f64e8f88fb896"
                     }
                 },
@@ -75,7 +75,7 @@
             {
                 "location": {
                   "type": "store",
-                  "location_id": {
+                  "id": {
                       "$oid": "65a545fb4a8f64e8f88fb897"
                   }
                 },
@@ -103,7 +103,7 @@
             {
                 "location": {
                     "type": "store",
-                    "location_id": {
+                    "id": {
                         "$oid": "65a545fb4a8f64e8f88fb896"
                     }
                 },
@@ -115,7 +115,7 @@
             {
                 "location": {
                   "type": "store",
-                  "location_id": {
+                  "id": {
                       "$oid": "65a545fb4a8f64e8f88fb897"
                   }
                 },
@@ -143,7 +143,7 @@
             {
                 "location": {
                     "type": "store",
-                    "location_id": {
+                    "id": {
                         "$oid": "65a545fb4a8f64e8f88fb896"
                     }
                 },
@@ -155,7 +155,7 @@
             {
                 "location": {
                   "type": "store",
-                  "location_id": {
+                  "id": {
                       "$oid": "65a545fb4a8f64e8f88fb897"
                   }
                 },
@@ -183,7 +183,7 @@
             {
                 "location": {
                     "type": "store",
-                    "location_id": {
+                    "id": {
                         "$oid": "65a545fb4a8f64e8f88fb896"
                     }
                 },
@@ -195,7 +195,7 @@
             {
                 "location": {
                   "type": "store",
-                  "location_id": {
+                  "id": {
                       "$oid": "65a545fb4a8f64e8f88fb897"
                   }
                 },
@@ -217,7 +217,7 @@
       {
         "location": {
             "type": "store",
-            "location_id": {
+            "id": {
                 "$oid": "65a545fb4a8f64e8f88fb896"
             }
         },
@@ -229,7 +229,7 @@
       {
         "location": {
             "type": "store",
-            "location_id": {
+            "id": {
                 "$oid": "65a545fb4a8f64e8f88fb897"
             }
         },

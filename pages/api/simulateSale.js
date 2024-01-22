@@ -11,15 +11,17 @@ const collectionName = 'products';
 async function performSale(productsCollection, salesCollection, color, size, quantity, store_id, store_name, channel) {
   console.log(`Performing sale: Color: ${color}, Size: ${size}, Quantity: ${quantity}, Store: ${store_name}, Channel: ${channel}`);
 
-  const product = await productsCollection.findOne({ 'color.name': color, 'items.size': size });
+  let product = await productsCollection.findOne({ 'color.name': color, 'items.size': size });
 
   if (!product) {
     return { message: `Product with color '${color}' and size '${size}' not found.` };
+  } else {
+    product = JSON.parse(JSON.stringify(product));
   }
 
   const sizeItem = product.items.find((item) => item.size === size);
-  const availableStock = sizeItem.stock.find(stock => stock.location === 'store').amount;
-  const availableTotalStock = product.total_stock_sum.find(stock => stock.location === 'store').amount;
+  const availableStock = sizeItem.stock.find(stock => stock.location.id === store_id).amount;
+  const availableTotalStock = product.total_stock_sum.find(stock => stock.location.id === store_id).amount;
 
   if (availableStock <= 0 || availableTotalStock <= 0) {
     return { message: `Product with color '${color}' and size '${size}' is out of stock.` };
@@ -31,22 +33,18 @@ async function performSale(productsCollection, salesCollection, color, size, qua
 
   await productsCollection.updateOne(
     {
-      _id: product._id,
-      'color.name': color,
-      'items.size': size,
-      'items.stock.location': 'store',
+      _id: new ObjectId(product._id)
     },
     {
       $inc: {
-        'items.$[item].stock.$[elem].amount': -quantity,
-        'total_stock_sum.$[stock].amount': -quantity,
+        'items.$[i].stock.$[j].amount': -quantity,
+        'total_stock_sum.$[j].amount': -quantity,
       }
     },
     {
       arrayFilters: [
-        { 'item.size': size }, // Filter the correct 'items' element based on the size
-        { 'elem.location': 'store' }, // Filter the correct 'stock' element based on location
-        { 'stock.location': 'store' }, // Filter the correct 'total_stock_sum' element based on location
+        { 'i.size': size }, // Filter the correct 'items' element based on the size
+        { 'j.location.id': new ObjectId(store_id) }, // Filter the correct 'total_stock_sum' element based on location
       ],
     }
   );

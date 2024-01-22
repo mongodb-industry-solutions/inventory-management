@@ -20,6 +20,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
 
     const router = useRouter();
     const { selectedUser } = useUser();
+    const selectedStoreId = selectedUser?.permissions.stores[0]?.store_id;
 
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
@@ -31,8 +32,8 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
     const productFilter = {'items.product.id': ObjectId(preloadedProduct._id)};
     let storeFilter = {};
     //Add store filter if exists
-    if (selectedUser?.permissions.stores[0]) {
-        storeFilter= { 'location.destination._id': ObjectId(selectedUser.permissions.stores[0].store_id)};
+    if (selectedStoreId) {
+        storeFilter= { 'location.destination._id': ObjectId(selectedStoreId)};
     }
     
     const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl});
@@ -62,8 +63,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
             let updatedProduct = null;
             
             for await (const  change  of  collection.watch({ $match: { 'fullDocument._id': preloadedProduct._id } })) {
-                updatedProduct = change.fullDocument;
-                updatedProduct._id = updatedProduct._id.toString();
+                updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
 
                 if( updatedProduct._id === preloadedProduct._id) {
                     setProduct(updatedProduct);
@@ -128,7 +128,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                 <p className="name">{product.name}</p>
                 <p className="price">{product.price.amount} {product.price.currency}</p>
                 <p className="code">{product.code}</p>
-                {<StockLevelBar stock={product.total_stock_sum} />}
+                {<StockLevelBar stock={product.total_stock_sum} storeId={selectedStoreId} />}
                 <div className={styles["switch-container"]}>
                     <span className={styles["switch-text"]}>Autoreplenishment</span>
                     <label className={styles["switch"]}>
@@ -153,12 +153,12 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                 {product.items.map((item, index) => (
                     <tr key={index}>
                     <td>{item.size}</td>
-                    <td>{item.stock.find(stock => stock.location === 'store')?.amount ?? 0}</td>
-                    <td>{item.stock.find(stock => stock.location === 'ordered')?.amount ?? 0}</td>
-                    <td>{item.stock.find(stock => stock.location === 'warehouse')?.amount ?? 0}</td>
+                    <td>{item.stock.find(stock => stock.location.id === selectedStoreId)?.amount ?? 0}</td>
+                    <td>{item.stock.find(stock => stock.location.id === selectedStoreId)?.ordered ?? 0}</td>
+                    <td>{item.stock.find(stock => stock.location.type === 'warehouse')?.amount ?? 0}</td>
                     <td>{item.delivery_time.amount} {item.delivery_time.unit}</td>
                     <td>
-                        {<StockLevelBar stock={item.stock} />}
+                        {<StockLevelBar stock={item.stock} storeId = {selectedStoreId}/>}
                     </td>
                     </tr>
                     ))}
@@ -174,7 +174,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
         </div>
         <div className={styles["dashboard"]} ref={dashboardDiv}/>
         
-        {showPopup && <Popup product={product} onClose={handleClosePopup} onSave={handleSave}/>}
+        {showPopup && <Popup product={product} onClose={handleClosePopup} onSave={handleSave} storeId={selectedStoreId}/>}
         {saveSuccessMessage && (
             <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
                 Order placed successfully
