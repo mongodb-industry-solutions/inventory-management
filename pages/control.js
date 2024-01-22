@@ -34,8 +34,7 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
 
             for await (const  change  of  collection.watch()) {
 
-                const updatedProduct = change.fullDocument;
-                updatedProduct._id = updatedProduct._id.toString();
+                const updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
 
                 setProducts((prevProducts) => {
                     const updatedIndex = prevProducts.findIndex((product) => product._id === updatedProduct._id);
@@ -142,7 +141,7 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
             for(let i = initialIndex; i < itemsLength; i++) {
 
                 const locationIndex = productToUpdate.items[i].stock.findIndex(
-                    (loc) => loc.location === "store"
+                    (loc) => loc.location.id === selectedStore
                 );
                 
                 if(mode === 'normal'){
@@ -176,7 +175,7 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
                 
                 // Update the total_stock_sum attribute with the difference
                 const totalStockLocationIndex = productToUpdate.total_stock_sum.findIndex(
-                    (loc) => loc.location === "store"
+                    (loc) => loc.location.id === selectedStore
                 );
                 if (totalStockLocationIndex !== -1) {
                     productToUpdate.total_stock_sum[totalStockLocationIndex].amount += difference;
@@ -280,7 +279,7 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
                             <tr key={index}>
                             <td className={styles["product-cell"]}>
                                <ProductBox key={product._id} product={product}/>
-                               {<StockLevelBar stock={product.total_stock_sum} />}
+                               {<StockLevelBar stock={product.total_stock_sum} storeId={selectedStore} />}
                             </td>
                             <td>
                                 <div className={styles["item-table-wrapper"]}>
@@ -317,20 +316,22 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
                                         <tr key={itemIndex}>
                                             <td>{item.size}</td>
                                             <td>
-                                                <select defaultValue={item?.stock.find(stock => stock.location === 'store')?.amount ?? 0} onChange={(e) => handleUpdateStock(product, item, parseInt(e.target.value),'custom')}>
-                                                {[...Array(item?.stock.find((stock) => stock.location === 'store')?.target + 1).keys()].map((value) => (
-                                                    <option key={value} value={value}>{value}</option>
-                                                ))}
+                                                <select 
+                                                    value={item?.stock.find(stock => stock.location.id === selectedStore)?.amount ?? 0} 
+                                                    onChange={(e) => handleUpdateStock(product, item, parseInt(e.target.value),'custom')}>
+                                                    {[...Array((item?.stock.find((stock) => stock.location.id === selectedStore)?.target ?? 0) + 1).keys()].map((value) => (
+                                                        <option key={value} value={value}>{value}</option>
+                                                    ))}
                                                 </select>
                                             </td>
                                             <td>
-                                                {item?.stock.find(stock => stock.location === 'store')?.threshold ?? 0}
+                                                {item?.stock.find(stock => stock.location.id === selectedStore)?.threshold ?? 0}
                                             </td>
                                             <td>
-                                                {item?.stock.find(stock => stock.location === 'store')?.target ?? 0}
+                                                {item?.stock.find(stock => stock.location.id === selectedStore)?.target ?? 0}
                                             </td>
                                             <td>
-                                                {<StockLevelBar stock={item?.stock} />}
+                                                {<StockLevelBar stock={item?.stock} storeId={selectedStore}/>}
                                             </td>
                                         </tr>
                                         

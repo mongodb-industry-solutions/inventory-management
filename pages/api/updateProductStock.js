@@ -1,4 +1,6 @@
+import { update } from 'lodash';
 import clientPromise from '../../lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 export default async (req, res) => {
     try {
@@ -14,19 +16,42 @@ export default async (req, res) => {
 
         const product = req.body;
 
+        // Convert id fields to ObjectId
+
+
         // Iterate over the updated items array and build the bulk write operations
-        const bulkUpdateOps = product.items.map((item) => ({
-            updateOne: {
-                filter: { "_id": new ObjectId(product._id) },
-                update: { $set: 
-                    { 
-                        'items.$[i].stock': item.stock,
-                        'total_stock_sum': product.total_stock_sum
-                    } 
+        const bulkUpdateOps = product.items.map((item) => {
+
+            const updatedStock = item.stock.map((stock) => ({
+                ...stock,
+                location: {
+                    type: stock.location.type,
+                    id: new ObjectId(stock.location.id)
                 },
-                arrayFilters: [{ 'i.sku': item.sku }],
-            },
-        }));
+            }));
+        
+            // Convert total_stock_sum[].location.id to new ObjectId
+            const updatedTotalStockSum = product.total_stock_sum.map((stock) => ({
+                ...stock,
+                location: {
+                    type: stock.location.type,
+                    id: new ObjectId(stock.location.id)
+                },
+            }));
+
+            return {
+                updateOne: {
+                    filter: { "_id": new ObjectId(product._id) },
+                    update: { $set: 
+                        { 
+                            'items.$[i].stock': updatedStock,
+                            'total_stock_sum': updatedTotalStockSum
+                        } 
+                    },
+                    arrayFilters: [{ 'i.sku': item.sku }],
+                }
+            };
+        });
         
         // Perform the bulk write operation to update the items
         const bulkWriteResult = await db.collection("products").bulkWrite(bulkUpdateOps);

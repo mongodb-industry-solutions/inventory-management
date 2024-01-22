@@ -1,24 +1,22 @@
 import clientPromise from "../../lib/mongodb";
 import { useState, useEffect, useRef } from 'react';
 import  *  as  Realm  from  "realm-web";
-
 import { FaSearch } from 'react-icons/fa';
-
 import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
 import AlertBanner from '../../components/AlertBanner';
 
-export default function Products({ products, facets, realmAppId, databaseName }) {
+export default function Products({ products, facets, realmAppId, databaseName, storeId }) {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [displayProducts, setDisplayProducts] = useState(products);
   const [sortBy, setSortBy] = useState('');
-   const [alerts, setAlerts] = useState([]);
+  const [alerts, setAlerts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
+
   const  app = new  Realm.App({ id: realmAppId });
  
-  
   // Create a ref for the input element
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
@@ -32,8 +30,7 @@ export default function Products({ products, facets, realmAppId, databaseName })
       let updatedProduct = null;
       
       for await (const  change  of  collection.watch()) {
-        updatedProduct = change.fullDocument;
-        updatedProduct._id = updatedProduct._id.toString();
+        updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
 
         setDisplayProducts((prevProducts) =>
           prevProducts.map((product) =>
@@ -45,7 +42,9 @@ export default function Products({ products, facets, realmAppId, databaseName })
         for(const key of Object.keys(change.updateDescription.updatedFields)){
           if (pattern.test(key)) {
             let item = updatedProduct.items[parseInt(key.match(pattern)[1], 10)];
-            let itemStoreStock = item.stock.find(stock => stock.location === 'store');
+            let itemStoreStock = item.stock.find(stock => stock.location.id === storeId);
+            console.log(item.stock);
+            console.log(storeId);
             
             if(itemStoreStock.amount < itemStoreStock.threshold) {
               item.product_id = updatedProduct._id;
@@ -307,6 +306,7 @@ export async function getServerSideProps({ query }) {
     const client = await clientPromise;
     const db = client.db(dbName);
     const searchQuery = query.q || '';
+    const storeId = query.store || '';
 
     let products;
     if (searchQuery) {
@@ -352,7 +352,7 @@ export async function getServerSideProps({ query }) {
       .toArray();
 
     return {
-      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)), realmAppId: realmAppId, databaseName: dbName },
+      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)), realmAppId: realmAppId, databaseName: dbName, storeId: storeId },
     };
   } catch (e) {
     console.error(e);

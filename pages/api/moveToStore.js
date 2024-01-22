@@ -1,4 +1,5 @@
 import clientPromise from '../../lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 export default async (req, res) => {
     try {
@@ -9,15 +10,22 @@ export default async (req, res) => {
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
         const client = await clientPromise;
-        const { ObjectId } = require('mongodb');
         const db = client.db(dbName);
 
         const { item } = req.body;
-        const orderID = req.query.order_id;
+        const orderId = req.query.order_id;
         
         const productID = item.product.id;
         const sku = item.sku;
         const amount = item.amount;
+
+        const order = await db
+            .collection("orders")
+            .findOne(
+                { _id: ObjectId(orderId)},
+                { projection: { "location.destination._id": 1 } }
+            );
+        const storeId = new ObjectId(order.location.destination._id);
 
         if(item.delivery_time.unit === 'seconds'){
             await new Promise(r => setTimeout(r, item.delivery_time.amount * 1000));
@@ -33,24 +41,23 @@ export default async (req, res) => {
                     },
                     {
                     $inc: {
-                        "items.$[i].stock.$[j].amount": -amount,
-                        "items.$[i].stock.$[k].amount": amount,
-                        "total_stock_sum.$[j].amount": -amount,
-                        "total_stock_sum.$[k].amount": amount
+                        "items.$[i].stock.$[j].ordered": -amount,
+                        "items.$[i].stock.$[j].amount": amount,
+                        "total_stock_sum.$[j].ordered": -amount,
+                        "total_stock_sum.$[j].amount": amount
                     }
                     },
                     {
                         arrayFilters: [
                             { "i.sku": sku },
-                            { "j.location": "ordered" },
-                            { "k.location": "store" }
+                            { "j.location.id": storeId }
                         ]
                     }
                 );
 
                 await db.collection("orders").updateOne(
                     {
-                        "_id": new ObjectId(orderID)
+                        "_id": new ObjectId(orderId)
                     },
                     {
                         $push: { "items.$[i].status": status }
