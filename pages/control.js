@@ -32,7 +32,9 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
             const mongodb = app.currentUser.mongoClient("mongodb-atlas");
             const collection = mongodb.db(databaseName).collection("products");
 
-            for await (const  change  of  collection.watch()) {
+            const filter = {filter: {operationType: "update"}};
+
+            for await (const  change  of  collection.watch(filter)) {
 
                 const updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
 
@@ -189,14 +191,13 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
           });
     };
 
-    const handleResetDemo = async (productIdList) => {
+    const handleResetDemo = async () => {
         try {
             const response = await fetch('/api/resetDemo', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(productIdList),
+                }
                 });
                 if (response.ok) {
                     console.log('Product reset successfully');
@@ -267,7 +268,7 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
                 <div className={styles["catalog"]}>
                 <button 
                         className={styles["reset-demo-button"]}
-                        onClick={() => handleResetDemo(products.map((product) => product._id))}
+                        onClick={() => handleResetDemo()}
                     >
                         RESET ALL
                     </button>
