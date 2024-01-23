@@ -29,7 +29,9 @@ export default function Products({ products, facets, realmAppId, databaseName, s
       const collection = mongodb.db(databaseName).collection("products");
       let updatedProduct = null;
       
-      for await (const  change  of  collection.watch()) {
+      const filter = {filter: {operationType: "update"}};
+
+      for await (const  change  of  collection.watch(filter)) {
         updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
 
         setDisplayProducts((prevProducts) =>

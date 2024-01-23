@@ -62,12 +62,16 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
             const collection = mongodb.db(databaseName).collection("products");
             let updatedProduct = null;
             
-            for await (const  change  of  collection.watch({ $match: { 'fullDocument._id': preloadedProduct._id } })) {
-                updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
-
-                if( updatedProduct._id === preloadedProduct._id) {
-                    setProduct(updatedProduct);
+            const filter = {
+                filter: {
+                    operationType: "update",
+                    "fullDocument._id": new ObjectId(preloadedProduct._id)
                 }
+            };
+
+            for await (const  change  of  collection.watch(filter)) {
+                updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
+                setProduct(updatedProduct);
             }
         }
         login();
