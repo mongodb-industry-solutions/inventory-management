@@ -24,8 +24,9 @@ export default function Orders({ orders, facets }) {
   // Calculate the total number of pages
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
-  const router = useRouter();
   const { selectedUser } = useUser();
+  const router = useRouter();
+  const { store } = router.query;
 
   useEffect(() => {
     handleSearch();
@@ -162,6 +163,9 @@ export default function Orders({ orders, facets }) {
 
   const handleReorder = async (item) => {
 
+    //find store that match store query 
+    const selectedStore = selectedUser?.permissions?.stores.find(s => s.store_id === store);
+
     const order = {
       user_id: selectedUser?._id,
       location: {
@@ -170,15 +174,16 @@ export default function Orders({ orders, facets }) {
         },
         destination: {
             type: 'store',
-            _id: selectedUser?.permissions?.stores[0]?.store_id,
-            name: selectedUser?.permissions?.stores[0]?.name,
-            area_code: selectedUser?.permissions?.stores[0]?.area_code
+            _id: selectedStore?.store_id,
+            name: selectedStore?.name,
+            area_code: selectedStore?.area_code
         }
       },
       placement_timestamp: '',
       items: []
     };
 
+    item.status = [];
     order.items.push(item);
     
     try {
@@ -323,8 +328,8 @@ function formatTimestamp(timestamp) {
                   <td>{order.items?.sku}</td>
                   <td>{order.items?.size}</td>
                   <td>{order.items?.amount}</td>
-                  <td>{formatTimestamp(order.items?.status?.[0]?.update_timestamp)}</td>
-                  <td>{formatTimestamp(order.items?.status?.[1]?.update_timestamp)}</td>
+                  <td>{formatTimestamp(order.items?.status?.find(status => status.name === "placed")?.update_timestamp)}</td>
+                  <td>{formatTimestamp(order.items?.status?.find(status => status.name === "arrived")?.update_timestamp)}</td>
                   <td>
                    {/*{order.items?.status?.find(status => status.name === 'arrived')?.name || 'placed'}*/} 
 

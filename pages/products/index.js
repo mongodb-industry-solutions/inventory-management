@@ -1,12 +1,13 @@
 import clientPromise from "../../lib/mongodb";
 import { useState, useEffect, useRef } from 'react';
 import  *  as  Realm  from  "realm-web";
+import { useRouter } from 'next/router';
 import { FaSearch } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
 import AlertBanner from '../../components/AlertBanner';
 
-export default function Products({ products, facets, realmAppId, databaseName, storeId }) {
+export default function Products({ products, facets, realmAppId, databaseName }) {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [displayProducts, setDisplayProducts] = useState(products);
@@ -16,10 +17,14 @@ export default function Products({ products, facets, realmAppId, databaseName, s
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
 
   const  app = new  Realm.App({ id: realmAppId });
+
+  const router = useRouter();
+  const { store } = router.query;
  
   // Create a ref for the input element
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
+
 
   useEffect(() => {
     const  login = async () => {
@@ -44,9 +49,7 @@ export default function Products({ products, facets, realmAppId, databaseName, s
         for(const key of Object.keys(change.updateDescription.updatedFields)){
           if (pattern.test(key)) {
             let item = updatedProduct.items[parseInt(key.match(pattern)[1], 10)];
-            let itemStoreStock = item.stock.find(stock => stock.location.id === storeId);
-            console.log(item.stock);
-            console.log(storeId);
+            let itemStoreStock = item.stock.find(stock => stock.location.id === store);
             
             if(itemStoreStock.amount < itemStoreStock.threshold) {
               item.product_id = updatedProduct._id;
@@ -60,6 +63,10 @@ export default function Products({ products, facets, realmAppId, databaseName, s
     login();
     handleSearch();
   }, [searchQuery]);
+
+  useEffect(() => {
+
+  }, [router.asPath]);
 
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
@@ -191,7 +198,7 @@ export default function Products({ products, facets, realmAppId, databaseName, s
     setDisplayProducts((prevProducts) => {
       const displayedProducts = [...prevProducts].sort((a, b) => {
         const countLowStockSizes = (product) =>
-          product.items.reduce((count, item) => (item.stock[0].amount < 10 ? count + 1 : count), 0);
+          product.items.reduce((count, item) => (item.stock.find(stock => stock.location.id === store)?.amount < 10 ? count + 1 : count), 0);
         const lowStockSizesA = countLowStockSizes(a);
         const lowStockSizesB = countLowStockSizes(b);
   
@@ -204,7 +211,7 @@ export default function Products({ products, facets, realmAppId, databaseName, s
         } else {
           // If both have the same count of low stock sizes, sort by total stock amount
           const totalStockAmount = (product) =>
-            product.items.reduce((total, item) => total + item.stock[0].amount, 0);
+            product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.id === store)?.amount, 0);
           const totalStockA = totalStockAmount(a);
           const totalStockB = totalStockAmount(b);
           return totalStockA - totalStockB; // Higher total stock amount will appear last
@@ -308,7 +315,6 @@ export async function getServerSideProps({ query }) {
     const client = await clientPromise;
     const db = client.db(dbName);
     const searchQuery = query.q || '';
-    const storeId = query.store || '';
 
     let products;
     if (searchQuery) {
@@ -354,7 +360,7 @@ export async function getServerSideProps({ query }) {
       .toArray();
 
     return {
-      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)), realmAppId: realmAppId, databaseName: dbName, storeId: storeId },
+      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)), realmAppId: realmAppId, databaseName: dbName},
     };
   } catch (e) {
     console.error(e);
