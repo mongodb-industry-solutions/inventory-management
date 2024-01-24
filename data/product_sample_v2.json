@@ -49,10 +49,7 @@
         },
         {
           "location": {
-            "type": "warehouse",
-            "id": {
-              "$oid": "65ae9f02cfb5c504fd92efeb"
-            }
+            "type": "warehouse"
           },
           "amount": 200
         }
@@ -92,10 +89,7 @@
         },
         {
           "location": {
-            "type": "warehouse",
-            "id": {
-              "$oid": "65ae9f02cfb5c504fd92efed"
-            }
+            "type": "warehouse"
           },
           "amount": 200
         }
@@ -135,10 +129,7 @@
         },
         {
           "location": {
-            "type": "warehouse",
-            "id": {
-              "$oid": "65ae9f02cfb5c504fd92efef"
-            }
+            "type": "warehouse"
           },
           "amount": 200
         }
@@ -178,10 +169,7 @@
         },
         {
           "location": {
-            "type": "warehouse",
-            "id": {
-              "$oid": "65ae9f02cfb5c504fd92eff1"
-            }
+            "type": "warehouse"
           },
           "amount": 200
         }
@@ -221,10 +209,7 @@
         },
         {
           "location": {
-            "type": "warehouse",
-            "id": {
-              "$oid": "65ae9f02cfb5c504fd92eff3"
-            }
+            "type": "warehouse"
           },
           "amount": 200
         }
@@ -258,10 +243,7 @@
     },
     {
       "location": {
-        "type": "warehouse",
-        "id": {
-          "$oid": "65ae9f02cfb5c504fd92eff4"
-        }
+        "type": "warehouse"
       },
       "amount": 1000
     }
