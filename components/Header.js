@@ -26,8 +26,7 @@ function Header() {
 
           if (!localStorage.getItem('selectedUser')){
             setUser(data.users[0]);
-          }
-        
+          } 
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -37,27 +36,32 @@ function Header() {
     fetchData();
   }, [ ]);
 
+  useEffect(() => {
+    // Update store query param on user change
+    if(selectedUser){
+      
+      if(selectedUser.permissions.stores.length > 0){
+        router.push({
+          pathname: router.pathname == '/' ? '/products' : router.pathname,
+          query: { ...otherQueryParams, store: selectedUser.permissions.stores[0].store_id },
+        });
+      } else {
+        router.push({
+          pathname: router.pathname == '/' ? '/products' : router.pathname,
+          query: { ...otherQueryParams},
+        });
+      }
+    }
+
+  }, [selectedUser]);
+
   const handleDropdownToggle = () => {
     setShowDropdown(!showDropdown);
   };
 
   const handleUserSelection = (selectedUser) => {
     setUser(selectedUser);
-
-    var updatedQueryParams = { ...otherQueryParams };
-
-    // Update store query param on user change
-    if(selectedUser.permissions.stores?.[0]){
-      updatedQueryParams = { ...otherQueryParams, store: selectedUser.permissions.stores[0].store_id };
-    }
-
-    router.push({
-      pathname: router.pathname,
-      query: updatedQueryParams,
-    });
-
     setShowDropdown(false);
-
   };
 
 
