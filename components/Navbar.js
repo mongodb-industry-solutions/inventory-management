@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
 import styles from '../styles/navbar.module.css';
 
-function Footer() {
+function Navbar() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
@@ -62,7 +62,7 @@ function Footer() {
   }, [selectedUser]);
 
   return (
-    <div className={styles["layout-footer"]}>
+    <div className={styles["layout-navbar"]}>
       <div className={styles["dropdown"]}>
         <img src="/images/houseLogo.png" alt="House Logo" className={styles["house-logo"]} />
         <button className={styles["dropdown-toggle"]} onClick={handleDropdownToggle}>
@@ -166,4 +166,4 @@ function Footer() {
   );
 }
 
-export default Footer;
+export default Navbar;
