@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import  *  as  Realm  from  "realm-web";
 import clientPromise from '../../lib/mongodb';
 import { useRouter } from 'next/router';
-import { useUser } from '../../context/UserContext';
 import { ObjectId } from "bson"
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,8 +18,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
     const  app = new  Realm.App({ id: realmAppId });
 
     const router = useRouter();
-    const { selectedUser } = useUser();
-    const selectedStoreId = selectedUser?.permissions.stores[0]?.store_id;
+    const { store } = router.query;
 
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
@@ -32,8 +30,8 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
     const productFilter = {'items.product.id': ObjectId(preloadedProduct._id)};
     let storeFilter = {};
     //Add store filter if exists
-    if (selectedStoreId) {
-        storeFilter= { 'location.destination._id': ObjectId(selectedStoreId)};
+    if (store) {
+        storeFilter= { 'location.destination._id': ObjectId(store)};
     }
     
     const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl});
@@ -132,7 +130,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                 <p className="name">{product.name}</p>
                 <p className="price">{product.price.amount} {product.price.currency}</p>
                 <p className="code">{product.code}</p>
-                {<StockLevelBar stock={product.total_stock_sum} storeId={selectedStoreId} />}
+                {<StockLevelBar stock={product.total_stock_sum} storeId={store} />}
                 <div className={styles["switch-container"]}>
                     <span className={styles["switch-text"]}>Autoreplenishment</span>
                     <label className={styles["switch"]}>
@@ -157,12 +155,12 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                 {product.items.map((item, index) => (
                     <tr key={index}>
                     <td>{item.size}</td>
-                    <td>{item.stock.find(stock => stock.location.id === selectedStoreId)?.amount ?? 0}</td>
-                    <td>{item.stock.find(stock => stock.location.id === selectedStoreId)?.ordered ?? 0}</td>
+                    <td>{item.stock.find(stock => stock.location.id === store)?.amount ?? 0}</td>
+                    <td>{item.stock.find(stock => stock.location.id === store)?.ordered ?? 0}</td>
                     <td>{item.stock.find(stock => stock.location.type === 'warehouse')?.amount ?? 0}</td>
                     <td>{item.delivery_time.amount} {item.delivery_time.unit}</td>
                     <td>
-                        {<StockLevelBar stock={item.stock} storeId = {selectedStoreId}/>}
+                        {<StockLevelBar stock={item.stock} storeId = {store}/>}
                     </td>
                     </tr>
                     ))}
@@ -178,7 +176,12 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
         </div>
         <div className={styles["dashboard"]} ref={dashboardDiv}/>
         
-        {showPopup && <Popup product={product} onClose={handleClosePopup} onSave={handleSave} storeId={selectedStoreId}/>}
+        {showPopup && <Popup 
+            product={product} 
+            onClose={handleClosePopup} 
+            onSave={handleSave} 
+            storeId={store}
+        />}
         {saveSuccessMessage && (
             <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
                 Order placed successfully

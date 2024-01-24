@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import  *  as  Realm  from  "realm-web";
 import { useRouter } from 'next/router';
-import { useUser } from '../context/UserContext';
 import { ObjectId } from "bson"
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
 import styles from '../styles/dashboard.module.css';
@@ -16,17 +15,17 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
     const  app = new  Realm.App({ id: realmAppId });
 
     const router = useRouter();
-    const { selectedUser } = useUser();
+    const { store } = router.query;
 
     const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl });
     const dashboardDiv = useRef(null);
 
     let storeFilter = {};
 
-    if (selectedUser?.permissions.stores[0]) {
+    if (store) {
         storeFilter= { $or: [
-          {'location.destination._id': ObjectId(selectedUser.permissions.stores[0].store_id)}
-          ,{'store.store_id': ObjectId(selectedUser.permissions.stores[0].store_id)}
+          {'location.destination._id': ObjectId(store)}
+          ,{'store.store_id': ObjectId(store)}
         ]};
     };
     const [dashboard] = useState(sdk.createDashboard({ 

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
 import { useUser } from '../context/UserContext';
+import { useRouter } from 'next/router';
 import StockLevelBar from './StockLevelBar';
 import styles from '../styles/popup.module.css';
 
@@ -11,6 +12,9 @@ import styles from '../styles/popup.module.css';
 const ReplenishmentPopup = ({ product, onClose, onSave, storeId }) => {
 
     const { selectedUser } = useUser();
+
+    const router = useRouter();
+    const { store } = router.query;
 
     const order = {
         user_id:  selectedUser?._id,
@@ -20,9 +24,9 @@ const ReplenishmentPopup = ({ product, onClose, onSave, storeId }) => {
             },
             destination: {
                 type: 'store',
-                _id: selectedUser?.permissions?.stores[0]?.store_id,
-                name: selectedUser?.permissions?.stores[0]?.name,
-                area_code: selectedUser?.permissions?.stores[0]?.area_code
+                _id: selectedUser?.permissions?.stores.find(s => s.store_id === store)?.store_id,
+                name: selectedUser?.permissions?.stores.find(s => s.store_id === store)?.name,
+                area_code: selectedUser?.permissions?.stores.find(s => s.store_id === store)?.area_code
             }
         },
         placement_timestamp: '',
