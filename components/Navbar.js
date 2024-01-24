@@ -41,25 +41,17 @@ function Navbar() {
     setShowInfoPopup(false);
   };
 
-  /* Navigation bold when on page */
+  /* Select default store */
   useEffect(() => {
-    // Get the current URL path
-    const currentPath = window.location.pathname;
-
     setSelectedOption(selectedUser?.permissions?.stores[0]?.name);
     setSelectedStoreId(selectedUser?.permissions?.stores[0]?.store_id);
-
-    // Set the currentPage based on the URL path
-    if (currentPath === '/products') {
-      setCurrentPage('products');
-    } else if (currentPath === '/orderHistory') {
-      setCurrentPage('orderHistory');
-    } else if (currentPath === '/salesHistory') {
-      setCurrentPage('salesHistory');
-    } else if (currentPath === '/dashboard') {
-      setCurrentPage('dashboard');
-    }
   }, [selectedUser]);
+
+  /* Navigation bold when on page */
+  useEffect(() => {
+    setCurrentPage(window.location.pathname.slice(1));
+  }
+  , [currentPage]);
 
   return (
     <div className={styles["layout-navbar"]}>
