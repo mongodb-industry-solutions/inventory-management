@@ -24,9 +24,9 @@ const ReplenishmentPopup = ({ product, onClose, onSave, storeId }) => {
             },
             destination: {
                 type: 'store',
-                _id: selectedUser?.permissions?.stores.find(s => s.store_id === store)?.store_id,
-                name: selectedUser?.permissions?.stores.find(s => s.store_id === store)?.name,
-                area_code: selectedUser?.permissions?.stores.find(s => s.store_id === store)?.area_code
+                id: selectedUser?.permissions?.stores.find(s => s.id === store)?.id,
+                name: selectedUser?.permissions?.stores.find(s => s.id === store)?.name,
+                area_code: selectedUser?.permissions?.stores.find(s => s.id === store)?.area_code
             }
         },
         placement_timestamp: '',
@@ -200,7 +200,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave, storeId }) => {
                                 {rows.map((row, index) => {
                                     const item = product.items.find(item => item.size === rows[index].size);
                                     const itemStoreStock = item?.stock.find(stock => stock.location.id === storeId);
-
+                                    
                                     return (
                                     <tr key={index}>
                                         <td>
@@ -226,7 +226,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave, storeId }) => {
                                                 <Select 
                                                     value={{label: rows[index].amount.toString(), value: rows[index].amount}}
                                                     onChange={(selectedOption) => handleAmountUpdate(index, parseInt(selectedOption.value))}
-                                                    options={[...Array(Math.max(0, itemStoreStock?.target ?? 0 - itemStoreStock?.amount ?? 0) + 1).keys()].map((value) => ({
+                                                    options={[...Array(Math.max(0, (itemStoreStock?.target ?? 0) - (itemStoreStock?.amount ?? 0)) + 1).keys()].map((value) => ({
                                                         label: value.toString(),
                                                         value: value,
                                                     }))}

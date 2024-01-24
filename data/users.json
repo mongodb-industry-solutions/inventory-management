@@ -26,7 +26,7 @@
   "permissions": {
     "stores": [
       {
-        "store_id": {
+        "id": {
           "$oid": "65a545fb4a8f64e8f88fb897"
         },
         "role": "manager",
@@ -47,7 +47,7 @@
   "permissions": {
     "stores": [
       {
-        "store_id": {
+        "id": {
           "$oid": "65a545fb4a8f64e8f88fb896"
         },
         "role": "manager",

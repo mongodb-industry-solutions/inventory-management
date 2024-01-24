@@ -26,7 +26,7 @@ export default async (req, res) => {
         order.items.forEach(item => item.status.push(status));
         order.items.forEach(item => item.product.id = new ObjectId(item.product.id));
         order.user_id = new ObjectId(order.user_id);
-        order.location.destination._id = new ObjectId(order.location.destination._id);
+        order.location.destination.id = new ObjectId(order.location.destination.id);
 
         var insertOrderResponse = null;
 

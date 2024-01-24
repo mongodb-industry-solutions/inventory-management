@@ -43,7 +43,7 @@ function Header() {
       if(selectedUser.permissions.stores.length > 0){
         router.push({
           pathname: router.pathname == '/' ? '/products' : router.pathname,
-          query: { ...otherQueryParams, store: selectedUser.permissions.stores[0].store_id },
+          query: { ...otherQueryParams, store: selectedUser.permissions.stores[0].id },
         });
       } else {
         router.push({
