@@ -23,9 +23,9 @@ export default async (req, res) => {
             .collection("orders")
             .findOne(
                 { _id: ObjectId(orderId)},
-                { projection: { "location.destination._id": 1 } }
+                { projection: { "location.destination.id": 1 } }
             );
-        const storeId = new ObjectId(order.location.destination._id);
+        const storeId = new ObjectId(order.location.destination.id);
 
         if(item.delivery_time.unit === 'seconds'){
             await new Promise(r => setTimeout(r, item.delivery_time.amount * 1000));

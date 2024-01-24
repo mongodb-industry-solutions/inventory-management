@@ -31,7 +31,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
     let storeFilter = {};
     //Add store filter if exists
     if (store) {
-        storeFilter= { 'location.destination._id': ObjectId(store)};
+        storeFilter= { 'location.destination.id': ObjectId(store)};
     }
     
     const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl});

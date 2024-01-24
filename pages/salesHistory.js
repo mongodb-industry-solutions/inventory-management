@@ -308,7 +308,7 @@ export async function getServerSideProps(context) {
     if (storeId) {
       agg.unshift({
         $match: {
-          'store.store_id': new ObjectId(storeId)
+          'store.id': new ObjectId(storeId)
         }
       });
     }

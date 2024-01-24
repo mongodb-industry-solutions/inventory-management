@@ -68,7 +68,7 @@ async function performSale(productsCollection, salesCollection, color, size, qua
   // If in-store add store field
   if(channel == 'in-store'){
     saleData.store = {
-      store_id: new ObjectId(store_id),
+      id: new ObjectId(store_id),
       name: store_name
     };
   }

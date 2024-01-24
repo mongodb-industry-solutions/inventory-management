@@ -164,7 +164,7 @@ export default function Orders({ orders, facets }) {
   const handleReorder = async (item) => {
 
     //find store that match store query 
-    const selectedStore = selectedUser?.permissions?.stores.find(s => s.store_id === store);
+    const selectedStore = selectedUser?.permissions?.stores.find(s => s.id === store);
 
     const order = {
       user_id: selectedUser?._id,
@@ -174,7 +174,7 @@ export default function Orders({ orders, facets }) {
         },
         destination: {
             type: 'store',
-            _id: selectedStore?.store_id,
+            id: selectedStore?.id,
             name: selectedStore?.name,
             area_code: selectedStore?.area_code
         }
@@ -405,7 +405,7 @@ export async function getServerSideProps(context) {
     if (storeId) {
       agg.unshift({
         $match: {
-          'location.destination._id': new ObjectId(storeId)
+          'location.destination.id': new ObjectId(storeId)
         }
       });
     }
