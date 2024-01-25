@@ -304,6 +304,7 @@ function formatTimestamp(timestamp) {
             <th style={{ width: '7%' }}>SKU</th>
             <th style={{ width: '5%' }}>Size</th>
             <th style={{ width: '5%' }}>Amount</th>
+            {!store && (<th style={{ width: '5%' }}>Store</th>)}
             <th style={{ width: '12%' }}>Placement Date</th>
             <th style={{ width: '12%' }}>Arrival Date</th>
             <th style={{ width: '5%' }}>Status</th>
@@ -327,6 +328,7 @@ function formatTimestamp(timestamp) {
                   <td>{order.items?.sku}</td>
                   <td>{order.items?.size}</td>
                   <td>{order.items?.amount}</td>
+                  {!store && (<td>{order.location?.destination?.name.split(' ')[0]}</td>)}
                   <td>{formatTimestamp(order.items?.status?.find(status => status.name === "placed")?.update_timestamp)}</td>
                   <td>{formatTimestamp(order.items?.status?.find(status => status.name === "arrived")?.update_timestamp)}</td>
                   <td>
