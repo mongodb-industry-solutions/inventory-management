@@ -215,7 +215,7 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
 
     const handleSave = async (product) => {
         try {
-            const response = await fetch('/api/updateProductStock', {
+            const response = await fetch(`/api/updateProductStock?store_id=${selectedStore}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -286,18 +286,21 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
                                 <div className={styles["item-table-wrapper"]}>
                                     <button 
                                         className={styles["reset-button"]} 
+                                        disabled={!selectedStore}
                                         onClick={() => handleUpdateStock(product, {}, 0,'normal')}
                                     >
                                         Reset Stock Normal
                                     </button>
                                     <button 
                                         className={styles["reset-button"]} 
+                                        disabled={!selectedStore}
                                         onClick={() => handleUpdateStock(product, {}, 0,'target')}
                                     >
                                         Reset Stock Target
                                     </button>
                                     <button 
                                         className={styles["reset-button"]} 
+                                        disabled={!selectedStore}
                                         onClick={() => handleUpdateStock(product, {}, 0,'threshold')}
                                     >
                                         Reset Stock Threshold
@@ -341,6 +344,7 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
                                     </table>
                                     <button 
                                         className={styles["save-button"]}
+                                        disabled={!selectedStore}
                                         onClick={() => handleSave(product)} 
                                     >
                                         SAVE
