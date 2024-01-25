@@ -15,44 +15,48 @@ export default async (req, res) => {
         const db = client.db(dbName);
 
         const product = req.body;
+        const storeId = req.query.store_id;
 
-        // Convert id fields to ObjectId
-
-
-        // Iterate over the updated items array and build the bulk write operations
+        // Update item stock
         const bulkUpdateOps = product.items.map((item) => {
 
-            const updatedStock = item.stock.map((stock) => ({
-                ...stock,
-                location: {
-                    type: stock.location.type,
-                    id: new ObjectId(stock.location.id)
-                },
-            }));
-        
-            // Convert total_stock_sum[].location.id to new ObjectId
-            const updatedTotalStockSum = product.total_stock_sum.map((stock) => ({
-                ...stock,
-                location: {
-                    type: stock.location.type,
-                    id: new ObjectId(stock.location.id)
-                },
-            }));
+            const updatedStock = item.stock.find((stock) => stock.location.id === storeId);
+            updatedStock.location.id = new ObjectId(updatedStock.location.id);
 
             return {
                 updateOne: {
                     filter: { "_id": new ObjectId(product._id) },
                     update: { $set: 
                         { 
-                            'items.$[i].stock': updatedStock,
-                            'total_stock_sum': updatedTotalStockSum
+                            'items.$[i].stock.$[j]': updatedStock
                         } 
                     },
-                    arrayFilters: [{ 'i.sku': item.sku }],
+                    arrayFilters: [
+                        { 'i.sku': item.sku },
+                        { "j.location.id": new ObjectId(storeId) }
+                    ],
                 }
             };
         });
-        
+
+        // Update total stock
+        const updatedTotalStockSum = product.total_stock_sum.find((stock) => stock.location.id === storeId);
+        updatedTotalStockSum.location.id = new ObjectId(updatedTotalStockSum.location.id);
+
+        bulkUpdateOps.push({
+            updateOne: {
+                filter: { "_id": new ObjectId(product._id) },
+                update: { $set: 
+                    { 
+                        'total_stock_sum.$[j]': updatedTotalStockSum
+                    } 
+                },
+                arrayFilters: [
+                    { "j.location.id": new ObjectId(storeId) }
+                ],
+            }
+        });
+
         // Perform the bulk write operation to update the items
         const bulkWriteResult = await db.collection("products").bulkWrite(bulkUpdateOps);
         
