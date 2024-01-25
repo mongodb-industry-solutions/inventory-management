@@ -5,7 +5,9 @@ import bar_styles from '../styles/stocklevelbar.module.css';
 
 const StockLevelBar = ({ stock, storeId }) => {
 
-    const storeStock = stock.find(stock => stock.location.id === storeId);
+    const storeStock = storeId ? 
+        stock.find(stock => stock.location.id === storeId) 
+        : stock.find(stock => stock.location.type === "store") ;
     const color = storeStock?.amount >= storeStock?.threshold ? 'green' : 'orange';
     const storeFill = (storeStock?.amount / storeStock?.target) * 100;
     const orderedFill = ((storeStock?.ordered) / storeStock?.target) * 100;

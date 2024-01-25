@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import  *  as  Realm  from  "realm-web";
 import clientPromise from '../../lib/mongodb';
 import { useRouter } from 'next/router';
-import { ObjectId } from "bson"
+import { ObjectId } from "bson";
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShirt } from '@fortawesome/free-solid-svg-icons';
@@ -68,14 +68,23 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
             };
 
             for await (const  change  of  collection.watch(filter)) {
-                updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
-                setProduct(updatedProduct);
+                if (store) {
+                    updatedProduct = change.fullDocument;
+                } else {
+                    updatedProduct = await mongodb
+                        .db(databaseName)
+                        .collection("products_area_view")
+                        .findOne({ _id: ObjectId(preloadedProduct._id)});
+                }
+                
+                setProduct(JSON.parse(JSON.stringify(updatedProduct)));
             }
         }
         login();
     }, []);
 
     useEffect(() => {
+        setProduct(preloadedProduct);
         if (rendered) {
             dashboard.setFilter({ $and: [productFilter, storeFilter]});
             dashboard.refresh();
@@ -213,14 +222,17 @@ export async function getServerSideProps(context) {
         const baseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
         const dashboardId = process.env.DASHBOARD_ID_PRODUCT;
 
-        const { req, params } = context;
         const client = await clientPromise;
         const db = client.db(dbName);
 
-        const product = await db
-            .collection("products")
-            .findOne({ _id: ObjectId(params._id)});
+        const { params, query } = context;
+        const storeId = query.store;
 
+        const collectionName = storeId ? "products" : "products_area_view";
+        
+        const product = await db
+            .collection(collectionName)
+            .findOne({ _id: ObjectId(params._id)});
         return {
             props: { preloadedProduct: JSON.parse(JSON.stringify(product)), realmAppId: realmAppId, baseUrl: baseUrl, dashboardId: dashboardId, databaseName: dbName },
         };

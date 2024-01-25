@@ -39,6 +39,14 @@ export default function Products({ products, facets, realmAppId, databaseName })
       for await (const  change  of  collection.watch(filter)) {
         updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
 
+        if (!store) {
+            let productView = await mongodb
+                .db(databaseName)
+                .collection("products_area_view")
+                .findOne({ _id: change.fullDocument._id});
+            updatedProduct = JSON.parse(JSON.stringify(productView));
+        }
+
         setDisplayProducts((prevProducts) =>
           prevProducts.map((product) =>
             product._id === updatedProduct._id ? updatedProduct : product
@@ -47,11 +55,16 @@ export default function Products({ products, facets, realmAppId, databaseName })
 
         const pattern = /^items\.(\d+)\.stock/;
         for(const key of Object.keys(change.updateDescription.updatedFields)){
+
           if (pattern.test(key)) {
-            let item = updatedProduct.items[parseInt(key.match(pattern)[1], 10)];
-            let itemStoreStock = item.stock.find(stock => stock.location.id === store);
+            let sku = change.fullDocument.items[parseInt(key.match(pattern)[1], 10)].sku;
+            let item = updatedProduct.items.find(item => item.sku === sku);
+
+            let itemStoreStock = store ? 
+              item.stock.find(stock => stock.location.id === store)
+              : item.stock.find(stock => stock.location.type === "store");
             
-            if(itemStoreStock.amount < itemStoreStock.threshold) {
+            if(itemStoreStock?.amount < itemStoreStock?.threshold) {
               item.product_id = updatedProduct._id;
               addAlert(item);
             }
@@ -65,7 +78,7 @@ export default function Products({ products, facets, realmAppId, databaseName })
   }, [searchQuery]);
 
   useEffect(() => {
-
+    setDisplayProducts(products);
   }, [router.asPath]);
 
   const handleSearch = async () => {
@@ -197,8 +210,16 @@ export default function Products({ products, facets, realmAppId, databaseName })
     setSortBy('lowStock');
     setDisplayProducts((prevProducts) => {
       const displayedProducts = [...prevProducts].sort((a, b) => {
-        const countLowStockSizes = (product) =>
-          product.items.reduce((count, item) => (item.stock.find(stock => stock.location.id === store)?.amount < 10 ? count + 1 : count), 0);
+        
+        var countLowStockSizes = null;
+        if(store){
+          countLowStockSizes = (product) =>
+            product.items.reduce((count, item) => (item.stock.find(stock => stock.location.id === store)?.amount < 10 ? count + 1 : count), 0);
+        } else {
+          countLowStockSizes = (product) =>
+            product.items.reduce((count, item) => (item.stock.find(stock => stock.location.type === "store")?.amount < 10 ? count + 1 : count), 0);
+        }
+    
         const lowStockSizesA = countLowStockSizes(a);
         const lowStockSizesB = countLowStockSizes(b);
   
@@ -210,8 +231,15 @@ export default function Products({ products, facets, realmAppId, databaseName })
           return lowStockSizesB - lowStockSizesA;
         } else {
           // If both have the same count of low stock sizes, sort by total stock amount
-          const totalStockAmount = (product) =>
-            product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.id === store)?.amount, 0);
+          var totalStockAmount = null;
+          if(store){
+            totalStockAmount = (product) =>
+              product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.id === store)?.amount, 0);
+          } else {
+            totalStockAmount = (product) =>
+              product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.type === "store")?.amount, 0);
+          }
+
           const totalStockA = totalStockAmount(a);
           const totalStockB = totalStockAmount(b);
           return totalStockA - totalStockB; // Higher total stock amount will appear last
@@ -315,6 +343,9 @@ export async function getServerSideProps({ query }) {
     const client = await clientPromise;
     const db = client.db(dbName);
     const searchQuery = query.q || '';
+    const storeId = query.store;
+
+    const collectionName = storeId ? "products" : "products_area_view";
 
     let products;
     if (searchQuery) {
@@ -335,9 +366,9 @@ export async function getServerSideProps({ query }) {
         },
       ];
 
-      products = await db.collection("products").aggregate(searchAgg).toArray();
+      products = await db.collection(collectionName).aggregate(searchAgg).toArray();
     } else {
-      products = await db.collection("products").find({}).toArray();
+      products = await db.collection(collectionName).find({}).toArray();
     }
 
     const agg = [

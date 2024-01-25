@@ -19,7 +19,9 @@ const ProductBox = ({ product }) => {
 
     let totalStoreStockSum = {};
 
-    totalStoreStockSum = product.total_stock_sum.find((stock) => stock.location.id === store);
+    totalStoreStockSum = store ? 
+        product.total_stock_sum.find((stock) => stock.location.id === store)
+        : product.total_stock_sum.find((stock) => stock.location.type === "store");
     
     const getStockStatus = (storeAmount, orderedAmount, storeThreshold) => {
         let stockStatus = 'ok';
@@ -42,7 +44,9 @@ const ProductBox = ({ product }) => {
 
     for(const item of product.items) {
 
-        itemStoreStockSum = item.stock.find((stock) => stock.location.id === store);
+        itemStoreStockSum = store ?
+            item.stock.find((stock) => stock.location.id === store)
+            : item.stock.find((stock) => stock.location.type === "store");
 
         let stockStatus = getStockStatus(itemStoreStockSum?.amount, itemStoreStockSum?.ordered, itemStoreStockSum?.threshold);
 
