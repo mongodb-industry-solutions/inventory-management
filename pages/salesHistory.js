@@ -21,6 +21,7 @@ export default function Sales({ sales, facets }) {
   ];
 
   const router = useRouter();
+  const { store } = router.query;
   
   // Create refs for the input element and suggestions list
   const inputRef = useRef(null);
@@ -233,6 +234,7 @@ export default function Sales({ sales, facets }) {
                 <th>Size</th>
                 <th>Amount</th>
                 <th>Channel</th>
+                {!store && (<th>Store</th>)}
                 <th>Sale Date</th>
               </tr>
             </thead>
@@ -251,6 +253,7 @@ export default function Sales({ sales, facets }) {
                     <td>{sale.size}</td>
                     <td>{sale.quantity}</td>
                     <td>{sale.channel}</td>
+                    {!store && (<td>{sale.store?.name.split(' ')[0]}</td>)}
                     <td>{formatTimestamp(sale.timestamp)}</td>
                   </tr>
                 ))
