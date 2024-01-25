@@ -131,13 +131,13 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                 <p className="price">{product.price.amount} {product.price.currency}</p>
                 <p className="code">{product.code}</p>
                 {<StockLevelBar stock={product.total_stock_sum} storeId={store} />}
-                <div className={styles["switch-container"]}>
+                {store && (<div className={styles["switch-container"]}>
                     <span className={styles["switch-text"]}>Autoreplenishment</span>
                     <label className={styles["switch"]}>
                         <input type="checkbox" checked={product.autoreplenishment} onChange={handleToggleAutoreplenishment}/>
                         <span className={styles["slider"]}></span>
                     </label>
-                </div>
+                </div>)}
             </div>
             <div className={styles["table"]}>
             <table>
@@ -171,7 +171,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                 <span className={`${styles["circle"]} ${styles["low"]}`}></span> <span>Low</span> &nbsp;&nbsp;
                 <span className={`${styles["circle"]} ${styles["ordered"]}`}></span> <span>Ordered</span>
             </div>
-            <button onClick={handleOpenPopup}>REPLENISH STOCK</button>
+            {store && (<button onClick={handleOpenPopup}>REPLENISH STOCK</button>)}
             </div>
         </div>
         <div className={styles["dashboard"]} ref={dashboardDiv}/>

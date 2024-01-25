@@ -307,8 +307,7 @@ function formatTimestamp(timestamp) {
             <th style={{ width: '12%' }}>Placement Date</th>
             <th style={{ width: '12%' }}>Arrival Date</th>
             <th style={{ width: '5%' }}>Status</th>
-            <th style={{ width: '5%' }}></th>
-
+            {store && (<th style={{ width: '5%' }}></th>)}
             </tr>
           </thead>
           <tbody>
@@ -331,18 +330,15 @@ function formatTimestamp(timestamp) {
                   <td>{formatTimestamp(order.items?.status?.find(status => status.name === "placed")?.update_timestamp)}</td>
                   <td>{formatTimestamp(order.items?.status?.find(status => status.name === "arrived")?.update_timestamp)}</td>
                   <td>
-                   {/*{order.items?.status?.find(status => status.name === 'arrived')?.name || 'placed'}*/} 
-
                    {order.items?.status?.find(status => status.name === 'arrived')?.name === 'arrived' ? (
                          <span className="arrived">arrived</span>
                          ) : (
                            <span className="placed">placed</span>
                       )}
-
                   </td>
-                  <td>
+                  {store && (<td>
                     <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
-                  </td>
+                  </td>)}
                 </tr>
               ))
             ) : (
