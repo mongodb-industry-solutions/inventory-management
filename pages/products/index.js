@@ -1,43 +1,51 @@
 import clientPromise from "../../lib/mongodb";
 import { useState, useEffect, useRef } from 'react';
-import *  as  Realm from "realm-web";
-
+import  *  as  Realm  from  "realm-web";
+import { useRouter } from 'next/router';
 import { FaSearch } from 'react-icons/fa';
-
 import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
 import AlertBanner from '../../components/AlertBanner';
 
 export default function Products({ products, facets, realmAppId, databaseName }) {
-
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [displayProducts, setDisplayProducts] = useState(products);
   const [sortBy, setSortBy] = useState('');
   const [alerts, setAlerts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
-  const app = new Realm.App({ id: realmAppId });
 
+  const  app = new  Realm.App({ id: realmAppId });
 
+  const router = useRouter();
+  const { store } = router.query;
+ 
   // Create a ref for the input element
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
 
   useEffect(() => {
-    const login = async () => {
-
+    const  login = async () => {
+        
       await app.logIn(Realm.Credentials.anonymous());
       const mongodb = app.currentUser.mongoClient("mongodb-atlas");
       const collection = mongodb.db(databaseName).collection("products");
       let updatedProduct = null;
+      
+      const filter = {filter: {operationType: "update"}};
 
-      for await (const change of collection.watch()) {
-        updatedProduct = change.fullDocument;
-        updatedProduct._id = updatedProduct._id.toString();
+      for await (const  change  of  collection.watch(filter)) {
+        updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
+
+        if (!store) {
+            let productView = await mongodb
+                .db(databaseName)
+                .collection("products_area_view")
+                .findOne({ _id: change.fullDocument._id});
+            updatedProduct = JSON.parse(JSON.stringify(productView));
+        }
 
         setDisplayProducts((prevProducts) =>
           prevProducts.map((product) =>
@@ -46,12 +54,17 @@ export default function Products({ products, facets, realmAppId, databaseName })
         );
 
         const pattern = /^items\.(\d+)\.stock/;
-        for (const key of Object.keys(change.updateDescription.updatedFields)) {
-          if (pattern.test(key)) {
-            let item = updatedProduct.items[parseInt(key.match(pattern)[1], 10)];
-            let itemStoreStock = item.stock.find(stock => stock.location === 'store');
+        for(const key of Object.keys(change.updateDescription.updatedFields)){
 
-            if (itemStoreStock.amount < itemStoreStock.threshold) {
+          if (pattern.test(key)) {
+            let sku = change.fullDocument.items[parseInt(key.match(pattern)[1], 10)].sku;
+            let item = updatedProduct.items.find(item => item.sku === sku);
+
+            let itemStoreStock = store ? 
+              item.stock.find(stock => stock.location.id === store)
+              : item.stock.find(stock => stock.location.type === "store");
+            
+            if(itemStoreStock?.amount < itemStoreStock?.threshold) {
               item.product_id = updatedProduct._id;
               addAlert(item);
             }
@@ -63,6 +76,10 @@ export default function Products({ products, facets, realmAppId, databaseName })
     login();
     handleSearch();
   }, [searchQuery]);
+
+  useEffect(() => {
+    setDisplayProducts(products);
+  }, [router.asPath]);
 
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
@@ -78,12 +95,12 @@ export default function Products({ products, facets, realmAppId, databaseName })
       setDisplayProducts(products);
     }
   };
-
+  
 
   const handleSearchInputChange = async (e) => {
     const searchValue = e.target.value;
     setSearchQuery(searchValue);
-
+  
     if (searchValue.length > 0) {
       try {
         const response = await fetch(`/api/suggestions?q=${encodeURIComponent(searchValue)}`);
@@ -99,7 +116,7 @@ export default function Products({ products, facets, realmAppId, databaseName })
 
     setSelectedSuggestionIndex(-1);
   };
-
+  
   const handleKeyDown = (e) => {
     // Check if the input element is focused
     const isInputFocused = document.activeElement === inputRef.current;
@@ -147,9 +164,9 @@ export default function Products({ products, facets, realmAppId, databaseName })
     }
   };
 
-
-
-
+  
+  
+  
 
   const filterProducts = (sizesFilter, colorsFilter) => {
     // Filter products based on sizes and colors
@@ -193,11 +210,19 @@ export default function Products({ products, facets, realmAppId, databaseName })
     setSortBy('lowStock');
     setDisplayProducts((prevProducts) => {
       const displayedProducts = [...prevProducts].sort((a, b) => {
-        const countLowStockSizes = (product) =>
-          product.items.reduce((count, item) => (item.stock[0].amount < 10 ? count + 1 : count), 0);
+        
+        var countLowStockSizes = null;
+        if(store){
+          countLowStockSizes = (product) =>
+            product.items.reduce((count, item) => (item.stock.find(stock => stock.location.id === store)?.amount < 10 ? count + 1 : count), 0);
+        } else {
+          countLowStockSizes = (product) =>
+            product.items.reduce((count, item) => (item.stock.find(stock => stock.location.type === "store")?.amount < 10 ? count + 1 : count), 0);
+        }
+    
         const lowStockSizesA = countLowStockSizes(a);
         const lowStockSizesB = countLowStockSizes(b);
-
+  
         if (lowStockSizesA > 0 && lowStockSizesB === 0) {
           return -1; // Prioritize 'a' if it has at least one low stock size and 'b' doesn't
         } else if (lowStockSizesA === 0 && lowStockSizesB > 0) {
@@ -206,14 +231,21 @@ export default function Products({ products, facets, realmAppId, databaseName })
           return lowStockSizesB - lowStockSizesA;
         } else {
           // If both have the same count of low stock sizes, sort by total stock amount
-          const totalStockAmount = (product) =>
-            product.items.reduce((total, item) => total + item.stock[0].amount, 0);
+          var totalStockAmount = null;
+          if(store){
+            totalStockAmount = (product) =>
+              product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.id === store)?.amount, 0);
+          } else {
+            totalStockAmount = (product) =>
+              product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.type === "store")?.amount, 0);
+          }
+
           const totalStockA = totalStockAmount(a);
           const totalStockB = totalStockAmount(b);
           return totalStockA - totalStockB; // Higher total stock amount will appear last
         }
       });
-
+  
       return displayedProducts;
     });
   };
@@ -225,12 +257,10 @@ export default function Products({ products, facets, realmAppId, databaseName })
     }
   };
 
- 
-
   return (
     <>
       <div className='content'>
-        <Sidebar facets={facets} filterProducts={filterProducts} page="products" />
+      <Sidebar facets={facets} filterProducts={filterProducts} page="products" />
         <div className="search-bar">
           <input
             ref={inputRef} // Attach the ref to the input element
@@ -246,58 +276,54 @@ export default function Products({ products, facets, realmAppId, databaseName })
             <FaSearch />
           </button>
         </div>
+        
+           {/* Display autocomplete suggestions */}
+           { suggestions.length > 0 && (
+  <ul className="autocomplete-list" ref={suggestionsRef} tabIndex={0} onKeyDown={handleKeyDown}>
+    { suggestions.map((suggestion, index) => (
+      <li key={suggestion} className="autocomplete-item">
+        <button
+          className={`autocomplete-button ${
+            index === selectedSuggestionIndex ? "selected" : ""
+          }`}
+          onClick={() => {
+            setSearchQuery(suggestion);
+            setSuggestions([]);
+          }}
+        >
+          {suggestion}
+        </button>
+      </li>
+    ))}
+  </ul>
+)}
 
-        {/* Display autocomplete suggestions */}
-        {suggestions.length > 0 && (
-          <ul className="autocomplete-list" ref={suggestionsRef} tabIndex={0} onKeyDown={handleKeyDown}>
-            {suggestions.map((suggestion, index) => (
-              <li key={suggestion} className="autocomplete-item">
-                <button
-                  className={`autocomplete-button ${index === selectedSuggestionIndex ? "selected" : ""
-                    }`}
-                  onClick={() => {
-                    setSearchQuery(suggestion);
-                    setSuggestions([]);
-                  }}
-                >
-                  {suggestion}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
 
-
-        <div className="order-by-container">
+  <div className="order-by-container">
           <p className="order-by-text">Order by:</p>
           <div className="buttons">
             <button className={`sidebar-button ${sortBy === 'popularity' ? 'selected' : ''}`} onClick={handleSortByPopularity}>Most Popular</button>
             <button className={`sidebar-button ${sortBy === 'lowStock' ? 'selected' : ''}`} onClick={handleSortByLowStock}>Low Stock</button>
           </div>
         </div>
-
+        
 
         <ul className="product-list">
-
+        
           {displayProducts.length > 0 ? (
             displayProducts.map((product) => (
-              <ProductBox key={product._id} product={product} />
+              <ProductBox key={product._id} product={product}/>
             ))
           ) : (
             <li>No results found</li>
           )}
         </ul>
-
       </div>
-
-     
-
       <div className="alert-container">
         {alerts.map((item) => (
           <AlertBanner key={item.sku} item={item} onClose={() => handleAlertClose(item.sku)} />
         ))}
       </div>
-
     </>
   );
 }
@@ -313,10 +339,13 @@ export async function getServerSideProps({ query }) {
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
     const realmAppId = process.env.REALM_APP_ID;
-
+    
     const client = await clientPromise;
     const db = client.db(dbName);
     const searchQuery = query.q || '';
+    const storeId = query.store;
+
+    const collectionName = storeId ? "products" : "products_area_view";
 
     let products;
     if (searchQuery) {
@@ -337,9 +366,9 @@ export async function getServerSideProps({ query }) {
         },
       ];
 
-      products = await db.collection("products").aggregate(searchAgg).toArray();
+      products = await db.collection(collectionName).aggregate(searchAgg).toArray();
     } else {
-      products = await db.collection("products").find({}).toArray();
+      products = await db.collection(collectionName).find({}).toArray();
     }
 
     const agg = [
@@ -362,7 +391,7 @@ export async function getServerSideProps({ query }) {
       .toArray();
 
     return {
-      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)), realmAppId: realmAppId, databaseName: dbName },
+      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)), realmAppId: realmAppId, databaseName: dbName},
     };
   } catch (e) {
     console.error(e);

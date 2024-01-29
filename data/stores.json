@@ -1,0 +1,28 @@
+[{
+  "_id": {
+    "$oid": "65a545fb4a8f64e8f88fb897"
+  },
+  "name": "Glòries Store",
+  "region": {
+    "name": "Barcelona",
+    "code": "BCN"
+  },
+  "area": {
+    "name": "Spain",
+    "code": "ES"
+  }
+},
+{
+  "_id": {
+    "$oid": "65a545fb4a8f64e8f88fb896"
+  },
+  "name": "Bogatell Store",
+  "region": {
+    "name": "Barcelona",
+    "code": "BCN"
+  },
+  "area": {
+    "name": "Spain",
+    "code": "ES"
+  }
+}]

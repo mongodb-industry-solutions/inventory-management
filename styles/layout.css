@@ -175,6 +175,8 @@
     height: 15px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1); 
     margin-left: 1rem;
+  
+   
 
   }
 
@@ -206,14 +208,14 @@
   .order-table {
     width: 88%;
     border-collapse: collapse;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);*/
     margin-left: 210px;
     table-layout: fixed;
   }
   
   .order-row {
     background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s ease-in-out;
     padding: 10px 0;
 
@@ -607,13 +609,14 @@
 .filters {
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
   margin-left: 30px;
 }
 
 .filter-buttons {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  margin-right: 20px; /* Add spacing between filter buttons and charts */
 }
 
 .clear-filters-button {
@@ -661,7 +664,6 @@
   color: grey; /* Setting the font color to grey */
   /* You can also apply other styles like text-decoration, font-size, etc. */
 }
-
 
 .arrived {
   background-color: rgb(190, 237, 190);

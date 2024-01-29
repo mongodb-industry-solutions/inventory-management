@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import clientPromise from "../lib/mongodb";
+import { useRouter } from 'next/router';
+import { ObjectId } from 'mongodb';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
 import Sidebar from '../components/Sidebar';
 
@@ -18,9 +20,16 @@ export default function Sales({ sales, facets }) {
     '#00D2FF', '#A6FFEC', '#FFE212', '#FFEEA9'
   ];
 
+  const router = useRouter();
+  const { store } = router.query;
+  
   // Create refs for the input element and suggestions list
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchQuery,  router.asPath]);
 
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
@@ -58,10 +67,6 @@ export default function Sales({ sales, facets }) {
 
     setSelectedSuggestionIndex(-1);
   };
-
-  useEffect(() => {
-    handleSearch();
-  }, [searchQuery]);
 
   const filterSales = (sizesFilter, colorsFilter) => {
     console.log('Filtering sales with sizes:', sizesFilter, 'and colors:', colorsFilter);
@@ -173,7 +178,7 @@ export default function Sales({ sales, facets }) {
       setStartPage(startPage - 1);
     }
   };
-  
+
   const handleNext = () => {
     if (startPage + visiblePages - 1 < totalPages) {
       setStartPage(startPage + 1);
@@ -229,6 +234,7 @@ export default function Sales({ sales, facets }) {
                 <th>Size</th>
                 <th>Amount</th>
                 <th>Channel</th>
+                {!store && (<th>Store</th>)}
                 <th>Sale Date</th>
               </tr>
             </thead>
@@ -247,6 +253,7 @@ export default function Sales({ sales, facets }) {
                     <td>{sale.size}</td>
                     <td>{sale.quantity}</td>
                     <td>{sale.channel}</td>
+                    {!store && (<td>{sale.store?.name.split(' ')[0]}</td>)}
                     <td>{formatTimestamp(sale.timestamp)}</td>
                   </tr>
                 ))
@@ -283,50 +290,64 @@ export default function Sales({ sales, facets }) {
   )
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   try {
 
     if (!process.env.MONGODB_DATABASE_NAME) {
       throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
     }
 
-      const dbName = process.env.MONGODB_DATABASE_NAME;
-      const client = await clientPromise;
-      const db = client.db(dbName);
-  
-      const agg = [
-        {
-          $searchMeta: {
-            index: "internsmongoretail-salesfacets",
-            facet: {
-              facets: {
-                colorsFacet: { type: "string", path: "color.name", numBuckets: 20 },
-                sizesFacet: { type: "string", path: "size" },
-              },
+    const dbName = process.env.MONGODB_DATABASE_NAME;
+    const client = await clientPromise;
+    const db = client.db(dbName);
+
+    const { query } = context;
+    const storeId = query.store;
+
+    const agg = [
+      { $sort: {'timestamp': -1 } },
+    ];
+
+    if (storeId) {
+      agg.unshift({
+        $match: {
+          'store.id': new ObjectId(storeId)
+        }
+      });
+    }
+
+    const facetsAgg = [
+      {
+        $searchMeta: {
+          index: "facets",
+          facet: {
+            facets: {
+              colorsFacet: { type: "string", path: "color.name", numBuckets: 20 },
+              sizesFacet: { type: "string", path: "size" },
             },
           },
         },
-      ];
-  
-      const facets = await db
-        .collection("sales")
-        .aggregate(agg)
-        .toArray();
-  
-      let sales = await db
-        .collection("sales")
-        .find({})
-        .sort({ timestamp: -1 })
-        .toArray();
-  
-      return {
-        props: { sales: JSON.parse(JSON.stringify(sales)), facets: JSON.parse(JSON.stringify(facets)) },
-      };
-    } catch (e) {
-      console.error(e);
-      return {
-        props: { sales: [] },
-      };
-    }
+      },
+    ];
+
+    const facets = await db
+      .collection("sales")
+      .aggregate(facetsAgg)
+      .toArray();
+
+    const sales = await db
+      .collection("sales")
+      .aggregate(agg)
+      .toArray();
+
+    return {
+      props: { sales: JSON.parse(JSON.stringify(sales)), facets: JSON.parse(JSON.stringify(facets)) },
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      props: { sales: [] },
+    };
   }
+}
 

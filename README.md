@@ -1,5 +1,5 @@
 # Inventory Management App using MongoDB Atlas
-In the competitive retail landscape, having the right stock in the right palce at the right time is crucial. Too little inventory when and where it’s needed can create unhappy customers. But a large inventory can increase costs and risks associated with its storage. Companies of all sizes struggle with Inventory Management. Solutions such a single view of inventory, real-time analytics and event-driven architectures can help you businesses overcome these challenges and take your inventory management to the next level. By the end of this guide, you'll have an inventory management up and running an capable of all the solutions mentioned above. 
+In the competitive retail landscape, having the right stock in the right place at the right time is crucial. Too little inventory when and where it’s needed can create unhappy customers. However, a large inventory can increase costs and risks associated with its storage. Companies of all sizes struggle with Inventory Management. Solutions such as a single view of inventory, real-time analytics, and event-driven architectures can help your businesses overcome these challenges and take your inventory management to the next level. By the end of this guide, you'll have an inventory management up and running capable of all the solutions mentioned above. 
 
 We will walk you through the process of configuring and using [MongoDB Atlas](https://mongodb.com/atlas) as your backend for your [Next.js](https://nextjs.org/) app, a powerful framework for building modern web applications with React.
 
@@ -9,20 +9,20 @@ The architecture we're about to set up is depicted in the diagram below:
 
 If you want to learn more about Inventory Management and Event-Driven Architectures, visit the following pages:
 - [How to Enhance Inventory Management with Real-Time Data Strategies](https://www.mongodb.com/blog/post/how-enhance-inventory-management-real-time-data-strategies)
-- How to Build An Event-Driven Inventory Management System Using MongoDB Atlas (Coming Soon!)
-- Youtube Video (Coming Soon!) 
+- [Build An Inventory Management System Using MongoDB Atlas](https://www.mongodb.com/developer/products/atlas/build-inventory-management-system-using-mongodb-atlas/)
+- [Youtube Video](https://www.youtube.com/watch?v=TgpJnWwm8rg)
  
  Let's get started!
 
 ## Prerequisites
-Before you begin working with this React [Next.js](https://nextjs.org/) project, ensure that you have the following prerequisites set up on your development environment:
+Before you begin working with this React [Next.js](https://nextjs.org/) project, ensure that you have the following prerequisites set up in your development environment:
 - **git** (version 2.39 or higher): This project utilizes Git for version control. Make sure you have Git installed on your system. You can download and install the latest version of Git from the official website: [Git Downloads](https://git-scm.com/downloads).
 - **npm** (version 9.6 or higher): The project relies on npm (Node Package Manager) to manage dependencies and run scripts. You need to have npm installed on your machine. You can download Node.js from the official website: [Node.js Downloads](https://nodejs.org/en/download). After installing Node.js, npm will be available by default.
 - **MongoDB Atlas Cluster** (M0 or higher): This project uses a MongoDB Atlas cluster to manage the database. You should have a MongoDB Atlas account and a minimum free tier cluster set up. If you don't have an account, you can sign up for free at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register). Once you have an account, follow these steps to set up a minimum free tier cluster or follow the [Getting Started](https://www.mongodb.com/docs/atlas/getting-started/) guide:
   - Log in to your MongoDB Atlas account.
   - Create a new project or use an existing one, and then click “create a new database”.
   - Choose the free tier option (M0).
-  - You can choose the cloud provider of your choice but we reccomend using the same provider and region both for the cluster and the app hosting in order to improve performance. 
+  - You can choose the cloud provider of your choice but we recommend using the same provider and region both for the cluster and the app hosting in order to improve performance. 
   - Configure the cluster settings according to your preferences and then click “finish and close” on the bottom right.
 
 ## MongoDB Atlas Configuration
@@ -37,22 +37,22 @@ To get started with MongoDB Atlas, follow these steps to set up your cluster and
    mongodb+srv://<username>:<password>@cluster-name.n0kts.mongodb.net/?retryWrites=true&w=majority
    ```
    
-> **Note**
+> [!Note]
 > You will need the connection string to set up your environment variables later (`MONGODB_URI`).
 
 
-3. Proceed to the "Browse Collections" section in your MongoDB Atlas dashboard. If it’s the first time creating a database in MongoDB, click “add my own data”. Create a new database, choosing a database name that suits your application, such as "inventory_management". For the collection name call it “products”. Ignore additional preferences.
-> **Note**
+2. Proceed to the "Browse Collections" section in your MongoDB Atlas dashboard. If it’s the first time creating a database in MongoDB, click “add my own data”. Create a new database, choosing a database name that suits your application, such as "inventory_management". For the collection name call it “products”. Ignore additional preferences.
+> [!Note]
 > You will need the database name to set up your environment variables later (`MONGODB_DATABASE_NAME`).
 
-4. Inside the newly created database, set up three collections:
+3. Inside the newly created database, set up three collections:
    - **products**: This collection will store your product and stock data.
    - **orders**: This collection will track order details when orders are placed through the application.
    - **sales**: This collection will store information about sales transactions made. The application can simulate sales flows on demand.
 
-5. For the initial setup, you can manually create products within the "products" collection. Ensure that you follow the defined data schema. If you prefer, you can load predefined products available. Copy the content of [/data/product_sample.json](https://github.com/mongodb-industry-solutions/Inventory_mgmt/blob/main/data/product_sample.json) if you want to load one document, or load the entire sample set by using the [/data/products.json](https://github.com/mongodb-industry-solutions/Inventory_mgmt/blob/main/data/products.json) file. You can insert these documents into the product collection using tools such as [MongoDB Atlas](https://www.mongodb.com/docs/atlas/atlas-ui/documents/), [MongoDB Compass](https://www.mongodb.com/docs/compass/current/documents/insert/), or the [MongoShell](https://www.mongodb.com/docs/mongodb-shell/crud/insert/). 
+4. For the initial setup, you can manually create products within the "products" collection. Ensure that you follow the defined data schema. If you prefer, you can load predefined products available. Copy the content of [/data/product_sample.json](https://github.com/mongodb-industry-solutions/Inventory_mgmt/blob/main/data/product_sample.json) if you want to load one document, or load the entire sample set by using the [/data/products.json](https://github.com/mongodb-industry-solutions/Inventory_mgmt/blob/main/data/products.json) file. You can insert these documents into the product collection using tools such as [MongoDB Atlas](https://www.mongodb.com/docs/atlas/atlas-ui/documents/), [MongoDB Compass](https://www.mongodb.com/docs/compass/current/documents/insert/), or [MongoShell](https://www.mongodb.com/docs/mongodb-shell/crud/insert/). 
 
->**Warning**
+> [!Warning]
 > If you are using MongoDB Atlas, keep in mind that you can only insert one document at a time. You can use MongoDB Compass and MongoDB Shell to insert multiple documents at a time. 
 
 
@@ -69,12 +69,14 @@ To enable real-time capabilities for your Next.js application, follow these step
    ```
    myappname-xxxxx
    ```
-> **Note**
+> [!Note]
 > You will need the App ID to set up your environment variables later (`REALM_APP_ID`).
 
-4. In the sidebar menu under "Data access", navigate to "Rules". Locate your database and under the *products* and *sales* collections click "readAll" and then click "add preset role". Please, remember to click "review draft and deploy".
+4. Give access to the 2 collections that we want to monitor in real-time: *products*, for low-stock alerts, and *sales*, for real-time analytics.
+   - In the sidebar menu under "Data access", navigate to "Rules". Locate your database, under the *products* collection click "readAll", and then click "add preset role". Please, remember to click "review draft and deploy".
+   - After the access rule for the first collection has been deployed, repeat the same process for the *sales* collection. 
 
-5. Proceed to the "Authentication" section. Enable the option to "Allow users to log in anonymously". This will provide a simple way for users to interact with your app without requiring explicit authentication. Again, remember to click "review draft and deploy".
+6. Proceed to the "Authentication" section. Enable the option to "Allow users to log in anonymously". This will provide a simple way for users to interact with your app without requiring explicit authentication. Again, remember to click "review draft and deploy".
 
 For a more comprehensive guide on this process, you can refer to the tutorial [Real-Time Data in a React JavaScript Front-End with Change Streams](https://www.mongodb.com/developer/products/mongodb/real-time-data-javascript/).
 
@@ -83,7 +85,7 @@ Follow these steps to configure search indexes for full-text search and filter f
 
 1. Return to the "Data Services" section within Atlas. Select your cluster and click on "Search" located next to "Collections".
 
-2. If you are in the M0 tier, you cancreate two search indexes for the products collection. This will allow you to merely search across the products collection; however,  if you have a tier above M0, you can create a total of six search indexes, two for each collection — one for search and another for filter facets.
+2. If you are in the M0 tier, you can create two search indexes for the products collection. This will allow you to merely search across the products collection; however,  if you have a tier above M0, you can create a total of six search indexes, two for each collection — one for search and another for filter facets.
 
 3. Let's begin with creating the indexes for full-text search:
    - Click "Create Search Index".
@@ -93,7 +95,7 @@ Follow these steps to configure search indexes for full-text search and filter f
    - Keep the default Index Configurations unchanged and click "Create Index".
    - After a few moments, your index will be ready for use. While you wait, you can proceed to create the other two search indexes for the *orders* and *sales* collections.
   
-> **Important**
+> [!Important]
 > The name of the index must be the same in order for the application to be able to work properly. 
 
 4. Now, let's proceed to create the indexes required for the filter facets. Note that this process is slightly different from creating default search indexes:
@@ -122,7 +124,7 @@ Follow these steps to configure search indexes for full-text search and filter f
 
    - Click save and then confirm "Create Search Index". The indexing process will take some time. You can create indexes for other collections while waiting for the indexing to complete
   
-> **Important**
+> [!Important]
 > The name of the index must be the same in order for the application to be able to work properly. 
 
 By setting up these search indexes and filter facets, your application will gain powerful search and filtering capabilities, making it more user-friendly and efficient in managing inventory data.
@@ -135,15 +137,15 @@ Enhance your application's visualization and analytics capabilities with Atlas C
 
 2. Let's begin by creating the product dashboard:
    - If this is your first time using Atlas Charts, click on “Chart builder”. Then select the relevant project, the database, and the collection. 
-   - If you’ve already used Atlas Charts (i.e. not a first time user), then click on "Add Dashboard" in the top right corner. Give the dashboard a name and an optional description. Choose a name that clearly reflects the purpose of the dashboard. You don't need to worry about the charts in the dashboard for now. You'll configure them after the app is ready to use. 
+   - If you’ve already used Atlas Charts (i.e. not a first-time user), then click on "Add Dashboard" in the top right corner. Give the dashboard a name and an optional description. Choose a name that clearly reflects the purpose of the dashboard. You don't need to worry about the charts in the dashboard for now. You'll configure them after the app is ready to use. 
 
-3. Return to the Dashboards menu, click on the three dots in the top right corner of the newly created dashboard and select "Embed".
+3. Return to the Dashboards menu, click on the three dots in the top right corner of the newly created dashboard, and select "Embed".
 
 4. Check the "Enable unauthenticated access" option. In the "Allowed filter fields" section, edit the fields and select "Allow all fields in the data sources used in this dashboard". Choose the embedding method through the JavaScript SDK, and copy both the "Base URL" and the "Dashboard ID". Click close.
 
-5. Repeat the same process for the general dashboard. Select products again, as we will update this once the app has generated data.  Note that the "Base URL" will be the same for both dashboards but the “dashboard ID” will be different so please take a note of it.
+5. Repeat the same process for the general dashboard. Select products again, as we will update this once the app has generated data.  Note that the "Base URL" will be the same for both dashboards but the “dashboard ID” will be different so please take note of it.
 
-> **Note**
+> [!Note]
 > You will need the base URL and dashboard IDs to set up your environment variables later (`CHARTS_EMBED_SDK_BASEURL`, `DASHBOARD_ID_PRODUCT`, `DASHBOARD_ID_GENERAL`).
 
 Setting up Atlas Charts will provide you with visually appealing and insightful dashboards to monitor product information and overall analytics, enhancing your decision-making process and improving the efficiency of your inventory management system.
@@ -154,7 +156,7 @@ Automate inventory replenishment by setting up a database trigger in MongoDB Atl
 
 1. Navigate to the "Data Services" section within Atlas. In the sidebar menu, click on "Triggers".
 
-2. For first-time users of Triggers, select your data source and then click “get started”. For non-first time users, simply select "Add Trigger".
+2. For first-time users of Triggers, select your data source and then click “get started”. For non-first-time users, simply select "Add Trigger".
 
 3. Choose the trigger type as "Database". Under “Trigger Source Details”, provide a name for the trigger and select your cluster, database, and the *products* collection. Set the operation type to "Update" only. Ensure that both "Full Document" and "Document Preimage" are enabled.
 
@@ -211,14 +213,14 @@ Now you have successfully cloned the GitHub repository to your local machine. Yo
 
 ### Set up Environment Variables
 
-Copy the `env.local.example` file in this directory to `.env.local` (which will be ignored by Git) as seem below:
+Copy the `env.local.example` file in this directory to `.env.local` (which will be ignored by Git) as seen below:
 
 ```bash
 cp .env.local.example .env.local
 ```
-Now open this file in your preferred IDE and update et each variable on `.env.local`.
+Now open this file in your preferred IDE and update each variable on `.env.local`.
 
-Remember all of the notes you took earlier? Grab them because you’ll use it hear now! Remember to remove any spaces after the equal sign. 
+Remember all of the notes you took earlier? Grab them because you’ll use them now! Remember to remove any spaces after the equal sign. 
 
 For macOS users, you can navigate to your file or open it from the terminal by running:
 
@@ -256,12 +258,12 @@ For detailed instructions on how to set up your [Atlas Charts](https://www.mongo
 
 ### Enable Real-Time Analytics (Optional)
 
-1. To create a general analytics dashbaord based on sales, we will need generate sales data. Navigate to the control panel in your app by clicking: 
+1. To create a general analytics dashboard based on sales, we will need to generate sales data. Navigate to the control panel in your app by clicking: 
 [http://localhost:3000/control](http://localhost:3000/control)
-2. Then click the “start selling” button. When you “start selling”, remember to not close this window as selling will only work when the window is open. This will simulate a sale every 5 seconds, so we reccomend letting it run for a couple of minutes. 
-3. In the meantime, navigate back to Atlas Charts to create a general analytics dashboard. For example you can create a line graph that displays sales over the last hour, minute by minute. Now you’ll see live data coming in, offering you real-time insights! 
+2. Then click the “start selling” button. When you “start selling”, remember to not close this window as selling will only work when the window is open. This will simulate a sale every 5 seconds, so we recommend letting it run for a couple of minutes. 
+3. In the meantime, navigate back to Atlas Charts to create a general analytics dashboard. For example, you can create a line graph that displays sales over the last hour, minute by minute. Now you’ll see live data coming in, offering you real-time insights! 
 
-Your app is ready to go! For the first time, you may need to refresh the website to see the updates charts, but after that the charts will update automatically syncing with the new sales. 
+Your app is ready to go! For the first time, you may need to refresh the website to see the updated charts, but after that, the charts will update automatically syncing with the new sales. 
 
 
 ### Set Up Additional Indexes (Optional)

@@ -3,21 +3,31 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
-
+import { useUser } from '../context/UserContext';
+import { useRouter } from 'next/router';
 import StockLevelBar from './StockLevelBar';
-
 import styles from '../styles/popup.module.css';
 
 
-const ReplenishmentPopup = ({ product, onClose, onSave }) => {
+const ReplenishmentPopup = ({ product, onClose, onSave, storeId }) => {
+
+    const { selectedUser } = useUser();
+
+    const router = useRouter();
+    const { store } = router.query;
 
     const order = {
-        user_id: {
-            $oid: '649ef73a7827d12200b87895'
-        },
+        user_id:  selectedUser?._id,
         location: {
-            origin: 'warehouse',
-            destination: 'store'
+            origin: {
+                type: 'warehouse'
+            },
+            destination: {
+                type: 'store',
+                id: selectedUser?.permissions?.stores.find(s => s.id === store)?.id,
+                name: selectedUser?.permissions?.stores.find(s => s.id === store)?.name,
+                area_code: selectedUser?.permissions?.stores.find(s => s.id === store)?.area_code
+            }
         },
         placement_timestamp: '',
         items: []
@@ -30,7 +40,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
         const lowStockRows = [];
 
         for(const item of product.items) {
-            const itemStoreStock = item?.stock.find(stock => stock.location === 'store');
+            const itemStoreStock = item?.stock.find(stock => stock.location.id === storeId);
 
             if( itemStoreStock.amount < itemStoreStock.threshold) {
                 var newItem = {
@@ -64,7 +74,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
 
         if (newItemSize) {
             const item = product.items.find((item) => item.size === newItemSize);
-            const itemStoreStock = item?.stock.find(stock => stock.location === 'store');
+            const itemStoreStock = item?.stock.find(stock => stock.location.id === storeId);
 
             const newItem = {
                 amount: Math.max(0,itemStoreStock.target - itemStoreStock.amount),
@@ -87,7 +97,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
 
     const handleSizeChange = (index, newSize) => {
         const newItem = product.items.find(item => item.size === newSize);
-        const newItemStoreStock = newItem?.stock.find(stock => stock.location === 'store');
+        const newItemStoreStock = newItem?.stock.find(stock => stock.location.id === storeId);
         const newSku = newItem?.sku;
         const newDeliveryTime = newItem?.delivery_time;
         const newAmount =  Math.max(0,newItemStoreStock.target - newItemStoreStock.amount);
@@ -114,7 +124,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
         order.items = data;
         
         try {
-            const response = await fetch('/api/createOrder', {
+            const response = await fetch(`/api/createOrder?store_id=${storeId}`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -189,8 +199,8 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                             <tbody>
                                 {rows.map((row, index) => {
                                     const item = product.items.find(item => item.size === rows[index].size);
-                                    const itemStoreStock = item?.stock.find(stock => stock.location === 'store');
-
+                                    const itemStoreStock = item?.stock.find(stock => stock.location.id === storeId);
+                                    
                                     return (
                                     <tr key={index}>
                                         <td>
@@ -216,7 +226,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                                                 <Select 
                                                     value={{label: rows[index].amount.toString(), value: rows[index].amount}}
                                                     onChange={(selectedOption) => handleAmountUpdate(index, parseInt(selectedOption.value))}
-                                                    options={[...Array(Math.max(0, itemStoreStock?.target - itemStoreStock?.amount) + 1).keys()].map((value) => ({
+                                                    options={[...Array(Math.max(0, (itemStoreStock?.target ?? 0) - (itemStoreStock?.amount ?? 0)) + 1).keys()].map((value) => ({
                                                         label: value.toString(),
                                                         value: value,
                                                     }))}
@@ -228,7 +238,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                                             {item?.delivery_time.amount} {item?.delivery_time.unit}
                                         </td>
                                         <td>
-                                            {<StockLevelBar stock={item?.stock} />}
+                                            {<StockLevelBar stock={item?.stock} storeId={storeId}/>}
                                         </td>
                                         <td>
                                         <button className={styles["delete-button"]} onClick={() => handleDeleteRow(index)}>
