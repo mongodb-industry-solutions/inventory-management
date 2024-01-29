@@ -1,31 +1,60 @@
 /* FUNCTION */
 exports = async function (changeEvent) {
 
-    const ordercollection = context.services.get("IST-Shared").db(changeEvent.ns.db).collection("orders");
-    const productcollection = context.services.get("IST-Shared").db(changeEvent.ns.db).collection(changeEvent.ns.coll);
+    const ordercollection = context.services.get("<your-cluster-name>").db(changeEvent.ns.db).collection("orders");
+    const storecollection = context.services.get("<your-cluster-name>").db(changeEvent.ns.db).collection("stores");
+    const productcollection = context.services.get("<your-cluster-name>").db(changeEvent.ns.db).collection(changeEvent.ns.coll);
 
-    const pattern = /^items\.(\d+)\.stock.0.amount/;
+    const pattern = /^items\.(\d+)\.stock/;
+    console.log("Update fileds: " + JSON.stringify(changeEvent.updateDescription.updatedFields));
 
     for (const key of Object.keys(changeEvent.updateDescription.updatedFields)) {
         if (pattern.test(key)) {
             let item = changeEvent.fullDocument.items[parseInt(key.match(pattern)[1], 10)];
-            let itemStoreStock = item.stock.find(stock => stock.location === 'store');
+            let itemStoreStock = {};
+            let itemBeforeChange = changeEvent.fullDocumentBeforeChange.items[parseInt(key.match(pattern)[1], 10)];
+            
+            //Find store where stock has changed
+            item.stock.forEach(stock => {
+              const prevStock = itemBeforeChange.stock.find(s => s.location.id === stock.location.id);
 
-            if (itemStoreStock.amount < itemStoreStock.threshold) {
+              if (prevStock != stock & stock.location.type == "store") {
+                itemStoreStock = stock;
+              }
+            });
+            
+            let storeId = String(itemStoreStock.location.id);
+            
+            
+            let itemBeforeChangeStoreStock = itemBeforeChange.stock.find(stock => String(stock.location.id) === storeId);
 
+            if (itemStoreStock.amount < itemStoreStock.threshold && itemStoreStock.amount < itemBeforeChangeStoreStock.amount) {
+                
                 var replenishAmount = itemStoreStock.target - itemStoreStock.amount;
                 
+                var store = await storecollection.findOne({_id: new BSON.ObjectId(storeId)});
+                
                 var newOrder = {
-                    user_id: new BSON.ObjectId("649ef73a7827d12200b87895"),
                     location: {
-                        origin: "warehouse",
-                        destination: "store"
+                      origin: {
+                          type: 'warehouse'
+                      },
+                      destination: {
+                          type: 'store',
+                          id: store._id,
+                          name: store.name,
+                          area_code: store.area_code
+                      }
                     },
                     placement_timestamp: new Date(),
                     items: [
                         {
                             amount: replenishAmount,
-                            color: item.color,
+                            color: {
+                              name: changeEvent.fullDocument.color.name,
+                              hex: changeEvent.fullDocument.color.hex
+                            },
+  
                             delivery_time: item.delivery_time,
                             product: {
                                 id: changeEvent.fullDocument._id,
@@ -55,16 +84,16 @@ exports = async function (changeEvent) {
                     {
                         $inc: {
                             "items.$[i].stock.$[j].amount": -replenishAmount,
-                            "items.$[i].stock.$[k].amount": replenishAmount,
+                            "items.$[i].stock.$[k].ordered": replenishAmount,
                             "total_stock_sum.$[j].amount": -replenishAmount,
-                            "total_stock_sum.$[k].amount": replenishAmount
+                            "total_stock_sum.$[k].ordered": replenishAmount
                         }
                     },
                     {
                         arrayFilters: [
                             { "i.sku": item.sku },
-                            { "j.location": "warehouse" },
-                            { "k.location": "ordered" }
+                            { "j.location.type": "warehouse" },
+                            { "k.location.id": new BSON.ObjectId(storeId) }
                         ]
                     }
                 );
@@ -97,17 +126,16 @@ exports = async function (changeEvent) {
                     },
                     {
                         $inc: {
-                            "items.$[i].stock.$[j].amount": -replenishAmount,
-                            "items.$[i].stock.$[k].amount": replenishAmount,
-                            "total_stock_sum.$[j].amount": -replenishAmount,
-                            "total_stock_sum.$[k].amount": replenishAmount
+                            "items.$[i].stock.$[j].ordered": -replenishAmount,
+                            "items.$[i].stock.$[j].amount": replenishAmount,
+                            "total_stock_sum.$[j].ordered": -replenishAmount,
+                            "total_stock_sum.$[j].amount": replenishAmount
                         }
                     },
                     {
                         arrayFilters: [
                             { "i.sku": item.sku },
-                            { "j.location": "ordered" },
-                            { "k.location": "store" }
+                            { "j.location.id": new BSON.ObjectId(storeId) }
                         ]
                     }
                 );

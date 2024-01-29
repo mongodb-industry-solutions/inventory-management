@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import  *  as  Realm  from  "realm-web";
 import clientPromise from '../../lib/mongodb';
-import { ObjectId } from "bson"
+import { useRouter } from 'next/router';
+import { ObjectId } from "bson";
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShirt } from '@fortawesome/free-solid-svg-icons';
-
 import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
@@ -18,26 +17,38 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
     const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
     const  app = new  Realm.App({ id: realmAppId });
 
+    const router = useRouter();
+    const { store } = router.query;
+
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
         '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9'
     ];
 
     const leafUrl = lightColors.includes(product.color.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
+
+    const productFilter = {'items.product.id': ObjectId(preloadedProduct._id)};
+    let storeFilter = {};
+    //Add store filter if exists
+    if (store) {
+        storeFilter= { 'location.destination.id': ObjectId(store)};
+    }
     
     const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl});
     const dashboardDiv = useRef(null);
     const [rendered, setRendered] = useState(false);
     const [dashboard] = useState(sdk.createDashboard({ 
         dashboardId: dashboardId, 
-        filter: {'items.product.id': ObjectId(preloadedProduct._id)},
+        filter: { $and: [productFilter, storeFilter]},
         widthMode: 'scale', 
         heightMode: 'scale', 
         background: '#fff'
     }));
 
     useEffect(() => {
-        dashboard.render(dashboardDiv.current).then(() => setRendered(true)).catch(err => console.log("Error during Charts rendering.", err));
+        dashboard.render(dashboardDiv.current)
+            .then(() => setRendered(true))
+            .catch(err => console.log("Error during Charts rendering.", err));
       }, [dashboard]);
     
 
@@ -49,17 +60,36 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
             const collection = mongodb.db(databaseName).collection("products");
             let updatedProduct = null;
             
-            for await (const  change  of  collection.watch({ $match: { 'fullDocument._id': preloadedProduct._id } })) {
-                updatedProduct = change.fullDocument;
-                updatedProduct._id = updatedProduct._id.toString();
-
-                if( updatedProduct._id === preloadedProduct._id) {
-                    setProduct(updatedProduct);
+            const filter = {
+                filter: {
+                    operationType: "update",
+                    "fullDocument._id": new ObjectId(preloadedProduct._id)
                 }
+            };
+
+            for await (const  change  of  collection.watch(filter)) {
+                if (store) {
+                    updatedProduct = change.fullDocument;
+                } else {
+                    updatedProduct = await mongodb
+                        .db(databaseName)
+                        .collection("products_area_view")
+                        .findOne({ _id: ObjectId(preloadedProduct._id)});
+                }
+                
+                setProduct(JSON.parse(JSON.stringify(updatedProduct)));
             }
         }
         login();
     }, []);
+
+    useEffect(() => {
+        setProduct(preloadedProduct);
+        if (rendered) {
+            dashboard.setFilter({ $and: [productFilter, storeFilter]});
+            dashboard.refresh();
+        }
+    }, [router.asPath]);
 
     const handleOpenPopup = () => {
         setShowPopup(true);
@@ -109,14 +139,14 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                 <p className="name">{product.name}</p>
                 <p className="price">{product.price.amount} {product.price.currency}</p>
                 <p className="code">{product.code}</p>
-                {<StockLevelBar stock={product.total_stock_sum} />}
-                <div className={styles["switch-container"]}>
+                {<StockLevelBar stock={product.total_stock_sum} storeId={store} />}
+                {store && (<div className={styles["switch-container"]}>
                     <span className={styles["switch-text"]}>Autoreplenishment</span>
                     <label className={styles["switch"]}>
                         <input type="checkbox" checked={product.autoreplenishment} onChange={handleToggleAutoreplenishment}/>
                         <span className={styles["slider"]}></span>
                     </label>
-                </div>
+                </div>)}
             </div>
             <div className={styles["table"]}>
             <table>
@@ -134,12 +164,12 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                 {product.items.map((item, index) => (
                     <tr key={index}>
                     <td>{item.size}</td>
-                    <td>{item.stock.find(stock => stock.location === 'store')?.amount ?? 0}</td>
-                    <td>{item.stock.find(stock => stock.location === 'ordered')?.amount ?? 0}</td>
-                    <td>{item.stock.find(stock => stock.location === 'warehouse')?.amount ?? 0}</td>
+                    <td>{item.stock.find(stock => stock.location.id === store)?.amount ?? 0}</td>
+                    <td>{item.stock.find(stock => stock.location.id === store)?.ordered ?? 0}</td>
+                    <td>{item.stock.find(stock => stock.location.type === 'warehouse')?.amount ?? 0}</td>
                     <td>{item.delivery_time.amount} {item.delivery_time.unit}</td>
                     <td>
-                        {<StockLevelBar stock={item.stock} />}
+                        {<StockLevelBar stock={item.stock} storeId = {store}/>}
                     </td>
                     </tr>
                     ))}
@@ -150,12 +180,17 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                 <span className={`${styles["circle"]} ${styles["low"]}`}></span> <span>Low</span> &nbsp;&nbsp;
                 <span className={`${styles["circle"]} ${styles["ordered"]}`}></span> <span>Ordered</span>
             </div>
-            <button onClick={handleOpenPopup}>REPLENISH STOCK</button>
+            {store && (<button onClick={handleOpenPopup}>REPLENISH STOCK</button>)}
             </div>
         </div>
         <div className={styles["dashboard"]} ref={dashboardDiv}/>
         
-        {showPopup && <Popup product={product} onClose={handleClosePopup} onSave={handleSave}/>}
+        {showPopup && <Popup 
+            product={product} 
+            onClose={handleClosePopup} 
+            onSave={handleSave} 
+            storeId={store}
+        />}
         {saveSuccessMessage && (
             <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
                 Order placed successfully
@@ -187,14 +222,17 @@ export async function getServerSideProps(context) {
         const baseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
         const dashboardId = process.env.DASHBOARD_ID_PRODUCT;
 
-        const { req, params } = context;
         const client = await clientPromise;
         const db = client.db(dbName);
 
-        const product = await db
-            .collection("products")
-            .findOne({ _id: ObjectId(params._id)});
+        const { params, query } = context;
+        const storeId = query.store;
 
+        const collectionName = storeId ? "products" : "products_area_view";
+        
+        const product = await db
+            .collection(collectionName)
+            .findOne({ _id: ObjectId(params._id)});
         return {
             props: { preloadedProduct: JSON.parse(JSON.stringify(product)), realmAppId: realmAppId, baseUrl: baseUrl, dashboardId: dashboardId, databaseName: dbName },
         };

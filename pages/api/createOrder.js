@@ -1,4 +1,5 @@
 import clientPromise from '../../lib/mongodb';
+import { ObjectId } from 'mongodb';
 
 export default async (req, res) => {
     try {
@@ -9,10 +10,11 @@ export default async (req, res) => {
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
         const client = await clientPromise;
-        const { ObjectId } = require('mongodb');
         const db = client.db(dbName);
 
         const { order } = req.body;
+        const storeId = new ObjectId(req.query.store_id);
+
         const placementTimestamp = new Date();
 
         const status = {
@@ -23,6 +25,8 @@ export default async (req, res) => {
         order.placement_timestamp = placementTimestamp;
         order.items.forEach(item => item.status.push(status));
         order.items.forEach(item => item.product.id = new ObjectId(item.product.id));
+        order.user_id = new ObjectId(order.user_id);
+        order.location.destination.id = new ObjectId(order.location.destination.id);
 
         var insertOrderResponse = null;
 
@@ -52,16 +56,16 @@ export default async (req, res) => {
                     {
                     $inc: {
                         "items.$[i].stock.$[j].amount": -amount,
-                        "items.$[i].stock.$[k].amount": amount,
+                        "items.$[i].stock.$[k].ordered": amount,
                         "total_stock_sum.$[j].amount": -amount,
-                        "total_stock_sum.$[k].amount": amount
+                        "total_stock_sum.$[k].ordered": amount
                     }
                     },
                     {
                     arrayFilters: [
                         { "i.sku": sku },
-                        { "j.location": "warehouse" },
-                        { "k.location": "ordered" }
+                        { "j.location.type": "warehouse" },
+                        { "k.location.id": storeId }
                     ],
                      session 
                     }

@@ -1,6 +1,5 @@
-import { MongoClient } from 'mongodb';
 import clientPromise from '../../lib/mongodb';
-import { random } from 'lodash';
+import { ObjectId } from 'mongodb';
 
 if (!process.env.MONGODB_DATABASE_NAME) {
   throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
@@ -9,18 +8,20 @@ if (!process.env.MONGODB_DATABASE_NAME) {
 const dbName = process.env.MONGODB_DATABASE_NAME;
 const collectionName = 'products';
 
-async function performSale(productsCollection, salesCollection, color, size, quantity) {
-  console.log(`Performing sale: Color: ${color}, Size: ${size}, Quantity: ${quantity}`);
+async function performSale(productsCollection, salesCollection, color, size, quantity, store_id, store_name, channel) {
+  console.log(`Performing sale: Color: ${color}, Size: ${size}, Quantity: ${quantity}, Store: ${store_name}, Channel: ${channel}`);
 
-  const product = await productsCollection.findOne({ 'color.name': color, 'items.size': size });
+  let product = await productsCollection.findOne({ 'color.name': color, 'items.size': size });
 
   if (!product) {
     return { message: `Product with color '${color}' and size '${size}' not found.` };
+  } else {
+    product = JSON.parse(JSON.stringify(product));
   }
 
   const sizeItem = product.items.find((item) => item.size === size);
-  const availableStock = sizeItem.stock.find(stock => stock.location === 'store').amount;
-  const availableTotalStock = product.total_stock_sum.find(stock => stock.location === 'store').amount;
+  const availableStock = sizeItem.stock.find(stock => stock.location.id === store_id).amount;
+  const availableTotalStock = product.total_stock_sum.find(stock => stock.location.id === store_id).amount;
 
   if (availableStock <= 0 || availableTotalStock <= 0) {
     return { message: `Product with color '${color}' and size '${size}' is out of stock.` };
@@ -32,25 +33,22 @@ async function performSale(productsCollection, salesCollection, color, size, qua
 
   await productsCollection.updateOne(
     {
-      _id: product._id,
-      'color.name': color,
-      'items.size': size,
-      'items.stock.location': 'store',
+      _id: new ObjectId(product._id)
     },
     {
       $inc: {
-        'items.$[item].stock.$[elem].amount': -quantity,
-        'total_stock_sum.$[stock].amount': -quantity,
+        'items.$[i].stock.$[j].amount': -quantity,
+        'total_stock_sum.$[j].amount': -quantity,
       }
     },
     {
       arrayFilters: [
-        { 'item.size': size }, // Filter the correct 'items' element based on the size
-        { 'elem.location': 'store' }, // Filter the correct 'stock' element based on location
-        { 'stock.location': 'store' }, // Filter the correct 'total_stock_sum' element based on location
+        { 'i.size': size }, // Filter the correct 'items' element based on the size
+        { 'j.location.id': new ObjectId(store_id) }, // Filter the correct 'total_stock_sum' element based on location
       ],
     }
   );
+
 
   // Save the sales data to the new collection
   const saleData = {
@@ -63,9 +61,18 @@ async function performSale(productsCollection, salesCollection, color, size, qua
     size: size,
     sku: sizeItem.sku,
     quantity: quantity,
-    channel: random(0, 1) ? 'online' : 'in-store', // Generate a random value of either 'online' or 'in-store'
+    channel: channel, // Generate a random value of either 'online' or 'in-store'
     timestamp: new Date(),
   };
+
+  // If in-store add store field
+  if(channel == 'in-store'){
+    saleData.store = {
+      id: new ObjectId(store_id),
+      name: store_name
+    };
+  }
+
   await salesCollection.insertOne(saleData);
 
   return {
@@ -84,6 +91,9 @@ export default async function handler(req, res) {
   const color = req.query.color;
   const size = req.query.size;
   const quantity = parseInt(req.query.quantity, 10); // Parse the quantity to an integer
+  const store_id = req.query.store_id;
+  const store_name = req.query.store_name;
+  const channel = req.query.channel;
 
   if (!color || !size || isNaN(quantity) || quantity <= 0) {
     res.status(400).json({ error: 'Valid color, size, and positive quantity query parameters are required' });
@@ -96,7 +106,7 @@ export default async function handler(req, res) {
     const productsCollection = db.collection(collectionName);
     const salesCollection = db.collection('sales'); // Get the 'sales' collection
 
-    const result = await performSale(productsCollection, salesCollection, color, size, quantity); // Pass both collections
+    const result = await performSale(productsCollection, salesCollection, color, size, quantity, store_id, store_name, channel); // Pass both collections
     res.status(200).json(result);
   } catch (error) {
     console.error(error);

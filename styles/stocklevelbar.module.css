@@ -4,16 +4,16 @@
 
 .target-level {
     display: flex;
-    height: 10px;
+    height: 14px;
     align-items: left;
-    border-radius: 5px;
-    border: 1px solid black;
+    border-radius: 20px;
+    border: 1px solid rgb(224, 224, 224);
     width: 80%;
   }
   
   .store-level {
     height: 100%;
-    border-radius: 5px;
+    border-radius: 20px;
     overflow: hidden;
     position: relative;
   }
@@ -25,6 +25,7 @@
 
   .ordered-level {
     position:relative;
+    border-radius: 20px;
     background: repeating-linear-gradient(
         45deg,
         white,

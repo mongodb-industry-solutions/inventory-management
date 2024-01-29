@@ -1,13 +1,17 @@
 'use client'
 
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { useUser } from '../context/UserContext';
 import styles from '../styles/navbar.module.css';
 
-function Footer() {
+function Navbar() {
+
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('Bogatell Store');
+  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedStoreId, setSelectedStoreId] = useState('');
   const [currentPage, setCurrentPage] = useState('');
+
+  const { selectedUser } = useUser();
 
   const handleDropdownToggle = () => {
     setIsOpen(!isOpen);
@@ -37,9 +41,20 @@ function Footer() {
     setShowInfoPopup(false);
   };
 
+  /* Select default store */
+  useEffect(() => {
+    setSelectedOption(selectedUser?.permissions?.stores[0]?.name);
+    setSelectedStoreId(selectedUser?.permissions?.stores[0]?.id);
+  }, [selectedUser]);
+
+  /* Navigation bold when on page */
+  useEffect(() => {
+    setCurrentPage(window.location.pathname.slice(1));
+  }
+  , [currentPage]);
 
   return (
-    <div className={styles["layout-footer"]}>
+    <div className={styles["layout-navbar"]}>
       <div className={styles["dropdown"]}>
         <img src="/images/houseLogo.png" alt="House Logo" className={styles["house-logo"]} />
         <button className={styles["dropdown-toggle"]} onClick={handleDropdownToggle}>
@@ -48,33 +63,57 @@ function Footer() {
         </button>
         {isOpen && (
           <div className={styles["dropdown-menu"]}>
-            <a href="#" onClick={() => handleOptionClick('Bogatell Store')}>
-              Bogatell Store
-            </a>
-            <a >
-              <span className={`${styles["non-clickable-option"]}`} style={{ color: 'grey' }}>Gracia Store</span>
-            </a>
+            {selectedUser?.permissions?.stores.map((store) => (
+              <a key={store.id} href="#" onClick={() => handleOptionClick(store.name)}>
+                {store.name}
+              </a>
+            ))}
           </div>
         )}
 
-        <div className={styles["mongodb-button-container"]}>
-          <a href="/products">
-            <button className={styles["mongodb-button"]} onClick={handleProductsClick}>
-              Real-time Inventory
-            </button></a>
-          <a href="/orderHistory">
-            <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
-              Orders
-            </button></a>
-          <a href="/salesHistory">
-            <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
-              Sales Events
-            </button></a>
-          <a href="/dashboard">
-            <button className={styles["mongodb-button"]} onClick={handleOrderHistoryClick}>
-              Analytics
-            </button></a>
-        </div>
+<div className={styles["mongodb-button-container"]}>
+  <a href={selectedStoreId ? `/products?store=${selectedStoreId}` : "/products"}>
+    <button
+      className={`${styles["mongodb-button"]} ${
+        currentPage === 'products' ? styles["bold-text"] : ''
+      }`}
+      onClick={handleProductsClick}
+    >
+      Real-time Inventory
+    </button>
+  </a>
+  <a href={selectedStoreId ? `/orderHistory?store=${selectedStoreId}` : "/orderHistory"}>
+    <button
+      className={`${styles["mongodb-button"]} ${
+        currentPage === 'orderHistory' ? styles["bold-text"] : ''
+      }`}
+      onClick={handleOrderHistoryClick}
+    >
+      Orders
+    </button>
+  </a>
+  <a href={selectedStoreId ? `/salesHistory?store=${selectedStoreId}` : "/salesHistory"}>
+    <button
+      className={`${styles["mongodb-button"]} ${
+        currentPage === 'salesHistory' ? styles["bold-text"] : ''
+      }`}
+      onClick={handleOrderHistoryClick}
+    >
+      Sales Events
+    </button>
+  </a>
+  <a href={selectedStoreId ? `/dashboard?store=${selectedStoreId}` : "/dashboard"}>
+    <button
+      className={`${styles["mongodb-button"]} ${
+        currentPage === 'dashboard' ? styles["bold-text"] : ''
+      }`}
+      onClick={handleOrderHistoryClick}
+    >
+      Analytics
+    </button>
+  </a>
+</div>
+
 
         <div className="flex justify-center items-center mb-4 mt-0">
           <button
@@ -88,7 +127,6 @@ function Footer() {
 
       </div>
 
-      
       {currentPage === 'products' && (
         <div>
           {/* Render the Products page */}
@@ -105,9 +143,9 @@ function Footer() {
         </div>
       )}
 
-{showInfoPopup && (
+      {showInfoPopup && (
         <div
-          
+
           onClick={handlePopupClose}
         >
           <div className={styles["architecture-container"]}>
@@ -117,8 +155,7 @@ function Footer() {
       )}
 
     </div>
-    
   );
 }
 
-export default Footer;
+export default Navbar;
