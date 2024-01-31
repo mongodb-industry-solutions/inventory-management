@@ -10,6 +10,7 @@ function Header( ) {
   const [usersList, setUsersList] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [onlineStatus, setOnlineStatus] = useState(true);
+  const [isLoading, setLoading] = useState(false);
 
   const router = useRouter();
   const { store, ...otherQueryParams } = router.query;
@@ -55,27 +56,9 @@ function Header( ) {
   useEffect(() => {
     // Update store query param on user change
     if(selectedUser){
-      
-      //Display online status if edge
       if(selectedUser.type == 'edge'){
-        
-        const fetchData = async () => {
-          try {
-            
-            const response = await fetch('http://localhost:80/api/client/v2.0/tiered-sync/status');
-            const status = await response.json();
-            setOnlineStatus(status.cloud_connected);
-            console.log(status);
-          } catch (error) {
-            console.log("B");
-            console.error('Error fetching data:', error);
-            setOnlineStatus(false);
-          }
-        };
-    
-        fetchData();
+        fetchStatus(false);
       }
-
       //Set path
       if(selectedUser.permissions.stores.length > 0){
         router.push({
@@ -92,6 +75,57 @@ function Header( ) {
 
   }, [selectedUser]);
 
+  const fetchStatus = async (isToggle) => {
+    try {
+      const response = await fetch('http://localhost:80/api/client/v2.0/tiered-sync/status');
+      const status = await response.json();
+      const newStatus = status.cloud_connected;
+
+      if(isToggle){
+        if(newStatus !== onlineStatus){
+          setOnlineStatus(newStatus);
+          setLoading(false);
+        } else {
+          setTimeout(() => {
+            fetchStatus(true);
+          }, 1000);
+        }
+      } else {
+        setOnlineStatus(newStatus);
+      }
+
+    } catch (error) {
+      console.error('Error fetching status:', error);
+      setLoading(false);
+    }
+  };
+
+  const handleConnectionToggle = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/setConnection', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: onlineStatus ? 'disable' : 'enable', // Toggle the connection status
+        }),
+      });
+  
+      if (!response.ok) {
+        console.error('Failed to change connection status');
+        return;
+      }
+      
+      fetchStatus(true);
+
+    } catch (error) {
+      console.error('Error toggling connection status:', error);
+      setLoading(false);
+    }
+  };
+
   const handleDropdownToggle = () => {
     setShowDropdown(!showDropdown);
   };
@@ -106,8 +140,8 @@ function Header( ) {
     <div className={styles["layout-header"]}>
       <a href="/products"><img src="/images/logo_v1.png" alt="Logo" className={styles["logo"]}/></a>
       {selectedUser?.type == 'edge' ? 
-        onlineStatus ? (<div className={styles["online-tag"]}>ONLINE</div>)
-        : (<div className={styles["offline-tag"]}>OFFLINE</div>)
+        onlineStatus ? (<button className={styles["online-tag"]} onClick={handleConnectionToggle}>ONLINE</button>)
+        : (<button className={styles["offline-tag"]} onClick={handleConnectionToggle}>OFFLINE</button>)
         : null
       }
       <div className={styles["user-info"]} onClick={handleDropdownToggle}>
