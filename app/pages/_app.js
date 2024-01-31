@@ -5,11 +5,11 @@ import Header from '../components/Header';
 import Navbar from '../components/Navbar';
 import { UserProvider } from '../context/UserContext';
 
-export const AppServiceContext = createContext();
+export const ServerContext = createContext();
 
-function MyApp({ Component, pageProps, apiInfo }) {
+function MyApp({ Component, pageProps, utils }) {
     return (
-    <AppServiceContext.Provider value={apiInfo}>
+    <ServerContext.Provider value={utils}>
      <UserProvider>
       <div className="layout">
         <div className="header-container">
@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps, apiInfo }) {
           <Component {...pageProps} />
        </div>
       </UserProvider>
-      </AppServiceContext.Provider>
+      </ServerContext.Provider>
     );
 }
 
@@ -27,19 +27,23 @@ export default MyApp;
 
 MyApp.getInitialProps = async ({ ctx }) => {
   try {
-    if (!process.env.APP_SERVICES_URI) {
-      throw new Error('Invalid/Missing environment variables: "APP_SERVICES_URI"')
-    }
-    if (!process.env.API_KEY) {
-      throw new Error('Invalid/Missing environment variables: "API_KEY"')
-    }
-    if (!process.env.REALM_APP_ID) {
-      throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
-    }
+    const requiredEnvVariables = [
+      'APP_SERVICES_URI',
+      'API_KEY',
+      'REALM_APP_ID',
+      'EDGE_SERVER_HOST'
+    ];
+    
+    requiredEnvVariables.forEach((envVar) => {
+      if (!process.env[envVar]) {
+        throw new Error(`Invalid/Missing environment variables: "${envVar}"`);
+      }
+    });
 
     const uri = process.env.APP_SERVICES_URI;
     const key = process.env.API_KEY;
     const appId = process.env.REALM_APP_ID;
+    const edgeHost = process.env.EDGE_SERVER_HOST;
 
     const regex = /^https:\/\/([^/]+)\.data\.mongodb-api\.com/;
     const match = uri.match(regex);
@@ -60,11 +64,11 @@ MyApp.getInitialProps = async ({ ctx }) => {
     const dataUri = uri + '/app/' + appId + '/endpoint/data/v1';
     const httpsUri = uri + '/app/' + appId + '/endpoint/';
 
-    return { apiInfo: { dataUri, httpsUri, accessToken } };
+    return { utils: {apiInfo: { dataUri, httpsUri, accessToken}, edgeInfo: { edgeHost }}};
   } catch (e) {
     console.error(e);
     return {
-      props: { apiInfo: { uri: null, key: null } },
+      props: { utils: {apiInfo: { dataUri: null, httpsUri: null, accessToken: null}, edgeInfo: { edgeHost: null }}},
     };
   }
 }

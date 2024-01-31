@@ -2,32 +2,34 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '../context/UserContext';
-import { AppServiceContext } from '../pages/_app';
+import { ServerContext } from '../pages/_app';
+import { Spinner } from '@leafygreen-ui/loading-indicator';
+import Button from "@leafygreen-ui/button";
 import styles from '../styles/header.module.css';
 
 function Header( ) {
 
   const [usersList, setUsersList] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [onlineStatus, setOnlineStatus] = useState(true);
+  const [isOnline, setOnlineStatus] = useState(true);
   const [isLoading, setLoading] = useState(false);
 
   const router = useRouter();
   const { store, ...otherQueryParams } = router.query;
 
-  const apiInfo = useContext(AppServiceContext);
+  const utils = useContext(ServerContext);
 
   const { selectedUser, setUser } = useUser();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(apiInfo.dataUri + '/action/find', {
+        const response = await fetch(utils.apiInfo.dataUri + '/action/find', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': 'Bearer ' + apiInfo.accessToken,
+            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
           },
           body: JSON.stringify({
             dataSource: 'mongodb-atlas',
@@ -77,12 +79,12 @@ function Header( ) {
 
   const fetchStatus = async (isToggle) => {
     try {
-      const response = await fetch('http://localhost:80/api/client/v2.0/tiered-sync/status');
+      const response = await fetch(`http://${utils.edgeInfo.edgeHost}:80/api/client/v2.0/tiered-sync/status`);
       const status = await response.json();
       const newStatus = status.cloud_connected;
 
       if(isToggle){
-        if(newStatus !== onlineStatus){
+        if(newStatus !== isOnline){
           setOnlineStatus(newStatus);
           setLoading(false);
         } else {
@@ -109,7 +111,7 @@ function Header( ) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          action: onlineStatus ? 'disable' : 'enable', // Toggle the connection status
+          action: isOnline ? 'disable' : 'enable', // Toggle the connection status
         }),
       });
   
@@ -140,8 +142,18 @@ function Header( ) {
     <div className={styles["layout-header"]}>
       <a href="/products"><img src="/images/logo_v1.png" alt="Logo" className={styles["logo"]}/></a>
       {selectedUser?.type == 'edge' ? 
-        onlineStatus ? (<button className={styles["online-tag"]} onClick={handleConnectionToggle}>ONLINE</button>)
-        : (<button className={styles["offline-tag"]} onClick={handleConnectionToggle}>OFFLINE</button>)
+        <Button
+            isLoading={isLoading}
+            loadingIndicator={<Spinner/>}
+            variant={isOnline ? 'primaryOutline' : 'dangerOutline'}
+            onClick={handleConnectionToggle}
+            children={isOnline ? 'ONLINE' : 'OFFLINE'}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+        />
         : null
       }
       <div className={styles["user-info"]} onClick={handleDropdownToggle}>
@@ -153,9 +165,13 @@ function Header( ) {
         {showDropdown && (
           <div className={styles['dropdown-container']}>
             <ul className={styles['user-list']}>
-              {usersList.map((user) => (
+              {usersList.filter((user) => user._id !== selectedUser?._id).map((user) => (
                 <li key={user._id} onClick={() => handleUserSelection(user)}>
-                  {user.name} {user.surname}
+                  <img src="/images/userAvatar.png" alt="User Avatar" className={styles["user-avatar"]} />
+                  <div>
+                      <div className={styles["user-name"]}>{user?.name} {user?.surname}</div>
+                      <div className={styles["user-job-title"]}>{user?.title}</div>
+                  </div>
                 </li>
               ))}
             </ul>
