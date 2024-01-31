@@ -105,7 +105,7 @@ make up
 
 4.
 ```
-./bin/demo/edge_connection.sh disable
+./bin/demo/edge-connection.sh disable
 ```
 
 ```
