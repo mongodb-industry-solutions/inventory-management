@@ -157,7 +157,7 @@ function Header( ) {
         : null
       }
       <div className={styles["user-info"]} onClick={handleDropdownToggle}>
-        <img src="/images/userAvatar.png" alt="User Avatar" className={styles["user-avatar"]} />
+        <img src={`/images/${selectedUser?._id}.png`} alt="User Avatar" className={styles["user-avatar"]} />
         <div>
             <div className={styles["user-name"]}>{selectedUser?.name} {selectedUser?.surname}</div>
             <div className={styles["user-job-title"]}>{selectedUser?.title}</div>
@@ -167,7 +167,7 @@ function Header( ) {
             <ul className={styles['user-list']}>
               {usersList.filter((user) => user._id !== selectedUser?._id).map((user) => (
                 <li key={user._id} onClick={() => handleUserSelection(user)}>
-                  <img src="/images/userAvatar.png" alt="User Avatar" className={styles["user-avatar"]} />
+                  <img src={`/images/${user._id}.png`} alt="User Avatar" className={styles["user-avatar"]} />
                   <div>
                       <div className={styles["user-name"]}>{user?.name} {user?.surname}</div>
                       <div className={styles["user-job-title"]}>{user?.title}</div>
