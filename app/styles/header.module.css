@@ -84,6 +84,7 @@
   
   .user-list li {
     cursor: pointer;
+    display: flex;
     padding: 8px;
     transition: background-color 0.3s;
     border-bottom: 1px solid #ccc; /* Add a gray line below each list item */
