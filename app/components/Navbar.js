@@ -1,7 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useUser } from '../context/UserContext';
+import { ServerContext } from '../pages/_app';
+import { FaStore, FaIndustry } from "react-icons/fa";
 import styles from '../styles/navbar.module.css';
 
 function Navbar() {
@@ -12,6 +14,7 @@ function Navbar() {
   const [currentPage, setCurrentPage] = useState('');
 
   const { selectedUser } = useUser();
+  const utils = useContext(ServerContext);
 
   const handleDropdownToggle = () => {
     setIsOpen(!isOpen);
@@ -43,8 +46,8 @@ function Navbar() {
 
   /* Select default store */
   useEffect(() => {
-    setSelectedOption(selectedUser?.permissions?.stores[0]?.name);
-    setSelectedStoreId(selectedUser?.permissions?.stores[0]?.id);
+    setSelectedOption(selectedUser?.permissions?.facilities[0]?.name);
+    setSelectedStoreId(selectedUser?.permissions?.facilities[0]?.id);
   }, [selectedUser]);
 
   /* Navigation bold when on page */
@@ -56,14 +59,16 @@ function Navbar() {
   return (
     <div className={styles["layout-navbar"]}>
       <div className={styles["dropdown"]}>
-        <img src="/images/houseLogo.png" alt="House Logo" className={styles["house-logo"]} />
+        {utils.demoInfo.industry == 'manufacturing' ? 
+          <FaIndustry /> :
+          <FaStore />}
         <button className={styles["dropdown-toggle"]} onClick={handleDropdownToggle}>
           {selectedOption || 'Choose your store'}
           <span className={styles["dropdown-arrow"]}></span>
         </button>
         {isOpen && (
           <div className={styles["dropdown-menu"]}>
-            {selectedUser?.permissions?.stores.map((store) => (
+            {selectedUser?.permissions?.facilities.map((store) => (
               <a key={store.id} href="#" onClick={() => handleOptionClick(store.name)}>
                 {store.name}
               </a>

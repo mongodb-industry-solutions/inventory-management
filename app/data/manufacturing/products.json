@@ -1,0 +1,58 @@
+[{
+    "name": "Sheet Metal",
+    "category": "Raw Materials",
+    "code": "SHEET001",
+    "description": "High quality sheet metal",
+    "unit": "sheets",
+    "items": [
+      {
+        "sku": "SHEET001-MS-MDB0001",
+        "name": "Mild Steel",
+        "delivery_time": {
+          "amount": 3,
+          "unit": "seconds"
+        },
+        "stock": [
+          {
+            "location": {
+              "type": "factory",
+              "id": {
+                "$oid": "65c63cb61526ffd3415fadbd"
+              }
+            },
+            "amount": 20,
+            "threshold": 10,
+            "target": 20,
+            "ordered": 0
+          },
+          {
+            "location": {
+              "type": "warehouse"
+            },
+            "amount": 200
+          }
+        ]
+      }
+    ],
+    "total_stock_sum": [
+      {
+        "location": {
+          "type": "factory",
+          "id": {
+            "$oid": "65c63cb61526ffd3415fadbd"
+          }
+        },
+        "amount": 100,
+        "threshold": 50,
+        "target": 100,
+        "ordered": 0
+      },
+      {
+        "location": {
+          "type": "warehouse"
+        },
+        "amount": 1000
+      }
+    ],
+    "autoreplenishment": false
+  }]

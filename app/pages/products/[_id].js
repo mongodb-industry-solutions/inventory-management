@@ -25,7 +25,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
         '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9'
     ];
 
-    const leafUrl = lightColors.includes(product.color.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
+    const leafUrl = lightColors.includes(product.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
 
     const productFilter = {'items.product.id': ObjectId(preloadedProduct._id)};
     let storeFilter = {};
@@ -131,13 +131,13 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
         <div className={styles['product-detail-content']}>
             <div className={styles['icon']}>
                 <div className={styles["icon-container"]}>
-                <FontAwesomeIcon id="tshirt" icon={faShirt} style={{ color: product.color.hex, fontSize: '10rem', backgroundColor: 'rgb(249, 251, 250)', padding: '15px'}}/>
+                <FontAwesomeIcon id="tshirt" icon={faShirt} style={{ color: product.color?.hex, fontSize: '10rem', backgroundColor: 'rgb(249, 251, 250)', padding: '15px'}}/>
                 <img src={leafUrl} alt="Leaf" className={styles["leaf"]}/>
                 </div>
             </div>
             <div className={styles["details"]}>
                 <p className="name">{product.name}</p>
-                <p className="price">{product.price.amount} {product.price.currency}</p>
+                <p className="price">{product.price?.amount} {product.price?.currency}</p>
                 <p className="code">{product.code}</p>
                 {<StockLevelBar stock={product.total_stock_sum} storeId={store} />}
                 {store && (<div className={styles["switch-container"]}>
