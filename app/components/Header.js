@@ -2,31 +2,34 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '../context/UserContext';
-import { AppServiceContext } from '../pages/_app';
+import { ServerContext } from '../pages/_app';
+import { Spinner } from '@leafygreen-ui/loading-indicator';
+import Button from "@leafygreen-ui/button";
 import styles from '../styles/header.module.css';
 
 function Header( ) {
 
   const [usersList, setUsersList] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [onlineStatus, setOnlineStatus] = useState(true);
+  const [isOnline, setOnlineStatus] = useState(true);
+  const [isLoading, setLoading] = useState(false);
 
   const router = useRouter();
   const { store, ...otherQueryParams } = router.query;
 
-  const apiInfo = useContext(AppServiceContext);
+  const utils = useContext(ServerContext);
 
   const { selectedUser, setUser } = useUser();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(apiInfo.dataUri + '/action/find', {
+        const response = await fetch(utils.apiInfo.dataUri + '/action/find', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': 'Bearer ' + apiInfo.accessToken,
+            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
           },
           body: JSON.stringify({
             dataSource: 'mongodb-atlas',
@@ -55,27 +58,9 @@ function Header( ) {
   useEffect(() => {
     // Update store query param on user change
     if(selectedUser){
-      
-      //Display online status if edge
       if(selectedUser.type == 'edge'){
-        
-        const fetchData = async () => {
-          try {
-            
-            const response = await fetch('http://localhost:80/api/client/v2.0/tiered-sync/status');
-            const status = await response.json();
-            setOnlineStatus(status.cloud_connected);
-            console.log(status);
-          } catch (error) {
-            console.log("B");
-            console.error('Error fetching data:', error);
-            setOnlineStatus(false);
-          }
-        };
-    
-        fetchData();
+        fetchStatus(false);
       }
-
       //Set path
       if(selectedUser.permissions.stores.length > 0){
         router.push({
@@ -92,6 +77,57 @@ function Header( ) {
 
   }, [selectedUser]);
 
+  const fetchStatus = async (isToggle) => {
+    try {
+      const response = await fetch(`http://${utils.edgeInfo.edgeHost}:80/api/client/v2.0/tiered-sync/status`);
+      const status = await response.json();
+      const newStatus = status.cloud_connected;
+
+      if(isToggle){
+        if(newStatus !== isOnline){
+          setOnlineStatus(newStatus);
+          setLoading(false);
+        } else {
+          setTimeout(() => {
+            fetchStatus(true);
+          }, 1000);
+        }
+      } else {
+        setOnlineStatus(newStatus);
+      }
+
+    } catch (error) {
+      console.error('Error fetching status:', error);
+      setLoading(false);
+    }
+  };
+
+  const handleConnectionToggle = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/setConnection', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: isOnline ? 'disable' : 'enable', // Toggle the connection status
+        }),
+      });
+  
+      if (!response.ok) {
+        console.error('Failed to change connection status');
+        return;
+      }
+      
+      fetchStatus(true);
+
+    } catch (error) {
+      console.error('Error toggling connection status:', error);
+      setLoading(false);
+    }
+  };
+
   const handleDropdownToggle = () => {
     setShowDropdown(!showDropdown);
   };
@@ -106,12 +142,22 @@ function Header( ) {
     <div className={styles["layout-header"]}>
       <a href="/products"><img src="/images/logo_v1.png" alt="Logo" className={styles["logo"]}/></a>
       {selectedUser?.type == 'edge' ? 
-        onlineStatus ? (<div className={styles["online-tag"]}>ONLINE</div>)
-        : (<div className={styles["offline-tag"]}>OFFLINE</div>)
+        <Button
+            isLoading={isLoading}
+            loadingIndicator={<Spinner/>}
+            variant={isOnline ? 'primaryOutline' : 'dangerOutline'}
+            onClick={handleConnectionToggle}
+            children={isOnline ? 'ONLINE' : 'OFFLINE'}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+        />
         : null
       }
       <div className={styles["user-info"]} onClick={handleDropdownToggle}>
-        <img src="/images/userAvatar.png" alt="User Avatar" className={styles["user-avatar"]} />
+        <img src={`/images/${selectedUser?._id}.png`} alt="User Avatar" className={styles["user-avatar"]} />
         <div>
             <div className={styles["user-name"]}>{selectedUser?.name} {selectedUser?.surname}</div>
             <div className={styles["user-job-title"]}>{selectedUser?.title}</div>
@@ -119,9 +165,13 @@ function Header( ) {
         {showDropdown && (
           <div className={styles['dropdown-container']}>
             <ul className={styles['user-list']}>
-              {usersList.map((user) => (
+              {usersList.filter((user) => user._id !== selectedUser?._id).map((user) => (
                 <li key={user._id} onClick={() => handleUserSelection(user)}>
-                  {user.name} {user.surname}
+                  <img src={`/images/${user._id}.png`} alt="User Avatar" className={styles["user-avatar"]} />
+                  <div>
+                      <div className={styles["user-name"]}>{user?.name} {user?.surname}</div>
+                      <div className={styles["user-job-title"]}>{user?.title}</div>
+                  </div>
                 </li>
               ))}
             </ul>
