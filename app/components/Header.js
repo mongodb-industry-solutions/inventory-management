@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import { useUser } from '../context/UserContext';
 import { ServerContext } from '../pages/_app';
 import { Spinner } from '@leafygreen-ui/loading-indicator';
+import { MongoDBLogoMark } from '@leafygreen-ui/logo';
+import { H2 } from '@leafygreen-ui/typography';
 import Button from "@leafygreen-ui/button";
 import styles from '../styles/header.module.css';
 
@@ -33,7 +35,7 @@ function Header( ) {
           },
           body: JSON.stringify({
             dataSource: 'mongodb-atlas',
-            database: 'inventory_management_demo',
+            database: utils.dbInfo.dbName,
             collection: 'users',
             filter: {},
           }),
@@ -62,10 +64,10 @@ function Header( ) {
         fetchStatus(false);
       }
       //Set path
-      if(selectedUser.permissions.stores.length > 0){
+      if(selectedUser.permissions.facilities?.length > 0){
         router.push({
           pathname: router.pathname == '/' ? '/products' : router.pathname,
-          query: { ...otherQueryParams, store: selectedUser.permissions.stores[0].id },
+          query: { ...otherQueryParams, store: selectedUser.permissions.facilities[0]?.id },
         });
       } else {
         router.push({
@@ -140,7 +142,7 @@ function Header( ) {
 
   return (
     <div className={styles["layout-header"]}>
-      <a href="/products"><img src="/images/logo_v1.png" alt="Logo" className={styles["logo"]}/></a>
+        <H2><MongoDBLogoMark height='32'/> LeafyInventory</H2>
       {selectedUser?.type == 'edge' ? 
         <Button
             isLoading={isLoading}
