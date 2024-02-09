@@ -1,0 +1,91 @@
+version: '3.5'
+services:
+  proxy-80:
+    image: hpello/tcp-proxy
+    depends_on:
+      - sync_server
+    ports:
+      - "80:80"
+    networks:
+      - default
+      - internal
+    command: sync_server 80
+
+  proxy-27021:
+    image: hpello/tcp-proxy
+    depends_on:
+      - sync_server
+    ports:
+      - "27021:27021"
+    networks:
+      - default
+      - internal
+    command: sync_server 27021
+
+  mongodb_container:
+    image: mongo:5.0
+    volumes:
+      - mongodb_data_container:/data/db
+    command: "--replSet rs0"
+    restart: unless-stopped
+    networks:
+      - internal
+
+  replSetInit:
+    image: mongo:5.0
+    restart: on-failure
+    depends_on:
+      - mongodb_container
+    links:
+      - mongodb_container
+    command:
+      - /bin/sh
+      - -c
+      - |
+        mongosh --host mongodb_container:27017 --eval 'rs.isMaster().ismaster || rs.initiate({
+          "_id": "rs0",
+          "members" : [
+            { "_id" : 0, "host" : "mongodb_container:27017" }
+          ]
+        })'
+    networks:
+      - internal
+
+  sync_server:
+    image: quay.io/mongodb/tiered-sync-server:v0.15.0
+    # platform: linux/amd64
+    depends_on:
+      - mongodb_container
+      - replSetInit
+    links:
+      - mongodb_container
+    volumes:
+      - ./build/edge_config.json:/apps/configs/edge_config.json
+      - edge_logs:/app/edge_logs
+    environment:
+      EDGE_CONFIG_FILE: /apps/configs/edge_config.json
+    restart: unless-stopped
+    networks:
+      - default
+      - internal
+
+  vector:
+    image: quay.io/mongodb/edge-vector:v0.15.0
+    volumes:
+      - edge_logs:/home/edge_logs
+    environment:
+      CLIENT_APP_ID: interns-mongo-retail-app-nghfn
+      EDGE_TOKEN: 36961c1006a18d3773103b142a07c072
+      CLOUD_BASE_URL: https://realm.mongodb.com
+    restart: unless-stopped
+    networks:
+      - default
+
+volumes:
+  mongodb_data_container:
+  edge_logs:
+
+networks:
+  internal:
+    internal: true
+  default:
