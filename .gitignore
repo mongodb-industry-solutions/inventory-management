@@ -36,3 +36,8 @@ next-env.d.ts
 
 #edge server config
 /edge_server/config.json
+
+#python variables
+**/*secrets.py
+**/*.ipynb
+**/__pycache__
