@@ -142,7 +142,7 @@ function Header( ) {
 
   return (
     <div className={styles["layout-header"]}>
-        <H2><MongoDBLogoMark height='32'/> LeafyInventory</H2>
+        <H2><MongoDBLogoMark height={32}/> LeafyInventory</H2>
       {selectedUser?.type == 'edge' ? 
         <Button
             isLoading={isLoading}
