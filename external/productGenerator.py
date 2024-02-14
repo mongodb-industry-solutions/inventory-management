@@ -1,15 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[6]:
-
-
 import pandas as pd
 from bson import json_util
 from pymongo import MongoClient
-
-
-# In[7]:
 
 
 from my_secrets import secrets
@@ -18,14 +12,8 @@ mongodb_uri = secrets['MONGODB_URI']
 sheet_id = secrets['SHEET_ID']
 
 
-# In[8]:
-
-
 df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv", on_bad_lines='skip')
 df = df.dropna()
-
-
-# In[9]:
 
 
 # Add additional fields
@@ -52,13 +40,7 @@ df['stock'] = df.apply(lambda row: [
 df['total_stock_sum'] = None
 
 
-# In[10]:
-
-
 df.head(5)
-
-
-# In[11]:
 
 
 productKeys = ['name', 'code', 'description', 'autoreplenishment']
@@ -66,19 +48,13 @@ itemKeys = ['sku', 'item', 'unit', 'delivery_time', 'stock']
 
 
 j = (df.groupby(productKeys)
-        .apply(lambda x: x[itemKeys].to_dict('records'))
+        .apply(lambda x: x[itemKeys].rename(columns={'item': 'name'}).to_dict('records'))
         .reset_index()
         .rename(columns={0:'items'})
         .to_json(orient='records'))
 
 
-# In[12]:
-
-
 print(json_util.dumps(json_util.loads(j), indent=2, sort_keys=True))
-
-
-# In[13]:
 
 
 # Insert to MongoDB
@@ -88,9 +64,6 @@ collection = db['products']
 
 collection.delete_many({})
 collection.insert_many(json_util.loads(j))
-
-
-# In[14]:
 
 
 #Add total_stock_sum
@@ -186,13 +159,7 @@ pipeline = [
 ]
 
 
-# In[15]:
-
-
 collection.aggregate(pipeline)
-
-
-# In[16]:
 
 
 client.close()
