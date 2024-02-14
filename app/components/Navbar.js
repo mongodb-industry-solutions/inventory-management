@@ -104,7 +104,9 @@ function Navbar() {
       }`}
       onClick={handleOrderHistoryClick}
     >
-      Sales Events
+       {utils.demoInfo.industry == 'manufacturing' ? 
+          <>Dispatch Events</> :
+          <>Sales Events</>}
     </button>
   </a>
   <a href={selectedStoreId ? `/dashboard?store=${selectedStoreId}` : "/dashboard"}>
