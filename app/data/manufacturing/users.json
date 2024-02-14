@@ -6,7 +6,7 @@
   "surname": "Grant",
   "title": "Inventory Manager",
   "permissions": {
-    "facilities": [
+    "locations": [
       {
         "id": {
           "$oid": "65c63cb61526ffd3415fadbd"
@@ -15,7 +15,6 @@
         "name": "Bogatell Factory",
         "area_code": "ES"
       }
-    ],
-    "areas": []
+    ]
   }
 }]
