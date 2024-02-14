@@ -26,7 +26,7 @@ export default function Orders({ orders, facets }) {
 
   const { selectedUser } = useUser();
   const router = useRouter();
-  const { store } = router.query;
+  const { location } = router.query;
 
   useEffect(() => {
     handleSearch();
@@ -163,8 +163,8 @@ export default function Orders({ orders, facets }) {
 
   const handleReorder = async (item) => {
 
-    //find store that match store query 
-    const selectedStore = selectedUser?.permissions?.stores.find(s => s.id === store);
+    //find location that match location query 
+    const selectedLocation = selectedUser?.permissions?.locations.find(s => s.id === location);
 
     const order = {
       user_id: selectedUser?._id,
@@ -174,9 +174,9 @@ export default function Orders({ orders, facets }) {
         },
         destination: {
             type: 'store',
-            id: selectedStore?.id,
-            name: selectedStore?.name,
-            area_code: selectedStore?.area_code
+            id: selectedLocation?.id,
+            name: selectedLocation?.name,
+            area_code: selectedLocation?.area_code
         }
       },
       placement_timestamp: '',
@@ -304,11 +304,11 @@ function formatTimestamp(timestamp) {
             <th style={{ width: '7%' }}>SKU</th>
             <th style={{ width: '5%' }}>Size</th>
             <th style={{ width: '5%' }}>Amount</th>
-            {!store && (<th style={{ width: '5%' }}>Store</th>)}
+            {!location && (<th style={{ width: '5%' }}>Store</th>)}
             <th style={{ width: '12%' }}>Placement Date</th>
             <th style={{ width: '12%' }}>Arrival Date</th>
             <th style={{ width: '5%' }}>Status</th>
-            {store && (<th style={{ width: '5%' }}></th>)}
+            {location && (<th style={{ width: '5%' }}></th>)}
             </tr>
           </thead>
           <tbody>
@@ -328,7 +328,7 @@ function formatTimestamp(timestamp) {
                   <td>{order.items?.sku}</td>
                   <td>{order.items?.size}</td>
                   <td>{order.items?.amount}</td>
-                  {!store && (<td>{order.location?.destination?.name.split(' ')[0]}</td>)}
+                  {!location && (<td>{order.location?.destination?.name.split(' ')[0]}</td>)}
                   <td>{formatTimestamp(order.items?.status?.find(status => status.name === "placed")?.update_timestamp)}</td>
                   <td>{formatTimestamp(order.items?.status?.find(status => status.name === "arrived")?.update_timestamp)}</td>
                   <td>
@@ -338,7 +338,7 @@ function formatTimestamp(timestamp) {
                            <span className="placed">placed</span>
                       )}
                   </td>
-                  {store && (<td>
+                  {location && (<td>
                     <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
                   </td>)}
                 </tr>
@@ -385,7 +385,7 @@ export async function getServerSideProps(context) {
     const db = client.db(dbName);
 
     const { query } = context;
-    const storeId = query.store;
+    const locationId = query.location;
 
     let orders;
 
@@ -400,10 +400,10 @@ export async function getServerSideProps(context) {
       },
     ];
 
-    if (storeId) {
+    if (locationId) {
       agg.unshift({
         $match: {
-          'location.destination.id': new ObjectId(storeId)
+          'location.destination.id': new ObjectId(locationId)
         }
       });
     }

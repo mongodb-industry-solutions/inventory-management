@@ -10,7 +10,7 @@ function Navbar() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
-  const [selectedStoreId, setSelectedStoreId] = useState('');
+  const [selectedLocationId, setSelectedLocationId] = useState('');
   const [currentPage, setCurrentPage] = useState('');
 
   const { selectedUser } = useUser();
@@ -44,10 +44,10 @@ function Navbar() {
     setShowInfoPopup(false);
   };
 
-  /* Select default store */
+  /* Select default location */
   useEffect(() => {
     setSelectedOption(selectedUser?.permissions?.locations[0]?.name);
-    setSelectedStoreId(selectedUser?.permissions?.locations[0]?.id);
+    setSelectedLocationId(selectedUser?.permissions?.locations[0]?.id);
   }, [selectedUser]);
 
   /* Navigation bold when on page */
@@ -63,21 +63,21 @@ function Navbar() {
           <FaIndustry /> :
           <FaStore />}
         <button className={styles["dropdown-toggle"]} onClick={handleDropdownToggle}>
-          {selectedOption || 'Choose your store'}
+          {selectedOption || 'Choose your location'}
           <span className={styles["dropdown-arrow"]}></span>
         </button>
         {isOpen && (
           <div className={styles["dropdown-menu"]}>
-            {selectedUser?.permissions?.locations.map((store) => (
-              <a key={store.id} href="#" onClick={() => handleOptionClick(store.name)}>
-                {store.name}
+            {selectedUser?.permissions?.locations.map((location) => (
+              <a key={location.id} href="#" onClick={() => handleOptionClick(location.name)}>
+                {location.name}
               </a>
             ))}
           </div>
         )}
 
 <div className={styles["mongodb-button-container"]}>
-  <a href={selectedStoreId ? `/products?store=${selectedStoreId}` : "/products"}>
+  <a href={selectedLocationId ? `/products?location=${selectedLocationId}` : "/products"}>
     <button
       className={`${styles["mongodb-button"]} ${
         currentPage === 'products' ? styles["bold-text"] : ''
@@ -87,7 +87,7 @@ function Navbar() {
       Real-time Inventory
     </button>
   </a>
-  <a href={selectedStoreId ? `/orderHistory?store=${selectedStoreId}` : "/orderHistory"}>
+  <a href={selectedLocationId ? `/orderHistory?location=${selectedLocationId}` : "/orderHistory"}>
     <button
       className={`${styles["mongodb-button"]} ${
         currentPage === 'orderHistory' ? styles["bold-text"] : ''
@@ -97,7 +97,7 @@ function Navbar() {
       Orders
     </button>
   </a>
-  <a href={selectedStoreId ? `/salesHistory?store=${selectedStoreId}` : "/salesHistory"}>
+  <a href={selectedLocationId ? `/salesHistory?location=${selectedLocationId}` : "/salesHistory"}>
     <button
       className={`${styles["mongodb-button"]} ${
         currentPage === 'salesHistory' ? styles["bold-text"] : ''
@@ -109,7 +109,7 @@ function Navbar() {
           <>Sales Events</>}
     </button>
   </a>
-  <a href={selectedStoreId ? `/dashboard?store=${selectedStoreId}` : "/dashboard"}>
+  <a href={selectedLocationId ? `/dashboard?location=${selectedLocationId}` : "/dashboard"}>
     <button
       className={`${styles["mongodb-button"]} ${
         currentPage === 'dashboard' ? styles["bold-text"] : ''

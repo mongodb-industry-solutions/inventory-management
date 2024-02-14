@@ -21,7 +21,7 @@ export default function Sales({ sales, facets }) {
   ];
 
   const router = useRouter();
-  const { store } = router.query;
+  const { location } = router.query;
   
   // Create refs for the input element and suggestions list
   const inputRef = useRef(null);
@@ -234,7 +234,7 @@ export default function Sales({ sales, facets }) {
                 <th>Size</th>
                 <th>Amount</th>
                 <th>Channel</th>
-                {!store && (<th>Store</th>)}
+                {!location && (<th>Store</th>)}
                 <th>Sale Date</th>
               </tr>
             </thead>
@@ -253,7 +253,7 @@ export default function Sales({ sales, facets }) {
                     <td>{sale.size}</td>
                     <td>{sale.quantity}</td>
                     <td>{sale.channel}</td>
-                    {!store && (<td>{sale.store?.name.split(' ')[0]}</td>)}
+                    {!location && (<td>{sale.store?.name.split(' ')[0]}</td>)}
                     <td>{formatTimestamp(sale.timestamp)}</td>
                   </tr>
                 ))
@@ -302,16 +302,16 @@ export async function getServerSideProps(context) {
     const db = client.db(dbName);
 
     const { query } = context;
-    const storeId = query.store;
+    const locationId = query.location;
 
     const agg = [
       { $sort: {'timestamp': -1 } },
     ];
 
-    if (storeId) {
+    if (locationId) {
       agg.unshift({
         $match: {
-          'store.id': new ObjectId(storeId)
+          'store.id': new ObjectId(locationId)
         }
       });
     }

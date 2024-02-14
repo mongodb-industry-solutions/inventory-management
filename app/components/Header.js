@@ -17,7 +17,7 @@ function Header( ) {
   const [isLoading, setLoading] = useState(false);
 
   const router = useRouter();
-  const { store, ...otherQueryParams } = router.query;
+  const { location, ...otherQueryParams } = router.query;
 
   const utils = useContext(ServerContext);
 
@@ -58,7 +58,7 @@ function Header( ) {
   }, [ ]);
 
   useEffect(() => {
-    // Update store query param on user change
+    // Update location query param on user change
     if(selectedUser){
       if(selectedUser.type == 'edge'){
         fetchStatus(false);
@@ -67,7 +67,7 @@ function Header( ) {
       if(selectedUser.permissions.locations?.length > 0){
         router.push({
           pathname: router.pathname == '/' ? '/products' : router.pathname,
-          query: { ...otherQueryParams, store: selectedUser.permissions.locations[0]?.id },
+          query: { ...otherQueryParams, location: selectedUser.permissions.locations[0]?.id },
         });
       } else {
         router.push({
