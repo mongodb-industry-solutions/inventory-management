@@ -7,13 +7,13 @@ import StockLevelBar from "../components/StockLevelBar";
 
 import styles from "../styles/control.module.css";
 
-export default function Control({ preloadedProducts, stores, realmAppId, databaseName }) { 
+export default function Control({ preloadedProducts, locations, realmAppId, databaseName }) { 
     
     const [products, setProducts] = useState(preloadedProducts);
     const [isSelling, setIsSelling] = useState(false); // State to keep track of sale status
     const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
-    const [selectedStore, setSelectedStore] = useState('');
-    const [onlineToInStoreRatio, setOnlineToInStoreRatio] = useState(0.5);
+    const [selectedLocation, setSelectedLocation] = useState('');
+    const [onlineToInPersonRatio, setOnlineToInPersonRatio] = useState(0.5);
 
     const  app = new  Realm.App({ id: realmAppId });
 
@@ -53,15 +53,15 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
         login();
     }, []);
 
-    const handleStoreChange = (store) => {
-        setSelectedStore(store.target.value);
+    const handleLocationChange = (location) => {
+        setSelectedLocation(location.target.value);
     };
 
     const handleRatioChange = (event) => {
         // Validate that the entered value is between 0 and 1
         const newValue = event.target.value;
         if (!isNaN(newValue) && newValue >= 0 && newValue <= 1) {
-          setOnlineToInStoreRatio(newValue);
+          setOnlineToInPersonRatio(newValue);
         }
       };
 
@@ -76,17 +76,17 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
         const randomColor = colors[Math.floor(Math.random() * colors.length)];
         const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
         const randomQuantity = Math.floor(Math.random() * 5) + 1;
-        const randomChannel = Math.random() < onlineToInStoreRatio ? 'online' : 'in-store';
+        const randomChannel = Math.random() < onlineToInPersonRatio ? 'online' : 'in-store';
         var store_id = '';
         var store_name = '';
 
-        if (!selectedStore && stores.length > 0) {
-            const randomIdx = Math.floor(Math.random() * stores.length);
-            store_id = stores[randomIdx]._id;
-            store_name = stores[randomIdx].name;
+        if (!selectedLocation && locations.length > 0) {
+            const randomIdx = Math.floor(Math.random() * locations.length);
+            store_id = locations[randomIdx]._id;
+            store_name = locations[randomIdx].name;
         } else {
-            store_id = selectedStore;
-            store_name = stores.find(store => store._id === selectedStore).name;
+            store_id = selectedLocation;
+            store_name = locations.find(location => location._id === selectedLocation).name;
         }
     
         try {
@@ -143,7 +143,7 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
             for(let i = initialIndex; i < itemsLength; i++) {
 
                 const locationIndex = productToUpdate.items[i].stock.findIndex(
-                    (loc) => loc.location.id === selectedStore
+                    (loc) => loc.location.id === selectedLocation
                 );
                 
                 if(mode === 'normal'){
@@ -177,7 +177,7 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
                 
                 // Update the total_stock_sum attribute with the difference
                 const totalStockLocationIndex = productToUpdate.total_stock_sum.findIndex(
-                    (loc) => loc.location.id === selectedStore
+                    (loc) => loc.location.id === selectedLocation
                 );
                 if (totalStockLocationIndex !== -1) {
                     productToUpdate.total_stock_sum[totalStockLocationIndex].amount += difference;
@@ -215,7 +215,7 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
 
     const handleSave = async (product) => {
         try {
-            const response = await fetch(`/api/updateProductStock?store_id=${selectedStore}`, {
+            const response = await fetch(`/api/updateProductStock?store_id=${selectedLocation}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -244,19 +244,19 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
         <button className="sale-button" onClick={handleSaleButtonClick}>
           {isSelling ? "Stop Selling" : "Start Selling"}
         </button>
-        <select id="storeDropdown" value={selectedStore} disabled={isSelling} onChange={handleStoreChange}>
+        <select value={selectedLocation} disabled={isSelling} onChange={handleLocationChange}>
             <option value={''}>All</option>
-            {stores.map(store => (
-                <option key={store._id} value={store._id}>
-                    {store.name}
+            {locations.map(location => (
+                <option key={location._id} value={location._id}>
+                    {location.name}
                 </option>
             ))}
         </select>
-        <label htmlFor="ratioInput">Online to In-store Ratio:</label>
+        <label htmlFor="ratioInput">Online to In-person Ratio:</label>
         <input
             type="number"
             id="ratioInput"
-            value={onlineToInStoreRatio}
+            value={onlineToInPersonRatio}
             disabled={isSelling}
             onChange={handleRatioChange}
             min="0"
@@ -280,27 +280,27 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
                             <tr key={index}>
                             <td className={styles["product-cell"]}>
                                <ProductBox key={product._id} product={product}/>
-                               {<StockLevelBar stock={product.total_stock_sum} storeId={selectedStore} />}
+                               {<StockLevelBar stock={product.total_stock_sum} locationId={selectedLocation} />}
                             </td>
                             <td>
                                 <div className={styles["item-table-wrapper"]}>
                                     <button 
                                         className={styles["reset-button"]} 
-                                        disabled={!selectedStore}
+                                        disabled={!selectedLocation}
                                         onClick={() => handleUpdateStock(product, {}, 0,'normal')}
                                     >
                                         Reset Stock Normal
                                     </button>
                                     <button 
                                         className={styles["reset-button"]} 
-                                        disabled={!selectedStore}
+                                        disabled={!selectedLocation}
                                         onClick={() => handleUpdateStock(product, {}, 0,'target')}
                                     >
                                         Reset Stock Target
                                     </button>
                                     <button 
                                         className={styles["reset-button"]} 
-                                        disabled={!selectedStore}
+                                        disabled={!selectedLocation}
                                         onClick={() => handleUpdateStock(product, {}, 0,'threshold')}
                                     >
                                         Reset Stock Threshold
@@ -321,21 +321,21 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
                                             <td>{item.size}</td>
                                             <td>
                                                 <select 
-                                                    value={item?.stock.find(stock => stock.location.id === selectedStore)?.amount ?? 0} 
+                                                    value={item?.stock.find(stock => stock.location.id === selectedLocation)?.amount ?? 0} 
                                                     onChange={(e) => handleUpdateStock(product, item, parseInt(e.target.value),'custom')}>
-                                                    {[...Array((item?.stock.find((stock) => stock.location.id === selectedStore)?.target ?? 0) + 1).keys()].map((value) => (
+                                                    {[...Array((item?.stock.find((stock) => stock.location.id === selectedLocation)?.target ?? 0) + 1).keys()].map((value) => (
                                                         <option key={value} value={value}>{value}</option>
                                                     ))}
                                                 </select>
                                             </td>
                                             <td>
-                                                {item?.stock.find(stock => stock.location.id === selectedStore)?.threshold ?? 0}
+                                                {item?.stock.find(stock => stock.location.id === selectedLocation)?.threshold ?? 0}
                                             </td>
                                             <td>
-                                                {item?.stock.find(stock => stock.location.id === selectedStore)?.target ?? 0}
+                                                {item?.stock.find(stock => stock.location.id === selectedLocation)?.target ?? 0}
                                             </td>
                                             <td>
-                                                {<StockLevelBar stock={item?.stock} storeId={selectedStore}/>}
+                                                {<StockLevelBar stock={item?.stock} locationId={selectedLocation}/>}
                                             </td>
                                         </tr>
                                         
@@ -344,7 +344,7 @@ export default function Control({ preloadedProducts, stores, realmAppId, databas
                                     </table>
                                     <button 
                                         className={styles["save-button"]}
-                                        disabled={!selectedStore}
+                                        disabled={!selectedLocation}
                                         onClick={() => handleSave(product)} 
                                     >
                                         SAVE
@@ -387,13 +387,13 @@ export async function getServerSideProps() {
             .find({})
             .toArray();
         
-        const stores = await db
-            .collection("stores")
+        const locations = await db
+            .collection("locations")
             .find({})
             .toArray();
 
         return {
-            props: { preloadedProducts: JSON.parse(JSON.stringify(products)), stores: JSON.parse(JSON.stringify(stores)), realmAppId: realmAppId, databaseName: dbName },
+            props: { preloadedProducts: JSON.parse(JSON.stringify(products)), locations: JSON.parse(JSON.stringify(locations)), realmAppId: realmAppId, databaseName: dbName },
         };
     } catch (e) {
         console.error(e);

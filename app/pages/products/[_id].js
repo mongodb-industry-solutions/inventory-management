@@ -18,7 +18,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
     const  app = new  Realm.App({ id: realmAppId });
 
     const router = useRouter();
-    const { store } = router.query;
+    const { location } = router.query;
 
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
@@ -28,10 +28,10 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
     const leafUrl = lightColors.includes(product.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
 
     const productFilter = {'items.product.id': ObjectId(preloadedProduct._id)};
-    let storeFilter = {};
-    //Add store filter if exists
-    if (store) {
-        storeFilter= { 'location.destination.id': ObjectId(store)};
+    let locationFilter = {};
+    //Add location filter if exists
+    if (location) {
+        locationFilter= { 'location.destination.id': ObjectId(location)};
     }
     
     const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl});
@@ -39,7 +39,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
     const [rendered, setRendered] = useState(false);
     const [dashboard] = useState(sdk.createDashboard({ 
         dashboardId: dashboardId, 
-        filter: { $and: [productFilter, storeFilter]},
+        filter: { $and: [productFilter, locationFilter]},
         widthMode: 'scale', 
         heightMode: 'scale', 
         background: '#fff'
@@ -68,7 +68,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
             };
 
             for await (const  change  of  collection.watch(filter)) {
-                if (store) {
+                if (location) {
                     updatedProduct = change.fullDocument;
                 } else {
                     updatedProduct = await mongodb
@@ -86,7 +86,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
     useEffect(() => {
         setProduct(preloadedProduct);
         if (rendered) {
-            dashboard.setFilter({ $and: [productFilter, storeFilter]});
+            dashboard.setFilter({ $and: [productFilter, locationFilter]});
             dashboard.refresh();
         }
     }, [router.asPath]);
@@ -139,8 +139,8 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                 <p className="name">{product.name}</p>
                 <p className="price">{product.price?.amount} {product.price?.currency}</p>
                 <p className="code">{product.code}</p>
-                {<StockLevelBar stock={product.total_stock_sum} storeId={store} />}
-                {store && (<div className={styles["switch-container"]}>
+                {<StockLevelBar stock={product.total_stock_sum} locationId={location} />}
+                {location && (<div className={styles["switch-container"]}>
                     <span className={styles["switch-text"]}>Autoreplenishment</span>
                     <label className={styles["switch"]}>
                         <input type="checkbox" checked={product.autoreplenishment} onChange={handleToggleAutoreplenishment}/>
@@ -163,13 +163,13 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                 <tbody>
                 {product.items.map((item, index) => (
                     <tr key={index}>
-                    <td>{item.size}</td>
-                    <td>{item.stock.find(stock => stock.location.id === store)?.amount ?? 0}</td>
-                    <td>{item.stock.find(stock => stock.location.id === store)?.ordered ?? 0}</td>
+                    <td>{item.name}</td>
+                    <td>{item.stock.find(stock => stock.location.id === location)?.amount ?? 0}</td>
+                    <td>{item.stock.find(stock => stock.location.id === location)?.ordered ?? 0}</td>
                     <td>{item.stock.find(stock => stock.location.type === 'warehouse')?.amount ?? 0}</td>
                     <td>{item.delivery_time.amount} {item.delivery_time.unit}</td>
                     <td>
-                        {<StockLevelBar stock={item.stock} storeId = {store}/>}
+                        {<StockLevelBar stock={item.stock} locationId={location}/>}
                     </td>
                     </tr>
                     ))}
@@ -180,7 +180,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                 <span className={`${styles["circle"]} ${styles["low"]}`}></span> <span>Low</span> &nbsp;&nbsp;
                 <span className={`${styles["circle"]} ${styles["ordered"]}`}></span> <span>Ordered</span>
             </div>
-            {store && (<button onClick={handleOpenPopup}>REPLENISH STOCK</button>)}
+            {location && (<button onClick={handleOpenPopup}>REPLENISH STOCK</button>)}
             </div>
         </div>
         <div className={styles["dashboard"]} ref={dashboardDiv}/>
@@ -188,8 +188,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
         {showPopup && <Popup 
             product={product} 
             onClose={handleClosePopup} 
-            onSave={handleSave} 
-            storeId={store}
+            onSave={handleSave}
         />}
         {saveSuccessMessage && (
             <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
@@ -226,9 +225,9 @@ export async function getServerSideProps(context) {
         const db = client.db(dbName);
 
         const { params, query } = context;
-        const storeId = query.store;
+        const locationId = query.location;
 
-        const collectionName = storeId ? "products" : "products_area_view";
+        const collectionName = locationId ? "products" : "products_area_view";
         
         const product = await db
             .collection(collectionName)

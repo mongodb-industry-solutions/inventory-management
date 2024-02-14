@@ -9,7 +9,7 @@ import styles from '../styles/productbox.module.css';
 const ProductBox = ({ product }) => { 
 
     const router = useRouter();
-    const { store } = router.query;
+    const { location } = router.query;
 
     const utils = useContext(ServerContext);
 
@@ -20,17 +20,17 @@ const ProductBox = ({ product }) => {
 
     const leafUrl = lightColors.includes(product.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
 
-    let totalStoreStockSum = {};
+    let totalStockSum = {};
 
-    totalStoreStockSum = store ? 
-        product.total_stock_sum.find((stock) => stock.location.id === store)
-        : product.total_stock_sum.find((stock) => stock.location.type === "store");
+    totalStockSum = location ? 
+        product.total_stock_sum.find((stock) => stock.location.id === location)
+        : product.total_stock_sum.find((stock) => stock.location.type !== "warehouse");
     
-    const getStockStatus = (storeAmount, orderedAmount, storeThreshold) => {
+    const getStockStatus = (amount, ordered, threshold) => {
         let stockStatus = 'ok';
 
-        if (storeAmount < storeThreshold) {
-            if(storeAmount + orderedAmount > storeThreshold) {
+        if (amount < threshold) {
+            if(amount + ordered > threshold) {
                 stockStatus = 'ordered';
             }
             else {
@@ -41,17 +41,17 @@ const ProductBox = ({ product }) => {
         return stockStatus;
     };
 
-    const totalStockStatus = getStockStatus(totalStoreStockSum?.amount, totalStoreStockSum?.ordered, totalStoreStockSum?.threshold);
+    const totalStockStatus = getStockStatus(totalStockSum?.amount, totalStockSum?.ordered, totalStockSum?.threshold);
     let itemStockStatus = 'ok';
-    let itemStoreStockSum = {};
+    let itemStockSum = {};
 
     for(const item of product.items) {
 
-        itemStoreStockSum = store ?
-            item.stock.find((stock) => stock.location.id === store)
-            : item.stock.find((stock) => stock.location.type === "store");
+        itemStockSum = location ?
+            item.stock.find((stock) => stock.location.id === location)
+            : item.stock.find((stock) => stock.location.type !== "warehouse");
 
-        let stockStatus = getStockStatus(itemStoreStockSum?.amount, itemStoreStockSum?.ordered, itemStoreStockSum?.threshold);
+        let stockStatus = getStockStatus(itemStockSum?.amount, itemStockSum?.ordered, itemStockSum?.threshold);
 
         if(stockStatus == 'low') {
             itemStockStatus = 'low';
@@ -65,7 +65,7 @@ const ProductBox = ({ product }) => {
         <>
             <li className={styles["product-item"]}>
                 <a 
-                    href={store ? `/products/${product._id}?store=${store}` : `/products/${product._id}`}
+                    href={location ? `/products/${product._id}?location=${location}` : `/products/${product._id}`}
                     className={styles["product-link"]}>
                         <div className={styles["shirt_icon"]}>
                             { utils.demoInfo.industry == 'manufacturing' ? 
