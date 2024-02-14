@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[106]:
+# In[6]:
 
 
 import pandas as pd
@@ -9,7 +9,7 @@ from bson import json_util
 from pymongo import MongoClient
 
 
-# In[107]:
+# In[7]:
 
 
 from my_secrets import secrets
@@ -18,14 +18,14 @@ mongodb_uri = secrets['MONGODB_URI']
 sheet_id = secrets['SHEET_ID']
 
 
-# In[108]:
+# In[8]:
 
 
-df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?gid=2118402060&format=csv", on_bad_lines='skip')
+df = pd.read_csv(f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv", on_bad_lines='skip')
 df = df.dropna()
 
 
-# In[109]:
+# In[9]:
 
 
 # Add additional fields
@@ -52,33 +52,33 @@ df['stock'] = df.apply(lambda row: [
 df['total_stock_sum'] = None
 
 
-# In[110]:
+# In[10]:
 
 
 df.head(5)
 
 
-# In[111]:
+# In[11]:
 
 
-itemKeys = ['name', 'category', 'code', 'description', 'unit', 'autoreplenishment']
-variantKeys = ['sku','variant', 'delivery_time', 'stock']
+productKeys = ['name', 'code', 'description', 'autoreplenishment']
+itemKeys = ['sku', 'item', 'unit', 'delivery_time', 'stock']
 
 
-j = (df.groupby(itemKeys)
-        .apply(lambda x: x[variantKeys].rename(columns={'variant': 'name'}).to_dict('records'))
+j = (df.groupby(productKeys)
+        .apply(lambda x: x[itemKeys].to_dict('records'))
         .reset_index()
         .rename(columns={0:'items'})
         .to_json(orient='records'))
 
 
-# In[112]:
+# In[12]:
 
 
 print(json_util.dumps(json_util.loads(j), indent=2, sort_keys=True))
 
 
-# In[113]:
+# In[13]:
 
 
 # Insert to MongoDB
@@ -90,7 +90,7 @@ collection.delete_many({})
 collection.insert_many(json_util.loads(j))
 
 
-# In[114]:
+# In[14]:
 
 
 #Add total_stock_sum
@@ -186,13 +186,13 @@ pipeline = [
 ]
 
 
-# In[115]:
+# In[15]:
 
 
 collection.aggregate(pipeline)
 
 
-# In[116]:
+# In[16]:
 
 
 client.close()
