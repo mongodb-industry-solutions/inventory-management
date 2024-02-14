@@ -46,8 +46,8 @@ function Navbar() {
 
   /* Select default store */
   useEffect(() => {
-    setSelectedOption(selectedUser?.permissions?.facilities[0]?.name);
-    setSelectedStoreId(selectedUser?.permissions?.facilities[0]?.id);
+    setSelectedOption(selectedUser?.permissions?.locations[0]?.name);
+    setSelectedStoreId(selectedUser?.permissions?.locations[0]?.id);
   }, [selectedUser]);
 
   /* Navigation bold when on page */
@@ -68,7 +68,7 @@ function Navbar() {
         </button>
         {isOpen && (
           <div className={styles["dropdown-menu"]}>
-            {selectedUser?.permissions?.facilities.map((store) => (
+            {selectedUser?.permissions?.locations.map((store) => (
               <a key={store.id} href="#" onClick={() => handleOptionClick(store.name)}>
                 {store.name}
               </a>

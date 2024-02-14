@@ -64,10 +64,10 @@ function Header( ) {
         fetchStatus(false);
       }
       //Set path
-      if(selectedUser.permissions.facilities?.length > 0){
+      if(selectedUser.permissions.locations?.length > 0){
         router.push({
           pathname: router.pathname == '/' ? '/products' : router.pathname,
-          query: { ...otherQueryParams, store: selectedUser.permissions.facilities[0]?.id },
+          query: { ...otherQueryParams, store: selectedUser.permissions.locations[0]?.id },
         });
       } else {
         router.push({
