@@ -71,28 +71,28 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
     };
 
     const performRandomSale = async () => {
-        const colors = [...new Set(products.map((product) => product.color.name))];
+        const colors = [...new Set(products.map((product) => product.color?.name))];
         const sizes = [...new Set(products.flatMap((product) => product.items.map((item) => item.size)))];
         const randomColor = colors[Math.floor(Math.random() * colors.length)];
         const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
         const randomQuantity = Math.floor(Math.random() * 5) + 1;
         const randomChannel = Math.random() < onlineToInPersonRatio ? 'online' : 'in-store';
-        var store_id = '';
-        var store_name = '';
+        var location_id = '';
+        var location_name = '';
 
         if (!selectedLocation && locations.length > 0) {
             const randomIdx = Math.floor(Math.random() * locations.length);
-            store_id = locations[randomIdx]._id;
-            store_name = locations[randomIdx].name;
+            location_id = locations[randomIdx]._id;
+            location_name = locations[randomIdx].name;
         } else {
-            store_id = selectedLocation;
-            store_name = locations.find(location => location._id === selectedLocation).name;
+            location_id = selectedLocation;
+            location_name = locations.find(location => location._id === selectedLocation).name;
         }
     
         try {
         // Perform the sale using await and Promise
         const result = await new Promise((resolve, reject) => {
-            fetch(`/api/simulateSale?color=${randomColor}&size=${randomSize}&quantity=${randomQuantity}&store_id=${store_id}&store_name=${store_name}&channel=${randomChannel}`)
+            fetch(`/api/simulateSale?color=${randomColor}&size=${randomSize}&quantity=${randomQuantity}&store_id=${location_id}&store_name=${location_name}&channel=${randomChannel}`)
             .then((response) => response.json())
             .then((data) => resolve(data))
             .catch((error) => reject(error));
