@@ -71,36 +71,101 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
     };
 
     const performRandomSale = async () => {
-        const colors = [...new Set(products.map((product) => product.color?.name))];
-        const sizes = [...new Set(products.flatMap((product) => product.items.map((item) => item.size)))];
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-        const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
-        const randomQuantity = Math.floor(Math.random() * 5) + 1;
-        const randomChannel = Math.random() < onlineToInPersonRatio ? 'online' : 'in-store';
-        var location_id = '';
-        var location_name = '';
 
+        // Select a location
+        var locationId;
         if (!selectedLocation && locations.length > 0) {
-            const randomIdx = Math.floor(Math.random() * locations.length);
-            location_id = locations[randomIdx]._id;
-            location_name = locations[randomIdx].name;
+            locationId = locations[Math.floor(Math.random() * locations.length)]._id;
         } else {
-            location_id = selectedLocation;
-            location_name = locations.find(location => location._id === selectedLocation).name;
+            locationId = selectedLocation;
         }
+
+        // Select random product
+        const availableProducts = products.filter(product =>
+            product.items.some(item =>
+                item.stock.some(stockItem =>
+                  stockItem.location.id === locationId 
+                  && stockItem.amount > 0
+                )
+            )
+        );
+
+        if (availableProducts.length === 0) {
+            console.log('No available products for the selected location.');
+            return;
+        }
+
+        const randomProduct = availableProducts[Math.floor(Math.random() * availableProducts.length)];
+
+        // Select a random item
+        const availableItems = randomProduct.items.filter(item =>
+            item.stock.some(stockItem =>
+                stockItem.location.id === locationId
+                && stockItem.amount > 0
+            )
+        );
+        
+        if (availableItems.length === 0) {
+            console.log('No available items for the selected location in the chosen product.');
+            return;
+        }
+        const randomItem = availableItems[Math.floor(Math.random() * availableItems.length)];
+
+        // Select a random amount
+        const availableStock = randomItem.stock.find(
+            stockItem => stockItem.location.id === locationId
+        ).amount;
+        const randomAmount = Math.floor(Math.random() * (availableStock / 4)) + 1;
+
+        // Select a random channel
+        const randomChannel = Math.random() < onlineToInPersonRatio ? 'online' : 'in-person';
+
+        // Create new transaction
+        const transaction = {
+            type: 'outbound',
+            //user_id:  selectedUser?._id,
+            location: {
+                origin: {
+                    type: locations.find(location => location._id === locationId).type,
+                    id: locationId,
+                    name: locations.find(location => location._id === locationId).name,
+                    area_code: locations.find(location => location._id === locationId).area.code
+                },
+                destination: {
+                    type: 'customer'
+                }
+            },
+            channel: randomChannel,
+            placement_timestamp: '',
+            items: []
+        };
+
+        var newItem = structuredClone(randomItem);
+        delete newItem.stock;
+        newItem.status = [];
+        newItem.amount = -randomAmount;
+        newItem.product = {
+            id: randomProduct._id,
+            name: randomProduct.name
+        };
+
+        transaction.items.push(newItem);
     
         try {
-        // Perform the sale using await and Promise
-        const result = await new Promise((resolve, reject) => {
-            fetch(`/api/simulateSale?color=${randomColor}&size=${randomSize}&quantity=${randomQuantity}&store_id=${location_id}&store_name=${location_name}&channel=${randomChannel}`)
-            .then((response) => response.json())
-            .then((data) => resolve(data))
-            .catch((error) => reject(error));
-        });
-    
-        console.log(result.message);
+            const response = await fetch(`/api/addTransaction`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(transaction),
+              });
+            if (response.ok) {
+                console.log('Transaction saved successfully');
+            } else {
+                console.log('Error saving transaction');
+            }
         } catch (error) {
-        console.error(error);
+            console.error(error);
         }
     };
 
