@@ -82,7 +82,7 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
         <>
           <div className={styles["size-filters"]} >
             <h3>Size</h3>
-            {facets[0].facet?.sizesFacet.buckets
+            {facets?.[0]?.facet?.sizesFacet.buckets
   .sort((a, b) => {
     const sizeOrder = ['XS', 'S', 'M', 'L', 'XL'];
     return sizeOrder.indexOf(a._id) - sizeOrder.indexOf(b._id);
@@ -102,7 +102,7 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
           <div className={styles["color-filters"]} >
             <h3>Color</h3>
             <div className={styles["color-list"]}>
-              {facets[0].facet?.colorsFacet.buckets.slice(0, numColorsToShow).map((bucket) => (
+              {facets?.[0]?.facet?.colorsFacet.buckets.slice(0, numColorsToShow).map((bucket) => (
                 <label key={bucket._id}>
                   <input
                     type="checkbox"
@@ -112,11 +112,11 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
                   <span>{bucket._id}</span>
                 </label>
               ))}
-              {numColorsToShow < facets[0].facet?.colorsFacet.buckets.length && (
+              {numColorsToShow < facets?.[0]?.facet?.colorsFacet.buckets.length && (
                 <button onClick={handleExpand}>Show More</button>
               )}
 
-              {numColorsToShow >= facets[0].facet?.colorsFacet.buckets.length && facets[0].facet.colorsFacet.buckets.length > 10  && (
+              {numColorsToShow >= facets?.[0]?.facet?.colorsFacet.buckets.length && facets[0].facet.colorsFacet.buckets.length > 10  && (
                 <button onClick={handleCollapse}>Show Less</button>
               )}
             </div>
