@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import { useUser } from '../context/UserContext';
 import { ServerContext } from '../pages/_app';
 import { Spinner } from '@leafygreen-ui/loading-indicator';
+import { MongoDBLogoMark } from '@leafygreen-ui/logo';
+import { H2 } from '@leafygreen-ui/typography';
 import Button from "@leafygreen-ui/button";
 import styles from '../styles/header.module.css';
 
@@ -15,7 +17,7 @@ function Header( ) {
   const [isLoading, setLoading] = useState(false);
 
   const router = useRouter();
-  const { store, ...otherQueryParams } = router.query;
+  const { location, ...otherQueryParams } = router.query;
 
   const utils = useContext(ServerContext);
 
@@ -33,7 +35,7 @@ function Header( ) {
           },
           body: JSON.stringify({
             dataSource: 'mongodb-atlas',
-            database: 'inventory_management_demo',
+            database: utils.dbInfo.dbName,
             collection: 'users',
             filter: {},
           }),
@@ -56,16 +58,16 @@ function Header( ) {
   }, [ ]);
 
   useEffect(() => {
-    // Update store query param on user change
+    // Update location query param on user change
     if(selectedUser){
       if(selectedUser.type == 'edge'){
         fetchStatus(false);
       }
       //Set path
-      if(selectedUser.permissions.stores.length > 0){
+      if(selectedUser.permissions.locations?.length > 0){
         router.push({
           pathname: router.pathname == '/' ? '/products' : router.pathname,
-          query: { ...otherQueryParams, store: selectedUser.permissions.stores[0].id },
+          query: { ...otherQueryParams, location: selectedUser.permissions.locations[0]?.id },
         });
       } else {
         router.push({
@@ -140,7 +142,7 @@ function Header( ) {
 
   return (
     <div className={styles["layout-header"]}>
-      <a href="/products"><img src="/images/logo_v1.png" alt="Logo" className={styles["logo"]}/></a>
+        <H2><MongoDBLogoMark height={32}/> LeafyInventory</H2>
       {selectedUser?.type == 'edge' ? 
         <Button
             isLoading={isLoading}
@@ -157,7 +159,7 @@ function Header( ) {
         : null
       }
       <div className={styles["user-info"]} onClick={handleDropdownToggle}>
-        <img src={`/images/${selectedUser?._id}.png`} alt="User Avatar" className={styles["user-avatar"]} />
+        { selectedUser ? <img src={`/images/${selectedUser?._id}.png`} alt="User Avatar" className={styles["user-avatar"]} /> : null}
         <div>
             <div className={styles["user-name"]}>{selectedUser?.name} {selectedUser?.surname}</div>
             <div className={styles["user-job-title"]}>{selectedUser?.title}</div>

@@ -15,23 +15,23 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
     const  app = new  Realm.App({ id: realmAppId });
 
     const router = useRouter();
-    const { store } = router.query;
+    const { location } = router.query;
 
     const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl });
     const dashboardDiv = useRef(null);
 
-    let storeFilter = {};
+    let locationFilter = {};
 
-    if (store) {
-        storeFilter= { $or: [
-          {'location.destination.id': ObjectId(store)}
-          ,{'store.id': ObjectId(store)}
+    if (location) {
+        locationFilter= { $or: [
+          {'location.destination.id': ObjectId(location)}
+          ,{'store.id': ObjectId(location)}
         ]};
     };
     const [dashboard] = useState(sdk.createDashboard({ 
         dashboardId: dashboardId,
         widthMode: 'scale', 
-        filter: storeFilter,
+        filter: locationFilter,
         heightMode: 'scale', 
         background: '#fff'
     }));
@@ -70,7 +70,7 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
 
   useEffect(() => {
     if (rendered) {
-        dashboard.setFilter(storeFilter);
+        dashboard.setFilter(locationFilter);
         dashboard.refresh();
     }
   }, [router.asPath]);

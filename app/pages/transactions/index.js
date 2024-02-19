@@ -6,7 +6,7 @@ import { useUser } from '../../context/UserContext';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 
-export default function Orders({ orders, facets }) {
+export default function Transactions({ orders, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredOrders, setFilteredOrders] = useState(orders);
   const [sortedOrders, setSortedOrders] = useState(orders);
@@ -26,7 +26,7 @@ export default function Orders({ orders, facets }) {
 
   const { selectedUser } = useUser();
   const router = useRouter();
-  const { store } = router.query;
+  const { location } = router.query;
 
   useEffect(() => {
     handleSearch();
@@ -163,10 +163,11 @@ export default function Orders({ orders, facets }) {
 
   const handleReorder = async (item) => {
 
-    //find store that match store query 
-    const selectedStore = selectedUser?.permissions?.stores.find(s => s.id === store);
+    //find location that match location query 
+    const selectedLocation = selectedUser?.permissions?.locations.find(s => s.id === location);
 
-    const order = {
+    const transaction = {
+      type: 'inbound',
       user_id: selectedUser?._id,
       location: {
         origin: {
@@ -174,9 +175,9 @@ export default function Orders({ orders, facets }) {
         },
         destination: {
             type: 'store',
-            id: selectedStore?.id,
-            name: selectedStore?.name,
-            area_code: selectedStore?.area_code
+            id: selectedLocation?.id,
+            name: selectedLocation?.name,
+            area_code: selectedLocation?.area_code
         }
       },
       placement_timestamp: '',
@@ -184,15 +185,15 @@ export default function Orders({ orders, facets }) {
     };
 
     item.status = [];
-    order.items.push(item);
+    transaction.items.push(item);
     
     try {
-        const response = await fetch('/api/createOrder', {
+        const response = await fetch('/api/addTransaction', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ order }),
+            body: JSON.stringify(transaction),
           });
         if (response.ok) {
             handleSave();
@@ -299,16 +300,16 @@ function formatTimestamp(timestamp) {
           <thead>
             <tr>
             <th style={{ width: '10%' }}>Item</th>
-            <th style={{ width: '5%' }}>Order ID</th>
-            <th style={{ width: '12%' }}>Name</th>
+            <th style={{ width: '5%' }}>Transaction ID</th>
+            <th style={{ width: '12%' }}>Product</th>
             <th style={{ width: '7%' }}>SKU</th>
-            <th style={{ width: '5%' }}>Size</th>
+            <th style={{ width: '5%' }}>Item</th>
             <th style={{ width: '5%' }}>Amount</th>
-            {!store && (<th style={{ width: '5%' }}>Store</th>)}
+            {!location && (<th style={{ width: '5%' }}>Store</th>)}
             <th style={{ width: '12%' }}>Placement Date</th>
             <th style={{ width: '12%' }}>Arrival Date</th>
             <th style={{ width: '5%' }}>Status</th>
-            {store && (<th style={{ width: '5%' }}></th>)}
+            {location && (<th style={{ width: '5%' }}></th>)}
             </tr>
           </thead>
           <tbody>
@@ -326,19 +327,13 @@ function formatTimestamp(timestamp) {
                   <td>{order.order_number}</td>
                   <td>{order.items?.product.name}</td>
                   <td>{order.items?.sku}</td>
-                  <td>{order.items?.size}</td>
+                  <td>{order.items?.name}</td>
                   <td>{order.items?.amount}</td>
-                  {!store && (<td>{order.location?.destination?.name.split(' ')[0]}</td>)}
-                  <td>{formatTimestamp(order.items?.status?.find(status => status.name === "placed")?.update_timestamp)}</td>
-                  <td>{formatTimestamp(order.items?.status?.find(status => status.name === "arrived")?.update_timestamp)}</td>
-                  <td>
-                   {order.items?.status?.find(status => status.name === 'arrived')?.name === 'arrived' ? (
-                         <span className="arrived">arrived</span>
-                         ) : (
-                           <span className="placed">placed</span>
-                      )}
-                  </td>
-                  {store && (<td>
+                  {!location && (<td>{order.location?.destination?.name.split(' ')[0]}</td>)}
+                  <td>{formatTimestamp(order.items?.status?.sort((a, b) => a.update_timestamp - b.update_timestamp)[0]?.update_timestamp)}</td>
+                  <td>{formatTimestamp(order.items?.status?.sort((a, b) => b.update_timestamp - a.update_timestamp)[0]?.update_timestamp)}</td>
+                  <td>{order.items?.status?.sort((a, b) => b.update_timestamp - a.update_timestamp)[0]?.name}</td>
+                  {location && (<td>
                     <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
                   </td>)}
                 </tr>
@@ -385,31 +380,47 @@ export async function getServerSideProps(context) {
     const db = client.db(dbName);
 
     const { query } = context;
-    const storeId = query.store;
-
-    let orders;
+    const type = query.type;
+    const locationId = query.location;
 
     const agg = [
-      {
-        '$unwind': {
-          'path': '$items'
+        {
+          '$match': {
+            'type': type
+          }
+        }, {
+          '$unwind': {
+            'path': '$items'
+          }
+        }, {
+          '$sort': {
+            'items.status.0.update_timestamp': -1
+          }
         }
-      },
-      {
-        $sort: { 'items.status.0.update_timestamp': -1 } // Sort by newest orders first
-      },
-    ];
+      ];
+      
 
-    if (storeId) {
-      agg.unshift({
-        $match: {
-          'location.destination.id': new ObjectId(storeId)
+    if (locationId) {
+
+        var locationFilter;
+        if ( type === 'inbound') {
+            locationFilter = {
+                $match: {
+                    'location.destination.id': new ObjectId(locationId)
+                }
+            };
+        } else {
+            locationFilter = {
+                $match: {
+                    'location.origin.id': new ObjectId(locationId)
+                }
+            };
         }
-      });
+        agg.unshift(locationFilter);
     }
 
-    orders = await db
-      .collection("orders")
+    const transactions = await db
+      .collection("transactions")
       .aggregate(agg)
       .toArray();
 
@@ -428,12 +439,12 @@ export async function getServerSideProps(context) {
     ];
 
     const facets = await db
-      .collection("orders")
+      .collection("transactions")
       .aggregate(facetsAgg)
       .toArray();
 
     return {
-      props: { orders: JSON.parse(JSON.stringify(orders)), facets: JSON.parse(JSON.stringify(facets)), page: 'orders', },
+      props: { orders: JSON.parse(JSON.stringify(transactions)), facets: JSON.parse(JSON.stringify(facets)), page: 'orders', },
     };
   } catch (e) {
     console.error(e);
