@@ -1,0 +1,15 @@
+[{
+  "_id": {
+    "$oid": "65c63cb61526ffd3415fadbd"
+  },
+  "name": "Bogatell Factory",
+  "region": {
+    "name": "Barcelona",
+    "code": "BCN"
+  },
+  "area": {
+    "name": "Spain",
+    "code": "ES"
+  },
+  "type": "factory"
+}]
