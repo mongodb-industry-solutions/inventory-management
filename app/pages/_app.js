@@ -31,7 +31,9 @@ MyApp.getInitialProps = async ({ ctx }) => {
       'APP_SERVICES_URI',
       'API_KEY',
       'REALM_APP_ID',
-      'EDGE_SERVER_HOST'
+      'EDGE_SERVER_HOST',
+      'MONGODB_DATABASE_NAME',
+      'DEMO_INDUSTRY'
     ];
     
     requiredEnvVariables.forEach((envVar) => {
@@ -44,6 +46,8 @@ MyApp.getInitialProps = async ({ ctx }) => {
     const key = process.env.API_KEY;
     const appId = process.env.REALM_APP_ID;
     const edgeHost = process.env.EDGE_SERVER_HOST;
+    const dbName = process.env.MONGODB_DATABASE_NAME;
+    const industry = process.env.DEMO_INDUSTRY;
 
     const regex = /^https:\/\/([^/]+)\.data\.mongodb-api\.com/;
     const match = uri.match(regex);
@@ -64,11 +68,18 @@ MyApp.getInitialProps = async ({ ctx }) => {
     const dataUri = uri + '/app/' + appId + '/endpoint/data/v1';
     const httpsUri = uri + '/app/' + appId + '/endpoint/';
 
-    return { utils: {apiInfo: { dataUri, httpsUri, accessToken}, edgeInfo: { edgeHost }}};
+    return { 
+      utils: {
+        apiInfo: { dataUri, httpsUri, accessToken}, 
+        dbInfo: { dbName },
+        edgeInfo: { edgeHost },
+        demoInfo: { industry }
+      }
+    };
   } catch (e) {
     console.error(e);
     return {
-      props: { utils: {apiInfo: { dataUri: null, httpsUri: null, accessToken: null}, edgeInfo: { edgeHost: null }}},
+      props: { utils: {apiInfo: { dataUri: null, httpsUri: null, accessToken: null}, dbInfo: { dbName: null }, edgeInfo: { edgeHost: null }, demoInfo: { demoIndustry: null }}},
     };
   }
 }

@@ -1,0 +1,20 @@
+[{
+  "_id": {
+    "$oid": "65c63d5e1526ffd3415fadbf"
+  },
+  "name": "Eddie",
+  "surname": "Grant",
+  "title": "Inventory Manager",
+  "permissions": {
+    "locations": [
+      {
+        "id": {
+          "$oid": "65c63cb61526ffd3415fadbd"
+        },
+        "role": "inventory manager",
+        "name": "Bogatell Factory",
+        "area_code": "ES"
+      }
+    ]
+  }
+}]

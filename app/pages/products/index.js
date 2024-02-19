@@ -19,7 +19,7 @@ export default function Products({ products, facets, realmAppId, databaseName })
   const  app = new  Realm.App({ id: realmAppId });
 
   const router = useRouter();
-  const { store } = router.query;
+  const { location } = router.query;
  
   // Create a ref for the input element
   const inputRef = useRef(null);
@@ -39,7 +39,7 @@ export default function Products({ products, facets, realmAppId, databaseName })
       for await (const  change  of  collection.watch(filter)) {
         updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
 
-        if (!store) {
+        if (!location) {
             let productView = await mongodb
                 .db(databaseName)
                 .collection("products_area_view")
@@ -60,11 +60,11 @@ export default function Products({ products, facets, realmAppId, databaseName })
             let sku = change.fullDocument.items[parseInt(key.match(pattern)[1], 10)].sku;
             let item = updatedProduct.items.find(item => item.sku === sku);
 
-            let itemStoreStock = store ? 
-              item.stock.find(stock => stock.location.id === store)
-              : item.stock.find(stock => stock.location.type === "store");
+            let itemStock = location ? 
+              item.stock.find(stock => stock.location.id === location)
+              : item.stock.find(stock => stock.location.type !== "warehouse");
             
-            if(itemStoreStock?.amount < itemStoreStock?.threshold) {
+            if(itemStock?.amount < itemStock?.threshold) {
               item.product_id = updatedProduct._id;
               addAlert(item);
             }
@@ -212,12 +212,12 @@ export default function Products({ products, facets, realmAppId, databaseName })
       const displayedProducts = [...prevProducts].sort((a, b) => {
         
         var countLowStockSizes = null;
-        if(store){
+        if(location){
           countLowStockSizes = (product) =>
-            product.items.reduce((count, item) => (item.stock.find(stock => stock.location.id === store)?.amount < 10 ? count + 1 : count), 0);
+            product.items.reduce((count, item) => (item.stock.find(stock => stock.location.id === location)?.amount < 10 ? count + 1 : count), 0);
         } else {
           countLowStockSizes = (product) =>
-            product.items.reduce((count, item) => (item.stock.find(stock => stock.location.type === "store")?.amount < 10 ? count + 1 : count), 0);
+            product.items.reduce((count, item) => (item.stock.find(stock => stock.location.type !== "warehouse")?.amount < 10 ? count + 1 : count), 0);
         }
     
         const lowStockSizesA = countLowStockSizes(a);
@@ -232,12 +232,12 @@ export default function Products({ products, facets, realmAppId, databaseName })
         } else {
           // If both have the same count of low stock sizes, sort by total stock amount
           var totalStockAmount = null;
-          if(store){
+          if(location){
             totalStockAmount = (product) =>
-              product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.id === store)?.amount, 0);
+              product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.id === location)?.amount, 0);
           } else {
             totalStockAmount = (product) =>
-              product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.type === "store")?.amount, 0);
+              product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.type !== "warehouse")?.amount, 0);
           }
 
           const totalStockA = totalStockAmount(a);
@@ -343,9 +343,9 @@ export async function getServerSideProps({ query }) {
     const client = await clientPromise;
     const db = client.db(dbName);
     const searchQuery = query.q || '';
-    const storeId = query.store;
+    const locationId = query.location;
 
-    const collectionName = storeId ? "products" : "products_area_view";
+    const collectionName = locationId ? "products" : "products_area_view";
 
     let products;
     if (searchQuery) {
