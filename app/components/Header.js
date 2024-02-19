@@ -159,7 +159,7 @@ function Header( ) {
         : null
       }
       <div className={styles["user-info"]} onClick={handleDropdownToggle}>
-        <img src={`/images/${selectedUser?._id}.png`} alt="User Avatar" className={styles["user-avatar"]} />
+        { selectedUser ? <img src={`/images/${selectedUser?._id}.png`} alt="User Avatar" className={styles["user-avatar"]} /> : null}
         <div>
             <div className={styles["user-name"]}>{selectedUser?.name} {selectedUser?.surname}</div>
             <div className={styles["user-job-title"]}>{selectedUser?.title}</div>

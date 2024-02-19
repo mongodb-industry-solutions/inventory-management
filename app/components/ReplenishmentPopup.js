@@ -16,7 +16,8 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
     const router = useRouter();
     const { location } = router.query;
 
-    const order = {
+    const transaction = {
+        type: 'inbound',
         user_id:  selectedUser?._id,
         location: {
             origin: {
@@ -33,7 +34,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
         items: []
     }
 
-    const [rows, setRows] = useState(order.items);
+    const [rows, setRows] = useState(transaction.items);
 
     useEffect(() => {
 
@@ -43,21 +44,15 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
             const itemStock = item?.stock.find(stock => stock.location.id === location);
 
             if( itemStock.amount < itemStock.threshold) {
-                var newItem = {
-                    amount: Math.max(0,itemStock.target - itemStock.amount),
-                    color: {
-                        hex: product.color?.hex,
-                        name: product.color?.name
-                    },
-                    delivery_time: item?.delivery_time,
-                    product: {
-                        id: product._id,
-                        name: product.name
-                    },
-                    name: item?.name || '',
-                    sku: item?.sku || '',
-                    status: []
-                }
+                var newItem = structuredClone(item);
+                delete newItem.stock;
+                newItem.status = [];
+                newItem.amount = Math.max(0,itemStock.target - itemStock.amount);
+                newItem.product = {
+                    id: product._id,
+                    name: product.name
+                };
+
                 lowStockRows.push(newItem);
             }
         }
@@ -76,34 +71,27 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
             const item = product.items.find((item) => item.name === newItemSize);
             const itemStock = item?.stock.find(stock => stock.location.id === location);
 
-            const newItem = {
-                amount: Math.max(0,itemStock.target - itemStock.amount),
-                color: {
-                    hex: product.color?.hex,
-                    name: product.color?.name
-                },
-                delivery_time: item?.delivery_time,
-                product: {
-                    id: product._id,
-                    name: product.name
-                },
-                name: item?.name || '',
-                sku: item?.sku || '',
-                status: []
-            }
+            var newItem = structuredClone(item);
+            delete newItem.stock;
+            newItem.status = [];
+            newItem.amount = Math.max(0,itemStock.target - itemStock.amount);
+            newItem.product = {
+                id: product._id,
+                name: product.name
+            };
             setRows([...rows, newItem]);
         }
     };
 
-    const handleSizeChange = (index, newSize) => {
-        const newItem = product.items.find(item => item.name === newSize);
+    const handleItemChange = (index, newItemName) => {
+        const newItem = product.items.find(item => item.name === newItemName);
         const newItemStock = newItem?.stock.find(stock => stock.location.id === location);
         const newSku = newItem?.sku;
         const newDeliveryTime = newItem?.delivery_time;
         const newAmount =  Math.max(0,newItemStock.target - newItemStock.amount);
 
         setRows((prevRows) =>
-          prevRows.map((row, i) => (i === index ? { ...row, name: newSize, amount: newAmount, sku: newSku, delivery_time: newDeliveryTime } : row))
+          prevRows.map((row, i) => (i === index ? { ...row, name: newItemName, amount: newAmount, sku: newSku, delivery_time: newDeliveryTime } : row))
         );
       };
     
@@ -121,18 +109,18 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
 
     const handleSaveOrder = async (data) => {
 
-        order.items = data;
+        transaction.items = data;
         
         try {
-            const response = await fetch(`/api/createOrder?store_id=${location}`, {
+            const response = await fetch(`/api/addTransaction`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ order }),
+                body: JSON.stringify(transaction),
               });
             if (response.ok) {
-                console.log('Order saved successfully');
+                console.log('Transaction saved successfully');
                 onClose();
                 onSave();
                 setRows([]);
@@ -143,8 +131,8 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                 const orderId = data.orderId;
 
                 //Move to store
-                for (let i = 0; i < order.items?.length; i++) {
-                    let item = order.items[i];
+                for (let i = 0; i < transaction.items?.length; i++) {
+                    let item = transaction.items[i];
 
                     try {
                         fetchPromises.push(fetch(`/api/moveToStore?order_id=${orderId}`, {
@@ -166,7 +154,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                 await Promise.all(fetchPromises);
 
             } else {
-                console.log('Error saving order');
+                console.log('Error saving transaction');
             }
         } catch (e) {
             console.error(e);
@@ -206,7 +194,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                                         <td>
                                             <Select 
                                                     value={{label: row.name, value: row.name}}
-                                                    onChange={(selectedOption) => handleSizeChange(index, selectedOption.value)}
+                                                    onChange={(selectedOption) => handleItemChange(index, selectedOption.value)}
                                                     options={product.items
                                                         .filter((item) => {
                                                             return !rows.some((rowItem) => rowItem.name === item.name);
