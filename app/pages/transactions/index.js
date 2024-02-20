@@ -330,9 +330,9 @@ function formatTimestamp(timestamp) {
                   <td>{order.items?.name}</td>
                   <td>{order.items?.amount}</td>
                   {!location && (<td>{order.location?.destination?.name.split(' ')[0]}</td>)}
-                  <td>{formatTimestamp(order.items?.status?.sort((a, b) => a.update_timestamp - b.update_timestamp)[0]?.update_timestamp)}</td>
-                  <td>{formatTimestamp(order.items?.status?.sort((a, b) => b.update_timestamp - a.update_timestamp)[0]?.update_timestamp)}</td>
-                  <td>{order.items?.status?.sort((a, b) => b.update_timestamp - a.update_timestamp)[0]?.name}</td>
+                  <td>{formatTimestamp(order.items?.status?.slice().sort((a, b) => new Date(a.update_timestamp) - new Date(b.update_timestamp))[0]?.update_timestamp)}</td>
+                  <td>{formatTimestamp(order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.update_timestamp)}</td>
+                  <td>{order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.name}</td>
                   {location && (<td>
                     <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
                   </td>)}
