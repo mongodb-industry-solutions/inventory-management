@@ -1,8 +1,9 @@
 import clientPromise from "../../lib/mongodb";
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { ObjectId } from 'mongodb';
 import { useUser } from '../../context/UserContext';
+import { ServerContext } from '../_app';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 
@@ -25,6 +26,8 @@ export default function Transactions({ orders, facets }) {
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
   const { selectedUser } = useUser();
+  const utils = useContext(ServerContext);
+
   const router = useRouter();
   const { location } = router.query;
 
@@ -188,7 +191,7 @@ export default function Transactions({ orders, facets }) {
     transaction.items.push(item);
     
     try {
-        const response = await fetch('/api/addTransaction', {
+        const response = await fetch(utils.apiInfo.httpsUri + '/addTransaction', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
