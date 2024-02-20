@@ -10,7 +10,8 @@
   "area": {
     "name": "Spain",
     "code": "ES"
-  }
+  },
+  "type": "store"
 },
 {
   "_id": {
@@ -24,5 +25,6 @@
   "area": {
     "name": "Spain",
     "code": "ES"
-  }
+  },
+  "type": "store"
 }]
