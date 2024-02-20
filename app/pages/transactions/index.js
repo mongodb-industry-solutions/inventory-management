@@ -29,7 +29,7 @@ export default function Transactions({ orders, facets }) {
   const utils = useContext(ServerContext);
 
   const router = useRouter();
-  const { location } = router.query;
+  const { location, type } = router.query;
 
   useEffect(() => {
     handleSearch();
@@ -51,9 +51,59 @@ export default function Transactions({ orders, facets }) {
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        const response = await fetch(`/api/searchOrder?q=${encodeURIComponent(searchQuery)}`);
+        //const response = await fetch(`/api/searchOrder?q=${encodeURIComponent(searchQuery)}`);
+        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+          },
+          body: JSON.stringify({
+            dataSource: 'mongodb-atlas',
+            database: utils.dbInfo.dbName,
+            collection: 'transactions',
+            pipeline: [
+              {
+                $search: {
+                  index: 'default',
+                  compound: {
+                    should: [
+                      {
+                        text: {
+                          query: searchQuery,
+                          path: {
+                            wildcard: '*',
+                          },
+                          fuzzy: {
+                            maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
+                            },
+                        },
+                      }
+                    ],
+                    filter: [
+                      {
+                        text: {
+                          query: type,
+                          path: "type"
+                        },
+                      }
+                    ]
+                  },
+                  
+                },
+              },{
+                '$unwind': {
+                  'path': '$items'
+                }
+              },
+              { $limit: 20 }
+            ],
+          }),
+        });
         const data = await response.json();
-        const searchResults = data.results;
+        console.log(data);
+        const searchResults = data.documents;
         setFilteredOrders(searchResults);
         setSortedOrders(searchResults);
       } catch (error) {
@@ -298,7 +348,7 @@ function formatTimestamp(timestamp) {
                     </div>
                   </td>
                
-                  <td>{order.order_number}</td>
+                  <td>{order.transaction_number}</td>
                   <td>{order.items?.product.name}</td>
                   <td>{order.items?.sku}</td>
                   <td>{order.items?.name}</td>
