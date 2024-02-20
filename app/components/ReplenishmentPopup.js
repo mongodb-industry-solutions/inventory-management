@@ -124,35 +124,6 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                 onClose();
                 onSave();
                 setRows([]);
-
-                const fetchPromises = [];
-
-                const data = await response.json();
-                const orderId = data.orderId;
-
-                //Move to store
-                for (let i = 0; i < transaction.items?.length; i++) {
-                    let item = transaction.items[i];
-
-                    try {
-                        fetchPromises.push(fetch(`/api/moveToStore?order_id=${orderId}`, {
-                            method: 'POST',
-                            headers: {
-                              'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ item }),
-                          }));
-                        if (response.ok) {
-                            //console.log(item.sku + ' moved to store successfully.');
-                        } else {
-                            console.log('Error moving to store item ' + item.sku + '.');
-                        }
-                    } catch (e) {
-                        console.error(e);
-                    }
-                }
-                await Promise.all(fetchPromises);
-
             } else {
                 console.log('Error saving transaction');
             }
