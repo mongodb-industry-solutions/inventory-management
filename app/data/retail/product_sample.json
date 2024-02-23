@@ -1,156 +1,252 @@
-{
-    "_id": {
-      "$oid": "649ef6647827d12200b87893"
+[{
+  "_id": {
+    "$oid": "65ae9eccd9bf6944791b8a7e"
+  },
+  "name": "White T-shirt",
+  "color": {
+    "name": "White",
+    "hex": "#FFFFFF"
+  },
+  "code": "WHT001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "EUR"
+  },
+  "popularity_index": 18,
+  "items": [
+    {
+      "sku": "BLK001-XS",
+      "name": "XS",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
     },
-    "name": "Black T-shirt",
-    "color": {
-      "name": "Black",
-      "hex": "#000000"
+    {
+      "sku": "BLK001-S",
+      "name": "S",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
     },
-    "code": "BLK001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
+    {
+      "sku": "BLK001-M",
+      "name": "M",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
     },
-    "popularity_index": 18,
-    "items": [
-      {
-        "sku": "BLK001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+    {
+      "sku": "BLK001-L",
+      "name": "L",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "amount": 15,
-            "threshold": 10,
-            "target": 20
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "BLK001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "amount": 10,
-            "threshold": 10,
-            "target": 20
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "BLK001-XL",
+      "name": "XL",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
       },
-      {
-        "sku": "BLK001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "amount": 5,
-            "threshold": 10,
-            "target": 20
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "BLK001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "amount": 10,
-            "threshold": 10,
-            "target": 20
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
       },
-      {
-        "sku": "BLK001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "amount": 15,
-            "threshold": 10,
-            "target": 20
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "amount": 55,
-        "threshold": 50,
-        "target": 100
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
       },
-      {
-        "location": "ordered",
-        "amount": 0
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
       },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
-  }
+      "amount": 1000
+    }
+  ],
+  "autoreplenishment": false
+}]

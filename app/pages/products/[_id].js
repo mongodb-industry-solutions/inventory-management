@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import  *  as  Realm  from  "realm-web";
 import clientPromise from '../../lib/mongodb';
 import { useRouter } from 'next/router';
 import { ObjectId } from "bson";
+import { ServerContext } from '../_app';
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShirt } from '@fortawesome/free-solid-svg-icons';
@@ -10,15 +11,18 @@ import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
 
-export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboardId, databaseName }) {
+export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
     
     const [product, setProduct] = useState(preloadedProduct);
     const [showPopup, setShowPopup] = useState(false);
     const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
-    const  app = new  Realm.App({ id: realmAppId });
 
     const router = useRouter();
     const { location } = router.query;
+
+    const utils = useContext(ServerContext);
+
+    const  app = new  Realm.App({ id: utils.appServiceInfo.appId });
 
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
@@ -57,7 +61,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
         
             await app.logIn(Realm.Credentials.anonymous());
             const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-            const collection = mongodb.db(databaseName).collection("products");
+            const collection = mongodb.db(utils.dbInfo.dbName).collection("products");
             let updatedProduct = null;
             
             const filter = {
@@ -72,7 +76,7 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
                     updatedProduct = change.fullDocument;
                 } else {
                     updatedProduct = await mongodb
-                        .db(databaseName)
+                        .db(utils.dbInfo.dbName)
                         .collection("products_area_view")
                         .findOne({ _id: ObjectId(preloadedProduct._id)});
                 }
@@ -108,12 +112,22 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
 
     const handleToggleAutoreplenishment = async () => {
         try {
-            const response = await fetch(`/api/setAutoreplenishment?product_id=${preloadedProduct._id}`, {
+              const response = await fetch(utils.apiInfo.dataUri + '/action/updateOne', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                  'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
                 },
-                body: JSON.stringify(!product.autoreplenishment),
+                body: JSON.stringify({
+                  dataSource: 'mongodb-atlas',
+                  database: utils.dbInfo.dbName,
+                  collection: 'products',
+                  filter: { "_id": { "$oid": preloadedProduct._id } },
+                  update: {
+                    "$set": { "autoreplenishment": !product.autoreplenishment }
+                  }
+                }),
               });
             if (response.ok) {
                 console.log('Autoreplenishment toggled successfully');
@@ -203,9 +217,6 @@ export default function Product({ preloadedProduct, realmAppId, baseUrl, dashboa
 
 export async function getServerSideProps(context) {
     try {
-        if (!process.env.REALM_APP_ID) {
-            throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
-        }
         if (!process.env.CHARTS_EMBED_SDK_BASEURL) {
             throw new Error('Invalid/Missing environment variables: "CHARTS_EMBED_SDK_BASEURL"')
         }
@@ -217,7 +228,6 @@ export async function getServerSideProps(context) {
         }
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
-        const realmAppId = process.env.REALM_APP_ID;
         const baseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
         const dashboardId = process.env.DASHBOARD_ID_PRODUCT;
 
@@ -233,7 +243,7 @@ export async function getServerSideProps(context) {
             .collection(collectionName)
             .findOne({ _id: ObjectId(params._id)});
         return {
-            props: { preloadedProduct: JSON.parse(JSON.stringify(product)), realmAppId: realmAppId, baseUrl: baseUrl, dashboardId: dashboardId, databaseName: dbName },
+            props: { preloadedProduct: JSON.parse(JSON.stringify(product)), baseUrl: baseUrl, dashboardId: dashboardId },
         };
     } catch (e) {
         console.error(e);
