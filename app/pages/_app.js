@@ -72,6 +72,7 @@ MyApp.getInitialProps = async ({ ctx }) => {
       utils: {
         apiInfo: { dataUri, httpsUri, accessToken}, 
         dbInfo: { dbName },
+        appServiceInfo: { appId },
         edgeInfo: { edgeHost },
         demoInfo: { industry }
       }
