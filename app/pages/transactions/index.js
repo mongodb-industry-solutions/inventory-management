@@ -6,11 +6,12 @@ import { useUser } from '../../context/UserContext';
 import { ServerContext } from '../_app';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
+import { autocompleteTransactionsPipeline } from '../../data/aggregations/autocomplete';
+import { searchTransactionsPipeline } from '../../data/aggregations/search';
 
 export default function Transactions({ orders, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredOrders, setFilteredOrders] = useState(orders);
-  const [sortedOrders, setSortedOrders] = useState(orders);
+  const [displayOrders, setDisplayOrders] = useState(orders);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Set the number of items per page
@@ -23,7 +24,7 @@ export default function Transactions({ orders, facets }) {
   ];
 
   // Calculate the total number of pages
-  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const totalPages = Math.ceil(displayOrders.length / itemsPerPage);
 
   const { selectedUser } = useUser();
   const utils = useContext(ServerContext);
@@ -51,7 +52,6 @@ export default function Transactions({ orders, facets }) {
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        //const response = await fetch(`/api/searchOrder?q=${encodeURIComponent(searchQuery)}`);
         const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
           method: 'POST',
           headers: {
@@ -63,55 +63,19 @@ export default function Transactions({ orders, facets }) {
             dataSource: 'mongodb-atlas',
             database: utils.dbInfo.dbName,
             collection: 'transactions',
-            pipeline: [
-              {
-                $search: {
-                  index: 'default',
-                  compound: {
-                    should: [
-                      {
-                        text: {
-                          query: searchQuery,
-                          path: {
-                            wildcard: '*',
-                          },
-                          fuzzy: {
-                            maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
-                            },
-                        },
-                      }
-                    ],
-                    filter: [
-                      {
-                        text: {
-                          query: type,
-                          path: "type"
-                        },
-                      }
-                    ]
-                  },
-                  
-                },
-              },{
-                '$unwind': {
-                  'path': '$items'
-                }
-              },
-              { $limit: 20 }
-            ],
+            pipeline: searchTransactionsPipeline(searchQuery, location, type)
           }),
         });
+
         const data = await response.json();
-        console.log(data);
         const searchResults = data.documents;
-        setFilteredOrders(searchResults);
-        setSortedOrders(searchResults);
+        
+        setDisplayOrders(searchResults);
       } catch (error) {
         console.error(error);
       }
     } else {
-      setFilteredOrders(orders);
-      setSortedOrders(orders);
+      setDisplayOrders(orders);
     }
   };
   
@@ -122,11 +86,23 @@ export default function Transactions({ orders, facets }) {
   
     if (searchValue.length > 0) {
       try {
-        const response = await fetch(`/api/suggestions_orderhistory?q=${encodeURIComponent(searchValue)}`);
+        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+          },
+          body: JSON.stringify({
+            dataSource: 'mongodb-atlas',
+            database: utils.dbInfo.dbName,
+            collection: 'transactions',
+            pipeline: autocompleteTransactionsPipeline(searchValue)
+          }),
+        });
         const data = await response.json();
-        setSuggestions(data.suggestions);
+        setSuggestions(data.documents[0].suggestions);
       } catch (error) {
-        console.error(error);
         setSuggestions([]); // Set an empty array if there's an error to prevent undefined value
       }
     } else {
@@ -149,8 +125,7 @@ export default function Transactions({ orders, facets }) {
       return sizeMatch && colorMatch;
     });
 
-    setFilteredOrders(updatedFilteredOrders);
-    setSortedOrders(updatedFilteredOrders); // Update sorted orders when filters change
+    setDisplayOrders(updatedFilteredOrders); // Update displayed orders when filters change
     console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' orders: ' + updatedFilteredOrders.length);
   };
 
@@ -337,8 +312,8 @@ function formatTimestamp(timestamp) {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.length > 0 ? (
-              sortedOrders.slice(startIndex, endIndex).map(order => (
+            {displayOrders.length > 0 ? (
+              displayOrders.slice(startIndex, endIndex).map(order => (
                 <tr key={order._id + order.items.sku} className="order-row">
         
                   <td className="order-icon">
@@ -468,7 +443,7 @@ export async function getServerSideProps(context) {
       .toArray();
 
     return {
-      props: { orders: JSON.parse(JSON.stringify(transactions)), facets: JSON.parse(JSON.stringify(facets)), page: 'orders', },
+      props: { orders: JSON.parse(JSON.stringify(transactions)), facets: JSON.parse(JSON.stringify(facets)) },
     };
   } catch (e) {
     console.error(e);
