@@ -1,13 +1,16 @@
 import clientPromise from "../../lib/mongodb";
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import  *  as  Realm  from  "realm-web";
 import { useRouter } from 'next/router';
+import { ServerContext } from '../_app';
 import { FaSearch } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
 import AlertBanner from '../../components/AlertBanner';
+import { autocompleteProductsPipeline } from '../../data/aggregations/autocomplete';
+import { searchProductsPipeline } from '../../data/aggregations/search';
 
-export default function Products({ products, facets, realmAppId, databaseName }) {
+export default function Products({ products, facets }) {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [displayProducts, setDisplayProducts] = useState(products);
@@ -16,22 +19,23 @@ export default function Products({ products, facets, realmAppId, databaseName })
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
 
-  const  app = new  Realm.App({ id: realmAppId });
-
   const router = useRouter();
   const { location } = router.query;
- 
+
+  const utils = useContext(ServerContext);
+  
+  const  app = new  Realm.App({ id: utils.appServiceInfo.appId });
+
   // Create a ref for the input element
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
-
 
   useEffect(() => {
     const  login = async () => {
         
       await app.logIn(Realm.Credentials.anonymous());
       const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-      const collection = mongodb.db(databaseName).collection("products");
+      const collection = mongodb.db(utils.dbInfo.dbName).collection("products");
       let updatedProduct = null;
       
       const filter = {filter: {operationType: "update"}};
@@ -41,7 +45,7 @@ export default function Products({ products, facets, realmAppId, databaseName })
 
         if (!location) {
             let productView = await mongodb
-                .db(databaseName)
+                .db(utils.dbInfo.dbName)
                 .collection("products_area_view")
                 .findOne({ _id: change.fullDocument._id});
             updatedProduct = JSON.parse(JSON.stringify(productView));
@@ -74,6 +78,9 @@ export default function Products({ products, facets, realmAppId, databaseName })
       }
     }
     login();
+  }, []);
+
+  useEffect(() => {
     handleSearch();
   }, [searchQuery]);
 
@@ -84,9 +91,24 @@ export default function Products({ products, facets, realmAppId, databaseName })
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
+        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+          },
+          body: JSON.stringify({
+            dataSource: 'mongodb-atlas',
+            database: utils.dbInfo.dbName,
+            collection: 'products',
+            pipeline: searchProductsPipeline(searchQuery, location)
+          }),
+        });
+
         const data = await response.json();
-        const searchResults = data.results;
+        const searchResults = data.documents;
+
         setDisplayProducts(searchResults);
       } catch (error) {
         console.error(error);
@@ -103,11 +125,23 @@ export default function Products({ products, facets, realmAppId, databaseName })
   
     if (searchValue.length > 0) {
       try {
-        const response = await fetch(`/api/suggestions?q=${encodeURIComponent(searchValue)}`);
+        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+          },
+          body: JSON.stringify({
+            dataSource: 'mongodb-atlas',
+            database: utils.dbInfo.dbName,
+            collection: 'products',
+            pipeline: autocompleteProductsPipeline(searchValue)
+          }),
+        });
         const data = await response.json();
-        setSuggestions(data.suggestions);
+        setSuggestions(data.documents[0].suggestions);
       } catch (error) {
-        console.error(error);
         setSuggestions([]); // Set an empty array if there's an error to prevent undefined value
       }
     } else {
@@ -330,15 +364,11 @@ export default function Products({ products, facets, realmAppId, databaseName })
 
 export async function getServerSideProps({ query }) {
   try {
-    if (!process.env.REALM_APP_ID) {
-      throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
-    }
     if (!process.env.MONGODB_DATABASE_NAME) {
       throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
     }
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
-    const realmAppId = process.env.REALM_APP_ID;
     
     const client = await clientPromise;
     const db = client.db(dbName);
@@ -391,7 +421,7 @@ export async function getServerSideProps({ query }) {
       .toArray();
 
     return {
-      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)), realmAppId: realmAppId, databaseName: dbName},
+      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)) },
     };
   } catch (e) {
     console.error(e);

@@ -5,15 +5,9 @@
   "name": "Meritxell",
   "surname": "Torres",
   "title": "Area Manager",
+  "type": "atlas",
   "permissions": {
-    "stores": [],
-    "areas": [
-      {
-        "name": "Spain",
-        "code": "ES",
-        "role": "manager"
-      }
-    ]
+    "locations": []
   }
 },
 {
@@ -23,8 +17,9 @@
   "name": "Alejandra",
   "surname": "García",
   "title": "Store Manager",
+  "type": "edge",
   "permissions": {
-    "stores": [
+    "locations": [
       {
         "id": {
           "$oid": "65a545fb4a8f64e8f88fb897"
@@ -33,8 +28,7 @@
         "name": "Glòries Store",
         "area_code": "ES"
       }
-    ],
-    "areas": []
+    ]
   }
 },
 {
@@ -44,8 +38,9 @@
   "name": "Eddie",
   "surname": "Grant",
   "title": "Store Manager",
+  "type": "atlas",
   "permissions": {
-    "stores": [
+    "locations": [
       {
         "id": {
           "$oid": "65a545fb4a8f64e8f88fb896"
@@ -54,7 +49,6 @@
         "name": "Bogatell Store",
         "area_code": "ES"
       }
-    ],
-    "areas": []
+    ]
   }
 }]

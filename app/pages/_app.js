@@ -66,12 +66,13 @@ MyApp.getInitialProps = async ({ ctx }) => {
     const tokenData = await tokenResponse.json();
     const accessToken = tokenData?.access_token;
     const dataUri = uri + '/app/' + appId + '/endpoint/data/v1';
-    const httpsUri = uri + '/app/' + appId + '/endpoint/';
+    const httpsUri = uri + '/app/' + appId + '/endpoint';
 
     return { 
       utils: {
         apiInfo: { dataUri, httpsUri, accessToken}, 
         dbInfo: { dbName },
+        appServiceInfo: { appId },
         edgeInfo: { edgeHost },
         demoInfo: { industry }
       }
@@ -79,7 +80,14 @@ MyApp.getInitialProps = async ({ ctx }) => {
   } catch (e) {
     console.error(e);
     return {
-      props: { utils: {apiInfo: { dataUri: null, httpsUri: null, accessToken: null}, dbInfo: { dbName: null }, edgeInfo: { edgeHost: null }, demoInfo: { demoIndustry: null }}},
+      props: { 
+        utils: {
+          apiInfo: { dataUri: null, httpsUri: null, accessToken: null}, 
+          dbInfo: { dbName: null }, 
+          edgeInfo: { edgeHost: null }, 
+          demoInfo: { demoIndustry: null }
+        }
+      },
     };
   }
 }

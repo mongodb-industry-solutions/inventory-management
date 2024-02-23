@@ -1,15 +1,17 @@
 import clientPromise from "../../lib/mongodb";
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { ObjectId } from 'mongodb';
 import { useUser } from '../../context/UserContext';
+import { ServerContext } from '../_app';
 import { FaSearch, FaTshirt } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
+import { autocompleteTransactionsPipeline } from '../../data/aggregations/autocomplete';
+import { searchTransactionsPipeline } from '../../data/aggregations/search';
 
 export default function Transactions({ orders, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredOrders, setFilteredOrders] = useState(orders);
-  const [sortedOrders, setSortedOrders] = useState(orders);
+  const [displayOrders, setDisplayOrders] = useState(orders);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Set the number of items per page
@@ -22,11 +24,13 @@ export default function Transactions({ orders, facets }) {
   ];
 
   // Calculate the total number of pages
-  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const totalPages = Math.ceil(displayOrders.length / itemsPerPage);
 
   const { selectedUser } = useUser();
+  const utils = useContext(ServerContext);
+
   const router = useRouter();
-  const { location } = router.query;
+  const { location, type } = router.query;
 
   useEffect(() => {
     handleSearch();
@@ -48,17 +52,30 @@ export default function Transactions({ orders, facets }) {
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        const response = await fetch(`/api/searchOrder?q=${encodeURIComponent(searchQuery)}`);
+        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+          },
+          body: JSON.stringify({
+            dataSource: 'mongodb-atlas',
+            database: utils.dbInfo.dbName,
+            collection: 'transactions',
+            pipeline: searchTransactionsPipeline(searchQuery, location, type)
+          }),
+        });
+
         const data = await response.json();
-        const searchResults = data.results;
-        setFilteredOrders(searchResults);
-        setSortedOrders(searchResults);
+        const searchResults = data.documents;
+        
+        setDisplayOrders(searchResults);
       } catch (error) {
         console.error(error);
       }
     } else {
-      setFilteredOrders(orders);
-      setSortedOrders(orders);
+      setDisplayOrders(orders);
     }
   };
   
@@ -69,11 +86,23 @@ export default function Transactions({ orders, facets }) {
   
     if (searchValue.length > 0) {
       try {
-        const response = await fetch(`/api/suggestions_orderhistory?q=${encodeURIComponent(searchValue)}`);
+        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+          },
+          body: JSON.stringify({
+            dataSource: 'mongodb-atlas',
+            database: utils.dbInfo.dbName,
+            collection: 'transactions',
+            pipeline: autocompleteTransactionsPipeline(searchValue)
+          }),
+        });
         const data = await response.json();
-        setSuggestions(data.suggestions);
+        setSuggestions(data.documents[0].suggestions);
       } catch (error) {
-        console.error(error);
         setSuggestions([]); // Set an empty array if there's an error to prevent undefined value
       }
     } else {
@@ -96,8 +125,7 @@ export default function Transactions({ orders, facets }) {
       return sizeMatch && colorMatch;
     });
 
-    setFilteredOrders(updatedFilteredOrders);
-    setSortedOrders(updatedFilteredOrders); // Update sorted orders when filters change
+    setDisplayOrders(updatedFilteredOrders); // Update displayed orders when filters change
     console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' orders: ' + updatedFilteredOrders.length);
   };
 
@@ -188,7 +216,7 @@ export default function Transactions({ orders, facets }) {
     transaction.items.push(item);
     
     try {
-        const response = await fetch('/api/addTransaction', {
+        const response = await fetch(utils.apiInfo.httpsUri + '/addTransaction', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -197,35 +225,6 @@ export default function Transactions({ orders, facets }) {
           });
         if (response.ok) {
             handleSave();
-
-            const fetchPromises = [];
-
-            const data = await response.json();
-            const orderId = data.orderId;
-
-            //Move to store
-            for (let i = 0; i < order.items?.length; i++) {
-                let item = order.items[i];
-
-                try {
-                    fetchPromises.push(fetch(`/api/moveToStore?order_id=${orderId}`, {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ item }),
-                      }));
-                    if (response.ok) {
-                        //console.log(item.sku + ' moved to store successfully.');
-                    } else {
-                        console.log('Error moving to store item ' + item.sku + '.');
-                    }
-                } catch (e) {
-                    console.error(e);
-                }
-            }
-            await Promise.all(fetchPromises);
-
         } else {
             console.log('Error saving order');
         }
@@ -313,8 +312,8 @@ function formatTimestamp(timestamp) {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.length > 0 ? (
-              sortedOrders.slice(startIndex, endIndex).map(order => (
+            {displayOrders.length > 0 ? (
+              displayOrders.slice(startIndex, endIndex).map(order => (
                 <tr key={order._id + order.items.sku} className="order-row">
         
                   <td className="order-icon">
@@ -324,15 +323,15 @@ function formatTimestamp(timestamp) {
                     </div>
                   </td>
                
-                  <td>{order.order_number}</td>
+                  <td>{order.transaction_number}</td>
                   <td>{order.items?.product.name}</td>
                   <td>{order.items?.sku}</td>
                   <td>{order.items?.name}</td>
                   <td>{order.items?.amount}</td>
                   {!location && (<td>{order.location?.destination?.name.split(' ')[0]}</td>)}
-                  <td>{formatTimestamp(order.items?.status?.sort((a, b) => a.update_timestamp - b.update_timestamp)[0]?.update_timestamp)}</td>
-                  <td>{formatTimestamp(order.items?.status?.sort((a, b) => b.update_timestamp - a.update_timestamp)[0]?.update_timestamp)}</td>
-                  <td>{order.items?.status?.sort((a, b) => b.update_timestamp - a.update_timestamp)[0]?.name}</td>
+                  <td>{formatTimestamp(order.items?.status?.slice().sort((a, b) => new Date(a.update_timestamp) - new Date(b.update_timestamp))[0]?.update_timestamp)}</td>
+                  <td>{formatTimestamp(order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.update_timestamp)}</td>
+                  <td>{order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.name}</td>
                   {location && (<td>
                     <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
                   </td>)}
@@ -444,7 +443,7 @@ export async function getServerSideProps(context) {
       .toArray();
 
     return {
-      props: { orders: JSON.parse(JSON.stringify(transactions)), facets: JSON.parse(JSON.stringify(facets)), page: 'orders', },
+      props: { orders: JSON.parse(JSON.stringify(transactions)), facets: JSON.parse(JSON.stringify(facets)) },
     };
   } catch (e) {
     console.error(e);

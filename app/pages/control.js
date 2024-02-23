@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext  } from 'react';
 import  *  as  Realm  from  "realm-web";
 import clientPromise from "../lib/mongodb";
-
+import { ServerContext } from './_app';
 import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
 
@@ -16,6 +16,8 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
     const [onlineToInPersonRatio, setOnlineToInPersonRatio] = useState(0.5);
 
     const  app = new  Realm.App({ id: realmAppId });
+
+    const utils = useContext(ServerContext);
 
     useEffect(() => {
         // Start or stop selling based on the isSelling state
@@ -152,7 +154,7 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
         transaction.items.push(newItem);
     
         try {
-            const response = await fetch(`/api/addTransaction`, {
+            const response = await fetch(utils.apiInfo.httpsUri + '/addTransaction', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -171,7 +173,6 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
 
     /* 
         Mode: 
-            normal - reset stock levels following a normal distribution
             target - reset stock levels to target
             threshold - reset stock levels to threshold
             custom - reset stock levels to custom values
@@ -210,28 +211,6 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
                 const locationIndex = productToUpdate.items[i].stock.findIndex(
                     (loc) => loc.location.id === selectedLocation
                 );
-                
-                if(mode === 'normal'){
-                    switch (product.items[i].size) {
-                        case 'XS':
-                            amount = 15;
-                            break;
-                        case 'S':
-                            amount = 10;
-                            break;
-                        case 'M':
-                            amount = 5;
-                            break;
-                        case 'L':
-                            amount = 10;
-                            break;
-                        case 'XL':
-                            amount = 15;
-                            break;
-                        default:
-                            amount = 10;
-                    }
-                }
 
                 // Calculate the difference between the new and previous amounts
                 const prevAmount = prevProducts[productIndex].items[i].stock[locationIndex].amount;
@@ -280,7 +259,7 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
 
     const handleSave = async (product) => {
         try {
-            const response = await fetch(`/api/updateProductStock?store_id=${selectedLocation}`, {
+            const response = await fetch(utils.apiInfo.httpsUri + `/updateProductStock?location_id=${selectedLocation}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -349,13 +328,6 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
                             </td>
                             <td>
                                 <div className={styles["item-table-wrapper"]}>
-                                    <button 
-                                        className={styles["reset-button"]} 
-                                        disabled={!selectedLocation}
-                                        onClick={() => handleUpdateStock(product, {}, 0,'normal')}
-                                    >
-                                        Reset Stock Normal
-                                    </button>
                                     <button 
                                         className={styles["reset-button"]} 
                                         disabled={!selectedLocation}
