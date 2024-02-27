@@ -81,7 +81,7 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
       {!isShrunk && (
         <>
           <div className={styles["size-filters"]} >
-            <h3>Size</h3>
+            <h3>Items</h3>
             {facets?.[0]?.facet?.sizesFacet.buckets
   .sort((a, b) => {
     const sizeOrder = ['XS', 'S', 'M', 'L', 'XL'];
@@ -100,7 +100,7 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
           </div>
 
           <div className={styles["color-filters"]} >
-            <h3>Color</h3>
+            <h3>Products</h3>
             <div className={styles["color-list"]}>
               {facets?.[0]?.facet?.colorsFacet.buckets.slice(0, numColorsToShow).map((bucket) => (
                 <label key={bucket._id}>
