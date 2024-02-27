@@ -420,8 +420,6 @@ export async function getServerSideProps({ query }) {
       .aggregate(agg)
       .toArray();
 
-    console.log(facets);
-
     return {
       props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)) },
     };
