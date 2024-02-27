@@ -25,12 +25,14 @@
     margin: 0;
   }
   
-  .shirt_icon {
+  .image-container {
     text-align: center;
     margin-bottom: 10px; /* Adjust the margin value as needed */
+    width: 200px;
+    height: 200px;
   }
   
-  .shirt_icon svg {
+  .default-icon {
     width: 200px;
     height: 200px;
   }
@@ -66,4 +68,11 @@
     right: 85px;
     height: 23px;
     width: 11px;
+  }
+
+  .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
   }
