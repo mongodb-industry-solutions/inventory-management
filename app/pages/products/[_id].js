@@ -7,6 +7,7 @@ import { ServerContext } from '../_app';
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShirt } from '@fortawesome/free-solid-svg-icons';
+import { FaTshirt, FaWhmcs } from 'react-icons/fa';
 import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
@@ -16,6 +17,7 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
     const [product, setProduct] = useState(preloadedProduct);
     const [showPopup, setShowPopup] = useState(false);
     const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
+    const [imageError, setImageError] = useState(false);
 
     const router = useRouter();
     const { location } = router.query;
@@ -143,11 +145,30 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
         <>
         <div className="content">
         <div className={styles['product-detail-content']}>
-            <div className={styles['icon']}>
-                <div className={styles["icon-container"]}>
-                <FontAwesomeIcon id="tshirt" icon={faShirt} style={{ color: product.color?.hex, fontSize: '10rem', backgroundColor: 'rgb(249, 251, 250)', padding: '15px'}}/>
-                <img src={leafUrl} alt="Leaf" className={styles["leaf"]}/>
-                </div>
+            <div className={styles["image-container"]}>
+            {
+                imageError ? 
+                    (
+                        utils.demoInfo.industry == 'manufacturing' ?
+                            (
+                                <FaWhmcs color="grey" className={styles["default-icon"]}/>
+                            ) :
+                            (
+                                <>
+                                    <FaTshirt color={product.color?.hex} className={styles["default-icon"]} />
+                                    <img src={leafUrl} alt="Leaf" className={styles["leaf"]}/>
+                                </>
+                            )
+                    ) :
+                    (
+                        <img 
+                            src={product.image?.url ? product.image?.url : "default"} 
+                            alt="Product Image" 
+                            className={styles["product-image"]}
+                            onError={() => setImageError(true)}
+                        />
+                    )
+            }
             </div>
             <div className={styles["details"]}>
                 <p className="name">{product.name}</p>
@@ -166,8 +187,18 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
             <table>
                 <thead>
                 <tr>
-                    <td>Size</td>
-                    <td>Store</td>
+                    <td>
+                        { utils.demoInfo.industry == 'manufacturing' ? 
+                                "Item" : 
+                                "Size"
+                        }
+                    </td>
+                    <td>
+                        { utils.demoInfo.industry == 'manufacturing' ? 
+                            "Factory" : 
+                            "Store"
+                        }
+                    </td>
                     <td>Ordered</td>
                     <td>Warehouse</td>
                     <td>Delivery Time</td>

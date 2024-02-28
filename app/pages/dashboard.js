@@ -59,9 +59,16 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
       
           await app.logIn(Realm.Credentials.anonymous());
           const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-          const collection = mongodb.db(databaseName).collection("sales");
+          const collection = mongodb.db(databaseName).collection("transactions");
           
-          for await (const  change  of  collection.watch({})) {
+          const filter = {
+            filter: {
+                operationType: "insert",
+                "fullDocument.type": "outbound"
+            }
+        };
+
+          for await (const  change  of  collection.watch(filter)) {
             dashboard.refresh();
           }
       }
