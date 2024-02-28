@@ -172,7 +172,10 @@
       },
       "amount": 4000
     }
-  ]
+  ],
+  "image": {
+    "url": "/images/products/thermostats.png"
+  }
 },
 {
   "_id": {
@@ -348,7 +351,10 @@
       "target": 400,
       "ordered": 0
     }
-  ]
+  ],
+  "image": {
+    "url": "/images/products/electrical_components.png"
+  }
 },
 {
   "_id": {
@@ -437,7 +443,10 @@
       "target": 350,
       "ordered": 0
     }
-  ]
+  ],
+  "image": {
+    "url": "/images/products/finished_goods.png"
+  }
 },
 {
   "_id": {
@@ -555,7 +564,10 @@
       "target": 2000,
       "ordered": 0
     }
-  ]
+  ],
+  "image": {
+    "url": "/images/products/packaging_materials.png"
+  }
 },
 {
   "_id": {
@@ -731,7 +743,10 @@
       },
       "amount": 30000
     }
-  ]
+  ],
+  "image": {
+    "url": "/images/products/raw_materials.png"
+  }
 },
 {
   "_id": {
@@ -965,5 +980,8 @@
       "target": 900,
       "ordered": 0
     }
-  ]
+  ],
+  "image": {
+    "url": "/images/products/system_components.png"
+  }
 }]

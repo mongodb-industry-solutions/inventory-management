@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { ObjectId } from 'mongodb';
 import { useUser } from '../../context/UserContext';
 import { ServerContext } from '../_app';
-import { FaSearch, FaTshirt } from 'react-icons/fa';
+import { FaSearch, FaTshirt, FaWhmcs } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 import { autocompleteTransactionsPipeline } from '../../data/aggregations/autocomplete';
 import { searchTransactionsPipeline } from '../../data/aggregations/search';
@@ -113,20 +113,20 @@ export default function Transactions({ orders, facets }) {
   };
   
 
-  const filterOrders = (sizesFilter, colorsFilter) => {
+  const filterOrders = (itemsFilter, productsFilter) => {
     // Filter orders based on sizes and colors
     let updatedFilteredOrders = orders.filter(order => {
-      const size = order.items.size;
-      const color = order.items.color?.name;
+      const item = order.items?.name;
+      const product = order.items?.product?.name;
 
-      const sizeMatch = sizesFilter.length === 0 || sizesFilter.includes(size);
-      const colorMatch = colorsFilter.length === 0 || colorsFilter.includes(color);
+      const itemMatch = itemsFilter.length === 0 || itemsFilter.includes(item);
+      const productMatch = productsFilter.length === 0 || productsFilter.includes(product);
 
-      return sizeMatch && colorMatch;
+      return itemMatch && productMatch;
     });
 
     setDisplayOrders(updatedFilteredOrders); // Update displayed orders when filters change
-    console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' orders: ' + updatedFilteredOrders.length);
+    console.log('sizes:' + itemsFilter + ' colors:' + productsFilter + ' orders: ' + updatedFilteredOrders.length);
   };
 
   const handleInputKeyUp = (e) => {
@@ -304,39 +304,61 @@ function formatTimestamp(timestamp) {
             <th style={{ width: '7%' }}>SKU</th>
             <th style={{ width: '5%' }}>Item</th>
             <th style={{ width: '5%' }}>Amount</th>
-            {!location && (<th style={{ width: '5%' }}>Store</th>)}
+            {!location && type === 'inbound' && (<th style={{ width: '5%' }}>Location</th>)}
             <th style={{ width: '12%' }}>Placement Date</th>
             <th style={{ width: '12%' }}>Arrival Date</th>
             <th style={{ width: '5%' }}>Status</th>
-            {location && (<th style={{ width: '5%' }}></th>)}
+            {location && type === 'inbound' && (<th style={{ width: '5%' }}></th>)}
             </tr>
           </thead>
           <tbody>
             {displayOrders.length > 0 ? (
               displayOrders.slice(startIndex, endIndex).map(order => (
-                <tr key={order._id + order.items.sku} className="order-row">
-        
-                  <td className="order-icon">
-                    <div className="shirt-icon-background" >
-                     <FaTshirt style={{ color: order.items?.color?.hex || 'black' }} />
-                     <img src={lightColors.includes(order.items?.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf"/>
-                    </div>
-                  </td>
-               
-                  <td>{order.transaction_number}</td>
-                  <td>{order.items?.product.name}</td>
-                  <td>{order.items?.sku}</td>
-                  <td>{order.items?.name}</td>
-                  <td>{order.items?.amount}</td>
-                  {!location && (<td>{order.location?.destination?.name.split(' ')[0]}</td>)}
-                  <td>{formatTimestamp(order.items?.status?.slice().sort((a, b) => new Date(a.update_timestamp) - new Date(b.update_timestamp))[0]?.update_timestamp)}</td>
-                  <td>{formatTimestamp(order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.update_timestamp)}</td>
-                  <td>{order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.name}</td>
-                  {location && (<td>
-                    <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
-                  </td>)}
-                </tr>
-              ))
+                  <tr key={order._id + order.items.sku} className="order-row">
+                    <td className="order-icon">
+                      <div className="shirt-icon-background" >
+                        {
+                          order.items?.product?.image?.url ? 
+                            (
+                                <img 
+                                    src={ order.items?.product?.image?.url } 
+                                    alt="Product Image" 
+                                    className="product-image"
+                                    onError={() => setImageErrors(prevErrors => ({ ...prevErrors, [orderItemId]: true }))}
+                                />
+                            ) :
+                            (
+                                utils.demoInfo.industry == 'manufacturing' ?
+                                    (
+                                        <FaWhmcs color="grey" className="default-icon"/>
+                                    ) :
+                                    (
+                                        <>
+                                            <FaTshirt style={{ color: order.items?.color?.hex || 'black' }} />
+                                            <img src={lightColors.includes(order.items?.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf"/>
+                                        </>
+                                    )
+                            )
+                              
+                        }
+                      </div>
+                    </td>
+                
+                    <td>{order.transaction_number}</td>
+                    <td>{order.items?.product.name}</td>
+                    <td>{order.items?.sku}</td>
+                    <td>{order.items?.name}</td>
+                    <td>{Math.abs(order.items?.amount)}</td>
+                    {!location && type === 'inbound' && (<td>{order.location?.destination?.name.split(' ')[0]}</td>)}
+                    <td>{formatTimestamp(order.items?.status?.slice().sort((a, b) => new Date(a.update_timestamp) - new Date(b.update_timestamp))[0]?.update_timestamp)}</td>
+                    <td>{formatTimestamp(order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.update_timestamp)}</td>
+                    <td>{order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.name}</td>
+                    {location && type === 'inbound' && (<td>
+                      <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
+                    </td>)}
+                  </tr>
+                )
+              )
             ) : (
               <tr>
                 <td colSpan="8">No results found</td>
@@ -373,8 +395,12 @@ export async function getServerSideProps(context) {
     if (!process.env.MONGODB_DATABASE_NAME) {
       throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
     }
+    if (!process.env.DEMO_INDUSTRY) {
+      throw new Error('Invalid/Missing environment variables: "DEMO_INDUSTRY"')
+    }
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
+    const industry = process.env.DEMO_INDUSTRY;
     const client = await clientPromise;
     const db = client.db(dbName);
 
@@ -418,6 +444,24 @@ export async function getServerSideProps(context) {
         agg.unshift(locationFilter);
     }
 
+    if (industry === 'manufacturing') {
+      var manufacturingFilter;
+      if ( type === 'inbound') {
+        manufacturingFilter = {
+              $match: {
+                  'items.product.name': { $ne: "Finished Goods" }
+              }
+          };
+      } else {
+        manufacturingFilter = {
+              $match: {
+                'items.product.name': "Finished Goods"
+              }
+          };
+      }
+      agg.unshift(manufacturingFilter);
+    }
+
     const transactions = await db
       .collection("transactions")
       .aggregate(agg)
@@ -429,8 +473,8 @@ export async function getServerSideProps(context) {
           index: "facets",
           facet: {
             facets: {
-              colorsFacet: { type: "string", path: "items.color.name", numBuckets: 20 },
-              sizesFacet: { type: "string", path: "items.size" },
+              productsFacet: { type: "string", path: "items.product.name", numBuckets: 20 },
+              itemsFacet: { type: "string", path: "items.name" },
             },
           },
         },

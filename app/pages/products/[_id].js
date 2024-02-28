@@ -187,8 +187,18 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
             <table>
                 <thead>
                 <tr>
-                    <td>Size</td>
-                    <td>Store</td>
+                    <td>
+                        { utils.demoInfo.industry == 'manufacturing' ? 
+                                "Item" : 
+                                "Size"
+                        }
+                    </td>
+                    <td>
+                        { utils.demoInfo.industry == 'manufacturing' ? 
+                            "Factory" : 
+                            "Store"
+                        }
+                    </td>
                     <td>Ordered</td>
                     <td>Warehouse</td>
                     <td>Delivery Time</td>
