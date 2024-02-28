@@ -202,19 +202,19 @@ export default function Products({ products, facets }) {
   
   
 
-  const filterProducts = (sizesFilter, colorsFilter) => {
-    // Filter products based on sizes and colors
+  const filterProducts = (itemsFilter, productsFilter) => {
+    // Filter products based on items and products
     let updatedFilteredProducts = products.filter(product => {
-      const sizes = product.items.map((item) => item.size);
-      const colors = product.color ? [product.color.name] : [];
+      const items = product.items.map((item) => item.name);
+      const products = product.name ? [product.name] : [];
 
-      const sizeMatch = sizesFilter.length === 0 || sizes.some(size => sizesFilter.includes(size));
-      const colorMatch = colorsFilter.length === 0 || colors.some(color => colorsFilter.includes(color));
+      const itemMatch = itemsFilter.length === 0 || items.some(i => itemsFilter.includes(i));
+      const productMatch = productsFilter.length === 0 || products.some(p => productsFilter.includes(p));
 
-      return sizeMatch && colorMatch;
+      return itemMatch && productMatch;
     });
     setDisplayProducts(updatedFilteredProducts); // Update sorted products when filters change
-    //console.log('sizes:' + sizesFilter + ' colors:' + colorsFilter + ' products: ' + updatedFilteredProducts.length);
+    //console.log('items:' + itemsFilter + ' products:' + productsFilter + ' products: ' + updatedFilteredProducts.length);
   };
 
   const handleAlertClose = (sku) => {
@@ -407,8 +407,8 @@ export async function getServerSideProps({ query }) {
           index: "facets",
           facet: {
             facets: {
-              colorsFacet: { type: "string", path: "name", numBuckets: 20 },
-              sizesFacet: { type: "string", path: "items.name" },
+              productsFacet: { type: "string", path: "name", numBuckets: 20 },
+              itemsFacet: { type: "string", path: "items.name" },
             },
           },
         },
