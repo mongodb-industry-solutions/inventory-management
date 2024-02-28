@@ -102,7 +102,7 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
         checked={selectedItems.includes(bucket._id)}
         onChange={() => handleItemChange(bucket._id)}
       />
-      <span>{bucket._id}</span>
+      <span>{bucket._id} ({bucket.count})</span>
     </label>
   ))}
           </div>
@@ -122,7 +122,7 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
                     checked={selectedProducts.includes(bucket._id)}
                     onChange={() => handleProductChange(bucket._id)}
                   />
-                  <span>{bucket._id}</span>
+                  <span>{bucket._id} ({bucket.count})</span>
                 </label>
               ))}
               {numColorsToShow < facets?.[0]?.facet?.productsFacet.buckets.length && (
