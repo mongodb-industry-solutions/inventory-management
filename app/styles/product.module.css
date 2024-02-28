@@ -81,10 +81,11 @@ border-collapse: collapse;
     text-align: center;
 }
 
-.icon-container {
+.image-container {
     background-color: rgb(249, 251, 250);
     position: relative;
     width: 300px;
+    height: 300px;
     margin-left: auto;
     margin-right: auto;
     
@@ -195,10 +196,10 @@ border-collapse: collapse;
 
   .leaf {
     position: absolute;
-    top: 65px;
-    right: 120px;
-    height: 23px;
-    width: 11px;
+    top: 110px;
+    right: 110px;
+    height: 26px;
+    width: 12px;
   }
 
   .switch-container {
@@ -214,4 +215,16 @@ border-collapse: collapse;
     font-family: "Euclid Circular A", Akzidenz, "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: rgb(0, 30, 43);
     margin-right: 16px;
+  }
+
+  .default-icon {
+    width: 300px;
+    height: 300px;
+  }
+
+  .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
   }

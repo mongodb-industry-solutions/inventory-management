@@ -52,7 +52,10 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                 newItem.amount = Math.max(0,itemStock.target - itemStock.amount);
                 newItem.product = {
                     id: product._id,
-                    name: product.name
+                    name: product.name,
+                    image: {
+                        url: product.image?.url
+                    }
                 };
 
                 lowStockRows.push(newItem);

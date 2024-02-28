@@ -86,8 +86,8 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
         const availableProducts = products.filter(product =>
             product.items.some(item =>
                 item.stock.some(stockItem =>
-                  stockItem.location.id === locationId 
-                  && stockItem.amount > 0
+                    stockItem.location.id === locationId 
+                    && stockItem.amount > 0
                 )
             )
         );
@@ -96,7 +96,7 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
             console.log('No available products for the selected location.');
             return;
         }
-
+    
         const randomProduct = availableProducts[Math.floor(Math.random() * availableProducts.length)];
 
         // Select a random item
@@ -148,7 +148,10 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
         newItem.amount = -randomAmount;
         newItem.product = {
             id: randomProduct._id,
-            name: randomProduct.name
+            name: randomProduct.name,
+            image: {
+                url: randomProduct.image?.url
+            }
         };
 
         transaction.items.push(newItem);

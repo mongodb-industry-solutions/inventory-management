@@ -17,4 +17,16 @@
       }
     ]
   }
+},
+{
+  "_id": {
+    "$oid": "65a546ae4a8f64e8f88fb89e"
+  },
+  "name": "Meritxell",
+  "surname": "Torres",
+  "title": "Area Manager",
+  "type": "atlas",
+  "permissions": {
+    "locations": []
+  }
 }]

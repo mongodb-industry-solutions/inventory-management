@@ -1,12 +1,14 @@
 'use client'
 
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ServerContext } from '../pages/_app';
 import { FaTshirt, FaWhmcs } from 'react-icons/fa';
 import styles from '../styles/productbox.module.css';
 
 const ProductBox = ({ product }) => { 
+
+    const [imageError, setImageError] = useState(false);
 
     const router = useRouter();
     const { location } = router.query;
@@ -67,13 +69,29 @@ const ProductBox = ({ product }) => {
                 <a 
                     href={location ? `/products/${product._id}?location=${location}` : `/products/${product._id}`}
                     className={styles["product-link"]}>
-                        <div className={styles["shirt_icon"]}>
-                            { utils.demoInfo.industry == 'manufacturing' ? 
-                                <FaWhmcs color="grey" /> :
-                                (<>
-                                    <FaTshirt color={product.color?.hex} />
-                                    <img src={leafUrl} alt="Leaf" className={styles["leaf"]}/>
-                                </>)
+                        <div className={styles["image-container"]}>
+                            {
+                                imageError ? 
+                                    (
+                                        utils.demoInfo.industry == 'manufacturing' ?
+                                            (
+                                                <FaWhmcs color="grey" className={styles["default-icon"]}/>
+                                            ) :
+                                            (
+                                                <>
+                                                    <FaTshirt color={product.color?.hex} className={styles["default-icon"]} />
+                                                    <img src={leafUrl} alt="Leaf" className={styles["leaf"]}/>
+                                                </>
+                                            )
+                                    ) :
+                                    (
+                                        <img 
+                                            src={product.image?.url} 
+                                            alt="Product Image" 
+                                            className={styles["product-image"]}
+                                            onError={() => setImageError(true)}
+                                        />
+                                    )
                             }
                         </div>
                         <h2>{product.name}</h2>
