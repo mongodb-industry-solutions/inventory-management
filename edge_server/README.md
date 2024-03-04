@@ -1,4 +1,4 @@
-Version: v0.15.0
+Version: v0.18.2
 # Getting Started with Atlas Device Sync: Edge Server
 
 ## Background
@@ -22,7 +22,7 @@ sudo apt-get install docker docker-compose make jq
 
 ## Starting the Edge Server
 
-1. Start by creating a new Realm App on https://realm.mongodb.com/. Enable Sync.
+1. Start by creating a new Realm App on https://services.cloud.mongodb.com/. Enable Sync.
 
 2. Reach out to the MongoDB team with your App ID to request that Edge be enabled. They will provide you with a secret token.
 
@@ -94,6 +94,7 @@ behavior while offline.
 
 2.
 ```
+make config
 ./bin/demo/setup-offline-demo.sh
 ```
 
@@ -116,7 +117,7 @@ watch make status
 
 5.
 ```
-./edge_connection.sh enable
+./edge-connection.sh enable
 watch make status
 ```
 

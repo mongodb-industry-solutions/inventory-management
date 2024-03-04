@@ -1,0 +1,17 @@
+{
+  "clientAppId": "interns-mongo-retail-app-nghfn",
+  "query": "*",
+  "cloudSyncServerAuthSecret": "36961c1006a18d3773103b142a07c072",
+  "httpListenPort": 80,
+  "wireprotocolListenPort": 27021,
+  "cloudTimeoutSeconds": 1,
+  "tls" : {
+    "enabled": false,
+    "certificates": [
+        {
+        "publicKeyPath": "certs/cert.pem",
+        "privateKeyPath": "certs/certkey.pem"
+      }
+    ]
+  }
+}
