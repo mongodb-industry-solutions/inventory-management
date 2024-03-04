@@ -71,7 +71,7 @@ const ProductBox = ({ product }) => {
                     className={styles["product-link"]}>
                         <div className={styles["image-container"]}>
                             {
-                                imageError ? 
+                                imageError || !product.image?.url ? 
                                     (
                                         utils.demoInfo.industry == 'manufacturing' ?
                                             (

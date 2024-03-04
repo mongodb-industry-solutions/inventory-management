@@ -53,6 +53,12 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                 newItem.product = {
                     id: product._id,
                     name: product.name,
+                    ... (product.color && {
+                        color: {
+                            name: product.color?.name,
+                            hex: product.color?.hex
+                        },
+                    }),
                     image: {
                         url: product.image?.url
                     }
@@ -82,7 +88,16 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
             newItem.amount = Math.max(0,itemStock.target - itemStock.amount);
             newItem.product = {
                 id: product._id,
-                name: product.name
+                name: product.name,
+                ... (product.color && {
+                    color: {
+                        name: product.color?.name,
+                        hex: product.color?.hex
+                    },
+                }),
+                image: {
+                    url: product.image?.url
+                }
             };
             setRows([...rows, newItem]);
         }
