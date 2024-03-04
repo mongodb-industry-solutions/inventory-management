@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import  *  as  Realm  from  "realm-web";
-import clientPromise from '../../lib/mongodb';
+import { clientPromise } from '../../lib/mongodb';
 import { useRouter } from 'next/router';
 import { ObjectId } from "bson";
 import { ServerContext } from '../_app';
@@ -147,7 +147,7 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
         <div className={styles['product-detail-content']}>
             <div className={styles["image-container"]}>
             {
-                imageError ? 
+                imageError || !product.image?.url? 
                     (
                         utils.demoInfo.industry == 'manufacturing' ?
                             (
@@ -162,7 +162,7 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
                     ) :
                     (
                         <img 
-                            src={product.image?.url ? product.image?.url : "default"} 
+                            src={product.image?.url} 
                             alt="Product Image" 
                             className={styles["product-image"]}
                             onError={() => setImageError(true)}

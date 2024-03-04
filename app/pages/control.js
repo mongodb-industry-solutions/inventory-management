@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext  } from 'react';
 import  *  as  Realm  from  "realm-web";
-import clientPromise from "../lib/mongodb";
+import { clientPromise } from "../lib/mongodb";
 import { ServerContext } from './_app';
 import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
@@ -149,6 +149,12 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
         newItem.product = {
             id: randomProduct._id,
             name: randomProduct.name,
+            ... (randomProduct.color && {
+                color: {
+                    name: randomProduct.color?.name,
+                    hex: randomProduct.color?.hex
+                },
+            }),
             image: {
                 url: randomProduct.image?.url
             }

@@ -1,4 +1,4 @@
-import clientPromise from "../../lib/mongodb";
+import { clientPromise } from "../../lib/mongodb";
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { ObjectId } from 'mongodb';
@@ -334,8 +334,8 @@ function formatTimestamp(timestamp) {
                                     ) :
                                     (
                                         <>
-                                            <FaTshirt style={{ color: order.items?.color?.hex || 'black' }} />
-                                            <img src={lightColors.includes(order.items?.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf"/>
+                                            <FaTshirt style={{ color: order.items?.product.color?.hex || 'black' }} />
+                                            <img src={lightColors.includes(order.items?.product.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf"/>
                                         </>
                                     )
                             )
