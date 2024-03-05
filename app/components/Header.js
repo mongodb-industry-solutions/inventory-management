@@ -17,7 +17,7 @@ function Header( ) {
   const [isLoading, setLoading] = useState(false);
 
   const router = useRouter();
-  const { location, ...otherQueryParams } = router.query;
+  const { location, edge, ...otherQueryParams } = router.query;
 
   const utils = useContext(ServerContext);
 
@@ -67,12 +67,19 @@ function Header( ) {
       if(selectedUser.permissions.locations?.length > 0){
         router.push({
           pathname: router.pathname == '/' ? '/products' : router.pathname,
-          query: { ...otherQueryParams, location: selectedUser.permissions.locations[0]?.id },
+          query: { 
+            ...otherQueryParams, 
+            location: selectedUser.permissions.locations[0]?.id,
+            edge: selectedUser.type === 'edge',
+          },
         });
       } else {
         router.push({
           pathname: router.pathname == '/' ? '/products' : router.pathname,
-          query: { ...otherQueryParams},
+          query: { 
+            ...otherQueryParams,
+            edge: selectedUser.type === 'edge',
+          },
         });
       }
     }
