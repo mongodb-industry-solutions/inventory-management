@@ -32,10 +32,10 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
   
 .table table {
-flex-grow: 1;
 border-collapse: collapse;
 }
 
@@ -47,6 +47,7 @@ border-collapse: collapse;
 }
 
 .table tbody tr {
+    height: 90px;
     border-bottom: solid 1px #e8edeb;
 }
 

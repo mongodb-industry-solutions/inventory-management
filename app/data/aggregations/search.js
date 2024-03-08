@@ -1,5 +1,3 @@
-import { ObjectId } from 'bson';
-
 export const searchProductsPipeline = (searchQuery, location) => {
 
     const pipeline = [
