@@ -41,8 +41,8 @@ function Navbar() {
 
   /* Select default location */
   useEffect(() => {
-    setSelectedOption(selectedUser?.permissions?.locations[0]?.name);
-    setSelectedLocationId(selectedUser?.permissions?.locations[0]?.id);
+    setSelectedOption(selectedUser?.permissions?.locations?.[0]?.name);
+    setSelectedLocationId(selectedUser?.permissions?.locations?.[0]?.id);
   }, [selectedUser]);
 
   return (
