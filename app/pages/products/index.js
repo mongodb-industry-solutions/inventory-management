@@ -1,4 +1,4 @@
-import clientPromise from "../../lib/mongodb";
+import { clientPromise, edgeClientPromise }  from "../../lib/mongodb";
 import { useState, useEffect, useRef, useContext } from 'react';
 import  *  as  Realm  from  "realm-web";
 import { useRouter } from 'next/router';
@@ -20,7 +20,7 @@ export default function Products({ products, facets }) {
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
 
   const router = useRouter();
-  const { location } = router.query;
+  const { location, edge } = router.query;
 
   const utils = useContext(ServerContext);
   
@@ -77,8 +77,25 @@ export default function Products({ products, facets }) {
 
       }
     }
-    login();
-  }, []);
+
+    const refreshProducts = async () => {
+      try {
+        const response = await fetch('/api/edge/getProducts');
+        const refreshedProducts = await response.json();
+        setDisplayProducts(refreshedProducts.products);
+      } catch (error) {
+        console.error('Error refreshing data:', error);
+      }
+    };
+
+    if (edge === 'true') {
+      const interval = setInterval(refreshProducts, 5000);
+      return () => clearInterval(interval);
+    } else {
+      login();
+    }
+
+  }, [edge]);
 
   useEffect(() => {
     handleSearch();
@@ -91,20 +108,34 @@ export default function Products({ products, facets }) {
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-          },
-          body: JSON.stringify({
-            dataSource: 'mongodb-atlas',
-            database: utils.dbInfo.dbName,
-            collection: 'products',
-            pipeline: searchProductsPipeline(searchQuery, location)
-          }),
-        });
+        let response;
+        if (edge === 'true') {
+          response = await fetch('/api/edge/search?collection=products', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(searchQuery),
+          });
+        } else {
+          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+            },
+            body: JSON.stringify({
+              dataSource: 'mongodb-atlas',
+              database: utils.dbInfo.dbName,
+              collection: 'products',
+              pipeline: searchProductsPipeline(searchQuery, location)
+            }),
+          });
+
+        }
+        
 
         const data = await response.json();
         const searchResults = data.documents;
@@ -369,56 +400,59 @@ export async function getServerSideProps({ query }) {
     }
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
-    
-    const client = await clientPromise;
-    const db = client.db(dbName);
-    const searchQuery = query.q || '';
-    const locationId = query.location;
 
+    const locationId = query.location;
+    const edge = (query.edge === 'true');
+
+    const client = edge ? await edgeClientPromise : await clientPromise;
+    const db = client.db(dbName);
+    
     const collectionName = locationId ? "products" : "products_area_view";
 
-    let products;
-    if (searchQuery) {
-      const searchAgg = [
+    const products = await db.collection(collectionName).find({}).toArray();
+
+    let facets = [];
+
+    if (edge){
+  
+      const itemsAggregated = products.flatMap(product => product.items.map(item => item.name));
+      const itemsFacetBuckets = Array.from(new Set(itemsAggregated)).map(item => ({ _id: item, count: itemsAggregated.filter(i => i === item).length }));
+
+      const productsFacetBuckets = products.map(product => {
+        return {
+          _id: product.name,
+          count: 1,
+        };
+      });
+
+      const facetGroup = {
+        facet: {
+          itemsFacet: { buckets: itemsFacetBuckets },
+          productsFacet: { buckets: productsFacetBuckets },
+        }
+      };
+
+      facets.push(facetGroup);
+    } else {
+      const agg = [
         {
-          $search: {
-            index: 'default',
-            text: {
-              query: searchQuery,
-              path: {
-                wildcard: '*',
-              },
-              fuzzy: {
-                maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
+          $searchMeta: {
+            index: "facets",
+            facet: {
+              facets: {
+                productsFacet: { type: "string", path: "name", numBuckets: 20 },
+                itemsFacet: { type: "string", path: "items.name" },
               },
             },
           },
         },
       ];
-
-      products = await db.collection(collectionName).aggregate(searchAgg).toArray();
-    } else {
-      products = await db.collection(collectionName).find({}).toArray();
+  
+      facets = await db
+        .collection("products")
+        .aggregate(agg)
+        .toArray();
     }
-
-    const agg = [
-      {
-        $searchMeta: {
-          index: "facets",
-          facet: {
-            facets: {
-              productsFacet: { type: "string", path: "name", numBuckets: 20 },
-              itemsFacet: { type: "string", path: "items.name" },
-            },
-          },
-        },
-      },
-    ];
-
-    const facets = await db
-      .collection("products")
-      .aggregate(agg)
-      .toArray();
 
     return {
       props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)) },
