@@ -1,4 +1,4 @@
-Version: v0.18.2
+Version: v0.19.1
 # Getting Started with Atlas Device Sync: Edge Server
 
 ## Background
