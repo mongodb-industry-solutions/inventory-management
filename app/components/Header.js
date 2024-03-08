@@ -26,20 +26,26 @@ function Header( ) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(utils.apiInfo.dataUri + '/action/find', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-          },
-          body: JSON.stringify({
-            dataSource: 'mongodb-atlas',
-            database: utils.dbInfo.dbName,
-            collection: 'users',
-            filter: {},
-          }),
-        });
+        let response;
+        if (edge === 'true') {
+          response = await fetch('/api/edge/getUsers');
+        } else {
+          response = await fetch(utils.apiInfo.dataUri + '/action/find', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+            },
+            body: JSON.stringify({
+              dataSource: 'mongodb-atlas',
+              database: utils.dbInfo.dbName,
+              collection: 'users',
+              filter: {},
+            }),
+          });
+        }
+        
         const data = await response.json();
 
         if (data.documents) {
