@@ -15,7 +15,7 @@
     "@leafygreen-ui/typography": "^18.1.0",
     "@mongodb-js/charts-embed-dom": "^3.1.0",
     "lodash": "^4.17.21",
-    "mongodb": "^4.16.0",
+    "mongodb": "^6.3.0",
     "next": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
