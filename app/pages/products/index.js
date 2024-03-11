@@ -26,76 +26,104 @@ export default function Products({ products, facets }) {
   
   const  app = new  Realm.App({ id: utils.appServiceInfo.appId });
 
+  let closeStream;
+
   // Create a ref for the input element
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
 
-  useEffect(() => {
-    const  login = async () => {
-        
-      await app.logIn(Realm.Credentials.anonymous());
-      const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-      const collection = mongodb.db(utils.dbInfo.dbName).collection("products");
-      let updatedProduct = null;
-      
-      const filter = {filter: {operationType: "update"}};
-
-      for await (const  change  of  collection.watch(filter)) {
-        updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
-
-        if (!location) {
-            let productView = await mongodb
-                .db(utils.dbInfo.dbName)
-                .collection("products_area_view")
-                .findOne({ _id: change.fullDocument._id});
-            updatedProduct = JSON.parse(JSON.stringify(productView));
-        }
-
-        setDisplayProducts((prevProducts) =>
-          prevProducts.map((product) =>
-            product._id === updatedProduct._id ? updatedProduct : product
-          )
-        );
-
-        const pattern = /^items\.(\d+)\.stock/;
-        for(const key of Object.keys(change.updateDescription.updatedFields)){
-
-          if (pattern.test(key)) {
-            let sku = change.fullDocument.items[parseInt(key.match(pattern)[1], 10)].sku;
-            let item = updatedProduct.items.find(item => item.sku === sku);
-
-            let itemStock = location ? 
-              item.stock.find(stock => stock.location.id === location)
-              : item.stock.find(stock => stock.location.type !== "warehouse");
-            
-            if(itemStock?.amount < itemStock?.threshold) {
-              item.product_id = updatedProduct._id;
-              addAlert(item);
-            }
-          }
-        }
-
-      }
+  async function getUser() {
+    if(app.currentUser){
+      return app.currentUser;
+    } else {
+      const credentials = Realm.Credentials.anonymous();
+      return app.logIn(credentials);
     }
+  }
 
-    const refreshProducts = async () => {
-      try {
-        const response = await fetch('/api/edge/getProducts');
+  async function getMongoColleciton() {
+    const user = await getUser();
+    const client = user.mongoClient("mongodb-atlas");
+    return client.db(utils.dbInfo.dbName).collection("products");
+  }
+
+  async function refreshProducts() {
+    try {
+      const response = await fetch('/api/edge/getProducts');
+      
+      if (response.status !== 304) { // 304 Not Modified
         const refreshedProducts = await response.json();
         setDisplayProducts(refreshedProducts.products);
-      } catch (error) {
-        console.error('Error refreshing data:', error);
       }
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    }
+  };
+
+  async function startWatch() {
+    console.log("Start watching stream");
+    const runs = await getMongoColleciton();
+    const filter = {filter: {operationType: "update"}};
+    const stream = runs.watch(filter);
+
+    closeStream = () => {
+      console.log("Closing stream");
+      stream.return(null)
     };
 
-    if (edge === 'true') {
+    let updatedProduct = null;
+
+    for await (const  change  of  stream) {
+      console.log("Change detected");
+      updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
+
+      if (!location) {
+          let productView = await mongodb
+              .db(utils.dbInfo.dbName)
+              .collection("products_area_view")
+              .findOne({ _id: change.fullDocument._id});
+          updatedProduct = JSON.parse(JSON.stringify(productView));
+      }
+
+      setDisplayProducts((prevProducts) =>
+        prevProducts.map((product) =>
+          product._id === updatedProduct._id ? updatedProduct : product
+        )
+      );
+
+      const pattern = /^items\.(\d+)\.stock/;
+      for(const key of Object.keys(change.updateDescription.updatedFields)){
+
+        if (pattern.test(key)) {
+          let sku = change.fullDocument.items[parseInt(key.match(pattern)[1], 10)].sku;
+          let item = updatedProduct.items.find(item => item.sku === sku);
+
+          let itemStock = location ? 
+            item.stock.find(stock => stock.location.id === location)
+            : item.stock.find(stock => stock.location.type !== "warehouse");
+          
+          if(itemStock?.amount < itemStock?.threshold) {
+            item.product_id = updatedProduct._id;
+            addAlert(item);
+          }
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (edge !== 'true') {
+      startWatch();
+      return () => closeStream();
+    }
+  }, [edge]);
+
+  useEffect(() => {
+    if (edge === 'true' && searchQuery.length === 0) {
       const interval = setInterval(refreshProducts, 5000);
       return () => clearInterval(interval);
-    } else {
-      login();
     }
-
-  }, [edge]);
+  }, [edge, searchQuery]);
 
   useEffect(() => {
     handleSearch();
@@ -133,10 +161,8 @@ export default function Products({ products, facets }) {
               pipeline: searchProductsPipeline(searchQuery, location)
             }),
           });
-
         }
         
-
         const data = await response.json();
         const searchResults = data.documents;
 
@@ -156,20 +182,32 @@ export default function Products({ products, facets }) {
   
     if (searchValue.length > 0) {
       try {
-        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-          },
-          body: JSON.stringify({
-            dataSource: 'mongodb-atlas',
-            database: utils.dbInfo.dbName,
-            collection: 'products',
-            pipeline: autocompleteProductsPipeline(searchValue)
-          }),
-        });
+        let response;
+        if (edge === 'true') {
+          response = await fetch('/api/edge/autocomplete?collection=products', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(searchValue),
+          });
+        } else {
+          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+            },
+            body: JSON.stringify({
+              dataSource: 'mongodb-atlas',
+              database: utils.dbInfo.dbName,
+              collection: 'products',
+              pipeline: autocompleteProductsPipeline(searchValue)
+            }),
+          });
+        }
         const data = await response.json();
         setSuggestions(data.documents[0].suggestions);
       } catch (error) {
@@ -228,10 +266,6 @@ export default function Products({ products, facets }) {
       }
     }
   };
-
-  
-  
-  
 
   const filterProducts = (itemsFilter, productsFilter) => {
     // Filter products based on items and products

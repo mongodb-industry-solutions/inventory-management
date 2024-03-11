@@ -20,7 +20,7 @@ export default async (req, res) => {
         let result = [];
 
         if (collection === 'products') {
-            result = await db
+            const response = await db
                 .collection(collection)
                 .find({
                     $or: [
@@ -29,9 +29,23 @@ export default async (req, res) => {
                     {"items.name": {$regex: `\W*(${query})\W*`, $options: "i"}}
                     ]
                 })
+                .limit(5)
+                .project({
+                    suggestion: {$concat: ["$name", " - ", "$code"],},
+                    _id: 0,
+                  })
                 .toArray();
+                if (response.length > 0) {
+                    // Extract the suggestions and insert them into the first element of the array
+                    const suggestions = response.reduce((acc, curr) => {
+                        acc.push(curr.suggestion);
+                        return acc;
+                    }, []);
+                
+                    result.push({suggestions: suggestions});
+                }
         } else if (collection === 'transactions') {
-
+            /*
             const locationFilter = location
                 ? type === 'inbound'
                     ? { 'location.destination.id': new ObjectId(location) }
@@ -69,7 +83,7 @@ export default async (req, res) => {
                     transaction.items.map(item => ({ ...transaction, items: item }))
                 );
             }
-
+            */
         }
 
         res.status(200).json({documents: result});

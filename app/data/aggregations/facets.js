@@ -13,7 +13,7 @@ export const facetsTransactionsPipeline = (industry, type) => {
           },
         },
       ];
-
+    /*
     if (industry === 'manufacturing') {
         var facetsManufacturingFilter;
 
@@ -100,6 +100,7 @@ export const facetsTransactionsPipeline = (industry, type) => {
         }
         pipeline.push(facetsManufacturingFilter);
     }
+    */
   
     return pipeline;
   };
