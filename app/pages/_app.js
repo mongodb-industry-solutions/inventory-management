@@ -33,7 +33,10 @@ MyApp.getInitialProps = async ({ ctx }) => {
       'REALM_APP_ID',
       'EDGE_SERVER_HOST',
       'MONGODB_DATABASE_NAME',
-      'DEMO_INDUSTRY'
+      'DEMO_INDUSTRY',
+      'CHARTS_EMBED_SDK_BASEURL',
+      'DASHBOARD_ID_GENERAL',
+      'DASHBOARD_ID_PRODUCT'
     ];
     
     requiredEnvVariables.forEach((envVar) => {
@@ -48,6 +51,9 @@ MyApp.getInitialProps = async ({ ctx }) => {
     const edgeHost = process.env.EDGE_SERVER_HOST;
     const dbName = process.env.MONGODB_DATABASE_NAME;
     const industry = process.env.DEMO_INDUSTRY;
+    const chartsBaseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
+    const dashboardIdGeneral = process.env.DASHBOARD_ID_GENERAL;
+    const dashboardIdProduct = process.env.DASHBOARD_ID_PRODUCT;
 
     const regex = /^https:\/\/([^/]+)\.data\.mongodb-api\.com/;
     const match = uri.match(regex);
@@ -74,7 +80,8 @@ MyApp.getInitialProps = async ({ ctx }) => {
         dbInfo: { dbName },
         appServiceInfo: { appId },
         edgeInfo: { edgeHost },
-        demoInfo: { industry }
+        demoInfo: { industry },
+        analyticsInfo: { chartsBaseUrl, dashboardIdGeneral, dashboardIdProduct }
       }
     };
   } catch (e) {
@@ -85,7 +92,8 @@ MyApp.getInitialProps = async ({ ctx }) => {
           apiInfo: { dataUri: null, httpsUri: null, accessToken: null}, 
           dbInfo: { dbName: null }, 
           edgeInfo: { edgeHost: null }, 
-          demoInfo: { demoIndustry: null }
+          demoInfo: { demoIndustry: null },
+          analyticsInfo: { chartsBaseUrl: null, dashboardIdGeneral: null, dashboardIdProduct: null}
         }
       },
     };

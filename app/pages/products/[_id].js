@@ -1,18 +1,16 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import  *  as  Realm  from  "realm-web";
-import { clientPromise } from '../../lib/mongodb';
+import { clientPromise, edgeClientPromise } from '../../lib/mongodb';
 import { useRouter } from 'next/router';
 import { ObjectId } from "bson";
 import { ServerContext } from '../_app';
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShirt } from '@fortawesome/free-solid-svg-icons';
 import { FaTshirt, FaWhmcs } from 'react-icons/fa';
 import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
 
-export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
+export default function Product({ preloadedProduct }) {
     
     const [product, setProduct] = useState(preloadedProduct);
     const [showPopup, setShowPopup] = useState(false);
@@ -33,18 +31,18 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
 
     const leafUrl = lightColors.includes(product.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
 
-    const productFilter = {'items.product.id': ObjectId(preloadedProduct._id)};
+    const productFilter = {'items.product.id': new ObjectId(preloadedProduct._id)};
     let locationFilter = {};
     //Add location filter if exists
     if (location) {
-        locationFilter= { 'location.destination.id': ObjectId(location)};
+        locationFilter= { 'location.destination.id': new ObjectId(location)};
     }
     
-    const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl});
+    const sdk = new ChartsEmbedSDK({ baseUrl: utils.analyticsInfo.chartsBaseUrl});
     const dashboardDiv = useRef(null);
     const [rendered, setRendered] = useState(false);
     const [dashboard] = useState(sdk.createDashboard({ 
-        dashboardId: dashboardId, 
+        dashboardId: utils.analyticsInfo.dashboardIdProduct, 
         filter: { $and: [productFilter, locationFilter]},
         widthMode: 'scale', 
         heightMode: 'scale', 
@@ -80,7 +78,7 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
                     updatedProduct = await mongodb
                         .db(utils.dbInfo.dbName)
                         .collection("products_area_view")
-                        .findOne({ _id: ObjectId(preloadedProduct._id)});
+                        .findOne({ _id: new ObjectId(preloadedProduct._id)});
                 }
                 
                 setProduct(JSON.parse(JSON.stringify(updatedProduct)));
@@ -248,33 +246,28 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
 
 export async function getServerSideProps(context) {
     try {
-        if (!process.env.CHARTS_EMBED_SDK_BASEURL) {
-            throw new Error('Invalid/Missing environment variables: "CHARTS_EMBED_SDK_BASEURL"')
-        }
-        if (!process.env.DASHBOARD_ID_GENERAL) {
-            throw new Error('Invalid/Missing environment variables: "DASHBOARD_ID_GENERAL"')
-        }
         if (!process.env.MONGODB_DATABASE_NAME) {
             throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
         }
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
-        const baseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
-        const dashboardId = process.env.DASHBOARD_ID_PRODUCT;
-
-        const client = await clientPromise;
-        const db = client.db(dbName);
 
         const { params, query } = context;
         const locationId = query.location;
+        const edge = (query.edge === 'true');
+
+        const client = edge ? await edgeClientPromise : await clientPromise;
+        const db = client.db(dbName);
 
         const collectionName = locationId ? "products" : "products_area_view";
-        
+       
         const product = await db
             .collection(collectionName)
-            .findOne({ _id: ObjectId(params._id)});
+            .findOne({ _id: new ObjectId(params._id)});
+
+
         return {
-            props: { preloadedProduct: JSON.parse(JSON.stringify(product)), baseUrl: baseUrl, dashboardId: dashboardId },
+            props: { preloadedProduct: JSON.parse(JSON.stringify(product)) },
         };
     } catch (e) {
         console.error(e);

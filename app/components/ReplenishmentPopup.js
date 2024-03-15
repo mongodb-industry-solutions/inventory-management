@@ -16,7 +16,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
     const utils = useContext(ServerContext);
 
     const router = useRouter();
-    const { location } = router.query;
+    const { location, edge } = router.query;
 
     const transaction = {
         type: 'inbound',
@@ -132,7 +132,8 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
         transaction.items = data;
         
         try {
-            const response = await fetch(utils.apiInfo.httpsUri + '/addTransaction', {
+            let url = (edge === 'true') ? '/api/edge/addTransaction': utils.apiInfo.httpsUri + '/addTransaction';
+            const response = await fetch( url, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',

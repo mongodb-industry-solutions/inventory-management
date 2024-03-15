@@ -24,8 +24,8 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
 
     if (location) {
         locationFilter= { $or: [
-          {'location.destination.id': ObjectId(location)}
-          ,{'location.origin.id': ObjectId(location)}
+          {'location.destination.id': new ObjectId(location)}
+          ,{'location.origin.id': new ObjectId(location)}
         ]};
     };
     const [dashboard] = useState(sdk.createDashboard({ 
