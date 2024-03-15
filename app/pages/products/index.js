@@ -24,7 +24,7 @@ export default function Products({ products, facets }) {
 
   const utils = useContext(ServerContext);
   
-  const  app = new  Realm.App({ id: utils.appServiceInfo.appId });
+  const  app = new Realm.App({ id: utils.appServiceInfo.appId });
 
   let closeStream;
 
@@ -41,10 +41,10 @@ export default function Products({ products, facets }) {
     }
   }
 
-  async function getMongoColleciton() {
+  async function getMongoColleciton(dbName, collection) {
     const user = await getUser();
     const client = user.mongoClient("mongodb-atlas");
-    return client.db(utils.dbInfo.dbName).collection("products");
+    return client.db(dbName).collection(collection);
   }
 
   async function refreshProducts() {
@@ -62,12 +62,13 @@ export default function Products({ products, facets }) {
 
   async function startWatch() {
     console.log("Start watching stream");
-    const runs = await getMongoColleciton();
+    const runs = await getMongoColleciton(utils.dbInfo.dbName, "products");
     const filter = {filter: {operationType: "update"}};
     const stream = runs.watch(filter);
 
     closeStream = () => {
       console.log("Closing stream");
+      app.currentUser?.logOut();
       stream.return(null)
     };
 
@@ -78,11 +79,26 @@ export default function Products({ products, facets }) {
       updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
 
       if (!location) {
-          let productView = await mongodb
-              .db(utils.dbInfo.dbName)
-              .collection("products_area_view")
-              .findOne({ _id: change.fullDocument._id});
-          updatedProduct = JSON.parse(JSON.stringify(productView));
+          try {
+          const response = await fetch(utils.apiInfo.dataUri + '/action/findOne', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+            },
+            body: JSON.stringify({
+              dataSource: 'mongodb-atlas',
+              database: utils.dbInfo.dbName,
+              collection: "products_area_view",
+              filter: { _id: { $oid: change.fullDocument._id}}
+            }),
+          });
+          const data = await response.json();
+          updatedProduct = JSON.parse(JSON.stringify(data.document));
+        } catch (error) {
+          console.error(error);
+        }
       }
 
       setDisplayProducts((prevProducts) =>
@@ -486,6 +502,7 @@ export async function getServerSideProps({ query }) {
         .collection("products")
         .aggregate(agg)
         .toArray();
+
     }
 
     return {
