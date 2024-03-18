@@ -1,23 +1,25 @@
-import { useEffect, useState, useRef } from "react";
-import  *  as  Realm  from  "realm-web";
+import { useEffect, useState, useRef, useContext } from "react";
 import { useRouter } from 'next/router';
 import { ObjectId } from "bson"
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
+import { UserContext } from '../context/UserContext';
+import { ServerContext } from './_app';
 import styles from '../styles/dashboard.module.css';
 
-const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
+const Dashboard = () => {
     const channelOptions = ['Online', 'In-store'];
     const [selectedChannel, setSelectedChannel] = useState('All'); // Default to 'All'
     const [menuOpen, setMenuOpen] = useState(false);
     const [filterName, setFilterName] = useState("Channel"); // Initial filter name
     const [rendered, setRendered] = useState(false);
 
-    const  app = new  Realm.App({ id: realmAppId });
-
     const router = useRouter();
-    const { location } = router.query;
+    const { location, edge } = router.query;
 
-    const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl });
+    const utils = useContext(ServerContext);
+    const {startWatchDashboard, stopWatchDashboard} = useContext(UserContext);
+
+    const sdk = new ChartsEmbedSDK({ baseUrl: utils.analyticsInfo.chartsBaseUrl });
     const dashboardDiv = useRef(null);
 
     let locationFilter = {};
@@ -29,7 +31,7 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
         ]};
     };
     const [dashboard] = useState(sdk.createDashboard({ 
-        dashboardId: dashboardId,
+        dashboardId: utils.analyticsInfo.dashboardIdGeneral,
         widthMode: 'scale', 
         filter: locationFilter,
         heightMode: 'scale', 
@@ -54,26 +56,13 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
       }
     }, [selectedChannel]);
 
-    useEffect(() => {
-      const  login = async () => {
-      
-          await app.logIn(Realm.Credentials.anonymous());
-          const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-          const collection = mongodb.db(databaseName).collection("transactions");
-          
-          const filter = {
-            filter: {
-                operationType: "insert",
-                "fullDocument.type": "outbound"
-            }
-        };
-
-          for await (const  change  of  collection.watch(filter)) {
-            dashboard.refresh();
-          }
-      }
-      login();
-  }, []);
+  useEffect(() => {
+    if (edge !== 'true') {
+      //initializeApp(utils.appServiceInfo.appId);
+      startWatchDashboard(dashboard, utils);
+      return () => stopWatchDashboard();
+    }
+  }, [edge]);
 
   useEffect(() => {
     if (rendered) {
@@ -147,26 +136,9 @@ const Dashboard = ({ realmAppId, baseUrl, dashboardId, databaseName }) => {
 export async function getServerSideProps(context) {
   try {
 
-    if (!process.env.REALM_APP_ID) {
-      throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
-    }
-    if (!process.env.CHARTS_EMBED_SDK_BASEURL) {
-      throw new Error('Invalid/Missing environment variables: "CHARTS_EMBED_SDK_BASEURL"')
-    }
-    if (!process.env.DASHBOARD_ID_GENERAL) {
-      throw new Error('Invalid/Missing environment variables: "DASHBOARD_ID_GENERAL"')
-    }
-    if (!process.env.MONGODB_DATABASE_NAME) {
-      throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
-    }
-
-    const dbName = process.env.MONGODB_DATABASE_NAME;
-    const realmAppId = process.env.REALM_APP_ID;
-    const baseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
-    const dashboardId = process.env.DASHBOARD_ID_GENERAL;
 
     return {
-        props: { realmAppId: realmAppId, baseUrl: baseUrl, dashboardId: dashboardId, databaseName: dbName },
+        props: { },
     };
   } catch (e) {
     console.error(e);

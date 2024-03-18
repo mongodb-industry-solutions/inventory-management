@@ -1,6 +1,5 @@
 import { clientPromise, edgeClientPromise }  from "../../lib/mongodb";
 import { useState, useEffect, useRef, useContext } from 'react';
-import  *  as  Realm  from  "realm-web";
 import { useRouter } from 'next/router';
 import { ServerContext } from '../_app';
 import { FaSearch } from 'react-icons/fa';
@@ -9,6 +8,7 @@ import ProductBox from '../../components/ProductBox';
 import AlertBanner from '../../components/AlertBanner';
 import { autocompleteProductsPipeline } from '../../data/aggregations/autocomplete';
 import { searchProductsPipeline } from '../../data/aggregations/search';
+import { UserContext } from '../../context/UserContext';
 
 export default function Products({ products, facets }) {
   
@@ -23,29 +23,11 @@ export default function Products({ products, facets }) {
   const { location, edge } = router.query;
 
   const utils = useContext(ServerContext);
+  const {startWatchProductList, stopWatchProductList} = useContext(UserContext);
   
-  const  app = new Realm.App({ id: utils.appServiceInfo.appId });
-
-  let closeStream;
-
   // Create a ref for the input element
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
-
-  async function getUser() {
-    if(app.currentUser){
-      return app.currentUser;
-    } else {
-      const credentials = Realm.Credentials.anonymous();
-      return app.logIn(credentials);
-    }
-  }
-
-  async function getMongoColleciton(dbName, collection) {
-    const user = await getUser();
-    const client = user.mongoClient("mongodb-atlas");
-    return client.db(dbName).collection(collection);
-  }
 
   async function refreshProducts() {
     try {
@@ -60,77 +42,11 @@ export default function Products({ products, facets }) {
     }
   };
 
-  async function startWatch() {
-    console.log("Start watching stream");
-    const runs = await getMongoColleciton(utils.dbInfo.dbName, "products");
-    const filter = {filter: {operationType: "update"}};
-    const stream = runs.watch(filter);
-
-    closeStream = () => {
-      console.log("Closing stream");
-      app.currentUser?.logOut();
-      stream.return(null)
-    };
-
-    let updatedProduct = null;
-
-    for await (const  change  of  stream) {
-      console.log("Change detected");
-      updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
-
-      if (!location) {
-          try {
-          const response = await fetch(utils.apiInfo.dataUri + '/action/findOne', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: "products_area_view",
-              filter: { _id: { $oid: change.fullDocument._id}}
-            }),
-          });
-          const data = await response.json();
-          updatedProduct = JSON.parse(JSON.stringify(data.document));
-        } catch (error) {
-          console.error(error);
-        }
-      }
-
-      setDisplayProducts((prevProducts) =>
-        prevProducts.map((product) =>
-          product._id === updatedProduct._id ? updatedProduct : product
-        )
-      );
-
-      const pattern = /^items\.(\d+)\.stock/;
-      for(const key of Object.keys(change.updateDescription.updatedFields)){
-
-        if (pattern.test(key)) {
-          let sku = change.fullDocument.items[parseInt(key.match(pattern)[1], 10)].sku;
-          let item = updatedProduct.items.find(item => item.sku === sku);
-
-          let itemStock = location ? 
-            item.stock.find(stock => stock.location.id === location)
-            : item.stock.find(stock => stock.location.type !== "warehouse");
-          
-          if(itemStock?.amount < itemStock?.threshold) {
-            item.product_id = updatedProduct._id;
-            addAlert(item);
-          }
-        }
-      }
-    }
-  }
-
   useEffect(() => {
     if (edge !== 'true') {
-      startWatch();
-      return () => closeStream();
+      //initializeApp(utils.appServiceInfo.appId);
+      startWatchProductList(setDisplayProducts,addAlert, location, utils);
+      return () => stopWatchProductList();
     }
   }, [edge]);
 
