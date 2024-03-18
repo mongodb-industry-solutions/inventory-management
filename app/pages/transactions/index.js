@@ -22,7 +22,7 @@ export default function Transactions({ orders, facets }) {
 
   const lightColors = [
     '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
-    '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9'
+    '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9', '#ffffff', '#FFFFFF'
   ];
 
   // Calculate the total number of pages
@@ -230,7 +230,8 @@ export default function Transactions({ orders, facets }) {
     transaction.items.push(item);
     
     try {
-        const response = await fetch(utils.apiInfo.httpsUri + '/addTransaction', {
+        let url = (edge === 'true') ? '/api/edge/addTransaction': utils.apiInfo.httpsUri + '/addTransaction';
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -327,7 +328,10 @@ function formatTimestamp(timestamp) {
           </thead>
           <tbody>
             {displayOrders.length > 0 ? (
-              displayOrders.slice(startIndex, endIndex).map(order => (
+              displayOrders.slice(startIndex, endIndex).map(order => { 
+                const latestStatus = order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.name;
+
+                return (
                   <tr key={order._id + order.items.sku} className="order-row">
                     <td className="order-icon">
                       <div className="shirt-icon-background" >
@@ -366,12 +370,12 @@ function formatTimestamp(timestamp) {
                     {!location && type === 'inbound' && (<td>{order.location?.destination?.name.split(' ')[0]}</td>)}
                     <td>{formatTimestamp(order.items?.status?.slice().sort((a, b) => new Date(a.update_timestamp) - new Date(b.update_timestamp))[0]?.update_timestamp)}</td>
                     <td>{formatTimestamp(order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.update_timestamp)}</td>
-                    <td>{order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.name}</td>
+                    <td><span className={latestStatus}>{latestStatus}</span></td>
                     {location && type === 'inbound' && (<td>
                       <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
                     </td>)}
                   </tr>
-                )
+                )}
               )
             ) : (
               <tr>

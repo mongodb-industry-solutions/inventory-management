@@ -25,7 +25,7 @@ export default function Product({ preloadedProduct }) {
 
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
-        '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9'
+        '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9', '#ffffff'
     ];
 
     const leafUrl = lightColors.includes(product.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
