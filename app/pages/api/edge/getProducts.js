@@ -1,4 +1,5 @@
 import { edgeClientPromise } from '../../../lib/mongodb';
+import { ObjectId } from 'bson';
 
 export default async (req, res) => {
     try {
@@ -10,11 +11,15 @@ export default async (req, res) => {
         const client = await edgeClientPromise;
         const db = client.db(dbName);
 
+        const id = req.query.id;
+
+        let filter = id ? {_id: new ObjectId(id)} : {};
+
         const products = await db
             .collection("products")
-            .find({})
+            .find(filter)
             .toArray();
-            
+        
         res.status(200).json({ products });
     } catch (e) {
         console.error(e);

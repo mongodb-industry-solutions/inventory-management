@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import  *  as  Realm  from  "realm-web";
 import { clientPromise, edgeClientPromise } from '../../lib/mongodb';
 import { useRouter } from 'next/router';
+import { UserContext } from '../../context/UserContext';
 import { ObjectId } from "bson";
 import { ServerContext } from '../_app';
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
@@ -18,11 +18,10 @@ export default function Product({ preloadedProduct }) {
     const [imageError, setImageError] = useState(false);
 
     const router = useRouter();
-    const { location } = router.query;
+    const { location, edge } = router.query;
 
     const utils = useContext(ServerContext);
-
-    const  app = new  Realm.App({ id: utils.appServiceInfo.appId });
+    const {startWatchProductDetail, stopWatchProductDetail} = useContext(UserContext);
 
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
@@ -49,43 +48,35 @@ export default function Product({ preloadedProduct }) {
         background: '#fff'
     }));
 
+    async function refreshProduct() {
+        try {
+          const response = await fetch(`/api/edge/getProducts?id=${preloadedProduct._id}`);
+
+          if (response.status !== 304) { // 304 Not Modified
+            const refreshedProduct = await response.json();
+            setProduct(refreshedProduct.products[0]);
+          }
+        } catch (error) {
+          console.error('Error refreshing data:', error);
+        }
+      };
+
     useEffect(() => {
         dashboard.render(dashboardDiv.current)
             .then(() => setRendered(true))
             .catch(err => console.log("Error during Charts rendering.", err));
       }, [dashboard]);
-    
 
     useEffect(() => {
-        const  login = async () => {
-        
-            await app.logIn(Realm.Credentials.anonymous());
-            const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-            const collection = mongodb.db(utils.dbInfo.dbName).collection("products");
-            let updatedProduct = null;
-            
-            const filter = {
-                filter: {
-                    operationType: "update",
-                    "fullDocument._id": new ObjectId(preloadedProduct._id)
-                }
-            };
-
-            for await (const  change  of  collection.watch(filter)) {
-                if (location) {
-                    updatedProduct = change.fullDocument;
-                } else {
-                    updatedProduct = await mongodb
-                        .db(utils.dbInfo.dbName)
-                        .collection("products_area_view")
-                        .findOne({ _id: new ObjectId(preloadedProduct._id)});
-                }
-                
-                setProduct(JSON.parse(JSON.stringify(updatedProduct)));
-            }
+        if (edge !== 'true') {
+          //initializeApp(utils.appServiceInfo.appId);
+          startWatchProductDetail(setProduct,preloadedProduct, location, utils);
+          return () => stopWatchProductDetail();
+        } else {
+            const interval = setInterval(refreshProduct, 5000);
+            return () => clearInterval(interval);
         }
-        login();
-    }, []);
+      }, [edge]);
 
     useEffect(() => {
         setProduct(preloadedProduct);
@@ -264,7 +255,6 @@ export async function getServerSideProps(context) {
         const product = await db
             .collection(collectionName)
             .findOne({ _id: new ObjectId(params._id)});
-
 
         return {
             props: { preloadedProduct: JSON.parse(JSON.stringify(product)) },

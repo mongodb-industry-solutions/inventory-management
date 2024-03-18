@@ -1,13 +1,15 @@
-import { clientPromise } from "../../lib/mongodb";
+import { clientPromise, edgeClientPromise } from "../../lib/mongodb";
 import { useState, useEffect, useRef, useContext } from 'react';
-import { useRouter } from 'next/router';
 import { ObjectId } from 'mongodb';
+import { useRouter } from 'next/router';
 import { useUser } from '../../context/UserContext';
 import { ServerContext } from '../_app';
 import { FaSearch, FaTshirt, FaWhmcs } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 import { autocompleteTransactionsPipeline } from '../../data/aggregations/autocomplete';
 import { searchTransactionsPipeline } from '../../data/aggregations/search';
+import { facetsTransactionsPipeline } from '../../data/aggregations/facets';
+import { fetchTransactionsPipeline } from "../../data/aggregations/fetch";
 
 export default function Transactions({ orders, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,7 +32,7 @@ export default function Transactions({ orders, facets }) {
   const utils = useContext(ServerContext);
 
   const router = useRouter();
-  const { location, type } = router.query;
+  const { location, type, edge } = router.query;
 
   useEffect(() => {
     handleSearch();
@@ -52,21 +54,33 @@ export default function Transactions({ orders, facets }) {
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-          },
-          body: JSON.stringify({
-            dataSource: 'mongodb-atlas',
-            database: utils.dbInfo.dbName,
-            collection: 'transactions',
-            pipeline: searchTransactionsPipeline(searchQuery, location, type)
-          }),
-        });
-
+        let response;
+        if (edge === 'true') {
+          response = await fetch(`/api/edge/search?collection=transactions&type=${type}&location=${location}&industry=${utils.demoInfo.demoIndustry}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(searchQuery),
+          });
+        } else {
+          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+            },
+            body: JSON.stringify({
+              dataSource: 'mongodb-atlas',
+              database: utils.dbInfo.dbName,
+              collection: 'transactions',
+              pipeline: searchTransactionsPipeline(searchQuery, location, type)
+            }),
+          });
+        }
+        
         const data = await response.json();
         const searchResults = data.documents;
         
@@ -401,90 +415,91 @@ export async function getServerSideProps(context) {
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
     const industry = process.env.DEMO_INDUSTRY;
-    const client = await clientPromise;
-    const db = client.db(dbName);
 
     const { query } = context;
     const type = query.type;
-    const locationId = query.location;
+    const location = query.location;
+    const edge = (query.edge === 'true');
 
-    const agg = [
-        {
-          '$match': {
-            'type': type
-          }
-        }, {
-          '$unwind': {
-            'path': '$items'
-          }
-        }, {
-          '$sort': {
-            'items.status.0.update_timestamp': -1
-          }
-        }
-      ];
+    const client = edge ? await edgeClientPromise : await clientPromise;
+    const db = client.db(dbName);
+
+    let transactions = [];
+    let facets = [];
+
+    if (edge) {
+
+      // Fetch transactions edge
+      const locationFilter = location
+        ? type === 'inbound'
+          ? { 'location.destination.id': new ObjectId(location) }
+          : { 'location.origin.id': new ObjectId(location) }
+        : {};
+
+      const manufacturingFilter =
+        industry === 'manufacturing'
+          ? type === 'inbound'
+            ? { 'items.product.name': { $ne: "Finished Goods" } }
+            : { 'items.product.name': "Finished Goods" }
+          : {};
+
+      const transactionGroup = await db
+        .collection("transactions")
+        .find({
+          ...locationFilter,
+          ...manufacturingFilter,
+        })
+        .sort({'items.status.0.update_timestamp': -1})
+        .toArray();
       
-
-    if (locationId) {
-
-        var locationFilter;
-        if ( type === 'inbound') {
-            locationFilter = {
-                $match: {
-                    'location.destination.id': new ObjectId(locationId)
-                }
-            };
-        } else {
-            locationFilter = {
-                $match: {
-                    'location.origin.id': new ObjectId(locationId)
-                }
-            };
-        }
-        agg.unshift(locationFilter);
-    }
-
-    if (industry === 'manufacturing') {
-      var manufacturingFilter;
-      if ( type === 'inbound') {
-        manufacturingFilter = {
-              $match: {
-                  'items.product.name': { $ne: "Finished Goods" }
-              }
-          };
-      } else {
-        manufacturingFilter = {
-              $match: {
-                'items.product.name': "Finished Goods"
-              }
-          };
+      if (transactionGroup.length > 0) {
+        transactions = transactionGroup.flatMap(transaction =>
+          transaction.items.map(item => ({ ...transaction, items: item }))
+        );
       }
-      agg.unshift(manufacturingFilter);
-    }
 
-    const transactions = await db
-      .collection("transactions")
-      .aggregate(agg)
-      .toArray();
-
-    const facetsAgg = [
-      {
-        $searchMeta: {
-          index: "facets",
-          facet: {
-            facets: {
-              productsFacet: { type: "string", path: "items.product.name", numBuckets: 20 },
-              itemsFacet: { type: "string", path: "items.name" },
-            },
-          },
+      // Fetch filter facets edge
+      const itemsAggregated = transactions.flatMap(transaction => transaction.items.name);
+      const productsAggregated = transactions.map(transaction => transaction.items.product.name);
+      
+      const itemsFacetBuckets = Array.from(new Set(itemsAggregated)).map(item => ({
+        _id: item,
+        count: itemsAggregated.filter(i => i === item).length,
+      }));
+      
+      const productsFacetBuckets = Array.from(new Set(productsAggregated)).map(product => ({
+        _id: product,
+        count: productsAggregated.filter(p => p === product).length,
+      }));
+      
+      const facetGroup = {
+        facet: {
+          itemsFacet: { buckets: itemsFacetBuckets },
+          productsFacet: { buckets: productsFacetBuckets },
         },
-      },
-    ];
+      };
 
-    const facets = await db
-      .collection("transactions")
-      .aggregate(facetsAgg)
-      .toArray();
+      facets.push(facetGroup);
+
+    } else {
+
+      // Fetch transactions
+      const agg = fetchTransactionsPipeline(industry, location, type);
+
+      transactions = await db
+        .collection("transactions")
+        .aggregate(agg)
+        .toArray();
+
+      // Fetch filter facets
+      const facetsAgg = facetsTransactionsPipeline(industry, type);
+
+      facets = await db
+        .collection("transactions")
+        .aggregate(facetsAgg)
+        .toArray();
+    }
+    
 
     return {
       props: { orders: JSON.parse(JSON.stringify(transactions)), facets: JSON.parse(JSON.stringify(facets)) },

@@ -59,18 +59,24 @@ MyApp.getInitialProps = async ({ ctx }) => {
     const match = uri.match(regex);
     const region = match ? match[1] + "." : null;
 
-    const tokenResponse = await fetch(`https://${region}services.cloud.mongodb.com/api/client/v2.0/app/${appId}/auth/providers/api-key/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        key: key,
-      }),
-    });
+    let accessToken = null;
+    try {
+      const tokenResponse = await fetch(`https://${region}services.cloud.mongodb.com/api/client/v2.0/app/${appId}/auth/providers/api-key/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          key: key,
+        }),
+      });
 
-    const tokenData = await tokenResponse.json();
-    const accessToken = tokenData?.access_token;
+      const tokenData = await tokenResponse.json();
+      accessToken = tokenData?.access_token;
+    } catch (e) {
+      console.error('Error fetching access token:', e);
+    }
+
     const dataUri = uri + '/app/' + appId + '/endpoint/data/v1';
     const httpsUri = uri + '/app/' + appId + '/endpoint';
 

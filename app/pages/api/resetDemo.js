@@ -25,7 +25,7 @@ export default async (req, res) => {
         const filePath = path.resolve(process.cwd(), fileName);
         const rawData = fs.readFileSync(filePath);
         const newData = EJSON.parse(rawData);
-        console.log(newData);
+        //console.log(newData);
 
         await db.collection("products").deleteMany({});
 

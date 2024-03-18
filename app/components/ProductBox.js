@@ -11,7 +11,7 @@ const ProductBox = ({ product }) => {
     const [imageError, setImageError] = useState(false);
 
     const router = useRouter();
-    const { location } = router.query;
+    const { location, edge } = router.query;
 
     const utils = useContext(ServerContext);
 
@@ -67,7 +67,7 @@ const ProductBox = ({ product }) => {
         <>
             <li className={styles["product-item"]}>
                 <a 
-                    href={location ? `/products/${product._id}?location=${location}` : `/products/${product._id}`}
+                    href={location ? `/products/${product._id}?location=${location}&edge=${edge}` : `/products/${product._id}?edge=${edge}`}
                     className={styles["product-link"]}>
                         <div className={styles["image-container"]}>
                             {
