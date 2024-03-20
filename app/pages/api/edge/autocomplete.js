@@ -35,6 +35,7 @@ export default async (req, res) => {
                     _id: 0,
                   })
                 .toArray();
+
                 if (response.length > 0) {
                     // Extract the suggestions and insert them into the first element of the array
                     const suggestions = response.reduce((acc, curr) => {
@@ -45,8 +46,8 @@ export default async (req, res) => {
                     result.push({suggestions: suggestions});
                 }
         } else if (collection === 'transactions') {
-            /*
-            const locationFilter = location
+            
+           const locationFilter = location
                 ? type === 'inbound'
                     ? { 'location.destination.id': new ObjectId(location) }
                     : { 'location.origin.id': new ObjectId(location) }
@@ -76,14 +77,19 @@ export default async (req, res) => {
             const transactions = await db
                 .collection(collection)
                 .find(combinedFilter)
+                .limit(5)
                 .toArray();
-            
+
             if (transactions.length > 0) {
-                result = transactions.flatMap(transaction =>
-                    transaction.items.map(item => ({ ...transaction, items: item }))
-                );
+                const projection = transactions.flatMap(transaction =>
+                    transaction.items.map(item => (`${item.product.name} - ${item.sku}`))
+                ).slice(0, 5);
+
+                const suggestions = Array.from(new Set(projection)).slice(0, 5);
+
+                result.push({suggestions: suggestions});
             }
-            */
+            
         }
 
         res.status(200).json({documents: result});
