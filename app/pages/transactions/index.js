@@ -100,20 +100,32 @@ export default function Transactions({ orders, facets }) {
   
     if (searchValue.length > 0) {
       try {
-        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-          },
-          body: JSON.stringify({
-            dataSource: 'mongodb-atlas',
-            database: utils.dbInfo.dbName,
-            collection: 'transactions',
-            pipeline: autocompleteTransactionsPipeline(searchValue)
-          }),
-        });
+        let response;
+        if (edge === 'true') {
+          response = await fetch(`/api/edge/autocomplete?collection=transactions&type=${type}&location=${location}&industry=${utils.demoInfo.demoIndustry}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(searchValue),
+          });
+        } else {
+          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+            },
+            body: JSON.stringify({
+              dataSource: 'mongodb-atlas',
+              database: utils.dbInfo.dbName,
+              collection: 'transactions',
+              pipeline: autocompleteTransactionsPipeline(searchValue)
+            }),
+          });
+        }
         const data = await response.json();
         setSuggestions(data.documents[0].suggestions);
       } catch (error) {
