@@ -6,11 +6,14 @@ import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
 import { useUser } from '../context/UserContext';
 import { useRouter } from 'next/router';
 import { ServerContext } from '../pages/_app';
+import { useToast } from '@leafygreen-ui/toast';
 import StockLevelBar from './StockLevelBar';
 import styles from '../styles/popup.module.css';
 
 
 const ReplenishmentPopup = ({ product, onClose, onSave }) => {
+
+    const { pushToast } = useToast();
 
     const { selectedUser } = useUser();
     const utils = useContext(ServerContext);
@@ -143,7 +146,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
             if (response.ok) {
                 console.log('Transaction saved successfully');
                 onClose();
-                onSave();
+                pushToast({title: "Order placed successfully", variant: "success"});
                 setRows([]);
             } else {
                 console.log('Error saving transaction');

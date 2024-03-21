@@ -5,19 +5,20 @@ import { ServerContext } from '../_app';
 import { FaSearch } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
-import AlertBanner from '../../components/AlertBanner';
 import { autocompleteProductsPipeline } from '../../data/aggregations/autocomplete';
 import { searchProductsPipeline } from '../../data/aggregations/search';
 import { UserContext } from '../../context/UserContext';
+import { useToast } from '@leafygreen-ui/toast';
 
 export default function Products({ products, facets }) {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [displayProducts, setDisplayProducts] = useState(products);
   const [sortBy, setSortBy] = useState('');
-  const [alerts, setAlerts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
+
+  const { pushToast } = useToast();
 
   const router = useRouter();
   const { location, edge } = router.query;
@@ -44,7 +45,6 @@ export default function Products({ products, facets }) {
 
   useEffect(() => {
     if (edge !== 'true') {
-      //initializeApp(utils.appServiceInfo.appId);
       startWatchProductList(setDisplayProducts,addAlert, location, utils);
       return () => stopWatchProductList();
     }
@@ -214,20 +214,9 @@ export default function Products({ products, facets }) {
     //console.log('items:' + itemsFilter + ' products:' + productsFilter + ' products: ' + updatedFilteredProducts.length);
   };
 
-  const handleAlertClose = (sku) => {
-    setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.sku !== sku));
-  };
-
   // Function to add a new alert to the list
   const addAlert = (item) => {
-
-    setAlerts((prevAlerts) => {
-      if (prevAlerts.some((alert) => alert.sku === item.sku)) {
-        return prevAlerts;
-      } else {
-        return [item, ...prevAlerts].slice(0, 3);
-      }
-    });
+    pushToast({title: `${item.sku} is low stok!`, variant: "warning"});
   };
 
   const handleSortByPopularity = () => {
@@ -349,11 +338,6 @@ export default function Products({ products, facets }) {
             <li>No results found</li>
           )}
         </ul>
-      </div>
-      <div className="alert-container">
-        {alerts.map((item) => (
-          <AlertBanner key={item.sku} item={item} onClose={() => handleAlertClose(item.sku)} />
-        ))}
       </div>
     </>
   );

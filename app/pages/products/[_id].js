@@ -14,7 +14,6 @@ export default function Product({ preloadedProduct }) {
     
     const [product, setProduct] = useState(preloadedProduct);
     const [showPopup, setShowPopup] = useState(false);
-    const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
     const [imageError, setImageError] = useState(false);
 
     const router = useRouter();
@@ -94,12 +93,6 @@ export default function Product({ preloadedProduct }) {
         setShowPopup(false);
         dashboard.refresh();
     };
-
-    const handleSave = async () => {
-        setSaveSuccessMessage(true);
-        await new Promise((resolve) => setTimeout(resolve, 4000));
-        setSaveSuccessMessage(false);
-      };
 
     const handleToggleAutoreplenishment = async () => {
         try {
@@ -222,13 +215,7 @@ export default function Product({ preloadedProduct }) {
         {showPopup && <Popup 
             product={product} 
             onClose={handleClosePopup} 
-            onSave={handleSave}
         />}
-        {saveSuccessMessage && (
-            <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
-                Order placed successfully
-            </div>
-        )}
         </div>
         </>
 

@@ -4,6 +4,7 @@ import "../styles/global.css";
 import Header from '../components/Header';
 import Navbar from '../components/Navbar';
 import { UserProvider } from '../context/UserContext';
+import { ToastProvider, useToast } from '@leafygreen-ui/toast';
 
 export const ServerContext = createContext();
 
@@ -11,6 +12,7 @@ function MyApp({ Component, pageProps, utils }) {
     return (
     <ServerContext.Provider value={utils}>
      <UserProvider>
+      <ToastProvider> 
       <div className="layout">
         <div className="header-container">
           <Header />
@@ -18,6 +20,7 @@ function MyApp({ Component, pageProps, utils }) {
         </div>
           <Component {...pageProps} />
        </div>
+       </ToastProvider>
       </UserProvider>
       </ServerContext.Provider>
     );

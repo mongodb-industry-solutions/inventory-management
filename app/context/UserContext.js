@@ -16,6 +16,7 @@ export const UserProvider = ({ children }) => {
   let closeStreamProductList;
   let closeStreamProductDetail;
   let closeStreamDashboard;
+  let closeStreamControl;
 
   useEffect(() => {
     // Load the selected user from local storage on component mount
@@ -53,7 +54,6 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
     closeStreamProductList = () => {
       console.log("Closing stream");
-      app.currentUser?.logOut();
       stream.return(null)
     };
 
@@ -126,7 +126,6 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
     closeStreamProductDetail = () => {
       console.log("Closing stream");
-      app.currentUser?.logOut();
       stream.return(null)
     };
 
@@ -160,12 +159,40 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
     closeStreamDashboard = () => {
       console.log("Closing stream");
-      app.currentUser?.logOut();
       stream.return(null)
     };
 
     for await (const  change  of  stream) {
       dashboard.refresh();
+    }
+  };
+
+  const  startWatchControl = async (setProducts, utils) => {
+    console.log("Start watching stream");
+    const runs = await getMongoCollection(utils.dbInfo.dbName, "products");
+    const filter = {filter: {operationType: "update"}};
+
+    const stream = runs.watch(filter);
+
+
+    closeStreamControl = () => {
+      console.log("Closing stream");
+      stream.return(null)
+    };
+
+    for await (const  change  of  stream) {
+      const updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
+
+      setProducts((prevProducts) => {
+        const updatedIndex = prevProducts.findIndex((product) => product._id === updatedProduct._id);
+        if (updatedIndex !== -1) {
+            const updatedProducts = [...prevProducts];
+            updatedProducts[updatedIndex] = updatedProduct;
+            return updatedProducts;
+        } else {
+            return prevProducts;
+        }
+      });
     }
   };
 
@@ -181,6 +208,12 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
     closeStreamDashboard();
   };
 
+
+
+  const stopWatchControl = () => {
+    closeStreamControl();
+  };
+
   return (
     <UserContext.Provider value={{ selectedUser, 
       setUser, 
@@ -189,7 +222,9 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
       startWatchProductDetail, 
       stopWatchProductDetail,
       startWatchDashboard,
-      stopWatchDashboard
+      stopWatchDashboard,
+      startWatchControl,
+      stopWatchControl
     }}>
       {children}
     </UserContext.Provider>
