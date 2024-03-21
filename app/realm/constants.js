@@ -1,0 +1,1 @@
+export const APP_ID = "inventory_management_demo-uhetl";

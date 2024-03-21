@@ -6,7 +6,7 @@
     grid-area: side-nav / side-nav / side-nav / side-nav;
     overflow-y: visible;
     list-style: none;
-    z-index: 1;
+    z-index: 0;
     padding-left: 24px;
     position: fixed;
     top: 110px; /* Adjust this value if needed to control the vertical position */
