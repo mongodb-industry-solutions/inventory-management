@@ -1,23 +1,28 @@
 import { useState, useEffect, useContext  } from 'react';
-import  *  as  Realm  from  "realm-web";
-import { clientPromise } from "../lib/mongodb";
+import { useRouter } from 'next/router';
+import { clientPromise, edgeClientPromise } from "../lib/mongodb";
 import { ServerContext } from './_app';
 import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
+import { UserContext } from '../context/UserContext';
+import { useToast } from '@leafygreen-ui/toast';
 
 import styles from "../styles/control.module.css";
 
-export default function Control({ preloadedProducts, locations, realmAppId, databaseName }) { 
+export default function Control({ preloadedProducts, locations }) { 
     
     const [products, setProducts] = useState(preloadedProducts);
     const [isSelling, setIsSelling] = useState(false); // State to keep track of sale status
-    const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState('');
     const [onlineToInPersonRatio, setOnlineToInPersonRatio] = useState(0.5);
 
-    const  app = new  Realm.App({ id: realmAppId });
+    const { pushToast } = useToast();
+
+    const router = useRouter();
+    const { location, edge } = router.query;
 
     const utils = useContext(ServerContext);
+    const {startWatchControl, stopWatchControl} = useContext(UserContext);
 
     useEffect(() => {
         // Start or stop selling based on the isSelling state
@@ -28,35 +33,20 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
     }, [isSelling]);
 
     useEffect(() => {
-        const  login = async () => {
-        
-            await app.logIn(Realm.Credentials.anonymous());
-            const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-            const collection = mongodb.db(databaseName).collection("products");
-
-            const filter = {filter: {operationType: "update"}};
-
-            for await (const  change  of  collection.watch(filter)) {
-
-                const updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
-
-                setProducts((prevProducts) => {
-                    const updatedIndex = prevProducts.findIndex((product) => product._id === updatedProduct._id);
-                    if (updatedIndex !== -1) {
-                        const updatedProducts = [...prevProducts];
-                        updatedProducts[updatedIndex] = updatedProduct;
-                        return updatedProducts;
-                    } else {
-                        return prevProducts;
-                    }
-                });
-            }
+        if (edge !== 'true') {
+          startWatchControl(setProducts, utils);
+          return () => stopWatchControl();
         }
-        login();
-    }, []);
+      }, [edge]);
+
+      useEffect(() => {
+        setSelectedLocation(location);
+      }, [router.asPath]);
+    
 
     const handleLocationChange = (location) => {
         setSelectedLocation(location.target.value);
+        console.log(location.target.value);
     };
 
     const handleRatioChange = (event) => {
@@ -163,7 +153,8 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
         transaction.items.push(newItem);
     
         try {
-            const response = await fetch(utils.apiInfo.httpsUri + '/addTransaction', {
+            let url = (edge === 'true') ? '/api/edge/addTransaction': utils.apiInfo.httpsUri + '/addTransaction';
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -254,9 +245,7 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
                 });
                 if (response.ok) {
                     console.log('Product reset successfully');
-                    setSaveSuccessMessage(true);
-                    await new Promise((resolve) => setTimeout(resolve, 4000));
-                    setSaveSuccessMessage(false);
+                    pushToast({title: "Demo reset successfully", variant: "success"});
                 } else { 
                     console.log('Error resetting product stock');
                 }
@@ -268,7 +257,8 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
 
     const handleSave = async (product) => {
         try {
-            const response = await fetch(utils.apiInfo.httpsUri + `/updateProductStock?location_id=${selectedLocation}`, {
+            let path = (edge === 'true') ? '/api/edge': utils.apiInfo.httpsUri;
+            const response = await fetch(path + `/updateProductStock?location_id=${selectedLocation}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -277,9 +267,7 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
                 });
                 if (response.ok) {
                     console.log('Product stock saved successfully');
-                    setSaveSuccessMessage(true);
-                    await new Promise((resolve) => setTimeout(resolve, 4000));
-                    setSaveSuccessMessage(false);
+                    pushToast({title: "Product stock saved successfully", variant: "success"});
                 } else { 
                     console.log('Error saving updated product stock');
                 }
@@ -403,17 +391,14 @@ export default function Control({ preloadedProducts, locations, realmAppId, data
                         </table>
                     </div>
                 </div>
-                {saveSuccessMessage && (
-                    <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
-                        Stock reset successfully
-                    </div>
-                )}
+            
+                
         </div>
         </>
     );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ query }) {
     try {
         if (!process.env.REALM_APP_ID) {
             throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
@@ -425,7 +410,9 @@ export async function getServerSideProps() {
         const dbName = process.env.MONGODB_DATABASE_NAME;
         const realmAppId = process.env.REALM_APP_ID;
 
-        const client = await clientPromise;
+        const edge = (query.edge === 'true');
+
+        const client = edge ? await edgeClientPromise : await clientPromise;
         const db = client.db(dbName);
 
         const products = await db
