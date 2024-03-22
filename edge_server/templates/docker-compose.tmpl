@@ -30,7 +30,7 @@ services:
       - internal
 
   sync_server:
-    image: quay.io/mongodb/edge-server:v0.19.1
+    image: quay.io/mongodb/edge-server:v0.20.0
     # platform: linux/amd64
     depends_on:
       - mongodb_container
@@ -51,7 +51,7 @@ services:
       - internal
 
   vector:
-    image: quay.io/mongodb/edge-log-forwarder:v0.19.1
+    image: quay.io/mongodb/edge-log-forwarder:v0.20.0
     volumes:
       - edge_logs:/home/edge_logs
     environment:
