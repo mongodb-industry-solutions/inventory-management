@@ -1,13 +1,259 @@
 [{
-  "_id": {
-    "$oid": "65ae9eccd9bf6944791b8a7e"
-  },
   "name": "White T-shirt",
   "color": {
     "name": "White",
     "hex": "#FFFFFF"
   },
   "code": "WHT001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "EUR"
+  },
+  "popularity_index": 18,
+  "items": [
+    {
+      "sku": "WHT001-XS",
+      "name": "XS",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "WHT001-S",
+      "name": "S",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "WHT001-M",
+      "name": "M",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "WHT001-L",
+      "name": "L",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "WHT001-XL",
+      "name": "XL",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    }
+  ],
+  "autoreplenishment": false
+},
+{
+  "name": "Black T-shirt",
+  "color": {
+    "name": "Black",
+    "hex": "#FFFFFF"
+  },
+  "code": "BLK001",
   "description": "A comfortable T-shirt",
   "price": {
     "amount": 20,
@@ -249,4 +495,5 @@
     }
   ],
   "autoreplenishment": false
-}]
+}
+]

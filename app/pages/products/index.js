@@ -403,6 +403,8 @@ export async function getServerSideProps({ query }) {
         .aggregate(agg)
         .toArray();
 
+        console.log(facets);
+
     }
 
     return {
