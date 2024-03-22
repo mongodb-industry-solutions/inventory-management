@@ -9,12 +9,15 @@ import { FaTshirt, FaWhmcs } from 'react-icons/fa';
 import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
+import Toggle from "@leafygreen-ui/toggle";
 
 export default function Product({ preloadedProduct }) {
     
     const [product, setProduct] = useState(preloadedProduct);
     const [showPopup, setShowPopup] = useState(false);
     const [imageError, setImageError] = useState(false);
+    const [isAutoOn, setIsAutoOn] = useState(preloadedProduct.autoreplenishment);
+    const [isAutoDisabled, setIsAutoDisabled] = useState(false);
 
     const router = useRouter();
     const { location, edge } = router.query;
@@ -24,7 +27,7 @@ export default function Product({ preloadedProduct }) {
 
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
-        '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9', '#ffffff'
+        '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9', '#ffffff', '#FFFFFF'
     ];
 
     const leafUrl = lightColors.includes(product.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
@@ -67,6 +70,10 @@ export default function Product({ preloadedProduct }) {
       }, [dashboard]);
 
     useEffect(() => {
+        setIsAutoOn(product.autoreplenishment);
+    }, [product]);
+
+    useEffect(() => {
         if (edge !== 'true') {
           //initializeApp(utils.appServiceInfo.appId);
           startWatchProductDetail(setProduct,preloadedProduct, location, utils);
@@ -96,7 +103,10 @@ export default function Product({ preloadedProduct }) {
 
     const handleToggleAutoreplenishment = async () => {
         try {
-              const response = await fetch(utils.apiInfo.dataUri + '/action/updateOne', {
+            setIsAutoDisabled(true);
+            let url = (edge==='true') ? '/api/edge/setAutoreplenishment' : utils.apiInfo.dataUri + '/action/updateOne';
+            console.log(url);
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -104,22 +114,25 @@ export default function Product({ preloadedProduct }) {
                   'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
                 },
                 body: JSON.stringify({
-                  dataSource: 'mongodb-atlas',
+                  dataSource: "mongodb-atlas",
                   database: utils.dbInfo.dbName,
-                  collection: 'products',
+                  collection: "products",
                   filter: { "_id": { "$oid": preloadedProduct._id } },
                   update: {
-                    "$set": { "autoreplenishment": !product.autoreplenishment }
+                    "$set": { "autoreplenishment": !isAutoOn }
                   }
                 }),
               });
             if (response.ok) {
+                setIsAutoOn(!isAutoOn);
                 console.log('Autoreplenishment toggled successfully');
             } else {
                 console.log('Error toggling autoreplenishment');
             }
         } catch (e) {
             console.error(e);
+        } finally {
+            setIsAutoDisabled(false);
         }
     };
 
@@ -157,13 +170,18 @@ export default function Product({ preloadedProduct }) {
                 <p className="price">{product.price?.amount} {product.price?.currency}</p>
                 <p className="code">{product.code}</p>
                 {<StockLevelBar stock={product.total_stock_sum} locationId={location} />}
-                {location && (<div className={styles["switch-container"]}>
-                    <span className={styles["switch-text"]}>Autoreplenishment</span>
-                    <label className={styles["switch"]}>
-                        <input type="checkbox" checked={product.autoreplenishment} onChange={handleToggleAutoreplenishment}/>
-                        <span className={styles["slider"]}></span>
-                    </label>
-                </div>)}
+                {location && (
+                    <div className={styles["switch-container"]}>
+                        <span className={styles["switch-text"]}>Autoreplenishment</span>
+                        <Toggle
+                            aria-label="Autoreplenishment"
+                            className={styles["switch"]}
+                            checked={isAutoOn}
+                            disabled={isAutoDisabled}
+                            onChange={handleToggleAutoreplenishment}
+                        />
+                    </div>
+                )}
             </div>
             <div className={styles["table"]}>
             <table>
