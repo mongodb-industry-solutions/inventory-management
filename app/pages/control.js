@@ -6,6 +6,8 @@ import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
 import { UserContext } from '../context/UserContext';
 import { useToast } from '@leafygreen-ui/toast';
+import Button from "@leafygreen-ui/button";
+import { Spinner } from '@leafygreen-ui/loading-indicator';
 
 import styles from "../styles/control.module.css";
 
@@ -15,6 +17,7 @@ export default function Control({ preloadedProducts, locations }) {
     const [isSelling, setIsSelling] = useState(false); // State to keep track of sale status
     const [selectedLocation, setSelectedLocation] = useState('');
     const [onlineToInPersonRatio, setOnlineToInPersonRatio] = useState(0.5);
+    const [isSaving, setIsSaving] = useState(false);
 
     const { pushToast } = useToast();
 
@@ -257,6 +260,7 @@ export default function Control({ preloadedProducts, locations }) {
 
     const handleSave = async (product) => {
         try {
+            setIsSaving(true);
             let path = (edge === 'true') ? '/api/edge': utils.apiInfo.httpsUri;
             const response = await fetch(path + `/updateProductStock?location_id=${selectedLocation}`, {
                 method: 'POST',
@@ -274,6 +278,8 @@ export default function Control({ preloadedProducts, locations }) {
         }
         catch (e) {
             console.error(e);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -376,13 +382,15 @@ export default function Control({ preloadedProducts, locations }) {
                                         ))}
                                     </tbody>
                                     </table>
-                                    <button 
-                                        className={styles["save-button"]}
+                                    <Button
+                                        isLoading={isSaving}
+                                        loadingIndicator={<Spinner/>}
                                         disabled={!selectedLocation}
-                                        onClick={() => handleSave(product)} 
-                                    >
-                                        SAVE
-                                    </button>
+                                        variant={'primaryOutline'}
+                                        onClick={() => handleSave(product)}
+                                        children={'SAVE'}
+                                        style={{ float: 'right' }}
+                                    />
                                 </div>
                             </td>
                             </tr>

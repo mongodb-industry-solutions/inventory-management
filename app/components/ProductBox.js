@@ -17,7 +17,7 @@ const ProductBox = ({ product }) => {
 
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
-        '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9', '#ffffff'
+        '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9', '#ffffff', '#FFFFFF'
     ];
 
     const leafUrl = lightColors.includes(product.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
