@@ -135,10 +135,26 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
       if (location) {
         updatedProduct = change.fullDocument;
       } else {
-        updatedProduct = await mongodb
-            .db(utils.dbInfo.dbName)
-            .collection("products_area_view")
-            .findOne({ _id: new ObjectId(product._id)});
+        try {
+          const response = await fetch(utils.apiInfo.dataUri + '/action/findOne', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+            },
+            body: JSON.stringify({
+              dataSource: 'mongodb-atlas',
+              database: utils.dbInfo.dbName,
+              collection: "products_area_view",
+              filter: { _id: { $oid: product._id}}
+            }),
+          });
+          const data = await response.json();
+          updatedProduct = JSON.parse(JSON.stringify(data.document));
+        } catch (error) {
+          console.error(error);
+        }
       }
     
       setProduct(JSON.parse(JSON.stringify(updatedProduct)));
