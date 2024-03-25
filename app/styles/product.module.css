@@ -185,16 +185,6 @@ border-collapse: collapse;
     transform: translateX(26px);
   }
 
-  .save-success-message {
-    position: 'fixed'; 
-    bottom: 20; 
-    right: 20; 
-    background: 'green'; 
-    color: 'white'; 
-    padding: '10px';
-    z-index: 1000000;
-  }
-
   .leaf {
     position: absolute;
     top: 110px;

@@ -193,6 +193,7 @@ function Header( ) {
               ))}
             </ul>
             <IconButton
+              aria-label='Control Panel'
               href='/control'
             >
               <Icon glyph="Settings" />
