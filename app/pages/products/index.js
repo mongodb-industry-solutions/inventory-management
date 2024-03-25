@@ -15,6 +15,7 @@ export default function Products({ products, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [displayProducts, setDisplayProducts] = useState(products);
   const [sortBy, setSortBy] = useState('');
+  const [alerts, setAlerts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
 
@@ -29,6 +30,7 @@ export default function Products({ products, facets }) {
   // Create a ref for the input element
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
+  const alertsRef = useRef([]);
 
   async function refreshProducts() {
     try {
@@ -214,8 +216,16 @@ export default function Products({ products, facets }) {
     //console.log('items:' + itemsFilter + ' products:' + productsFilter + ' products: ' + updatedFilteredProducts.length);
   };
 
+  useEffect(() => {
+    alertsRef.current = alerts;
+  }, [alerts]);
+
   // Function to add a new alert to the list
   const addAlert = (item) => {
+
+    if (alertsRef.current.some(alert => alert.sku === item.sku)) {
+      return; // If it exists, do nothing
+    }
 
     const queryParameters = new URLSearchParams(router.query).toString();
     const href = `/products/${item.product_id}?${queryParameters}`;
@@ -230,8 +240,11 @@ export default function Products({ products, facets }) {
           &nbsp; is low stock!
         </span>
       ), 
-      variant: "warning"
+      variant: "warning",
+      onClose: () => { setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.sku !== item.sku)) }
     });
+
+    setAlerts(prevAlerts => [...prevAlerts, item]);
   };
 
   const handleSortByPopularity = () => {
