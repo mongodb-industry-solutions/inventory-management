@@ -15,9 +15,9 @@ export default function Products({ products, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [displayProducts, setDisplayProducts] = useState(products);
   const [sortBy, setSortBy] = useState('');
-  const [alerts, setAlerts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
+  const [previousItems, setPreviousItems] = useState(products.flatMap(product => product.items));
 
   const { pushToast } = useToast();
 
@@ -30,15 +30,33 @@ export default function Products({ products, facets }) {
   // Create a ref for the input element
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
-  const alertsRef = useRef([]);
+
+  let lastEtag = null;
 
   async function refreshProducts() {
     try {
-      const response = await fetch('/api/edge/getProducts');
+      const headers = {};
+      if (lastEtag) {
+          headers['If-None-Match'] = lastEtag;
+      }
+
+      const response = await fetch('/api/edge/getProducts', {
+        method: 'GET',
+        headers: headers
+      });
       
-      if (response.status !== 304) { // 304 Not Modified
+      if (response.status === 304) { // 304 Not Modified
+        return;
+      } else if (response.status === 200) {
+
+        const etagHeader = response.headers.get('Etag');
+        if (etagHeader) {
+            lastEtag = etagHeader;
+        }
+
         const refreshedProducts = await response.json();
         setDisplayProducts(refreshedProducts.products);
+        checkForChangesAndAlerts(refreshedProducts.products);
       }
     } catch (error) {
       console.error('Error refreshing data:', error);
@@ -54,7 +72,7 @@ export default function Products({ products, facets }) {
 
   useEffect(() => {
     if (edge === 'true' && searchQuery.length === 0) {
-      const interval = setInterval(refreshProducts, 5000);
+      const interval = setInterval(refreshProducts, 500);
       return () => clearInterval(interval);
     }
   }, [edge, searchQuery]);
@@ -216,16 +234,8 @@ export default function Products({ products, facets }) {
     //console.log('items:' + itemsFilter + ' products:' + productsFilter + ' products: ' + updatedFilteredProducts.length);
   };
 
-  useEffect(() => {
-    alertsRef.current = alerts;
-  }, [alerts]);
-
   // Function to add a new alert to the list
   const addAlert = (item) => {
-
-    if (alertsRef.current.some(alert => alert.sku === item.sku)) {
-      return; // If it exists, do nothing
-    }
 
     const queryParameters = new URLSearchParams(router.query).toString();
     const href = `/products/${item.product_id}?${queryParameters}`;
@@ -240,12 +250,33 @@ export default function Products({ products, facets }) {
           &nbsp; is low stock!
         </span>
       ), 
-      variant: "warning",
-      onClose: () => { setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.sku !== item.sku)) }
+      variant: "warning"
+    });
+  };
+
+  function checkForChangesAndAlerts(newProducts) {
+    newProducts.forEach(newProduct => {
+        newProduct.items.forEach(newItem => {
+            const previousItem = previousItems.find(prevItem => prevItem.sku === newItem.sku);
+
+            // Compare stock amounts
+            const newStock = location ? 
+                newItem.stock.find(stock => stock.location.id === location)
+                : newItem.stock.find(stock => stock.location.type !== "warehouse");
+
+            const previousStock = location ? 
+                previousItem.stock.find(stock => stock.location.id === location)
+                : previousItem.stock.find(stock => stock.location.type !== "warehouse");
+
+            if (newStock.amount + newStock.ordered < newStock.threshold && newStock.amount < previousStock.amount) {
+                addAlert(newItem);
+            }
+        });
     });
 
-    setAlerts(prevAlerts => [...prevAlerts, item]);
-  };
+    // Update previous state with new data
+    setPreviousItems(newProducts.flatMap(product => product.items));
+  }
 
   const handleSortByPopularity = () => {
     console.log('Sorting by popularity');
