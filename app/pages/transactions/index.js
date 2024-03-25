@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useUser } from '../../context/UserContext';
 import { ServerContext } from '../_app';
 import { FaSearch, FaTshirt, FaWhmcs } from 'react-icons/fa';
+import { useToast } from '@leafygreen-ui/toast';
 import Sidebar from '../../components/Sidebar';
 import { autocompleteTransactionsPipeline } from '../../data/aggregations/autocomplete';
 import { searchTransactionsPipeline } from '../../data/aggregations/search';
@@ -18,7 +19,6 @@ export default function Transactions({ orders, facets }) {
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Set the number of items per page
   const [currentPage, setCurrentPage] = useState(1); // Set the initial current page to 1
-  const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
 
   const lightColors = [
     '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
@@ -33,6 +33,8 @@ export default function Transactions({ orders, facets }) {
 
   const router = useRouter();
   const { location, type, edge } = router.query;
+
+  const { pushToast } = useToast();
 
   useEffect(() => {
     handleSearch();
@@ -209,13 +211,10 @@ export default function Transactions({ orders, facets }) {
     }
   };
 
-  const handleSave = async () => {
-    setSaveSuccessMessage(true);
-    await new Promise((resolve) => setTimeout(resolve, 4000));
-    setSaveSuccessMessage(false);
-  };
+  const handleReorder = async (originalItem) => {
 
-  const handleReorder = async (item) => {
+    //Create a copy of the original item
+    const item = JSON.parse(JSON.stringify(originalItem));
 
     //find location that match location query 
     const selectedLocation = selectedUser?.permissions?.locations.find(s => s.id === location);
@@ -251,7 +250,7 @@ export default function Transactions({ orders, facets }) {
             body: JSON.stringify(transaction),
           });
         if (response.ok) {
-            handleSave();
+          pushToast({title: "Order placed successfully", variant: "success"});
         } else {
             console.log('Error saving order');
         }
@@ -282,9 +281,8 @@ function formatTimestamp(timestamp) {
 
   return (
     <>
-      <Sidebar facets={facets} filterOrders={filterOrders} page="orders"/>
       <div className="content">
-
+      <Sidebar facets={facets} filterOrders={filterOrders} page="orders"/>
       <div className="search-bar">
           <input
             ref={inputRef} // Attach the ref to the input element
@@ -409,11 +407,6 @@ function formatTimestamp(timestamp) {
       </div>
 
         </div>
-        {saveSuccessMessage && (
-            <div style={{ position: 'fixed', top: 134, right: 34, background: '#C7ECC2', color: '#1A6510', padding: '10px', animation: 'fadeInOut 0.5s'}}>
-                Order placed successfully
-            </div>
-        )}
       </div>
     </>
   );
