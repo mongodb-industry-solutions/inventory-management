@@ -61,9 +61,11 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
     for await (const  change  of  stream) {
       console.log("Change detected");
-      updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
-
-      if (!location) {
+      
+      if (location) { 
+        updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
+      }
+      else {
           try {
           const response = await fetch(utils.apiInfo.dataUri + '/action/findOne', {
             method: 'POST',
@@ -103,7 +105,7 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
             item.stock.find(stock => stock.location.id === location)
             : item.stock.find(stock => stock.location.type !== "warehouse");
           
-          if(itemStock?.amount < itemStock?.threshold) {
+          if(itemStock?.amount + itemStock?.ordered  < itemStock?.threshold) {
             item.product_id = updatedProduct._id;
             addAlert(item);
           }
