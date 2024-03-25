@@ -105,7 +105,7 @@ export default function Product({ preloadedProduct }) {
         try {
             setIsAutoDisabled(true);
             let url = (edge==='true') ? '/api/edge/setAutoreplenishment' : utils.apiInfo.dataUri + '/action/updateOne';
-            console.log(url);
+
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -125,7 +125,6 @@ export default function Product({ preloadedProduct }) {
               });
             if (response.ok) {
                 setIsAutoOn(!isAutoOn);
-                console.log('Autoreplenishment toggled successfully');
             } else {
                 console.log('Error toggling autoreplenishment');
             }
@@ -188,15 +187,17 @@ export default function Product({ preloadedProduct }) {
                 <thead>
                 <tr>
                     <td>
-                        { utils.demoInfo.industry == 'manufacturing' ? 
+                        { 
+                            utils.demoInfo.industry == 'manufacturing' ? 
                                 "Item" : 
                                 "Size"
                         }
                     </td>
                     <td>
-                        { utils.demoInfo.industry == 'manufacturing' ? 
-                            "Factory" : 
-                            "Store"
+                        { 
+                            utils.demoInfo.industry == 'manufacturing' ? 
+                                "Factory" : 
+                                "Store"
                         }
                     </td>
                     <td>Ordered</td>
@@ -206,18 +207,39 @@ export default function Product({ preloadedProduct }) {
                 </tr>
                 </thead>
                 <tbody>
-                {product.items.map((item, index) => (
-                    <tr key={index}>
-                    <td>{item.name}</td>
-                    <td>{item.stock.find(stock => stock.location.id === location)?.amount ?? 0}</td>
-                    <td>{item.stock.find(stock => stock.location.id === location)?.ordered ?? 0}</td>
-                    <td>{item.stock.find(stock => stock.location.type === 'warehouse')?.amount ?? 0}</td>
-                    <td>{item.delivery_time.amount} {item.delivery_time.unit}</td>
-                    <td>
-                        {<StockLevelBar stock={item.stock} locationId={location}/>}
-                    </td>
-                    </tr>
-                    ))}
+                    {
+                        product.items.sort((a, b) => {
+                            const sizeOrder = { XS: 0, S: 1, M: 2, L: 3, XL: 4 };
+                            
+                            const sizeIndexA = sizeOrder[a.name] !== undefined ? sizeOrder[a.name] : Infinity;
+                            const sizeIndexB = sizeOrder[b.name] !== undefined ? sizeOrder[b.name] : Infinity;
+
+                            return sizeIndexA - sizeIndexB;
+                        }).map((item, index) => (
+                            <tr key={index}>
+                            <td>{item.name}</td>
+                            <td>
+                                {
+                                    location ? 
+                                        item.stock.find(stock => stock.location.id === location)?.amount ?? 0 :
+                                        item.stock.find(stock => stock.location.type !== "warehouse")?.amount ?? 0 
+                                }
+                            </td>
+                            <td>
+                                {
+                                    location ?
+                                        item.stock.find(stock => stock.location.id === location)?.ordered ?? 0 :
+                                        item.stock.find(stock => stock.location.type !== "warehouse")?.ordered ?? 0
+                                }
+                            </td>
+                            <td>{item.stock.find(stock => stock.location.type === 'warehouse')?.amount ?? 0}</td>
+                            <td>{item.delivery_time.amount} {item.delivery_time.unit}</td>
+                            <td>
+                                {<StockLevelBar stock={item.stock} locationId={location}/>}
+                            </td>
+                            </tr>
+                        ))
+                    }
                 </tbody>
             </table>
             <div className={styles["legend"]}>
