@@ -348,7 +348,7 @@ export default function Control({ preloadedProducts, locations }) {
                                     <table className={styles["item-table"]}>
                                     <thead>
                                         <tr>
-                                            <td>Size</td>
+                                            <td>Item</td>
                                             <td>Stock</td>
                                             <td>Threshold</td>
                                             <td>Target</td>
@@ -358,7 +358,7 @@ export default function Control({ preloadedProducts, locations }) {
                                     <tbody>
                                         {product.items.map((item, itemIndex) => (
                                         <tr key={itemIndex}>
-                                            <td>{item.size}</td>
+                                            <td>{item.name}</td>
                                             <td>
                                                 <select 
                                                     value={item?.stock.find(stock => stock.location.id === selectedLocation)?.amount ?? 0} 
