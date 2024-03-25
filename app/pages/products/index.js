@@ -216,7 +216,22 @@ export default function Products({ products, facets }) {
 
   // Function to add a new alert to the list
   const addAlert = (item) => {
-    pushToast({title: `${item.sku} is low stok!`, variant: "warning"});
+
+    const queryParameters = new URLSearchParams(router.query).toString();
+    const href = `/products/${item.product_id}?${queryParameters}`;
+
+    pushToast({
+      title: (
+        <span>
+          Item &nbsp; 
+          <a href={href}>
+            {item.sku}
+          </a> 
+          &nbsp; is low stock!
+        </span>
+      ), 
+      variant: "warning"
+    });
   };
 
   const handleSortByPopularity = () => {
@@ -402,8 +417,6 @@ export async function getServerSideProps({ query }) {
         .collection("products")
         .aggregate(agg)
         .toArray();
-
-        console.log(facets);
 
     }
 
