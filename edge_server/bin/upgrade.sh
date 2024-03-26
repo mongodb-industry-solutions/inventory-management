@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CLOUD_URL=https://realm.mongodb.com/api/client/v2.0
+CLOUD_URL=https://services.cloud.mongodb.com/api/client/v2.0
 
 UPGRADE_ARG=$1
 

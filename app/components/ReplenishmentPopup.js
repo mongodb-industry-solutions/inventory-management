@@ -6,17 +6,20 @@ import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
 import { useUser } from '../context/UserContext';
 import { useRouter } from 'next/router';
 import { ServerContext } from '../pages/_app';
+import { useToast } from '@leafygreen-ui/toast';
 import StockLevelBar from './StockLevelBar';
 import styles from '../styles/popup.module.css';
 
 
 const ReplenishmentPopup = ({ product, onClose, onSave }) => {
 
+    const { pushToast } = useToast();
+
     const { selectedUser } = useUser();
     const utils = useContext(ServerContext);
 
     const router = useRouter();
-    const { location } = router.query;
+    const { location, edge } = router.query;
 
     const transaction = {
         type: 'inbound',
@@ -53,6 +56,12 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                 newItem.product = {
                     id: product._id,
                     name: product.name,
+                    ... (product.color && {
+                        color: {
+                            name: product.color?.name,
+                            hex: product.color?.hex
+                        },
+                    }),
                     image: {
                         url: product.image?.url
                     }
@@ -82,7 +91,16 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
             newItem.amount = Math.max(0,itemStock.target - itemStock.amount);
             newItem.product = {
                 id: product._id,
-                name: product.name
+                name: product.name,
+                ... (product.color && {
+                    color: {
+                        name: product.color?.name,
+                        hex: product.color?.hex
+                    },
+                }),
+                image: {
+                    url: product.image?.url
+                }
             };
             setRows([...rows, newItem]);
         }
@@ -117,7 +135,8 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
         transaction.items = data;
         
         try {
-            const response = await fetch(utils.apiInfo.httpsUri + '/addTransaction', {
+            let url = (edge === 'true') ? '/api/edge/addTransaction': utils.apiInfo.httpsUri + '/addTransaction';
+            const response = await fetch( url, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -127,7 +146,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
             if (response.ok) {
                 console.log('Transaction saved successfully');
                 onClose();
-                onSave();
+                pushToast({title: "Order placed successfully", variant: "success"});
                 setRows([]);
             } else {
                 console.log('Error saving transaction');

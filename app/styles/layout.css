@@ -47,14 +47,10 @@
     justify-content: space-between;
     grid-area: body / body / body / body;
     position: relative;
-    z-index: auto;
+    z-index: 0;
     padding: 24px;
     min-width: 0px;
     margin-right: 24px;
-    
-
-
-  
 }
 
 .search-bar {
@@ -126,23 +122,12 @@
   margin-left:150px;
 }
 
-.alert-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  display: flex;
-  flex-direction: column;
-  z-index: 9999;
-}
-
 .order-by-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin-bottom: 1rem;
   margin-left: 150px;
-
-  
 }
 
 .order-by-text {
@@ -175,9 +160,6 @@
     height: 15px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1); 
     margin-left: 1rem;
-  
-   
-
   }
 
   .sidebar-button:not(:last-child) {

@@ -1,4 +1,4 @@
-build/edge_config.json: config.json
+build/edge_config.json docker-compose.yml: config.json
 	mkdir -p build
 
 	cat templates/config.tmpl | jq --argjson config '$(shell cat config.json)' \
@@ -24,7 +24,7 @@ build/edge_config.json: config.json
 	rm templates/docker-compose-tmp.tmpl
 
 .PHONY: config
-config: build/edge_config.json
+config: build/edge_config.json docker-compose.yml
 
 .PHONY: status
 status:
