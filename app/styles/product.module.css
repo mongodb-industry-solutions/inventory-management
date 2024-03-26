@@ -32,10 +32,10 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
   
 .table table {
-flex-grow: 1;
 border-collapse: collapse;
 }
 
@@ -47,6 +47,7 @@ border-collapse: collapse;
 }
 
 .table tbody tr {
+    height: 90px;
     border-bottom: solid 1px #e8edeb;
 }
 
@@ -182,16 +183,6 @@ border-collapse: collapse;
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
-  }
-
-  .save-success-message {
-    position: 'fixed'; 
-    bottom: 20; 
-    right: 20; 
-    background: 'green'; 
-    color: 'white'; 
-    padding: '10px';
-    z-index: 1000000;
   }
 
   .leaf {

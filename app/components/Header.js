@@ -5,6 +5,8 @@ import { useUser } from '../context/UserContext';
 import { ServerContext } from '../pages/_app';
 import { Spinner } from '@leafygreen-ui/loading-indicator';
 import { MongoDBLogoMark } from '@leafygreen-ui/logo';
+import Icon from "@leafygreen-ui/icon";
+import IconButton from "@leafygreen-ui/icon-button";
 import { H2 } from '@leafygreen-ui/typography';
 import Button from "@leafygreen-ui/button";
 import styles from '../styles/header.module.css';
@@ -17,7 +19,7 @@ function Header( ) {
   const [isLoading, setLoading] = useState(false);
 
   const router = useRouter();
-  const { location, ...otherQueryParams } = router.query;
+  const { location, edge, ...otherQueryParams } = router.query;
 
   const utils = useContext(ServerContext);
 
@@ -26,20 +28,26 @@ function Header( ) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(utils.apiInfo.dataUri + '/action/find', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-          },
-          body: JSON.stringify({
-            dataSource: 'mongodb-atlas',
-            database: utils.dbInfo.dbName,
-            collection: 'users',
-            filter: {},
-          }),
-        });
+        let response;
+        if (edge === 'true') {
+          response = await fetch('/api/edge/getUsers');
+        } else {
+          response = await fetch(utils.apiInfo.dataUri + '/action/find', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+            },
+            body: JSON.stringify({
+              dataSource: 'mongodb-atlas',
+              database: utils.dbInfo.dbName,
+              collection: 'users',
+              filter: {},
+            }),
+          });
+        }
+        
         const data = await response.json();
 
         if (data.documents) {
@@ -67,12 +75,19 @@ function Header( ) {
       if(selectedUser.permissions.locations?.length > 0){
         router.push({
           pathname: router.pathname == '/' ? '/products' : router.pathname,
-          query: { ...otherQueryParams, location: selectedUser.permissions.locations[0]?.id },
+          query: { 
+            ...otherQueryParams, 
+            location: selectedUser.permissions.locations[0]?.id,
+            edge: selectedUser.type === 'edge',
+          },
         });
       } else {
         router.push({
           pathname: router.pathname == '/' ? '/products' : router.pathname,
-          query: { ...otherQueryParams},
+          query: { 
+            ...otherQueryParams,
+            edge: selectedUser.type === 'edge',
+          },
         });
       }
     }
@@ -177,6 +192,12 @@ function Header( ) {
                 </li>
               ))}
             </ul>
+            <IconButton
+              aria-label='Control Panel'
+              href='/control'
+            >
+              <Icon glyph="Settings" />
+            </IconButton>
           </div>
         )}
       </div>

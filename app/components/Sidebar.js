@@ -15,7 +15,6 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
 
   const utils = useContext(ServerContext);
 
-
   const handleItemChange = (event) => {
     const item = event;
     let updatedSelectedItems = selectedItems;

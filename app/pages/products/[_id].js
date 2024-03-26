@@ -1,93 +1,88 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import  *  as  Realm  from  "realm-web";
-import clientPromise from '../../lib/mongodb';
+import { clientPromise, edgeClientPromise } from '../../lib/mongodb';
 import { useRouter } from 'next/router';
+import { UserContext } from '../../context/UserContext';
 import { ObjectId } from "bson";
 import { ServerContext } from '../_app';
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShirt } from '@fortawesome/free-solid-svg-icons';
 import { FaTshirt, FaWhmcs } from 'react-icons/fa';
 import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
+import Toggle from "@leafygreen-ui/toggle";
 
-export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
+export default function Product({ preloadedProduct }) {
     
     const [product, setProduct] = useState(preloadedProduct);
     const [showPopup, setShowPopup] = useState(false);
-    const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
     const [imageError, setImageError] = useState(false);
+    const [isAutoOn, setIsAutoOn] = useState(preloadedProduct.autoreplenishment);
+    const [isAutoDisabled, setIsAutoDisabled] = useState(false);
 
     const router = useRouter();
-    const { location } = router.query;
+    const { location, edge } = router.query;
 
     const utils = useContext(ServerContext);
-
-    const  app = new  Realm.App({ id: utils.appServiceInfo.appId });
+    const {startWatchProductDetail, stopWatchProductDetail} = useContext(UserContext);
 
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
-        '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9'
+        '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9', '#ffffff', '#FFFFFF'
     ];
 
     const leafUrl = lightColors.includes(product.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
 
-    const productFilter = {'items.product.id': ObjectId(preloadedProduct._id)};
+    const productFilter = {'items.product.id': new ObjectId(preloadedProduct._id)};
     let locationFilter = {};
     //Add location filter if exists
     if (location) {
-        locationFilter= { 'location.destination.id': ObjectId(location)};
+        locationFilter= { 'location.destination.id': new ObjectId(location)};
     }
     
-    const sdk = new ChartsEmbedSDK({ baseUrl: baseUrl});
+    const sdk = new ChartsEmbedSDK({ baseUrl: utils.analyticsInfo.chartsBaseUrl});
     const dashboardDiv = useRef(null);
     const [rendered, setRendered] = useState(false);
     const [dashboard] = useState(sdk.createDashboard({ 
-        dashboardId: dashboardId, 
+        dashboardId: utils.analyticsInfo.dashboardIdProduct, 
         filter: { $and: [productFilter, locationFilter]},
         widthMode: 'scale', 
         heightMode: 'scale', 
         background: '#fff'
     }));
 
+    async function refreshProduct() {
+        try {
+          const response = await fetch(`/api/edge/getProducts?id=${preloadedProduct._id}`);
+
+          if (response.status !== 304) { // 304 Not Modified
+            const refreshedProduct = await response.json();
+            setProduct(refreshedProduct.products[0]);
+          }
+        } catch (error) {
+          console.error('Error refreshing data:', error);
+        }
+      };
+
     useEffect(() => {
         dashboard.render(dashboardDiv.current)
             .then(() => setRendered(true))
             .catch(err => console.log("Error during Charts rendering.", err));
       }, [dashboard]);
-    
 
     useEffect(() => {
-        const  login = async () => {
-        
-            await app.logIn(Realm.Credentials.anonymous());
-            const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-            const collection = mongodb.db(utils.dbInfo.dbName).collection("products");
-            let updatedProduct = null;
-            
-            const filter = {
-                filter: {
-                    operationType: "update",
-                    "fullDocument._id": new ObjectId(preloadedProduct._id)
-                }
-            };
+        setIsAutoOn(product.autoreplenishment);
+    }, [product]);
 
-            for await (const  change  of  collection.watch(filter)) {
-                if (location) {
-                    updatedProduct = change.fullDocument;
-                } else {
-                    updatedProduct = await mongodb
-                        .db(utils.dbInfo.dbName)
-                        .collection("products_area_view")
-                        .findOne({ _id: ObjectId(preloadedProduct._id)});
-                }
-                
-                setProduct(JSON.parse(JSON.stringify(updatedProduct)));
-            }
+    useEffect(() => {
+        if (edge !== 'true') {
+          //initializeApp(utils.appServiceInfo.appId);
+          startWatchProductDetail(setProduct,preloadedProduct, location, utils);
+          return () => stopWatchProductDetail();
+        } else {
+            const interval = setInterval(refreshProduct, 5000);
+            return () => clearInterval(interval);
         }
-        login();
-    }, []);
+      }, [edge]);
 
     useEffect(() => {
         setProduct(preloadedProduct);
@@ -106,15 +101,12 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
         dashboard.refresh();
     };
 
-    const handleSave = async () => {
-        setSaveSuccessMessage(true);
-        await new Promise((resolve) => setTimeout(resolve, 4000));
-        setSaveSuccessMessage(false);
-      };
-
     const handleToggleAutoreplenishment = async () => {
         try {
-              const response = await fetch(utils.apiInfo.dataUri + '/action/updateOne', {
+            setIsAutoDisabled(true);
+            let url = (edge==='true') ? '/api/edge/setAutoreplenishment' : utils.apiInfo.dataUri + '/action/updateOne';
+
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -122,22 +114,24 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
                   'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
                 },
                 body: JSON.stringify({
-                  dataSource: 'mongodb-atlas',
+                  dataSource: "mongodb-atlas",
                   database: utils.dbInfo.dbName,
-                  collection: 'products',
+                  collection: "products",
                   filter: { "_id": { "$oid": preloadedProduct._id } },
                   update: {
-                    "$set": { "autoreplenishment": !product.autoreplenishment }
+                    "$set": { "autoreplenishment": !isAutoOn }
                   }
                 }),
               });
             if (response.ok) {
-                console.log('Autoreplenishment toggled successfully');
+                setIsAutoOn(!isAutoOn);
             } else {
                 console.log('Error toggling autoreplenishment');
             }
         } catch (e) {
             console.error(e);
+        } finally {
+            setIsAutoDisabled(false);
         }
     };
 
@@ -147,7 +141,7 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
         <div className={styles['product-detail-content']}>
             <div className={styles["image-container"]}>
             {
-                imageError ? 
+                imageError || !product.image?.url? 
                     (
                         utils.demoInfo.industry == 'manufacturing' ?
                             (
@@ -162,7 +156,7 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
                     ) :
                     (
                         <img 
-                            src={product.image?.url ? product.image?.url : "default"} 
+                            src={product.image?.url} 
                             alt="Product Image" 
                             className={styles["product-image"]}
                             onError={() => setImageError(true)}
@@ -175,28 +169,35 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
                 <p className="price">{product.price?.amount} {product.price?.currency}</p>
                 <p className="code">{product.code}</p>
                 {<StockLevelBar stock={product.total_stock_sum} locationId={location} />}
-                {location && (<div className={styles["switch-container"]}>
-                    <span className={styles["switch-text"]}>Autoreplenishment</span>
-                    <label className={styles["switch"]}>
-                        <input type="checkbox" checked={product.autoreplenishment} onChange={handleToggleAutoreplenishment}/>
-                        <span className={styles["slider"]}></span>
-                    </label>
-                </div>)}
+                {location && (
+                    <div className={styles["switch-container"]}>
+                        <span className={styles["switch-text"]}>Autoreplenishment</span>
+                        <Toggle
+                            aria-label="Autoreplenishment"
+                            className={styles["switch"]}
+                            checked={isAutoOn}
+                            disabled={isAutoDisabled}
+                            onChange={handleToggleAutoreplenishment}
+                        />
+                    </div>
+                )}
             </div>
             <div className={styles["table"]}>
             <table>
                 <thead>
                 <tr>
                     <td>
-                        { utils.demoInfo.industry == 'manufacturing' ? 
+                        { 
+                            utils.demoInfo.industry == 'manufacturing' ? 
                                 "Item" : 
                                 "Size"
                         }
                     </td>
                     <td>
-                        { utils.demoInfo.industry == 'manufacturing' ? 
-                            "Factory" : 
-                            "Store"
+                        { 
+                            utils.demoInfo.industry == 'manufacturing' ? 
+                                "Factory" : 
+                                "Store"
                         }
                     </td>
                     <td>Ordered</td>
@@ -206,18 +207,39 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
                 </tr>
                 </thead>
                 <tbody>
-                {product.items.map((item, index) => (
-                    <tr key={index}>
-                    <td>{item.name}</td>
-                    <td>{item.stock.find(stock => stock.location.id === location)?.amount ?? 0}</td>
-                    <td>{item.stock.find(stock => stock.location.id === location)?.ordered ?? 0}</td>
-                    <td>{item.stock.find(stock => stock.location.type === 'warehouse')?.amount ?? 0}</td>
-                    <td>{item.delivery_time.amount} {item.delivery_time.unit}</td>
-                    <td>
-                        {<StockLevelBar stock={item.stock} locationId={location}/>}
-                    </td>
-                    </tr>
-                    ))}
+                    {
+                        product.items.sort((a, b) => {
+                            const sizeOrder = { XS: 0, S: 1, M: 2, L: 3, XL: 4 };
+                            
+                            const sizeIndexA = sizeOrder[a.name] !== undefined ? sizeOrder[a.name] : Infinity;
+                            const sizeIndexB = sizeOrder[b.name] !== undefined ? sizeOrder[b.name] : Infinity;
+
+                            return sizeIndexA - sizeIndexB;
+                        }).map((item, index) => (
+                            <tr key={index}>
+                            <td>{item.name}</td>
+                            <td>
+                                {
+                                    location ? 
+                                        item.stock.find(stock => stock.location.id === location)?.amount ?? 0 :
+                                        item.stock.find(stock => stock.location.type !== "warehouse")?.amount ?? 0 
+                                }
+                            </td>
+                            <td>
+                                {
+                                    location ?
+                                        item.stock.find(stock => stock.location.id === location)?.ordered ?? 0 :
+                                        item.stock.find(stock => stock.location.type !== "warehouse")?.ordered ?? 0
+                                }
+                            </td>
+                            <td>{item.stock.find(stock => stock.location.type === 'warehouse')?.amount ?? 0}</td>
+                            <td>{item.delivery_time.amount} {item.delivery_time.unit}</td>
+                            <td>
+                                {<StockLevelBar stock={item.stock} locationId={location}/>}
+                            </td>
+                            </tr>
+                        ))
+                    }
                 </tbody>
             </table>
             <div className={styles["legend"]}>
@@ -233,13 +255,7 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
         {showPopup && <Popup 
             product={product} 
             onClose={handleClosePopup} 
-            onSave={handleSave}
         />}
-        {saveSuccessMessage && (
-            <div style={{ position: 'fixed', bottom: 34, right: 34, background: '#00684bc4', color: 'white', padding: '10px', animation: 'fadeInOut 0.5s'}}>
-                Order placed successfully
-            </div>
-        )}
         </div>
         </>
 
@@ -248,33 +264,27 @@ export default function Product({ preloadedProduct, baseUrl, dashboardId }) {
 
 export async function getServerSideProps(context) {
     try {
-        if (!process.env.CHARTS_EMBED_SDK_BASEURL) {
-            throw new Error('Invalid/Missing environment variables: "CHARTS_EMBED_SDK_BASEURL"')
-        }
-        if (!process.env.DASHBOARD_ID_GENERAL) {
-            throw new Error('Invalid/Missing environment variables: "DASHBOARD_ID_GENERAL"')
-        }
         if (!process.env.MONGODB_DATABASE_NAME) {
             throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
         }
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
-        const baseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
-        const dashboardId = process.env.DASHBOARD_ID_PRODUCT;
-
-        const client = await clientPromise;
-        const db = client.db(dbName);
 
         const { params, query } = context;
         const locationId = query.location;
+        const edge = (query.edge === 'true');
+
+        const client = edge ? await edgeClientPromise : await clientPromise;
+        const db = client.db(dbName);
 
         const collectionName = locationId ? "products" : "products_area_view";
-        
+       
         const product = await db
             .collection(collectionName)
-            .findOne({ _id: ObjectId(params._id)});
+            .findOne({ _id: new ObjectId(params._id)});
+
         return {
-            props: { preloadedProduct: JSON.parse(JSON.stringify(product)), baseUrl: baseUrl, dashboardId: dashboardId },
+            props: { preloadedProduct: JSON.parse(JSON.stringify(product)) },
         };
     } catch (e) {
         console.error(e);

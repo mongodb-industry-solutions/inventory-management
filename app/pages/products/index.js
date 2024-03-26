@@ -1,84 +1,81 @@
-import clientPromise from "../../lib/mongodb";
+import { clientPromise, edgeClientPromise }  from "../../lib/mongodb";
 import { useState, useEffect, useRef, useContext } from 'react';
-import  *  as  Realm  from  "realm-web";
 import { useRouter } from 'next/router';
 import { ServerContext } from '../_app';
 import { FaSearch } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
-import AlertBanner from '../../components/AlertBanner';
 import { autocompleteProductsPipeline } from '../../data/aggregations/autocomplete';
 import { searchProductsPipeline } from '../../data/aggregations/search';
+import { UserContext } from '../../context/UserContext';
+import { useToast } from '@leafygreen-ui/toast';
 
 export default function Products({ products, facets }) {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [displayProducts, setDisplayProducts] = useState(products);
   const [sortBy, setSortBy] = useState('');
-  const [alerts, setAlerts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
+  const [previousItems, setPreviousItems] = useState(products.flatMap(product => product.items));
+
+  const { pushToast } = useToast();
 
   const router = useRouter();
-  const { location } = router.query;
+  const { location, edge } = router.query;
 
   const utils = useContext(ServerContext);
+  const {startWatchProductList, stopWatchProductList} = useContext(UserContext);
   
-  const  app = new  Realm.App({ id: utils.appServiceInfo.appId });
-
   // Create a ref for the input element
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
 
-  useEffect(() => {
-    const  login = async () => {
-        
-      await app.logIn(Realm.Credentials.anonymous());
-      const mongodb = app.currentUser.mongoClient("mongodb-atlas");
-      const collection = mongodb.db(utils.dbInfo.dbName).collection("products");
-      let updatedProduct = null;
-      
-      const filter = {filter: {operationType: "update"}};
+  let lastEtag = null;
 
-      for await (const  change  of  collection.watch(filter)) {
-        updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
-
-        if (!location) {
-            let productView = await mongodb
-                .db(utils.dbInfo.dbName)
-                .collection("products_area_view")
-                .findOne({ _id: change.fullDocument._id});
-            updatedProduct = JSON.parse(JSON.stringify(productView));
-        }
-
-        setDisplayProducts((prevProducts) =>
-          prevProducts.map((product) =>
-            product._id === updatedProduct._id ? updatedProduct : product
-          )
-        );
-
-        const pattern = /^items\.(\d+)\.stock/;
-        for(const key of Object.keys(change.updateDescription.updatedFields)){
-
-          if (pattern.test(key)) {
-            let sku = change.fullDocument.items[parseInt(key.match(pattern)[1], 10)].sku;
-            let item = updatedProduct.items.find(item => item.sku === sku);
-
-            let itemStock = location ? 
-              item.stock.find(stock => stock.location.id === location)
-              : item.stock.find(stock => stock.location.type !== "warehouse");
-            
-            if(itemStock?.amount < itemStock?.threshold) {
-              item.product_id = updatedProduct._id;
-              addAlert(item);
-            }
-          }
-        }
-
+  async function refreshProducts() {
+    try {
+      const headers = {};
+      if (lastEtag) {
+          headers['If-None-Match'] = lastEtag;
       }
+
+      const response = await fetch('/api/edge/getProducts', {
+        method: 'GET',
+        headers: headers
+      });
+      
+      if (response.status === 304) { // 304 Not Modified
+        return;
+      } else if (response.status === 200) {
+
+        const etagHeader = response.headers.get('Etag');
+        if (etagHeader) {
+            lastEtag = etagHeader;
+        }
+
+        const refreshedProducts = await response.json();
+        setDisplayProducts(refreshedProducts.products);
+        checkForChangesAndAlerts(refreshedProducts.products);
+      }
+    } catch (error) {
+      console.error('Error refreshing data:', error);
     }
-    login();
-  }, []);
+  };
+
+  useEffect(() => {
+    if (edge !== 'true') {
+      startWatchProductList(setDisplayProducts,addAlert, location, utils);
+      return () => stopWatchProductList();
+    }
+  }, [edge]);
+
+  useEffect(() => {
+    if (edge === 'true' && searchQuery.length === 0) {
+      const interval = setInterval(refreshProducts, 500);
+      return () => clearInterval(interval);
+    }
+  }, [edge, searchQuery]);
 
   useEffect(() => {
     handleSearch();
@@ -91,21 +88,33 @@ export default function Products({ products, facets }) {
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-          },
-          body: JSON.stringify({
-            dataSource: 'mongodb-atlas',
-            database: utils.dbInfo.dbName,
-            collection: 'products',
-            pipeline: searchProductsPipeline(searchQuery, location)
-          }),
-        });
-
+        let response;
+        if (edge === 'true') {
+          response = await fetch('/api/edge/search?collection=products', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(searchQuery),
+          });
+        } else {
+          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+            },
+            body: JSON.stringify({
+              dataSource: 'mongodb-atlas',
+              database: utils.dbInfo.dbName,
+              collection: 'products',
+              pipeline: searchProductsPipeline(searchQuery, location)
+            }),
+          });
+        }
+        
         const data = await response.json();
         const searchResults = data.documents;
 
@@ -125,20 +134,32 @@ export default function Products({ products, facets }) {
   
     if (searchValue.length > 0) {
       try {
-        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-          },
-          body: JSON.stringify({
-            dataSource: 'mongodb-atlas',
-            database: utils.dbInfo.dbName,
-            collection: 'products',
-            pipeline: autocompleteProductsPipeline(searchValue)
-          }),
-        });
+        let response;
+        if (edge === 'true') {
+          response = await fetch('/api/edge/autocomplete?collection=products', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(searchValue),
+          });
+        } else {
+          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+            },
+            body: JSON.stringify({
+              dataSource: 'mongodb-atlas',
+              database: utils.dbInfo.dbName,
+              collection: 'products',
+              pipeline: autocompleteProductsPipeline(searchValue)
+            }),
+          });
+        }
         const data = await response.json();
         setSuggestions(data.documents[0].suggestions);
       } catch (error) {
@@ -198,10 +219,6 @@ export default function Products({ products, facets }) {
     }
   };
 
-  
-  
-  
-
   const filterProducts = (itemsFilter, productsFilter) => {
     // Filter products based on items and products
     let updatedFilteredProducts = products.filter(product => {
@@ -217,21 +234,49 @@ export default function Products({ products, facets }) {
     //console.log('items:' + itemsFilter + ' products:' + productsFilter + ' products: ' + updatedFilteredProducts.length);
   };
 
-  const handleAlertClose = (sku) => {
-    setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.sku !== sku));
-  };
-
   // Function to add a new alert to the list
   const addAlert = (item) => {
 
-    setAlerts((prevAlerts) => {
-      if (prevAlerts.some((alert) => alert.sku === item.sku)) {
-        return prevAlerts;
-      } else {
-        return [item, ...prevAlerts].slice(0, 3);
-      }
+    const queryParameters = new URLSearchParams(router.query).toString();
+    const href = `/products/${item.product_id}?${queryParameters}`;
+
+    pushToast({
+      title: (
+        <span>
+          Item &nbsp; 
+          <a href={href}>
+            {item.sku}
+          </a> 
+          &nbsp; is low stock!
+        </span>
+      ), 
+      variant: "warning"
     });
   };
+
+  function checkForChangesAndAlerts(newProducts) {
+    newProducts.forEach(newProduct => {
+        newProduct.items.forEach(newItem => {
+            const previousItem = previousItems.find(prevItem => prevItem.sku === newItem.sku);
+
+            // Compare stock amounts
+            const newStock = location ? 
+                newItem.stock.find(stock => stock.location.id === location)
+                : newItem.stock.find(stock => stock.location.type !== "warehouse");
+
+            const previousStock = location ? 
+                previousItem.stock.find(stock => stock.location.id === location)
+                : previousItem.stock.find(stock => stock.location.type !== "warehouse");
+
+            if (newStock.amount + newStock.ordered < newStock.threshold && newStock.amount < previousStock.amount) {
+                addAlert(newItem);
+            }
+        });
+    });
+
+    // Update previous state with new data
+    setPreviousItems(newProducts.flatMap(product => product.items));
+  }
 
   const handleSortByPopularity = () => {
     console.log('Sorting by popularity');
@@ -353,11 +398,6 @@ export default function Products({ products, facets }) {
           )}
         </ul>
       </div>
-      <div className="alert-container">
-        {alerts.map((item) => (
-          <AlertBanner key={item.sku} item={item} onClose={() => handleAlertClose(item.sku)} />
-        ))}
-      </div>
     </>
   );
 }
@@ -369,56 +409,60 @@ export async function getServerSideProps({ query }) {
     }
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
-    
-    const client = await clientPromise;
-    const db = client.db(dbName);
-    const searchQuery = query.q || '';
-    const locationId = query.location;
 
+    const locationId = query.location;
+    const edge = (query.edge === 'true');
+
+    const client = edge ? await edgeClientPromise : await clientPromise;
+    const db = client.db(dbName);
+    
     const collectionName = locationId ? "products" : "products_area_view";
 
-    let products;
-    if (searchQuery) {
-      const searchAgg = [
+    const products = await db.collection(collectionName).find({}).toArray();
+
+    let facets = [];
+
+    if (edge){
+  
+      const itemsAggregated = products.flatMap(product => product.items.map(item => item.name));
+      const itemsFacetBuckets = Array.from(new Set(itemsAggregated)).map(item => ({ _id: item, count: itemsAggregated.filter(i => i === item).length }));
+
+      const productsFacetBuckets = products.map(product => {
+        return {
+          _id: product.name,
+          count: 1,
+        };
+      });
+
+      const facetGroup = {
+        facet: {
+          itemsFacet: { buckets: itemsFacetBuckets },
+          productsFacet: { buckets: productsFacetBuckets },
+        }
+      };
+
+      facets.push(facetGroup);
+    } else {
+      const agg = [
         {
-          $search: {
-            index: 'default',
-            text: {
-              query: searchQuery,
-              path: {
-                wildcard: '*',
-              },
-              fuzzy: {
-                maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
+          $searchMeta: {
+            index: "facets",
+            facet: {
+              facets: {
+                productsFacet: { type: "string", path: "name", numBuckets: 20 },
+                itemsFacet: { type: "string", path: "items.name" },
               },
             },
           },
         },
       ];
+  
+      facets = await db
+        .collection("products")
+        .aggregate(agg)
+        .toArray();
 
-      products = await db.collection(collectionName).aggregate(searchAgg).toArray();
-    } else {
-      products = await db.collection(collectionName).find({}).toArray();
     }
-
-    const agg = [
-      {
-        $searchMeta: {
-          index: "facets",
-          facet: {
-            facets: {
-              productsFacet: { type: "string", path: "name", numBuckets: 20 },
-              itemsFacet: { type: "string", path: "items.name" },
-            },
-          },
-        },
-      },
-    ];
-
-    const facets = await db
-      .collection("products")
-      .aggregate(agg)
-      .toArray();
 
     return {
       props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)) },

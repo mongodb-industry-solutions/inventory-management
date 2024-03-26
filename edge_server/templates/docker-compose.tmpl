@@ -30,7 +30,7 @@ services:
       - internal
 
   sync_server:
-    image: quay.io/mongodb/tiered-sync-server:v0.15.0
+    image: quay.io/mongodb/edge-server:v0.20.0
     # platform: linux/amd64
     depends_on:
       - mongodb_container
@@ -51,13 +51,13 @@ services:
       - internal
 
   vector:
-    image: quay.io/mongodb/edge-vector:v0.15.0
+    image: quay.io/mongodb/edge-log-forwarder:v0.20.0
     volumes:
       - edge_logs:/home/edge_logs
     environment:
       CLIENT_APP_ID: PLACEHOLDER_APP_ID
       EDGE_TOKEN: PLACEHOLDER_EDGE_TOKEN
-      CLOUD_BASE_URL: https://realm.mongodb.com
+      CLOUD_BASE_URL: https://services.cloud.mongodb.com
     restart: unless-stopped
     networks:
       - default

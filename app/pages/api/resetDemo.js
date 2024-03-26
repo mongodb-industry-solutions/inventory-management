@@ -1,4 +1,4 @@
-import clientPromise from '../../lib/mongodb';
+import { clientPromise } from '../../lib/mongodb';
 import fs from 'fs';
 import path from 'path';
 import { EJSON } from 'bson';
@@ -25,7 +25,7 @@ export default async (req, res) => {
         const filePath = path.resolve(process.cwd(), fileName);
         const rawData = fs.readFileSync(filePath);
         const newData = EJSON.parse(rawData);
-        console.log(newData);
+        //console.log(newData);
 
         await db.collection("products").deleteMany({});
 

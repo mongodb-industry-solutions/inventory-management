@@ -1,13 +1,16 @@
-import clientPromise from "../../lib/mongodb";
+import { clientPromise, edgeClientPromise } from "../../lib/mongodb";
 import { useState, useEffect, useRef, useContext } from 'react';
-import { useRouter } from 'next/router';
 import { ObjectId } from 'mongodb';
+import { useRouter } from 'next/router';
 import { useUser } from '../../context/UserContext';
 import { ServerContext } from '../_app';
 import { FaSearch, FaTshirt, FaWhmcs } from 'react-icons/fa';
+import { useToast } from '@leafygreen-ui/toast';
 import Sidebar from '../../components/Sidebar';
 import { autocompleteTransactionsPipeline } from '../../data/aggregations/autocomplete';
 import { searchTransactionsPipeline } from '../../data/aggregations/search';
+import { facetsTransactionsPipeline } from '../../data/aggregations/facets';
+import { fetchTransactionsPipeline } from "../../data/aggregations/fetch";
 
 export default function Transactions({ orders, facets }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,11 +19,10 @@ export default function Transactions({ orders, facets }) {
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Set the number of items per page
   const [currentPage, setCurrentPage] = useState(1); // Set the initial current page to 1
-  const [saveSuccessMessage, setSaveSuccessMessage] = useState(false);
 
   const lightColors = [
     '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
-    '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9'
+    '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9', '#ffffff', '#FFFFFF'
   ];
 
   // Calculate the total number of pages
@@ -30,7 +32,9 @@ export default function Transactions({ orders, facets }) {
   const utils = useContext(ServerContext);
 
   const router = useRouter();
-  const { location, type } = router.query;
+  const { location, type, edge } = router.query;
+
+  const { pushToast } = useToast();
 
   useEffect(() => {
     handleSearch();
@@ -52,21 +56,33 @@ export default function Transactions({ orders, facets }) {
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-          },
-          body: JSON.stringify({
-            dataSource: 'mongodb-atlas',
-            database: utils.dbInfo.dbName,
-            collection: 'transactions',
-            pipeline: searchTransactionsPipeline(searchQuery, location, type)
-          }),
-        });
-
+        let response;
+        if (edge === 'true') {
+          response = await fetch(`/api/edge/search?collection=transactions&type=${type}&location=${location}&industry=${utils.demoInfo.demoIndustry}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(searchQuery),
+          });
+        } else {
+          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+            },
+            body: JSON.stringify({
+              dataSource: 'mongodb-atlas',
+              database: utils.dbInfo.dbName,
+              collection: 'transactions',
+              pipeline: searchTransactionsPipeline(searchQuery, location, type)
+            }),
+          });
+        }
+        
         const data = await response.json();
         const searchResults = data.documents;
         
@@ -86,20 +102,32 @@ export default function Transactions({ orders, facets }) {
   
     if (searchValue.length > 0) {
       try {
-        const response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-          },
-          body: JSON.stringify({
-            dataSource: 'mongodb-atlas',
-            database: utils.dbInfo.dbName,
-            collection: 'transactions',
-            pipeline: autocompleteTransactionsPipeline(searchValue)
-          }),
-        });
+        let response;
+        if (edge === 'true') {
+          response = await fetch(`/api/edge/autocomplete?collection=transactions&type=${type}&location=${location}&industry=${utils.demoInfo.demoIndustry}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify(searchValue),
+          });
+        } else {
+          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+            },
+            body: JSON.stringify({
+              dataSource: 'mongodb-atlas',
+              database: utils.dbInfo.dbName,
+              collection: 'transactions',
+              pipeline: autocompleteTransactionsPipeline(searchValue)
+            }),
+          });
+        }
         const data = await response.json();
         setSuggestions(data.documents[0].suggestions);
       } catch (error) {
@@ -183,13 +211,10 @@ export default function Transactions({ orders, facets }) {
     }
   };
 
-  const handleSave = async () => {
-    setSaveSuccessMessage(true);
-    await new Promise((resolve) => setTimeout(resolve, 4000));
-    setSaveSuccessMessage(false);
-  };
+  const handleReorder = async (originalItem) => {
 
-  const handleReorder = async (item) => {
+    //Create a copy of the original item
+    const item = JSON.parse(JSON.stringify(originalItem));
 
     //find location that match location query 
     const selectedLocation = selectedUser?.permissions?.locations.find(s => s.id === location);
@@ -216,7 +241,8 @@ export default function Transactions({ orders, facets }) {
     transaction.items.push(item);
     
     try {
-        const response = await fetch(utils.apiInfo.httpsUri + '/addTransaction', {
+        let url = (edge === 'true') ? '/api/edge/addTransaction': utils.apiInfo.httpsUri + '/addTransaction';
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -224,7 +250,7 @@ export default function Transactions({ orders, facets }) {
             body: JSON.stringify(transaction),
           });
         if (response.ok) {
-            handleSave();
+          pushToast({title: "Order placed successfully", variant: "success"});
         } else {
             console.log('Error saving order');
         }
@@ -255,9 +281,8 @@ function formatTimestamp(timestamp) {
 
   return (
     <>
-      <Sidebar facets={facets} filterOrders={filterOrders} page="orders"/>
       <div className="content">
-
+      <Sidebar facets={facets} filterOrders={filterOrders} page="orders"/>
       <div className="search-bar">
           <input
             ref={inputRef} // Attach the ref to the input element
@@ -313,7 +338,10 @@ function formatTimestamp(timestamp) {
           </thead>
           <tbody>
             {displayOrders.length > 0 ? (
-              displayOrders.slice(startIndex, endIndex).map(order => (
+              displayOrders.slice(startIndex, endIndex).map(order => { 
+                const latestStatus = order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.name;
+
+                return (
                   <tr key={order._id + order.items.sku} className="order-row">
                     <td className="order-icon">
                       <div className="shirt-icon-background" >
@@ -334,8 +362,8 @@ function formatTimestamp(timestamp) {
                                     ) :
                                     (
                                         <>
-                                            <FaTshirt style={{ color: order.items?.color?.hex || 'black' }} />
-                                            <img src={lightColors.includes(order.items?.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf"/>
+                                            <FaTshirt style={{ color: order.items?.product.color?.hex || 'black' }} />
+                                            <img src={lightColors.includes(order.items?.product.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png"} alt="Leaf" className="leaf"/>
                                         </>
                                     )
                             )
@@ -352,12 +380,12 @@ function formatTimestamp(timestamp) {
                     {!location && type === 'inbound' && (<td>{order.location?.destination?.name.split(' ')[0]}</td>)}
                     <td>{formatTimestamp(order.items?.status?.slice().sort((a, b) => new Date(a.update_timestamp) - new Date(b.update_timestamp))[0]?.update_timestamp)}</td>
                     <td>{formatTimestamp(order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.update_timestamp)}</td>
-                    <td>{order.items?.status?.slice().sort((a, b) => new Date(b.update_timestamp) - new Date(a.update_timestamp))[0]?.name}</td>
+                    <td><span className={latestStatus}>{latestStatus}</span></td>
                     {location && type === 'inbound' && (<td>
                       <button className="reorder-button" onClick={() => handleReorder(order.items)}>Reorder</button>
                     </td>)}
                   </tr>
-                )
+                )}
               )
             ) : (
               <tr>
@@ -379,11 +407,6 @@ function formatTimestamp(timestamp) {
       </div>
 
         </div>
-        {saveSuccessMessage && (
-            <div style={{ position: 'fixed', top: 134, right: 34, background: '#C7ECC2', color: '#1A6510', padding: '10px', animation: 'fadeInOut 0.5s'}}>
-                Order placed successfully
-            </div>
-        )}
       </div>
     </>
   );
@@ -401,90 +424,91 @@ export async function getServerSideProps(context) {
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
     const industry = process.env.DEMO_INDUSTRY;
-    const client = await clientPromise;
-    const db = client.db(dbName);
 
     const { query } = context;
     const type = query.type;
-    const locationId = query.location;
+    const location = query.location;
+    const edge = (query.edge === 'true');
 
-    const agg = [
-        {
-          '$match': {
-            'type': type
-          }
-        }, {
-          '$unwind': {
-            'path': '$items'
-          }
-        }, {
-          '$sort': {
-            'items.status.0.update_timestamp': -1
-          }
-        }
-      ];
+    const client = edge ? await edgeClientPromise : await clientPromise;
+    const db = client.db(dbName);
+
+    let transactions = [];
+    let facets = [];
+
+    if (edge) {
+
+      // Fetch transactions edge
+      const locationFilter = location
+        ? type === 'inbound'
+          ? { 'location.destination.id': new ObjectId(location) }
+          : { 'location.origin.id': new ObjectId(location) }
+        : {};
+
+      const manufacturingFilter =
+        industry === 'manufacturing'
+          ? type === 'inbound'
+            ? { 'items.product.name': { $ne: "Finished Goods" } }
+            : { 'items.product.name': "Finished Goods" }
+          : {};
+
+      const transactionGroup = await db
+        .collection("transactions")
+        .find({
+          ...locationFilter,
+          ...manufacturingFilter,
+        })
+        .sort({'items.status.0.update_timestamp': -1})
+        .toArray();
       
-
-    if (locationId) {
-
-        var locationFilter;
-        if ( type === 'inbound') {
-            locationFilter = {
-                $match: {
-                    'location.destination.id': new ObjectId(locationId)
-                }
-            };
-        } else {
-            locationFilter = {
-                $match: {
-                    'location.origin.id': new ObjectId(locationId)
-                }
-            };
-        }
-        agg.unshift(locationFilter);
-    }
-
-    if (industry === 'manufacturing') {
-      var manufacturingFilter;
-      if ( type === 'inbound') {
-        manufacturingFilter = {
-              $match: {
-                  'items.product.name': { $ne: "Finished Goods" }
-              }
-          };
-      } else {
-        manufacturingFilter = {
-              $match: {
-                'items.product.name': "Finished Goods"
-              }
-          };
+      if (transactionGroup.length > 0) {
+        transactions = transactionGroup.flatMap(transaction =>
+          transaction.items.map(item => ({ ...transaction, items: item }))
+        );
       }
-      agg.unshift(manufacturingFilter);
-    }
 
-    const transactions = await db
-      .collection("transactions")
-      .aggregate(agg)
-      .toArray();
-
-    const facetsAgg = [
-      {
-        $searchMeta: {
-          index: "facets",
-          facet: {
-            facets: {
-              productsFacet: { type: "string", path: "items.product.name", numBuckets: 20 },
-              itemsFacet: { type: "string", path: "items.name" },
-            },
-          },
+      // Fetch filter facets edge
+      const itemsAggregated = transactions.flatMap(transaction => transaction.items.name);
+      const productsAggregated = transactions.map(transaction => transaction.items.product.name);
+      
+      const itemsFacetBuckets = Array.from(new Set(itemsAggregated)).map(item => ({
+        _id: item,
+        count: itemsAggregated.filter(i => i === item).length,
+      }));
+      
+      const productsFacetBuckets = Array.from(new Set(productsAggregated)).map(product => ({
+        _id: product,
+        count: productsAggregated.filter(p => p === product).length,
+      }));
+      
+      const facetGroup = {
+        facet: {
+          itemsFacet: { buckets: itemsFacetBuckets },
+          productsFacet: { buckets: productsFacetBuckets },
         },
-      },
-    ];
+      };
 
-    const facets = await db
-      .collection("transactions")
-      .aggregate(facetsAgg)
-      .toArray();
+      facets.push(facetGroup);
+
+    } else {
+
+      // Fetch transactions
+      const agg = fetchTransactionsPipeline(industry, location, type);
+
+      transactions = await db
+        .collection("transactions")
+        .aggregate(agg)
+        .toArray();
+
+      // Fetch filter facets
+      const facetsAgg = facetsTransactionsPipeline(industry, type);
+
+      facets = await db
+        .collection("transactions")
+        .aggregate(facetsAgg)
+        .toArray();
+    }
+    
 
     return {
       props: { orders: JSON.parse(JSON.stringify(transactions)), facets: JSON.parse(JSON.stringify(facets)) },

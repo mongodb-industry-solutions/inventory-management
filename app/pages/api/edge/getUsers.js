@@ -1,4 +1,4 @@
-import clientPromise from '../../lib/mongodb';
+import { edgeClientPromise } from '../../../lib/mongodb';
 
 export default async (req, res) => {
     try {
@@ -7,15 +7,15 @@ export default async (req, res) => {
         }
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
-        const client = await clientPromise;
+        const client = await edgeClientPromise;
         const db = client.db(dbName);
 
         const users = await db
             .collection("users")
             .find({})
             .toArray();
-            
-        res.status(200).json({ users});
+
+        res.status(200).json({documents: users});
     } catch (e) {
         console.error(e);
         res.status(500).json({ error: 'Error fetching users' });

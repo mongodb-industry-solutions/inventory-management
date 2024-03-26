@@ -41,8 +41,8 @@ function Navbar() {
 
   /* Select default location */
   useEffect(() => {
-    setSelectedOption(selectedUser?.permissions?.locations[0]?.name);
-    setSelectedLocationId(selectedUser?.permissions?.locations[0]?.id);
+    setSelectedOption(selectedUser?.permissions?.locations?.[0]?.name);
+    setSelectedLocationId(selectedUser?.permissions?.locations?.[0]?.id);
   }, [selectedUser]);
 
   return (
@@ -66,7 +66,7 @@ function Navbar() {
         )}
 
 <div className={styles["mongodb-button-container"]}>
-  <a href={selectedLocationId ? `/products?location=${selectedLocationId}` : "/products"}>
+  <a href={selectedLocationId ? `/products?location=${selectedLocationId}&edge=${selectedUser.type === 'edge'}` : "/products"}>
     <button
       className={`${styles["mongodb-button"]} ${
         router.pathname === '/products' ? styles["bold-text"] : ''
@@ -75,7 +75,7 @@ function Navbar() {
       Real-time Inventory
     </button>
   </a>
-  <a href={selectedLocationId ? `/transactions?type=inbound&location=${selectedLocationId}` : "/transactions?type=inbound"}>
+  <a href={selectedLocationId ? `/transactions?type=inbound&location=${selectedLocationId}&edge=${selectedUser.type === 'edge'}` : "/transactions?type=inbound"}>
     <button
       className={`${styles["mongodb-button"]} ${
         router.pathname === '/transactions' && type === 'inbound' ? styles["bold-text"] : ''
@@ -84,7 +84,7 @@ function Navbar() {
       Orders
     </button>
   </a>
-  <a href={selectedLocationId ? `/transactions?type=outbound&location=${selectedLocationId}` : "/transactions?type=outbound"}>
+  <a href={selectedLocationId ? `/transactions?type=outbound&location=${selectedLocationId}&edge=${selectedUser.type === 'edge'}` : "/transactions?type=outbound"}>
     <button
       className={`${styles["mongodb-button"]} ${
         router.pathname === '/transactions' && type === 'outbound' ? styles["bold-text"] : ''
@@ -95,7 +95,7 @@ function Navbar() {
           <>Sales Events</>}
     </button>
   </a>
-  <a href={selectedLocationId ? `/dashboard?location=${selectedLocationId}` : "/dashboard"}>
+  <a href={selectedLocationId ? `/dashboard?location=${selectedLocationId}&edge=${selectedUser.type === 'edge'}` : "/dashboard"}>
     <button
       className={`${styles["mongodb-button"]} ${
         router.pathname === '/dashboard' ? styles["bold-text"] : ''

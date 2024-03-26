@@ -52,7 +52,7 @@ services:
       - internal
 
   sync_server:
-    image: quay.io/mongodb/tiered-sync-server:v0.15.0
+    image: quay.io/mongodb/edge-server:v0.20.0
     # platform: linux/amd64
     depends_on:
       - mongodb_container
@@ -70,13 +70,13 @@ services:
       - internal
 
   vector:
-    image: quay.io/mongodb/edge-vector:v0.15.0
+    image: quay.io/mongodb/edge-log-forwarder:v0.20.0
     volumes:
       - edge_logs:/home/edge_logs
     environment:
-      CLIENT_APP_ID: interns-mongo-retail-app-nghfn
-      EDGE_TOKEN: 36961c1006a18d3773103b142a07c072
-      CLOUD_BASE_URL: https://realm.mongodb.com
+      CLIENT_APP_ID: inventory_management_demo-uhetl
+      EDGE_TOKEN: 65b8f4c917201be4b075ee00
+      CLOUD_BASE_URL: https://services.cloud.mongodb.com
     restart: unless-stopped
     networks:
       - default

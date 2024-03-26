@@ -11,13 +11,13 @@ const ProductBox = ({ product }) => {
     const [imageError, setImageError] = useState(false);
 
     const router = useRouter();
-    const { location } = router.query;
+    const { location, edge } = router.query;
 
     const utils = useContext(ServerContext);
 
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
-        '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9'
+        '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9', '#ffffff', '#FFFFFF'
     ];
 
     const leafUrl = lightColors.includes(product.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
@@ -67,11 +67,11 @@ const ProductBox = ({ product }) => {
         <>
             <li className={styles["product-item"]}>
                 <a 
-                    href={location ? `/products/${product._id}?location=${location}` : `/products/${product._id}`}
+                    href={location ? `/products/${product._id}?location=${location}&edge=${edge}` : `/products/${product._id}?edge=${edge}`}
                     className={styles["product-link"]}>
                         <div className={styles["image-container"]}>
                             {
-                                imageError ? 
+                                imageError || !product.image?.url ? 
                                     (
                                         utils.demoInfo.industry == 'manufacturing' ?
                                             (
@@ -95,8 +95,7 @@ const ProductBox = ({ product }) => {
                             }
                         </div>
                         <h2>{product.name}</h2>
-                        <h3>{product.code}</h3>
-                        <p>{product.description}</p>
+                        <p>{product.code}</p>
                         {
                             itemStockStatus == 'low' || totalStockStatus == 'low' ? 
                                 <span className={`${styles['alert-label']} ${styles['low']}`}>LOW STOCK</span> : 
