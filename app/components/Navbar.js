@@ -46,7 +46,7 @@ function Navbar() {
   }, [selectedUser]);
 
   return (
-    <div className={styles["layout-navbar"]}>
+    <div className={`${styles["layout-navbar"]} ${selectedLocationId ? styles["branch"] : styles["hq"]}`}>
       <div className={styles["dropdown"]}>
         {utils.demoInfo.industry == 'manufacturing' ? 
           <FaIndustry /> :
