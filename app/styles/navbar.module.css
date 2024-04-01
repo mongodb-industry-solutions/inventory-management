@@ -11,10 +11,17 @@
     box-sizing: border-box;
     font-size: 13px;
     line-height: 15px;
-    background-color: rgb(255, 255, 255);
     height: 45px;
     z-index: 0;
     box-shadow: rgba(0, 30, 43, 0.1) 0px 4px 4px 0px;
+  }
+
+  .branch {
+    background-color: #E3FCF7;
+  }
+
+  .hq {
+    background-color: #F9EBFF;
   }
   
   .dropdown {
