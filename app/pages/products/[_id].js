@@ -10,6 +10,8 @@ import styles from '../../styles/product.module.css';
 import Popup from '../../components/ReplenishmentPopup';
 import StockLevelBar from '../../components/StockLevelBar';
 import Toggle from "@leafygreen-ui/toggle";
+import Icon from "@leafygreen-ui/icon";
+import IconButton from "@leafygreen-ui/icon-button";
 
 export default function Product({ preloadedProduct }) {
     
@@ -18,6 +20,8 @@ export default function Product({ preloadedProduct }) {
     const [imageError, setImageError] = useState(false);
     const [isAutoOn, setIsAutoOn] = useState(preloadedProduct.autoreplenishment);
     const [isAutoDisabled, setIsAutoDisabled] = useState(false);
+    const [editableField, setEditableField] = useState(null);
+    const [editedValue, setEditedValue] = useState('');
 
     const router = useRouter();
     const { location, edge } = router.query;
@@ -135,6 +139,62 @@ export default function Product({ preloadedProduct }) {
         }
     };
 
+    const handleEdit = (field) => {
+        if (!location) {
+          setEditableField(field);
+
+          field === 'price' ? 
+            setEditedValue(product[field].amount) :
+            setEditedValue(product[field]);
+        }
+      };
+
+    const handleSaveEdit = async () => {
+
+        try {
+            let url = utils.apiInfo.dataUri + '/action/updateOne';
+            console.log(editableField, editedValue);
+            const field = editableField === 'price' ? 'price.amount' : editableField;
+            const value = editableField === 'price' ? parseInt(editedValue) : editedValue;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                  'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+                },
+                body: JSON.stringify({
+                  dataSource: "mongodb-atlas",
+                  database: utils.dbInfo.dbName,
+                  collection: "products",
+                  filter: { "_id": { "$oid": preloadedProduct._id } },
+                  update: {
+                    "$set": { [field] : value }
+                  }
+                }),
+              });
+            if (response.ok) {
+                const updatedProduct = { ...product, [field]: value };
+                setProduct(updatedProduct);
+                setEditableField(null);
+            } else {
+                console.log('Error updating product');
+            }
+        } catch (e) {
+            console.error(e);
+        } 
+    };
+
+    const handleCancelEdit = () => {
+        setEditableField(null);
+        setEditedValue('');
+    };
+
+    const handleInputChange = (event) => {
+        setEditedValue(event.target.value);
+      };
+
     return (
         <>
         <div className="content">
@@ -165,8 +225,58 @@ export default function Product({ preloadedProduct }) {
             }
             </div>
             <div className={styles["details"]}>
-                <p className="name">{product.name}</p>
-                <p className="price">{product.price?.amount} {product.price?.currency}</p>
+                <p className="name">
+                    { editableField === 'name' ? 
+                        (
+                            <>
+                                <input type="text" value={editedValue} onChange={handleInputChange} />
+                                <IconButton onClick={handleSaveEdit} aria-label="Save">
+                                    <Icon glyph="Save" />
+                                </IconButton>
+                                <IconButton onClick={handleCancelEdit} aria-label="Cancel">
+                                    <Icon glyph="XWithCircle" />
+                                </IconButton>
+                            </>
+                        )
+                        : (
+                            <>
+                                {product.name}  &nbsp;
+                                { location ? 
+                                    <></> : 
+                                    <IconButton disabled={editableField !== null} onClick={() => handleEdit('name')} aria-label="Edit">
+                                        <Icon glyph="Edit" />
+                                    </IconButton>
+                                }
+                            </>
+                        )
+                    }
+                </p>
+                <p className="price">
+                    { editableField === 'price' ? 
+                        (
+                            <>
+                                <input type="text" value={editedValue} onChange={handleInputChange} />
+                                <IconButton onClick={handleSaveEdit} aria-label="Save">
+                                    <Icon glyph="Save" />
+                                </IconButton>
+                                <IconButton onClick={handleCancelEdit} aria-label="Cancel">
+                                    <Icon glyph="XWithCircle" />
+                                </IconButton>
+                            </>
+                        )
+                        : (
+                            <>
+                                {product.price?.amount} {product.price?.currency}  &nbsp;
+                                {location ? 
+                                    <></> : 
+                                    <IconButton disabled={editableField !== null} onClick={() => handleEdit('price')} aria-label="Edit">
+                                        <Icon glyph="Edit" />
+                                    </IconButton>
+                                }
+                            </>
+                        )
+                    }
+                </p>
                 <p className="code">{product.code}</p>
                 {<StockLevelBar stock={product.total_stock_sum} locationId={location} />}
                 {location && (
