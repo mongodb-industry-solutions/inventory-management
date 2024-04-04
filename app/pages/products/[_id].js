@@ -68,6 +68,7 @@ export default function Product({ preloadedProduct }) {
       };
 
     useEffect(() => {
+        dashboard.setFilter({ $and: [productFilter, locationFilter]});
         dashboard.render(dashboardDiv.current)
             .then(() => setRendered(true))
             .catch(err => console.log("Error during Charts rendering.", err));
@@ -83,7 +84,7 @@ export default function Product({ preloadedProduct }) {
           startWatchProductDetail(setProduct,preloadedProduct, location, utils);
           return () => stopWatchProductDetail();
         } else {
-            const interval = setInterval(refreshProduct, 5000);
+            const interval = setInterval(refreshProduct, 1000);
             return () => clearInterval(interval);
         }
       }, [edge]);

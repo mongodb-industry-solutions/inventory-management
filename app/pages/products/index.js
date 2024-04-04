@@ -72,7 +72,7 @@ export default function Products({ products, facets }) {
 
   useEffect(() => {
     if (edge === 'true' && searchQuery.length === 0) {
-      const interval = setInterval(refreshProducts, 500);
+      const interval = setInterval(refreshProducts, 1000);
       return () => clearInterval(interval);
     }
   }, [edge, searchQuery]);
@@ -269,6 +269,8 @@ export default function Products({ products, facets }) {
                 : previousItem.stock.find(stock => stock.location.type !== "warehouse");
 
             if (newStock.amount + newStock.ordered < newStock.threshold && newStock.amount < previousStock.amount) {
+                newItem.product_id = newProduct._id;
+                console.log(newItem);
                 addAlert(newItem);
             }
         });
