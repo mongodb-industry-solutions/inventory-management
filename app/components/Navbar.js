@@ -52,7 +52,7 @@ function Navbar() {
           <FaIndustry /> :
           <FaStore />}
         <button className={styles["dropdown-toggle"]} onClick={handleDropdownToggle}>
-          {selectedOption || selectedLocationId ? 'Choose your location' : 'Barcelona Area'}
+          {selectedOption || 'Barcelona Area' }
           <span className={styles["dropdown-arrow"]}></span>
         </button>
         {isOpen && (
