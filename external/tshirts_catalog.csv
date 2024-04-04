@@ -1,0 +1,86 @@
+code,colorhex,colorname,description,name,item,price,quantity,sku,unit
+FGR001,#00684A,Forest Green,A comfortable T-shirt,Forest Green T-shirt,XS,20,20,FGR001-XS,units
+FGR001,#00684A,Forest Green,A comfortable T-shirt,Forest Green T-shirt,S,20,20,FGR001-S,units
+FGR001,#00684A,Forest Green,A comfortable T-shirt,Forest Green T-shirt,M,20,20,FGR001-M,units
+FGR001,#00684A,Forest Green,A comfortable T-shirt,Forest Green T-shirt,L,20,20,FGR001-L,units
+FGR001,#00684A,Forest Green,A comfortable T-shirt,Forest Green T-shirt,XL,20,20,FGR001-XL,units
+PRP001,#7C25FF,Purple,A comfortable T-shirt,Purple T-shirt,XS,20,20,PRP001-XS,units
+PRP001,#7C25FF,Purple,A comfortable T-shirt,Purple T-shirt,S,20,20,PRP001-S,units
+PRP001,#7C25FF,Purple,A comfortable T-shirt,Purple T-shirt,M,20,20,PRP001-M,units
+PRP001,#7C25FF,Purple,A comfortable T-shirt,Purple T-shirt,L,20,20,PRP001-L,units
+PRP001,#7C25FF,Purple,A comfortable T-shirt,Purple T-shirt,XL,20,20,PRP001-XL,units
+SUN001,#FFE212,Sun,A comfortable T-shirt,Sun T-shirt,XS,20,20,SUN001-XS,units
+SUN001,#FFE212,Sun,A comfortable T-shirt,Sun T-shirt,S,20,20,SUN001-S,units
+SUN001,#FFE212,Sun,A comfortable T-shirt,Sun T-shirt,M,20,20,SUN001-M,units
+SUN001,#FFE212,Sun,A comfortable T-shirt,Sun T-shirt,L,20,20,SUN001-L,units
+SUN001,#FFE212,Sun,A comfortable T-shirt,Sun T-shirt,XL,20,20,SUN001-XL,units
+AZR001,#A6FFEC,Azure,A comfortable T-shirt,Azure T-shirt,XS,20,20,AZR001-XS,units
+AZR001,#A6FFEC,Azure,A comfortable T-shirt,Azure T-shirt,S,20,20,AZR001-S,units
+AZR001,#A6FFEC,Azure,A comfortable T-shirt,Azure T-shirt,M,20,20,AZR001-M,units
+AZR001,#A6FFEC,Azure,A comfortable T-shirt,Azure T-shirt,L,20,20,AZR001-L,units
+AZR001,#A6FFEC,Azure,A comfortable T-shirt,Azure T-shirt,XL,20,20,AZR001-XL,units
+BYL001,#FFC010,Bright Yellow,A comfortable T-shirt,Bright Yellow T-shirt,XS,20,20,BYL001-XS,units
+BYL001,#FFC010,Bright Yellow,A comfortable T-shirt,Bright Yellow T-shirt,S,20,20,BYL001-S,units
+BYL001,#FFC010,Bright Yellow,A comfortable T-shirt,Bright Yellow T-shirt,M,20,20,BYL001-M,units
+BYL001,#FFC010,Bright Yellow,A comfortable T-shirt,Bright Yellow T-shirt,L,20,20,BYL001-L,units
+BYL001,#FFC010,Bright Yellow,A comfortable T-shirt,Bright Yellow T-shirt,XL,20,20,BYL001-XL,units
+CHR001,#B1FF05,Chartreuse,A comfortable T-shirt,Chartreuse T-shirt,XS,20,20,CHR001-XS,units
+CHR001,#B1FF05,Chartreuse,A comfortable T-shirt,Chartreuse T-shirt,S,20,20,CHR001-S,units
+CHR001,#B1FF05,Chartreuse,A comfortable T-shirt,Chartreuse T-shirt,M,20,20,CHR001-M,units
+CHR001,#B1FF05,Chartreuse,A comfortable T-shirt,Chartreuse T-shirt,L,20,20,CHR001-L,units
+CHR001,#B1FF05,Chartreuse,A comfortable T-shirt,Chartreuse T-shirt,XL,20,20,CHR001-XL,units
+BLK001,#000000,Black,A comfortable T-shirt,Black T-shirt,XS,20,20,BLK001-XS,units
+BLK001,#000000,Black,A comfortable T-shirt,Black T-shirt,S,20,20,BLK001-S,units
+BLK001,#000000,Black,A comfortable T-shirt,Black T-shirt,M,20,20,BLK001-M,units
+BLK001,#000000,Black,A comfortable T-shirt,Black T-shirt,L,20,20,BLK001-L,units
+BLK001,#000000,Black,A comfortable T-shirt,Black T-shirt,XL,20,20,BLK001-XL,units
+GLW001,#FFEEA9,Glow,A comfortable T-shirt,Glow T-shirt,XS,20,20,GLW001-XS,units
+GLW001,#FFEEA9,Glow,A comfortable T-shirt,Glow T-shirt,S,20,20,GLW001-S,units
+GLW001,#FFEEA9,Glow,A comfortable T-shirt,Glow T-shirt,M,20,20,GLW001-M,units
+GLW001,#FFEEA9,Glow,A comfortable T-shirt,Glow T-shirt,L,20,20,GLW001-L,units
+GLW001,#FFEEA9,Glow,A comfortable T-shirt,Glow T-shirt,XL,20,20,GLW001-XL,units
+SKY001,#00D2FF,Sky,A comfortable T-shirt,Sky T-shirt,XS,20,20,SKY001-XS,units
+SKY001,#00D2FF,Sky,A comfortable T-shirt,Sky T-shirt,S,20,20,SKY001-S,units
+SKY001,#00D2FF,Sky,A comfortable T-shirt,Sky T-shirt,M,20,20,SKY001-M,units
+SKY001,#00D2FF,Sky,A comfortable T-shirt,Sky T-shirt,L,20,20,SKY001-L,units
+SKY001,#00D2FF,Sky,A comfortable T-shirt,Sky T-shirt,XL,20,20,SKY001-XL,units
+LLC001,#F2C5EE,Lilac,A comfortable T-shirt,Lilac T-shirt,XS,20,20,LLC001-XS,units
+LLC001,#F2C5EE,Lilac,A comfortable T-shirt,Lilac T-shirt,S,20,20,LLC001-S,units
+LLC001,#F2C5EE,Lilac,A comfortable T-shirt,Lilac T-shirt,M,20,20,LLC001-M,units
+LLC001,#F2C5EE,Lilac,A comfortable T-shirt,Lilac T-shirt,L,20,20,LLC001-L,units
+LLC001,#F2C5EE,Lilac,A comfortable T-shirt,Lilac T-shirt,XL,20,20,LLC001-XL,units
+CBL001,#006EFF,Clear Blue,A comfortable T-shirt,Clear Blue T-shirt,XS,20,20,CBL001-XS,units
+CBL001,#006EFF,Clear Blue,A comfortable T-shirt,Clear Blue T-shirt,S,20,20,CBL001-S,units
+CBL001,#006EFF,Clear Blue,A comfortable T-shirt,Clear Blue T-shirt,M,20,20,CBL001-M,units
+CBL001,#006EFF,Clear Blue,A comfortable T-shirt,Clear Blue T-shirt,L,20,20,CBL001-L,units
+CBL001,#006EFF,Clear Blue,A comfortable T-shirt,Clear Blue T-shirt,XL,20,20,CBL001-XL,units
+DBL001,#0D427C,Dark Blue,A comfortable T-shirt,Dark Blue T-shirt,XS,20,20,DBL001-XS,units
+DBL001,#0D427C,Dark Blue,A comfortable T-shirt,Dark Blue T-shirt,S,20,20,DBL001-S,units
+DBL001,#0D427C,Dark Blue,A comfortable T-shirt,Dark Blue T-shirt,M,20,20,DBL001-M,units
+DBL001,#0D427C,Dark Blue,A comfortable T-shirt,Dark Blue T-shirt,L,20,20,DBL001-L,units
+DBL001,#0D427C,Dark Blue,A comfortable T-shirt,Dark Blue T-shirt,XL,20,20,DBL001-XL,units
+EGR001,#023430,Evergreen,A comfortable T-shirt,Evergreen T-shirt,XS,20,20,EGR001-XS,units
+EGR001,#023430,Evergreen,A comfortable T-shirt,Evergreen T-shirt,S,20,20,EGR001-S,units
+EGR001,#023430,Evergreen,A comfortable T-shirt,Evergreen T-shirt,M,20,20,EGR001-M,units
+EGR001,#023430,Evergreen,A comfortable T-shirt,Evergreen T-shirt,L,20,20,EGR001-L,units
+EGR001,#023430,Evergreen,A comfortable T-shirt,Evergreen T-shirt,XL,20,20,EGR001-XL,units
+CYL001,#FF9F10,Chrome Yellow,A comfortable T-shirt,Chrome Yellow T-shirt,XS,20,20,CYL001-XS,units
+CYL001,#FF9F10,Chrome Yellow,A comfortable T-shirt,Chrome Yellow T-shirt,S,20,20,CYL001-S,units
+CYL001,#FF9F10,Chrome Yellow,A comfortable T-shirt,Chrome Yellow T-shirt,M,20,20,CYL001-M,units
+CYL001,#FF9F10,Chrome Yellow,A comfortable T-shirt,Chrome Yellow T-shirt,L,20,20,CYL001-L,units
+CYL001,#FF9F10,Chrome Yellow,A comfortable T-shirt,Chrome Yellow T-shirt,XL,20,20,CYL001-XL,units
+MVE001,#B45AF2,Mauve,A comfortable T-shirt,Mauve T-shirt,XS,20,20,MVE001-XS,units
+MVE001,#B45AF2,Mauve,A comfortable T-shirt,Mauve T-shirt,S,20,20,MVE001-S,units
+MVE001,#B45AF2,Mauve,A comfortable T-shirt,Mauve T-shirt,M,20,20,MVE001-M,units
+MVE001,#B45AF2,Mauve,A comfortable T-shirt,Mauve T-shirt,L,20,20,MVE001-L,units
+MVE001,#B45AF2,Mauve,A comfortable T-shirt,Mauve T-shirt,XL,20,20,MVE001-XL,units
+VLT001,#5400F8,Violet,A comfortable T-shirt,Violet T-shirt,XS,20,20,VLT001-XS,units
+VLT001,#5400F8,Violet,A comfortable T-shirt,Violet T-shirt,S,20,20,VLT001-S,units
+VLT001,#5400F8,Violet,A comfortable T-shirt,Violet T-shirt,M,20,20,VLT001-M,units
+VLT001,#5400F8,Violet,A comfortable T-shirt,Violet T-shirt,L,20,20,VLT001-L,units
+VLT001,#5400F8,Violet,A comfortable T-shirt,Violet T-shirt,XL,20,20,VLT001-XL,units
+LME001,#E9FF99,Lime,A comfortable T-shirt,Lime T-shirt,XS,20,20,LME001-XS,units
+LME001,#E9FF99,Lime,A comfortable T-shirt,Lime T-shirt,S,20,20,LME001-S,units
+LME001,#E9FF99,Lime,A comfortable T-shirt,Lime T-shirt,M,20,20,LME001-M,units
+LME001,#E9FF99,Lime,A comfortable T-shirt,Lime T-shirt,L,20,20,LME001-L,units
+LME001,#E9FF99,Lime,A comfortable T-shirt,Lime T-shirt,XL,20,20,LME001-XL,units
