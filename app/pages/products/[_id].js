@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { clientPromise, edgeClientPromise } from '../../lib/mongodb';
+import { getClientPromise, getEdgeClientPromise } from '../../lib/mongodb';
 import { useRouter } from 'next/router';
 import { UserContext } from '../../context/UserContext';
 import { ObjectId } from "bson";
@@ -385,7 +385,7 @@ export async function getServerSideProps(context) {
         const locationId = query.location;
         const edge = (query.edge === 'true');
 
-        const client = edge ? await edgeClientPromise : await clientPromise;
+        const client = edge ? await getEdgeClientPromise() : await getClientPromise();
         const db = client.db(dbName);
 
         const collectionName = locationId ? "products" : "products_area_view";

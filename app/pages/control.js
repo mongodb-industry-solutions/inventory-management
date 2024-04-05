@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext  } from 'react';
 import { useRouter } from 'next/router';
-import { clientPromise, edgeClientPromise } from "../lib/mongodb";
+import { getClientPromise, getEdgeClientPromise } from "../lib/mongodb";
 import { ServerContext } from './_app';
 import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
@@ -420,7 +420,7 @@ export async function getServerSideProps({ query }) {
 
         const edge = (query.edge === 'true');
 
-        const client = edge ? await edgeClientPromise : await clientPromise;
+        const client = edge ? await getEdgeClientPromise() : await getClientPromise();
         const db = client.db(dbName);
 
         const products = await db
