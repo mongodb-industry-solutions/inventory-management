@@ -25,7 +25,7 @@ export default async (req, res) => {
     try {
         const command = edgeHost == 'localhost' || edgeHost == '127.0.0.1' ?
             `../edge_server/bin/demo/edge-connection.sh ${action}`:
-            `ssh -i ../edge_server/gcp_ssh_key ${remoteEdgeUser}@${edgeHost} 'cd edge_server; ./bin/demo/edge-connection.sh ${action}'`;
+            `ssh -i ./gcp_ssh_key ${remoteEdgeUser}@${edgeHost} 'cd edge_server; ./bin/demo/edge-connection.sh ${action}'`;
 
         const { stdout, stderr } = await execAsync(command);
         console.log(`Command output (stdout): ${stdout}`);
