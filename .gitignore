@@ -38,6 +38,7 @@ next-env.d.ts
 /edge_server/**/config.json
 /edge_server/.backup/
 /edge_server/gcp_ssh_key
+/app/gcp_ssh_key
 
 #python variables
 **/*secrets.py
