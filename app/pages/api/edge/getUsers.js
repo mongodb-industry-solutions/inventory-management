@@ -1,4 +1,4 @@
-import { edgeClientPromise } from '../../../lib/mongodb';
+import { getEdgeClientPromise } from '../../../lib/mongodb';
 
 export default async (req, res) => {
     try {
@@ -7,7 +7,7 @@ export default async (req, res) => {
         }
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
-        const client = await edgeClientPromise;
+        const client = await getEdgeClientPromise();
         const db = client.db(dbName);
 
         const users = await db

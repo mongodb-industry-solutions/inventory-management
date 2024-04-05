@@ -1,5 +1,5 @@
 import { update } from 'lodash';
-import { clientPromise } from '../../lib/mongodb';
+import { getClientPromise } from '../../lib/mongodb';
 import { ObjectId } from 'mongodb';
 
 export default async (req, res) => {
@@ -10,7 +10,7 @@ export default async (req, res) => {
         }
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
-        const client = await clientPromise;
+        const client = await getClientPromise();
         const { ObjectId } = require('mongodb');
         const db = client.db(dbName);
 
