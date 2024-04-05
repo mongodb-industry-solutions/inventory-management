@@ -96,7 +96,7 @@ function Header( ) {
 
   const fetchStatus = async (isToggle) => {
     try {
-      const response = await fetch(`http://${utils.edgeInfo.edgeHost}:80/api/client/v2.0/tiered-sync/status`);
+      const response = await fetch('/api/edge/getStatus');
       const status = await response.json();
       const newStatus = status.cloud_connected;
 
@@ -122,7 +122,7 @@ function Header( ) {
   const handleConnectionToggle = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/setConnection', {
+      const response = await fetch('/api/edge/setConnection', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
