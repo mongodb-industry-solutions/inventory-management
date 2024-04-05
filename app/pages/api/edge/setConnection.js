@@ -23,18 +23,27 @@ export default async (req, res) => {
     }
 
     try {
-        const command = edgeHost == 'localhost' || edgeHost == '127.0.0.1' ?
-            `../edge_server/bin/demo/edge-connection.sh ${action}`:
-            `ssh -i ./gcp_ssh_key ${remoteEdgeUser}@${edgeHost} 'cd edge_server; ./bin/demo/edge-connection.sh ${action}'`;
 
-        const { stdout, stderr } = await execAsync(command);
-        console.log(`Command output (stdout): ${stdout}`);
+        if(edgeHost == 'localhost' || edgeHost == '127.0.0.1') {
+            const command = `../edge_server/bin/demo/edge-connection.sh ${action}`;
 
-        if (stderr) {
-            console.error(`Command output (stderr): ${stderr}`);
-            return res.status(500).json({ error: 'Command execution failed' });
+            const { stdout, stderr } = await execAsync(command);
+            console.log(`Command output (stdout): ${stdout}`);
+
+            if (stderr) {
+                console.error(`Command output (stderr): ${stderr}`);
+                return res.status(500).json({ error: 'Command execution failed' });
+            } else {
+                return res.status(200).json({ success: true });
+            }
         } else {
-            return res.status(200).json({ success: true });
+
+            //API call to remote edge server
+            const response = await fetch(`http://${edgeHost}:8000/${action}`);
+            const output = await response.json();
+            console.log(output);
+
+            res.status(200).json({ success: true });
         }
         
     } catch (error) {
