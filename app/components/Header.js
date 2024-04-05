@@ -15,7 +15,7 @@ function Header( ) {
 
   const [usersList, setUsersList] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isOnline, setOnlineStatus] = useState(true);
+  const [isOnline, setOnlineStatus] = useState();
   const [isLoading, setLoading] = useState(false);
 
   const router = useRouter();
