@@ -18,9 +18,7 @@ export default async (req, res) => {
         const client = await getClientPromise();
         const db = client.db(dbName);
 
-        const fileName = industry === 'retail' ? 
-            './data/retail/product_sample.json' : 
-            './data/manufacturing/products.json';
+        const fileName = `./data/${industry}/products.json`;
 
         const filePath = path.resolve(process.cwd(), fileName);
         const rawData = fs.readFileSync(filePath);
