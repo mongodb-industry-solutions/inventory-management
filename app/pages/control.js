@@ -27,6 +27,35 @@ export default function Control({ preloadedProducts, locations }) {
     const utils = useContext(ServerContext);
     const {startWatchControl, stopWatchControl} = useContext(UserContext);
 
+    let lastEtag = null;
+
+    async function refreshProduct() {
+        try {
+            const headers = {};
+            if (lastEtag) {
+                headers['If-None-Match'] = lastEtag;
+            }
+
+            const response = await fetch('/api/edge/getProducts', {
+                method: 'GET',
+                headers: headers
+            });
+
+            if (response.status === 304) { // 304 Not Modified
+                return;
+            } else if (response.status === 200) {
+                const etagHeader = response.headers.get('Etag');
+                if (etagHeader) {
+                    lastEtag = etagHeader;
+                }
+            const refreshedProduct = await response.json();
+            setProducts(refreshedProduct.products);
+          }
+        } catch (error) {
+          console.error('Error refreshing data:', error);
+        }
+    };
+
     useEffect(() => {
         // Start or stop selling based on the isSelling state
         if (isSelling) {
@@ -39,6 +68,9 @@ export default function Control({ preloadedProducts, locations }) {
         if (edge !== 'true') {
           startWatchControl(setProducts, utils);
           return () => stopWatchControl();
+        } else {
+            const interval = setInterval(refreshProduct, 1000);
+            return () => clearInterval(interval);
         }
       }, [edge]);
 

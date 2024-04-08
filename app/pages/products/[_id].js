@@ -81,7 +81,7 @@ export default function Product({ preloadedProduct }) {
         } catch (error) {
           console.error('Error refreshing data:', error);
         }
-      };
+    };
     
 
     useEffect(() => {
