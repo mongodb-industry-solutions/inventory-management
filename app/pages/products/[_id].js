@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { clientPromise, edgeClientPromise } from '../../lib/mongodb';
+import { getClientPromise, getEdgeClientPromise } from '../../lib/mongodb';
 import { useRouter } from 'next/router';
 import { UserContext } from '../../context/UserContext';
 import { ObjectId } from "bson";
@@ -54,18 +54,35 @@ export default function Product({ preloadedProduct }) {
         background: '#fff'
     }));
 
+    let lastEtag = null;
+
     async function refreshProduct() {
         try {
-          const response = await fetch(`/api/edge/getProducts?id=${preloadedProduct._id}`);
+            const headers = {};
+            if (lastEtag) {
+                headers['If-None-Match'] = lastEtag;
+            }
 
-          if (response.status !== 304) { // 304 Not Modified
+            const response = await fetch(`/api/edge/getProducts?id=${preloadedProduct._id}`, {
+                method: 'GET',
+                headers: headers
+            });
+
+            if (response.status === 304) { // 304 Not Modified
+                return;
+            } else if (response.status === 200) {
+                const etagHeader = response.headers.get('Etag');
+                if (etagHeader) {
+                    lastEtag = etagHeader;
+                }
             const refreshedProduct = await response.json();
             setProduct(refreshedProduct.products[0]);
           }
         } catch (error) {
           console.error('Error refreshing data:', error);
         }
-      };
+    };
+    
 
     useEffect(() => {
         dashboard.render(dashboardDiv.current)
@@ -74,7 +91,16 @@ export default function Product({ preloadedProduct }) {
       }, [dashboard]);
 
     useEffect(() => {
-        setIsAutoOn(product.autoreplenishment);
+        // Update autoreplenishment state if it changes
+        if (product && product.autoreplenishment !== isAutoOn) {
+            setIsAutoOn(product.autoreplenishment);
+        }
+
+        // Update dashboard if product change is detected
+        if (rendered && edge !== 'true') {
+            dashboard.setFilter({ $and: [productFilter, locationFilter]});
+            dashboard.refresh();
+        }
     }, [product]);
 
     useEffect(() => {
@@ -83,7 +109,7 @@ export default function Product({ preloadedProduct }) {
           startWatchProductDetail(setProduct,preloadedProduct, location, utils);
           return () => stopWatchProductDetail();
         } else {
-            const interval = setInterval(refreshProduct, 5000);
+            const interval = setInterval(refreshProduct, 1000);
             return () => clearInterval(interval);
         }
       }, [edge]);
@@ -384,7 +410,7 @@ export async function getServerSideProps(context) {
         const locationId = query.location;
         const edge = (query.edge === 'true');
 
-        const client = edge ? await edgeClientPromise : await clientPromise;
+        const client = edge ? await getEdgeClientPromise() : await getClientPromise();
         const db = client.db(dbName);
 
         const collectionName = locationId ? "products" : "products_area_view";

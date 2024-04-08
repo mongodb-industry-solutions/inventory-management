@@ -1,4 +1,4 @@
-import { clientPromise, edgeClientPromise }  from "../../lib/mongodb";
+import { getClientPromise, getEdgeClientPromise }  from "../../lib/mongodb";
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { ServerContext } from '../_app';
@@ -72,7 +72,7 @@ export default function Products({ products, facets }) {
 
   useEffect(() => {
     if (edge === 'true' && searchQuery.length === 0) {
-      const interval = setInterval(refreshProducts, 500);
+      const interval = setInterval(refreshProducts, 1000);
       return () => clearInterval(interval);
     }
   }, [edge, searchQuery]);
@@ -269,6 +269,8 @@ export default function Products({ products, facets }) {
                 : previousItem.stock.find(stock => stock.location.type !== "warehouse");
 
             if (newStock.amount + newStock.ordered < newStock.threshold && newStock.amount < previousStock.amount) {
+                newItem.product_id = newProduct._id;
+                console.log(newItem);
                 addAlert(newItem);
             }
         });
@@ -413,7 +415,7 @@ export async function getServerSideProps({ query }) {
     const locationId = query.location;
     const edge = (query.edge === 'true');
 
-    const client = edge ? await edgeClientPromise : await clientPromise;
+    const client = edge ? await getEdgeClientPromise() : await getClientPromise();
     const db = client.db(dbName);
     
     const collectionName = locationId ? "products" : "products_area_view";

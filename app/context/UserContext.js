@@ -1,16 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { App, Credentials } from "realm-web";
 import { ObjectId } from "bson";
-import { APP_ID } from "../realm/constants";
 
 const STORAGE_KEY = 'selectedUser';
-
-const app = new App(APP_ID);
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [selectedUser, setSelectedUser] = useState(null);
+
+  const app = new App(process.env.NEXT_PUBLIC_REALM_APP_ID);
 
   const credentials = Credentials.anonymous();
   let closeStreamProductList;

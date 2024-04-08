@@ -1,4 +1,4 @@
-import { clientPromise, edgeClientPromise } from "../../lib/mongodb";
+import { getClientPromise, getEdgeClientPromise } from "../../lib/mongodb";
 import { useState, useEffect, useRef, useContext } from 'react';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
@@ -430,7 +430,7 @@ export async function getServerSideProps(context) {
     const location = query.location;
     const edge = (query.edge === 'true');
 
-    const client = edge ? await edgeClientPromise : await clientPromise;
+    const client = edge ? await getEdgeClientPromise() : await getClientPromise();
     const db = client.db(dbName);
 
     let transactions = [];

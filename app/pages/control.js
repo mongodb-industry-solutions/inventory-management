@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext  } from 'react';
 import { useRouter } from 'next/router';
-import { clientPromise, edgeClientPromise } from "../lib/mongodb";
+import { getClientPromise, getEdgeClientPromise } from "../lib/mongodb";
 import { ServerContext } from './_app';
 import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
@@ -27,6 +27,35 @@ export default function Control({ preloadedProducts, locations }) {
     const utils = useContext(ServerContext);
     const {startWatchControl, stopWatchControl} = useContext(UserContext);
 
+    let lastEtag = null;
+
+    async function refreshProduct() {
+        try {
+            const headers = {};
+            if (lastEtag) {
+                headers['If-None-Match'] = lastEtag;
+            }
+
+            const response = await fetch('/api/edge/getProducts', {
+                method: 'GET',
+                headers: headers
+            });
+
+            if (response.status === 304) { // 304 Not Modified
+                return;
+            } else if (response.status === 200) {
+                const etagHeader = response.headers.get('Etag');
+                if (etagHeader) {
+                    lastEtag = etagHeader;
+                }
+            const refreshedProduct = await response.json();
+            setProducts(refreshedProduct.products);
+          }
+        } catch (error) {
+          console.error('Error refreshing data:', error);
+        }
+    };
+
     useEffect(() => {
         // Start or stop selling based on the isSelling state
         if (isSelling) {
@@ -39,6 +68,9 @@ export default function Control({ preloadedProducts, locations }) {
         if (edge !== 'true') {
           startWatchControl(setProducts, utils);
           return () => stopWatchControl();
+        } else {
+            const interval = setInterval(refreshProduct, 1000);
+            return () => clearInterval(interval);
         }
       }, [edge]);
 
@@ -408,19 +440,15 @@ export default function Control({ preloadedProducts, locations }) {
 
 export async function getServerSideProps({ query }) {
     try {
-        if (!process.env.REALM_APP_ID) {
-            throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
-        }
         if (!process.env.MONGODB_DATABASE_NAME) {
             throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
         }
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
-        const realmAppId = process.env.REALM_APP_ID;
 
         const edge = (query.edge === 'true');
 
-        const client = edge ? await edgeClientPromise : await clientPromise;
+        const client = edge ? await getEdgeClientPromise() : await getClientPromise();
         const db = client.db(dbName);
 
         const products = await db
@@ -434,7 +462,7 @@ export async function getServerSideProps({ query }) {
             .toArray();
 
         return {
-            props: { preloadedProducts: JSON.parse(JSON.stringify(products)), locations: JSON.parse(JSON.stringify(locations)), realmAppId: realmAppId, databaseName: dbName },
+            props: { preloadedProducts: JSON.parse(JSON.stringify(products)), locations: JSON.parse(JSON.stringify(locations)) },
         };
     } catch (e) {
         console.error(e);

@@ -1,4 +1,4 @@
-import { edgeClientPromise } from '../../../lib/mongodb';
+import { getEdgeClientPromise } from '../../../lib/mongodb';
 import { ObjectId } from 'bson';
 
 export default async (req, res) => {
@@ -6,7 +6,7 @@ export default async (req, res) => {
 
         const { update, filter, database, collection } = req.body;
 
-        const client = await edgeClientPromise;
+        const client = await getEdgeClientPromise();
         const db = client.db(database);
         
         const productId = new ObjectId(filter._id.$oid);

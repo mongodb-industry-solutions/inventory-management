@@ -1,2652 +1,4339 @@
 [{
-    "_id": {
-      "$oid": "649ef6647827d12200b87893"
-    },
-    "name": "Black T-shirt",
-    "color": {
-      "name": "Black",
-      "hex": "#000000"
-    },
-    "code": "BLK001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
-    },
-    "popularity_index": 18,
-    "items": [
-      {
-        "sku": "BLK001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "amount": 15,
-            "threshold": 10,
-            "target": 20
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "BLK001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "amount": 10,
-            "threshold": 10,
-            "target": 20
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "BLK001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "amount": 5,
-            "threshold": 10,
-            "target": 20
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "BLK001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "amount": 10,
-            "threshold": 10,
-            "target": 20
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "BLK001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "amount": 15,
-            "threshold": 10,
-            "target": 20
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "amount": 55,
-        "threshold": 50,
-        "target": 100
-      },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe246e"
   },
-  {
-    "_id": {
-      "$oid": "64d4a65f99a29f0cd71a6784"
-    },
-    "name": "Evergreen T-shirt",
-    "color": {
-      "name": "Evergreen",
-      "hex": "#023430"
-    },
-    "code": "EGR001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
-    },
-    "popularity_index": 17,
-    "items": [
-      {
-        "sku": "EGR001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "EGR001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "EGR001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "EGR001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "EGR001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 55
-      },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+  "name": "Forest Green T-shirt",
+  "code": "FGR001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 25,
+    "currency": "USD"
   },
-  {
-    "_id": {
-      "$oid": "64d4a93599a29f0cd71a6787"
-    },
-    "name": "Forest Green T-shirt",
-    "color": {
-      "name": "Forest Green",
-      "hex": "#00684A"
-    },
-    "code": "FGR001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
-    },
-    "popularity_index": 16,
-    "items": [
-      {
-        "sku": "FGR001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "FGR001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "FGR001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "FGR001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "FGR001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 55
-      },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+  "color": {
+    "hex": "#00684A",
+    "name": "Forest Green"
   },
-  {
-    "_id": {
-      "$oid": "64d4aa0f99a29f0cd71a6789"
+  "items": [
+    {
+      "sku": "FGR001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            },
+            "type": "store"
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "name": "Chartreuse T-shirt",
-    "color": {
-      "name": "Chartreuse",
-      "hex": "#B1FF05"
+    {
+      "sku": "FGR001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 388
+        }
+      ]
     },
-    "code": "CHR001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
+    {
+      "sku": "FGR001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            },
+            "type": "store"
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            },
+            "type": "store"
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "popularity_index": 15,
-    "items": [
-      {
-        "sku": "CHR001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+    {
+      "sku": "FGR001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "CHR001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "FGR001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
       },
-      {
-        "sku": "CHR001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+      "stock": [
+        {
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            },
+            "type": "store"
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "CHR001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
       },
-      {
-        "sku": "CHR001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 2000
+    },
+    {
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 50
+        "type": "store"
       },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+      "amount": 100
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe2474"
   },
-  {
-    "_id": {
-      "$oid": "64d4aaa799a29f0cd71a678b"
-    },
-    "name": "Lime T-shirt",
-    "color": {
-      "name": "Lime",
-      "hex": "#E9FF99"
-    },
-    "code": "LME001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
-    },
-    "popularity_index": 14,
-    "items": [
-      {
-        "sku": "LME001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 11,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "LME001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 7,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "LME001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "LME001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "LME001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 48
-      },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+  "name": "Sky T-shirt",
+  "code": "SKY001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 25,
+    "currency": "USD"
   },
-  {
-    "_id": {
-      "$oid": "64d4ab3599a29f0cd71a678d"
-    },
-    "name": "Lilac T-shirt",
-    "color": {
-      "name": "Lilac",
-      "hex": "#F2C5EE"
-    },
-    "code": "LLC001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
-    },
-    "popularity_index": 13,
-    "items": [
-      {
-        "sku": "LLC001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "LLC001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "LLC001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "LLC001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "LLC001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 55
-      },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+  "color": {
+    "hex": "#00D2FF",
+    "name": "Sky"
   },
-  {
-    "_id": {
-      "$oid": "64d4ab8d99a29f0cd71a678f"
+  "items": [
+    {
+      "sku": "SKY001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "name": "Mauve T-shirt",
-    "color": {
-      "name": "Mauve",
-      "hex": "#B45AF2"
+    {
+      "sku": "SKY001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          }
+        },
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          }
+        },
+        {
+          "amount": 400,
+          "location": {
+            "type": "warehouse"
+          }
+        }
+      ]
     },
-    "code": "MVE001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
+    {
+      "sku": "SKY001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "popularity_index": 12,
-    "items": [
-      {
-        "sku": "MVE001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 13,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+    {
+      "sku": "SKY001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
       },
-      {
-        "sku": "MVE001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+      "stock": [
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
           },
-          {
-            "location": "ordered",
-            "amount": 0
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "SKY001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
       },
-      {
-        "sku": "MVE001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+      "stock": [
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
           }
-        ]
-      },
-      {
-        "sku": "MVE001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 7,
-            "threshold": 10
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "MVE001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+        "type": "store"
       }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 40
-      },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
+    },
+    {
+      "amount": 2000,
+      "location": {
+        "type": "warehouse"
       }
-    ],
-    "autoreplenishment": false
+    },
+    {
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100
+    }
+  ],
+  "autoreplenishment": true
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe2469"
   },
-  {
-    "_id": {
-      "$oid": "64d4abe699a29f0cd71a6791"
-    },
-    "name": "Purple T-shirt",
-    "color": {
-      "name": "Purple",
-      "hex": "#7C25FF"
-    },
-    "code": "PRP001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
-    },
-    "popularity_index": 11,
-    "items": [
-      {
-        "sku": "PRP001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "PRP001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "PRP001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 0,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "PRP001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "PRP001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 50
-      },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+  "name": "Chartreuse T-shirt",
+  "code": "CHR001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
   },
-  {
-    "_id": {
-      "$oid": "64d4ac2099a29f0cd71a6793"
-    },
-    "name": "Violet T-shirt",
-    "color": {
-      "name": "Violet",
-      "hex": "#5400F8"
-    },
-    "code": "VLT001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
-    },
-    "popularity_index": 10,
-    "items": [
-      {
-        "sku": "VLT001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 11,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "VLT001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "VLT001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 2,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "VLT001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 9,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "VLT001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 47
-      },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+  "color": {
+    "hex": "#B1FF05",
+    "name": "Chartreuse"
   },
-  {
-    "_id": {
-      "$oid": "64d4ae0899a29f0cd71a6795"
+  "items": [
+    {
+      "sku": "CHR001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "name": "Dark Blue T-shirt",
-    "color": {
-      "name": "Dark Blue",
-      "hex": "#0D427C"
+    {
+      "sku": "CHR001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          }
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "code": "DBL001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
+    {
+      "sku": "CHR001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "popularity_index": 9,
-    "items": [
-      {
-        "sku": "DBL001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+    {
+      "sku": "CHR001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "DBL001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "CHR001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
       },
-      {
-        "sku": "DBL001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "DBL001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
       },
-      {
-        "sku": "DBL001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 55
+      "amount": 100
+    },
+    {
+      "location": {
+        "type": "warehouse"
       },
-      {
-        "location": "ordered",
-        "amount": 0
+      "amount": 2000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
       },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe246b"
   },
-  {
-    "_id": {
-      "$oid": "64d4ae3499a29f0cd71a6797"
-    },
-    "name": "Clear Blue T-shirt",
-    "color": {
-      "name": "Clear Blue",
-      "hex": "#006EFF"
-    },
-    "code": "CBL001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
-    },
-    "popularity_index": 8,
-    "items": [
-      {
-        "sku": "CBL001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "CBL001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "CBL001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "CBL001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "CBL001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 55
-      },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+  "name": "Clear Blue T-shirt",
+  "code": "CBL001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
   },
-  {
-    "_id": {
-      "$oid": "64d4ae9799a29f0cd71a6799"
-    },
-    "name": "Sky T-shirt",
-    "color": {
-      "name": "Sky",
-      "hex": "#00D2FF"
-    },
-    "code": "SKY001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
-    },
-    "popularity_index": 7,
-    "items": [
-      {
-        "sku": "SKY001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "SKY001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "SKY001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "SKY001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "SKY001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 55
-      },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+  "color": {
+    "hex": "#006EFF",
+    "name": "Clear Blue"
   },
-  {
-    "_id": {
-      "$oid": "64d4aec099a29f0cd71a679b"
+  "items": [
+    {
+      "sku": "CBL001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "name": "Azure T-shirt",
-    "color": {
-      "name": "Azure",
-      "hex": "#A6FFEC"
+    {
+      "sku": "CBL001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "code": "AZR001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
+    {
+      "sku": "CBL001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          }
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "popularity_index": 6,
-    "items": [
-      {
-        "sku": "AZR001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+    {
+      "sku": "CBL001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "AZR001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "CBL001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
       },
-      {
-        "sku": "AZR001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
+        {
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "AZR001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
       },
-      {
-        "sku": "AZR001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 55
+      "amount": 100,
+      "threshold": 50
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
       },
-      {
-        "location": "ordered",
-        "amount": 0
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
       },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+      "amount": 2000
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe246c"
   },
-  {
-    "_id": {
-      "$oid": "64d4aefd99a29f0cd71a679d"
-    },
-    "name": "Glow T-shirt",
-    "color": {
-      "name": "Glow",
-      "hex": "#FFEEA9"
-    },
-    "code": "GLW001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
-    },
-    "popularity_index": 5,
-    "items": [
-      {
-        "sku": "GLW001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "GLW001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "GLW001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "GLW001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "GLW001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 55
-      },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+  "name": "Dark Blue T-shirt",
+  "code": "DBL001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
   },
-  {
-    "_id": {
-      "$oid": "64d4af6499a29f0cd71a679f"
-    },
-    "name": "Sun T-shirt",
-    "color": {
-      "name": "Sun",
-      "hex": "#FFE212"
-    },
-    "code": "SUN001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
-    },
-    "popularity_index": 4,
-    "items": [
-      {
-        "sku": "SUN001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "SUN001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "SUN001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "SUN001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "SUN001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 55
-      },
-      {
-        "location": "ordered",
-        "amount": 0
-      },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+  "color": {
+    "hex": "#0D427C",
+    "name": "Dark Blue"
   },
-  {
-    "_id": {
-      "$oid": "64d4af9c99a29f0cd71a67a1"
+  "items": [
+    {
+      "sku": "DBL001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "name": "Bright Yellow T-shirt",
-    "color": {
-      "name": "Bright Yellow",
-      "hex": "#FFC010"
+    {
+      "sku": "DBL001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "code": "BYL001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
+    {
+      "sku": "DBL001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "popularity_index": 3,
-    "items": [
-      {
-        "sku": "BYL001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+    {
+      "sku": "DBL001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
+        {
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            },
+            "type": "store"
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      },
-      {
-        "sku": "BYL001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "DBL001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
       },
-      {
-        "sku": "BYL001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            },
+            "type": "store"
           }
-        ]
-      },
-      {
-        "sku": "BYL001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
       },
-      {
-        "sku": "BYL001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
-      }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 55
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
       },
-      {
-        "location": "ordered",
-        "amount": 0
+      "amount": 2000
+    },
+    {
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
       },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
+      "amount": 100,
+      "threshold": 50,
+      "target": 100
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe2476"
   },
-  {
-    "_id": {
-      "$oid": "64d4b03a99a29f0cd71a67a3"
+  "name": "Violet T-shirt",
+  "code": "VLT001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "color": {
+    "hex": "#5400F8",
+    "name": "Violet"
+  },
+  "items": [
+    {
+      "sku": "VLT001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "name": "Chrome Yellow T-shirt",
-    "color": {
-      "name": "Chrome Yellow",
-      "hex": "#FF9F10"
+    {
+      "sku": "VLT001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "code": "CYL001",
-    "description": "A comfortable T-shirt",
-    "price": {
-      "amount": 20,
-      "currency": "EUR"
+    {
+      "sku": "VLT001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
     },
-    "popularity_index": 2,
-    "items": [
-      {
-        "sku": "CYL001-XS",
-        "size": "XS",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+    {
+      "sku": "VLT001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
       },
-      {
-        "sku": "CYL001-S",
-        "size": "S",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
+        {
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
           },
-          {
-            "location": "ordered",
-            "amount": 0
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "VLT001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
       },
-      {
-        "sku": "CYL001-M",
-        "size": "M",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 5,
-            "threshold": 10
+        {
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            },
+            "type": "store"
           },
-          {
-            "location": "ordered",
-            "amount": 0
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        },
+        "type": "store"
       },
-      {
-        "sku": "CYL001-L",
-        "size": "L",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
-        },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 10,
-            "threshold": 10
-          },
-          {
-            "location": "ordered",
-            "amount": 0
-          },
-          {
-            "location": "warehouse",
-            "amount": 80
-          }
-        ]
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
       },
-      {
-        "sku": "CYL001-XL",
-        "size": "XL",
-        "delivery_time": {
-          "amount": 3,
-          "unit": "seconds"
+      "amount": 2000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe2466"
+  },
+  "name": "Azure T-shirt",
+  "code": "AZR001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "color": {
+    "hex": "#A6FFEC",
+    "name": "Azure"
+  },
+  "items": [
+    {
+      "sku": "AZR001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
         },
-        "stock": [
-          {
-            "location": "store",
-            "target": 20,
-            "amount": 15,
-            "threshold": 10
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
           },
-          {
-            "location": "ordered",
-            "amount": 0
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
           },
-          {
-            "location": "warehouse",
-            "amount": 80
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "AZR001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "AZR001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
           }
-        ]
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            },
+            "type": "store"
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "AZR001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "AZR001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 2000
+    },
+    {
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ],
+  "autoreplenishment": true
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe2467"
+  },
+  "name": "Black T-shirt",
+  "code": "BLK001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "color": {
+    "hex": "#000000",
+    "name": "Black"
+  },
+  "items": [
+    {
+      "sku": "BLK001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          }
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "BLK001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "BLK001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          }
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "BLK001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "BLK001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 2000
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe2468"
+  },
+  "name": "Bright Yellow T-shirt",
+  "code": "BYL001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "color": {
+    "hex": "#FFC010",
+    "name": "Bright Yellow"
+  },
+  "items": [
+    {
+      "sku": "BYL001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "BYL001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          }
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "BYL001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "BYL001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "BYL001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 2000
+    },
+    {
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe246a"
+  },
+  "name": "Chrome Yellow T-shirt",
+  "code": "CYL001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "color": {
+    "hex": "#FF9F10",
+    "name": "Chrome Yellow"
+  },
+  "items": [
+    {
+      "sku": "CYL001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "CYL001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "CYL001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "CYL001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "CYL001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 2000
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe246d"
+  },
+  "name": "Evergreen T-shirt",
+  "code": "EGR001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "color": {
+    "hex": "#023430",
+    "name": "Evergreen"
+  },
+  "items": [
+    {
+      "sku": "EGR001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "EGR001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          }
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "EGR001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "EGR001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "EGR001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            },
+            "type": "store"
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 2000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe246f"
+  },
+  "name": "Glow T-shirt",
+  "code": "GLW001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "color": {
+    "hex": "#FFEEA9",
+    "name": "Glow"
+  },
+  "items": [
+    {
+      "sku": "GLW001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          }
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "GLW001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "GLW001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "ordered": 0,
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            },
+            "type": "store"
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "GLW001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "GLW001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 2000
+    },
+    {
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe2471"
+  },
+  "name": "Lime T-shirt",
+  "code": "LME001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "color": {
+    "hex": "#E9FF99",
+    "name": "Lime"
+  },
+  "items": [
+    {
+      "sku": "LME001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "LME001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "LME001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "LME001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "ordered": 0,
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            },
+            "type": "store"
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "LME001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
       }
-    ],
-    "total_stock_sum": [
-      {
-        "location": "store",
-        "target": 100,
-        "threshold": 50,
-        "amount": 55
+    },
+    {
+      "location": {
+        "type": "warehouse"
       },
-      {
-        "location": "ordered",
-        "amount": 0
+      "amount": 2000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
       },
-      {
-        "location": "warehouse",
-        "amount": 400
-      }
-    ],
-    "autoreplenishment": false
-  }]
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe2472"
+  },
+  "name": "Mauve T-shirt",
+  "code": "MVE001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "color": {
+    "hex": "#B45AF2",
+    "name": "Mauve"
+  },
+  "items": [
+    {
+      "sku": "MVE001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "MVE001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "MVE001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "MVE001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "MVE001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          }
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 2000
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe2473"
+  },
+  "name": "Purple T-shirt",
+  "code": "PRP001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "color": {
+    "hex": "#7C25FF",
+    "name": "Purple"
+  },
+  "items": [
+    {
+      "sku": "PRP001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "PRP001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "PRP001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "PRP001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "PRP001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        },
+        "type": "store"
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 2000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe2475"
+  },
+  "name": "Sun T-shirt",
+  "code": "SUN001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "color": {
+    "hex": "#FFE212",
+    "name": "Sun"
+  },
+  "items": [
+    {
+      "sku": "SUN001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "SUN001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "SUN001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "SUN001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            },
+            "type": "store"
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "SUN001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 2000
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6602f8ab8b7c37191efe2470"
+  },
+  "name": "Lilac T-shirt",
+  "code": "LLC001",
+  "description": "A comfortable T-shirt",
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "color": {
+    "hex": "#F2C5EE",
+    "name": "Lilac"
+  },
+  "items": [
+    {
+      "sku": "LLC001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "LLC001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "LLC001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            },
+            "type": "store"
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "LLC001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          }
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "sku": "LLC001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 400
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 2000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ],
+  "editableField": "Lilac T-shirtt",
+  "field": "Lilac T-shirtt"
+}]
