@@ -4,12 +4,12 @@ import { ObjectId } from "bson";
 
 const STORAGE_KEY = 'selectedUser';
 
-const app = new App(process.env.NEXT_PUBLIC_REALM_APP_ID);
-
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [selectedUser, setSelectedUser] = useState(null);
+
+  const app = new App(process.env.NEXT_PUBLIC_REALM_APP_ID);
 
   const credentials = Credentials.anonymous();
   let closeStreamProductList;
