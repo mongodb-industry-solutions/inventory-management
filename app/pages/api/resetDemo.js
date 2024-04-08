@@ -1,4 +1,4 @@
-import { clientPromise } from '../../lib/mongodb';
+import { getClientPromise } from '../../lib/mongodb';
 import fs from 'fs';
 import path from 'path';
 import { EJSON } from 'bson';
@@ -15,12 +15,10 @@ export default async (req, res) => {
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
         const industry = process.env.DEMO_INDUSTRY;
-        const client = await clientPromise;
+        const client = await getClientPromise();
         const db = client.db(dbName);
 
-        const fileName = industry === 'retail' ? 
-            './data/retail/product_sample.json' : 
-            './data/manufacturing/products.json';
+        const fileName = `./data/${industry}/products.json`;
 
         const filePath = path.resolve(process.cwd(), fileName);
         const rawData = fs.readFileSync(filePath);

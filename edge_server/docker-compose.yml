@@ -1,27 +1,5 @@
 version: '3.5'
 services:
-  proxy-80:
-    image: hpello/tcp-proxy
-    depends_on:
-      - sync_server
-    ports:
-      - "80:80"
-    networks:
-      - default
-      - internal
-    command: sync_server 80
-
-  proxy-27021:
-    image: hpello/tcp-proxy
-    depends_on:
-      - sync_server
-    ports:
-      - "27021:27021"
-    networks:
-      - default
-      - internal
-    command: sync_server 27021
-
   mongodb_container:
     image: mongo:5.0
     volumes:
@@ -64,6 +42,9 @@ services:
       - edge_logs:/app/edge_logs
     environment:
       EDGE_CONFIG_FILE: /apps/configs/edge_config.json
+    ports:
+      - "80:80"
+      - "27021:27021"
     restart: unless-stopped
     networks:
       - default

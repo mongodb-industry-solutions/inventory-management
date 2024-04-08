@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { clientPromise } from '../lib/mongodb'
+import { getClientPromise } from '../lib/mongodb'
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -12,13 +12,13 @@ export const getServerSideProps: GetServerSideProps<
   ConnectionStatus
 > = async () => {
   try {
-    await clientPromise
+    await getClientPromise();
 
     return {
       props: { isConnected: true },
     }
   } catch (e) {
-    console.error(e)
+    console.error(e);
     return {
       props: { isConnected: false },
     }
