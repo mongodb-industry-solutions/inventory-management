@@ -440,15 +440,11 @@ export default function Control({ preloadedProducts, locations }) {
 
 export async function getServerSideProps({ query }) {
     try {
-        if (!process.env.REALM_APP_ID) {
-            throw new Error('Invalid/Missing environment variables: "REALM_APP_ID"')
-        }
         if (!process.env.MONGODB_DATABASE_NAME) {
             throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
         }
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
-        const realmAppId = process.env.REALM_APP_ID;
 
         const edge = (query.edge === 'true');
 
@@ -466,7 +462,7 @@ export async function getServerSideProps({ query }) {
             .toArray();
 
         return {
-            props: { preloadedProducts: JSON.parse(JSON.stringify(products)), locations: JSON.parse(JSON.stringify(locations)), realmAppId: realmAppId, databaseName: dbName },
+            props: { preloadedProducts: JSON.parse(JSON.stringify(products)), locations: JSON.parse(JSON.stringify(locations)) },
         };
     } catch (e) {
         console.error(e);
