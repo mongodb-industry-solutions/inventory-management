@@ -54,11 +54,27 @@ export default function Product({ preloadedProduct }) {
         background: '#fff'
     }));
 
+    let lastEtag = null;
+
     async function refreshProduct() {
         try {
-          const response = await fetch(`/api/edge/getProducts?id=${preloadedProduct._id}`);
+            const headers = {};
+            if (lastEtag) {
+                headers['If-None-Match'] = lastEtag;
+            }
 
-          if (response.status !== 304) { // 304 Not Modified
+            const response = await fetch(`/api/edge/getProducts?id=${preloadedProduct._id}`, {
+                method: 'GET',
+                headers: headers
+            });
+
+            if (response.status === 304) { // 304 Not Modified
+                return;
+            } else if (response.status === 200) {
+                const etagHeader = response.headers.get('Etag');
+                if (etagHeader) {
+                    lastEtag = etagHeader;
+                }
             const refreshedProduct = await response.json();
             setProduct(refreshedProduct.products[0]);
           }
@@ -66,16 +82,25 @@ export default function Product({ preloadedProduct }) {
           console.error('Error refreshing data:', error);
         }
       };
+    
 
     useEffect(() => {
-        dashboard.setFilter({ $and: [productFilter, locationFilter]});
         dashboard.render(dashboardDiv.current)
             .then(() => setRendered(true))
             .catch(err => console.log("Error during Charts rendering.", err));
       }, [dashboard]);
 
     useEffect(() => {
-        setIsAutoOn(product.autoreplenishment);
+        // Update autoreplenishment state if it changes
+        if (product && product.autoreplenishment !== isAutoOn) {
+            setIsAutoOn(product.autoreplenishment);
+        }
+
+        // Update dashboard if product change is detected
+        if (rendered && edge !== 'true') {
+            dashboard.setFilter({ $and: [productFilter, locationFilter]});
+            dashboard.refresh();
+        }
     }, [product]);
 
     useEffect(() => {
