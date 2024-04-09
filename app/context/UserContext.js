@@ -6,10 +6,10 @@ const STORAGE_KEY = 'selectedUser';
 
 export const UserContext = createContext();
 
-export const UserProvider = ({ children }) => {
+export const UserProvider = ({ children, value }) => {
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const app = new App(process.env.NEXT_PUBLIC_REALM_APP_ID);
+  const app = new App(value.appServiceInfo.appId);
 
   const credentials = Credentials.anonymous();
   let closeStreamProductList;
