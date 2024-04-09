@@ -10,9 +10,6 @@ export default async (req, res) => {
     if (!process.env.EDGE_SERVER_HOST) {
         throw new Error('Invalid/Missing environment variables: "EDGE_SERVER_HOST"')
     }
-    if (!process.env.REMOTE_EDGE_USER) {
-        throw new Error('Invalid/Missing environment variables: "REMOTE_EDGE_USER"')
-    }
 
     const { action } = req.body;
     const edgeHost = process.env.EDGE_SERVER_HOST;
