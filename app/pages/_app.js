@@ -11,7 +11,7 @@ export const ServerContext = createContext();
 function MyApp({ Component, pageProps, utils }) {
     return (
     <ServerContext.Provider value={utils}>
-     <UserProvider>
+     <UserProvider value={utils}>
       <ToastProvider> 
       <div className="layout">
         <div className="header-container">
@@ -33,7 +33,7 @@ MyApp.getInitialProps = async ({ ctx }) => {
     const requiredEnvVariables = [
       'APP_SERVICES_URI',
       'API_KEY',
-      'NEXT_PUBLIC_REALM_APP_ID',
+      'REALM_APP_ID',
       'EDGE_SERVER_HOST',
       'MONGODB_DATABASE_NAME',
       'DEMO_INDUSTRY',
@@ -50,7 +50,7 @@ MyApp.getInitialProps = async ({ ctx }) => {
 
     const uri = process.env.APP_SERVICES_URI;
     const key = process.env.API_KEY;
-    const appId = process.env.NEXT_PUBLIC_REALM_APP_ID;
+    const appId = process.env.REALM_APP_ID;
     const edgeHost = process.env.EDGE_SERVER_HOST;
     const dbName = process.env.MONGODB_DATABASE_NAME;
     const industry = process.env.DEMO_INDUSTRY;
@@ -100,6 +100,7 @@ MyApp.getInitialProps = async ({ ctx }) => {
         utils: {
           apiInfo: { dataUri: null, httpsUri: null, accessToken: null}, 
           dbInfo: { dbName: null }, 
+          appServiceInfo: { appId: null },
           edgeInfo: { edgeHost: null }, 
           demoInfo: { demoIndustry: null },
           analyticsInfo: { chartsBaseUrl: null, dashboardIdGeneral: null, dashboardIdProduct: null}
