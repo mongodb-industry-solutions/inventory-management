@@ -1,0 +1,30 @@
+[
+    {
+        "name": "updateProductStock",
+        "private": false,
+        "run_as_system": true,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "issueInboundTransactions",
+        "private": true,
+        "run_as_system": true,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "simulateItemDelivery",
+        "private": false,
+        "run_as_system": true,
+        "disable_arg_logs": true
+    },
+    {
+        "name": "autoreplenishment",
+        "private": true
+    },
+    {
+        "name": "addTransaction",
+        "private": false,
+        "run_as_system": true,
+        "disable_arg_logs": true
+    }
+]
