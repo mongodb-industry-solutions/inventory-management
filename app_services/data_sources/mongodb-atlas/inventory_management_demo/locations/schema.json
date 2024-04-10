@@ -1,0 +1,39 @@
+{
+    "title": "location",
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "area": {
+            "bsonType": "object",
+            "properties": {
+                "code": {
+                    "bsonType": "string"
+                },
+                "name": {
+                    "bsonType": "string"
+                }
+            }
+        },
+        "name": {
+            "bsonType": "string"
+        },
+        "region": {
+            "bsonType": "object",
+            "properties": {
+                "code": {
+                    "bsonType": "string"
+                },
+                "name": {
+                    "bsonType": "string"
+                }
+            }
+        },
+        "type": {
+            "bsonType": "string"
+        }
+    },
+    "required": [
+        "_id"
+    ]
+}
