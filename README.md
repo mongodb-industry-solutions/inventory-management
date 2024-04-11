@@ -18,8 +18,8 @@ The architecture we're about to set up is depicted in the diagram below:
 
 If you want to learn more about Inventory Management and Event-Driven Architectures, visit the following pages:
 - [How to Enhance Inventory Management with Real-Time Data Strategies](https://www.mongodb.com/blog/post/how-enhance-inventory-management-real-time-data-strategies)
-- [Build An Inventory Management System Using MongoDB Atlas](https://www.mongodb.com/developer/products/atlas/build-inventory-management-system-using-mongodb-atlas/)
 - [How Atlas Edge Server Bridges the Gap Between Connected Retail Stores and the Cloud](https://www.mongodb.com/blog/post/how-atlas-edge-server-bridges-gap-between-connected-retail-store-cloud)
+- [Build An Inventory Management System Using MongoDB Atlas](https://www.mongodb.com/developer/products/atlas/build-inventory-management-system-using-mongodb-atlas/)
 - [Youtube Video](https://www.youtube.com/watch?v=sV2KfMk1CdM)
  
  Let's get started!
@@ -380,7 +380,7 @@ npm run dev
 
 Your app should be up and running on [http://localhost:3000](http://localhost:3000)! If it doesn't work, ensure that you have provided the correct environment variables.
 
-## Personalize your App
+## Personalize your App (Optional)
 
 ### Configure your Charts
 Congratulations! Now your app is up and running… but have you noticed anything odd? Your charts are empty! Let’s fix this.
@@ -389,7 +389,7 @@ Go to your product-related dashboard and change the collection from products to 
 
 For detailed instructions on how to set up your [Atlas Charts](https://www.mongodb.com/docs/charts/), refer to the official documentation.
 
-### Enable Real-Time Analytics (Optional)
+### Enable Real-Time Analytics
 
 1. To create a general analytics dashboard based on sales, we will need to generate sales data. Navigate to the control panel in your app by clicking: 
 [http://localhost:3000/control](http://localhost:3000/control)
@@ -404,6 +404,8 @@ Congratulations! Your inventory management app is ready to go.
 We’ve covered multiple use cases in this demo, but feel free to build on top of it for your own use cases. 
 
 Check additional and accompanying resources below: 
-- [How to Enhance Inventory Management with Real-Time Data Strategies](https://www.mongodb.com/blog/post/how-enhance-inventory-management-real-time-data-strategies)
 - [MongoDB for Retail Innovation](https://www.mongodb.com/industries/retail)
+- [Building an event-driven inventory management system](https://www.mongodb.com/solutions/solutions-library/event-driven-inventory-management)
+- [Atlas Edge Server](https://www.mongodb.com/docs/atlas/app-services/edge-server/)
+
 
