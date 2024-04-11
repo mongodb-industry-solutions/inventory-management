@@ -1,0 +1,30 @@
+{
+    "name": "autoreplenishment",
+    "type": "DATABASE",
+    "disabled": false,
+    "config": {
+        "collection": "products",
+        "database": "inventory_management_demo",
+        "full_document": true,
+        "full_document_before_change": true,
+        "match": {
+            "fullDocument.autoreplenishment": true
+        },
+        "maximum_throughput": false,
+        "operation_types": [
+            "UPDATE"
+        ],
+        "project": {},
+        "service_name": "mongodb-atlas",
+        "skip_catchup_events": false,
+        "tolerate_resume_errors": false,
+        "unordered": true
+    },
+    "event_processors": {
+        "FUNCTION": {
+            "config": {
+                "function_name": "autoreplenishment"
+            }
+        }
+    }
+}

@@ -451,8 +451,8 @@ export async function getServerSideProps({ query }) {
             index: "facets",
             facet: {
               facets: {
-                productsFacet: { type: "string", path: "name", numBuckets: 20 },
-                itemsFacet: { type: "string", path: "items.name" },
+                productsFacet: { type: "string", path: "name", numBuckets: 50 },
+                itemsFacet: { type: "string", path: "items.name", numBuckets: 50 },
               },
             },
           },
