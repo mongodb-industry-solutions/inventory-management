@@ -1,0 +1,135 @@
+{
+    "title": "product",
+    "properties": {
+        "_id": {
+            "bsonType": "objectId"
+        },
+        "autoreplenishment": {
+            "bsonType": "bool"
+        },
+        "code": {
+            "bsonType": "string"
+        },
+        "color": {
+            "bsonType": "object",
+            "properties": {
+                "hex": {
+                    "bsonType": "string"
+                },
+                "name": {
+                    "bsonType": "string"
+                }
+            }
+        },
+        "description": {
+            "bsonType": "string"
+        },
+        "items": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "delivery_time": {
+                        "bsonType": "object",
+                        "properties": {
+                            "amount": {
+                                "bsonType": "int"
+                            },
+                            "unit": {
+                                "bsonType": "string"
+                            }
+                        }
+                    },
+                    "name": {
+                        "bsonType": "string"
+                    },
+                    "sku": {
+                        "bsonType": "string"
+                    },
+                    "stock": {
+                        "bsonType": "array",
+                        "items": {
+                            "bsonType": "object",
+                            "properties": {
+                                "amount": {
+                                    "bsonType": "int"
+                                },
+                                "location": {
+                                    "bsonType": "object",
+                                    "properties": {
+                                        "id": {
+                                            "bsonType": "objectId"
+                                        },
+                                        "type": {
+                                            "bsonType": "string"
+                                        }
+                                    }
+                                },
+                                "ordered": {
+                                    "bsonType": "int"
+                                },
+                                "target": {
+                                    "bsonType": "int"
+                                },
+                                "threshold": {
+                                    "bsonType": "int"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "name": {
+            "bsonType": "string"
+        },
+        "popularity_index": {
+            "bsonType": "int"
+        },
+        "price": {
+            "bsonType": "object",
+            "properties": {
+                "amount": {
+                    "bsonType": "int"
+                },
+                "currency": {
+                    "bsonType": "string"
+                }
+            }
+        },
+        "total_stock_sum": {
+            "bsonType": "array",
+            "items": {
+                "bsonType": "object",
+                "properties": {
+                    "amount": {
+                        "bsonType": "int"
+                    },
+                    "location": {
+                        "bsonType": "object",
+                        "properties": {
+                            "id": {
+                                "bsonType": "objectId"
+                            },
+                            "type": {
+                                "bsonType": "string"
+                            }
+                        }
+                    },
+                    "ordered": {
+                        "bsonType": "int"
+                    },
+                    "target": {
+                        "bsonType": "int"
+                    },
+                    "threshold": {
+                        "bsonType": "int"
+                    }
+                }
+            }
+        }
+    },
+    "required": [
+        "_id"
+    ]
+}
