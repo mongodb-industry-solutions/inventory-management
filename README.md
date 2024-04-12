@@ -10,7 +10,7 @@ In today's competitive landscape, balancing stock levels to meet demand without 
 
 By the end of this guide, you'll have an inventory management up and running capable of all the solutions mentioned above. 
 
-We will walk you through the process of configuring and using [Atlas App Services](https://www.mongodb.com/products/platform/atlas-app-services) and [Atlas Edge Server](https://www.mongodb.com/products/platform/atlas-edge-server) as your backend for your [Next.js](https://nextjs.org/) app, a powerful framework for building modern web applications with React.
+We will walk you through the process of configuring and using [MongoDB Atlas](https://www.mongodb.com/atlas) as your backend for your [Next.js](https://nextjs.org/) app, a powerful framework for building modern web applications with React. In addition to the well-known [Atlas Database](https://www.mongodb.com/atlas/database), [App Services](https://www.mongodb.com/products/platform/atlas-app-services) and [Atlas Edge Server](https://www.mongodb.com/products/platform/atlas-edge-server) will ensure seamless synchronization in an integrated and fully managed way.
 
 The architecture we're about to set up is depicted in the diagram below:
 
@@ -26,6 +26,7 @@ If you want to learn more about Inventory Management and Event-Driven Architectu
 
 ## Prerequisites
 Before you begin working with this project, ensure that you have the following prerequisites set up in your development environment:
+
 - **git** (version 2.39 or higher): This project utilizes Git for version control. Make sure you have Git installed on your system. You can download and install the latest version of Git from the official website: [Git Downloads](https://git-scm.com/downloads).
 
 - **npm** (version 9.6 or higher): The project relies on npm (Node Package Manager) to manage dependencies and run scripts. You need to have npm installed on your machine. You can download Node.js from the official website: [Node.js Downloads](https://nodejs.org/en/download). After installing Node.js, npm will be available by default.
@@ -98,7 +99,7 @@ The demo database contains:
 - 2 locations
 - 17 products
 - A view used by the area manager user to aggregate the stock of different locations
-- An index in the transactions collection to speed up transactions retrieval.
+- An index in the transactions collection to speed up transaction retrieval.
 
 > [!Note]
 > You will need the database name to set up your environment variables later (`MONGODB_DATABASE_NAME`).
@@ -112,19 +113,19 @@ To enable to enable real-time sync, change streams and workflow automation trigg
 
 2. Then you will need to [generate your API Key](https://www.mongodb.com/docs/atlas/app-services/cli/#generate-an-api-key) pair to authenticate your CLI calls. Navigate to MongoDB Cloud Access Manager, click the "Create API Key" button and select the `Project Owner` permission level. For an extra layer of security, you can add your current IP address to the Access List Entry.
 
-3. Authenticate your CLI user by runnign the command below in your terminal. Make sure you replace the public and private api keys with the ones we just generated in the previous step. 
+3. Authenticate your CLI user by running the command below in your terminal. Make sure you replace the public and private api keys with the ones we just generated in the previous step. 
 
    ```bash
    appservices login --api-key="<my api key>" --private-api-key="<my private api key>"
    ```
 
-4. Import the app by runnign the following command. Remember to replace `<your-app-name>` by your preferred name.  
+4. Import the app by running the following command. Remember to replace `<your-app-name>` by your preferred name.  
 
    ```bash
    appservices push --local ./app_services/ --remote <your-app-name>
    ```
 
-   You will be prompted to configure the app options. Set them according your needs. If you are unsure which options to choose, the default ones are usually a good way to start! For example, this is the configuration I've used.
+   You will be prompted to configure the app options. Set them according to your needs. If you are unsure which options to choose, the default ones are usually a good way to start! For example, this is the configuration I've used.
 
    ```console
    ? Do you wish to create a new app? Yes
@@ -138,9 +139,9 @@ To enable to enable real-time sync, change streams and workflow automation trigg
 
    Once the app is successfully created, you will be asked to confirm some changes. These changes will load the functions, triggers, HTTP endpoints and other configuration parameters our inventory management system will use. 
    
-   After some seconds you will see a sucess message like `Successfully pushed app up: <your-app-id>`. Take note of the obtained App Id.
+   After some seconds you will see a success message like `Successfully pushed app up: <your-app-id>`. Take note of the obtained App Id.
 
-5. In addition to the App Id, our front end will also need the base URL to send HTTP requests to the backend. Run the commadn below in your terminal to obtain it. Remember to replace `<your-app-id>` with your own value. The `jq` tool will help us to get the appropiate field and format. Take note of the obtained URI.
+5. In addition to the App Id, our front end will also need the base URL to send HTTP requests to the backend. Run the command below in your terminal to obtain it. Remember to replace `<your-app-id>` with your own value. The `jq` tool will help us to get the appropriate field and format. Take note of the obtained URI.
 
    ```
    appservices apps describe --app <your-app-id> -f json | jq -r '.doc.http_endpoints[0].url | split("/") | (.[0] + "//" + .[2])'
@@ -151,13 +152,13 @@ To enable to enable real-time sync, change streams and workflow automation trigg
    > [!Important]
    > This API Key is not the same as the key used to login in the `appservices` CLI.
 
-   Again, before running the comand, remember to replace the placeholder`<your-app-id>`.
+   Again, before running the command, remember to replace the placeholder`<your-app-id>`.
 
    ```
    appservices users create --type=api-key --app=<your-app-id> --name=tutorial-key
    ```
 
-   After a few seconds your should see the message `Successfully created API Key` followed by a JSON object. Copy the content of the field `key` and store it in a secure place. Remember that if you loose this key you will need to create a new one.
+   After a few seconds you should see the message `Successfully created API Key` followed by a JSON object. Copy the content of the field `key` and store it in a secure place. Remember that if you lose this key you will need to create a new one.
 
 > [!Note]
 > You will need the App ID, base App Services URI, and API Key to set up your environment variables later (`REALM_APP_ID`, `APP_SERVICES_URI`, `API_KEY`).
@@ -167,7 +168,7 @@ Follow these steps to configure search indexes for full-text search and filter f
 
 1. Navigate to the "Data Services" section within Atlas. Select your cluster and click on "Atlas Search" located next to "Collections".
 
-2. If you are in the M0 tier, you can create two search indexes for the products collection. This will allow you to merely search across the products collection; however, if you have a tier above M0, you can create additonal search indexes. This will come handy if you want to search and filter not only accross your product catalog but also your transactions records such as sales and replenishment orders.
+2. If you are in the M0 tier, you can create two search indexes for the products collection. This will allow you to merely search across the products collection; however, if you have a tier above M0, you can create additional search indexes. This will come handy if you want to search and filter not only across your product catalog but also your transaction records such as sales and replenishment orders.
 
 3. Let's begin with creating the indexes for full-text search:
    - Click "Create Search Index".
@@ -183,7 +184,7 @@ Follow these steps to configure search indexes for full-text search and filter f
       }
       ```
    - Click "Next" and, in the next screen, confirm by clicking "Create Search Index".
-   - After a few moments, your index will be ready for use. While you wait, you can proceed to create the other search index for the *transactions* collection. You just need to repeat the same process but changing the selected collection in the "Database and Collection" menu next to the JSON Editor.
+   - After a few moments, your index will be ready for use. While you wait, you can create the other search index for the *transactions* collection. You need to repeat the same process but change the selected collection in the "Database and Collection" menu next to the JSON Editor.
   
 > [!Important]
 > The name of the index (`default`) must be the same in order for the application to be able to work properly. 
@@ -284,7 +285,7 @@ Follow these instructions to set up and run the Edge Server on your own device:
 
 2. The edge_server directory needs a config.json file you must edit with the appropriate values to configure the server.
 
-   Start by creating a copy of the `config.json.example` with the appropiate name `config.json`.
+   Start by creating a copy of the `config.json.example` with the appropriate name `config.json`.
    
    ```bash
    cp config.json.example config.json
@@ -314,7 +315,7 @@ Follow these instructions to set up and run the Edge Server on your own device:
    ```
 
    > [!Note]
-   > To learn more about each of the fiels, visit our documentation on how to [Install and Configure the Edge Server](https://www.mongodb.com/docs/atlas/app-services/edge-server/configure/#install-and-configure-the-edge-server).
+   > To learn more about each of the config fields, visit our documentation on how to [Install and Configure the Edge Server](https://www.mongodb.com/docs/atlas/app-services/edge-server/configure/#install-and-configure-the-edge-server).
    
 
 3. The Edge Server requires several dependencies, which are listed in the [README.md](edge_server/README.md) in the edge_server directory. If you haven't completed this step in the prerequisites section you will need to do it now.
@@ -357,7 +358,7 @@ Now open this file in your preferred text editor or IDE and update each variable
 
 Remember all of the notes you took earlier? Grab them because you’ll use them now! Remember to remove any spaces after the equal sign. 
 
-- `MONGODB_URI` - Your MongoDB connection string to [MongoDB Atlas](https://mongodb.com/atlas). You can find this by clicking the "Connect" button for your cluster. Note that you will have to input your Atlas password into to collection string.
+- `MONGODB_URI` - Your MongoDB connection string to [MongoDB Atlas](https://mongodb.com/atlas). You can find this by clicking the "Connect" button for your cluster. Note that you will have to input your Atlas password into the connection string.
 - `EDGE_SERVER_HOST` - This is the address of the server hosting your Edge Server instance. If you run the instance locally, just type `localhost` here.
 - `MONGODB_DATABASE_NAME` - Your MongoDB database name for inventory management. If no database name has been specified during the set up process just write `inventory_management_demo`.
 - `REALM_APP_ID` - This variable should contain the App ID of the MongoDB Atlas App Services app you've created for the purpose of this project.
