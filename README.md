@@ -10,7 +10,7 @@ In today's competitive landscape, balancing stock levels to meet demand without 
 
 By the end of this guide, you'll have an inventory management up and running capable of all the solutions mentioned above. 
 
-We will walk you through the process of configuring and using [Atlas App Services](https://www.mongodb.com/products/platform/atlas-app-services) and [Atlas Edge Server](https://www.mongodb.com/products/platform/atlas-edge-server) as your backend for your [Next.js](https://nextjs.org/) app, a powerful framework for building modern web applications with React.
+We will walk you through the process of configuring and using [MongoDB Atlas](https://www.mongodb.com/atlas) as your backend for your [Next.js](https://nextjs.org/) app, a powerful framework for building modern web applications with React. In addition to the well-known [Atlas Database](https://www.mongodb.com/atlas/database), [App Services](https://www.mongodb.com/products/platform/atlas-app-services) and [Atlas Edge Server](https://www.mongodb.com/products/platform/atlas-edge-server) will ensure seamless synchronization in an integrated and fully managed way.
 
 The architecture we're about to set up is depicted in the diagram below:
 
@@ -26,6 +26,7 @@ If you want to learn more about Inventory Management and Event-Driven Architectu
 
 ## Prerequisites
 Before you begin working with this project, ensure that you have the following prerequisites set up in your development environment:
+
 - **git** (version 2.39 or higher): This project utilizes Git for version control. Make sure you have Git installed on your system. You can download and install the latest version of Git from the official website: [Git Downloads](https://git-scm.com/downloads).
 
 - **npm** (version 9.6 or higher): The project relies on npm (Node Package Manager) to manage dependencies and run scripts. You need to have npm installed on your machine. You can download Node.js from the official website: [Node.js Downloads](https://nodejs.org/en/download). After installing Node.js, npm will be available by default.
