@@ -149,9 +149,6 @@ To enable to enable real-time sync, change streams and workflow automation trigg
 
 6. Finally, our calls to the backend will need to be authenticated. For this reason we will create an API Key that will be used by the server-side of our inventory management system to generate an access token. It is only this Access Token what will be passed to the client-side of the system to authenticate the calls to the backend.
 
-   > [!Important]
-   > This API Key is not the same as the key used to login in the `appservices` CLI.
-
    Again, before running the command, remember to replace the placeholder`<your-app-id>`.
 
    ```
@@ -160,6 +157,9 @@ To enable to enable real-time sync, change streams and workflow automation trigg
 
    After a few seconds you should see the message `Successfully created API Key` followed by a JSON object. Copy the content of the field `key` and store it in a secure place. Remember that if you lose this key you will need to create a new one.
 
+> [!Important]
+> This API Key is not the same as the key used to login in the `appservices` CLI.
+   
 > [!Note]
 > You will need the App ID, base App Services URI, and API Key to set up your environment variables later (`REALM_APP_ID`, `APP_SERVICES_URI`, `API_KEY`).
 
@@ -314,8 +314,8 @@ Follow these instructions to set up and run the Edge Server on your own device:
    } 
    ```
 
-   > [!Note]
-   > To learn more about each of the config fields, visit our documentation on how to [Install and Configure the Edge Server](https://www.mongodb.com/docs/atlas/app-services/edge-server/configure/#install-and-configure-the-edge-server).
+> [!Tip]
+> To learn more about each of the config fields, visit our documentation on how to [Install and Configure the Edge Server](https://www.mongodb.com/docs/atlas/app-services/edge-server/configure/#install-and-configure-the-edge-server).
    
 
 3. The Edge Server requires several dependencies, which are listed in the [README.md](edge_server/README.md) in the edge_server directory. If you haven't completed this step in the prerequisites section you will need to do it now.
