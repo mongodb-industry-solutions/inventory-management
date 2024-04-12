@@ -44,3 +44,5 @@ next-env.d.ts
 **/*secrets.py
 **/*.ipynb
 **/__pycache__
+
+external/
