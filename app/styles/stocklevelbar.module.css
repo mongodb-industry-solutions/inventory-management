@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+}
+
+.target-level {
+    display: flex;
+    height: 14px;
+    align-items: left;
+    border-radius: 20px;
+    border: 1px solid rgb(224, 224, 224);
+    width: 80%;
+  }
+  
+  .available-level {
+    height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .label {
+    margin-left: 10px;
+    font-size: 14px;
+  }
+
+  .ordered-level {
+    position:relative;
+    border-radius: 20px;
+    background: repeating-linear-gradient(
+        45deg,
+        white,
+        white 5px,
+        green 5px,
+        green 10px
+        );
+  }

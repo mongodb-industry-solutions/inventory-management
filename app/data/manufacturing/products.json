@@ -1,0 +1,987 @@
+[{
+  "_id": {
+    "$oid": "65cce1a4ccdfb7402dbb4db4"
+  },
+  "name": "Controls and Thermostats",
+  "code": "CT001",
+  "description": "High quality Controls and Thermostats",
+  "autoreplenishment": false,
+  "items": [
+    {
+      "sku": "CT001-PT-MDB0001",
+      "name": "Programmable Thermostats",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "CT001-RCU-MDB0001",
+      "name": "Remote Control Units",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 150,
+          "threshold": 75,
+          "target": 150,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 1500
+        }
+      ]
+    },
+    {
+      "sku": "CT001-ACV-MDB0001",
+      "name": "Airflow Control Valves",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 50,
+          "threshold": 25,
+          "target": 50,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 500
+        }
+      ]
+    },
+    {
+      "sku": "CT001-TS-MDB0001",
+      "name": "Temperature Sensors",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 100,
+          "threshold": 50,
+          "target": 100,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 1000
+        }
+      ]
+    },
+    {
+      "sku": "CT001-DP-MDB0001",
+      "name": "Display Panels",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 80,
+          "threshold": 40,
+          "target": 80,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 800
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "factory",
+        "id": {
+          "$oid": "65c63cb61526ffd3415fadbd"
+        }
+      },
+      "amount": 400,
+      "threshold": 200,
+      "target": 400,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 4000
+    }
+  ],
+  "image": {
+    "url": "/images/products/thermostats.png"
+  }
+},
+{
+  "_id": {
+    "$oid": "65cce1a4ccdfb7402dbb4db5"
+  },
+  "name": "Electrical Components",
+  "code": "EC001",
+  "description": "High quality Electrical Components",
+  "autoreplenishment": false,
+  "items": [
+    {
+      "sku": "EC001-M-MDB0001",
+      "name": "Motors",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 50,
+          "threshold": 25,
+          "target": 50,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 500
+        }
+      ]
+    },
+    {
+      "sku": "EC001-C-MDB0001",
+      "name": "Capacitors",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 100,
+          "threshold": 50,
+          "target": 100,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 1000
+        }
+      ]
+    },
+    {
+      "sku": "EC001-RAC-MDB0001",
+      "name": "Relays and Contactors",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 50,
+          "threshold": 25,
+          "target": 50,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 500
+        }
+      ]
+    },
+    {
+      "sku": "EC001-CB-MDB0001",
+      "name": "Control Boards",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 50,
+          "threshold": 25,
+          "target": 50,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 500
+        }
+      ]
+    },
+    {
+      "sku": "EC001-RCU-MDB0001",
+      "name": "Remote Control Units",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 150,
+          "threshold": 75,
+          "target": 150,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 1500
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 4000
+    },
+    {
+      "location": {
+        "type": "factory",
+        "id": {
+          "$oid": "65c63cb61526ffd3415fadbd"
+        }
+      },
+      "amount": 400,
+      "threshold": 200,
+      "target": 400,
+      "ordered": 0
+    }
+  ],
+  "image": {
+    "url": "/images/products/electrical_components.png"
+  }
+},
+{
+  "_id": {
+    "$oid": "65cce1a4ccdfb7402dbb4db6"
+  },
+  "name": "Finished Goods",
+  "code": "FG001",
+  "description": "High quality Finished Goods",
+  "autoreplenishment": false,
+  "items": [
+    {
+      "sku": "FG001-PAC-MDB0001",
+      "name": "Portable Air Conditioners",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 200,
+          "threshold": 100,
+          "target": 200,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 2000
+        }
+      ]
+    },
+    {
+      "sku": "FG001-CAC-MDB0001",
+      "name": "Central Air Conditioners",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 150,
+          "threshold": 75,
+          "target": 150,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 1500
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 3500
+    },
+    {
+      "location": {
+        "type": "factory",
+        "id": {
+          "$oid": "65c63cb61526ffd3415fadbd"
+        }
+      },
+      "amount": 350,
+      "threshold": 175,
+      "target": 350,
+      "ordered": 0
+    }
+  ],
+  "image": {
+    "url": "/images/products/finished_goods.png"
+  }
+},
+{
+  "_id": {
+    "$oid": "65cce1a4ccdfb7402dbb4db7"
+  },
+  "name": "Packaging Materials",
+  "code": "PM001",
+  "description": "High quality Packaging Materials",
+  "autoreplenishment": false,
+  "items": [
+    {
+      "sku": "PM001-PFHU-MDB0001",
+      "name": "Packaging for HVAC Units",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 500,
+          "threshold": 250,
+          "target": 500,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 5000
+        }
+      ]
+    },
+    {
+      "sku": "PM001-PL-MDB0001",
+      "name": "Product Labels",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 1000,
+          "threshold": 500,
+          "target": 1000,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 10000
+        }
+      ]
+    },
+    {
+      "sku": "PM001-IM-MDB0001",
+      "name": "Instruction Manuals",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 500,
+          "threshold": 250,
+          "target": 500,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 5000
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 20000
+    },
+    {
+      "location": {
+        "type": "factory",
+        "id": {
+          "$oid": "65c63cb61526ffd3415fadbd"
+        }
+      },
+      "amount": 2000,
+      "threshold": 1000,
+      "target": 2000,
+      "ordered": 0
+    }
+  ],
+  "image": {
+    "url": "/images/products/packaging_materials.png"
+  }
+},
+{
+  "_id": {
+    "$oid": "65cce1a4ccdfb7402dbb4db8"
+  },
+  "name": "Raw Materials",
+  "code": "RM001",
+  "description": "High quality Raw Materials",
+  "autoreplenishment": false,
+  "items": [
+    {
+      "sku": "RM001-SM-MDB0001",
+      "name": "Sheet Metal",
+      "unit": "sheets",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 1000,
+          "threshold": 500,
+          "target": 1000,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 10000
+        }
+      ]
+    },
+    {
+      "sku": "RM001-CT-MDB0001",
+      "name": "Copper Tubing",
+      "unit": "meters",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 500,
+          "threshold": 250,
+          "target": 500,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 5000
+        }
+      ]
+    },
+    {
+      "sku": "RM001-A-MDB0001",
+      "name": "Aluminum",
+      "unit": "meters",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 300,
+          "threshold": 150,
+          "target": 300,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 3000
+        }
+      ]
+    },
+    {
+      "sku": "RM001-IM-MDB0001",
+      "name": "Insulation Material",
+      "unit": "rolls",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 200,
+          "threshold": 100,
+          "target": 200,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 2000
+        }
+      ]
+    },
+    {
+      "sku": "RM001-PC-MDB0001",
+      "name": "Plastic Components",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 1000,
+          "threshold": 500,
+          "target": 1000,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 10000
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "factory",
+        "id": {
+          "$oid": "65c63cb61526ffd3415fadbd"
+        }
+      },
+      "amount": 3000,
+      "threshold": 1500,
+      "target": 3000,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 30000
+    }
+  ],
+  "image": {
+    "url": "/images/products/raw_materials.png"
+  }
+},
+{
+  "_id": {
+    "$oid": "65cce1a4ccdfb7402dbb4db9"
+  },
+  "name": "System Components",
+  "code": "SC001",
+  "description": "High quality System Components",
+  "autoreplenishment": false,
+  "items": [
+    {
+      "sku": "SC001-C-MDB0001",
+      "name": "Compressors",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 50,
+          "threshold": 25,
+          "target": 50,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 500
+        }
+      ]
+    },
+    {
+      "sku": "SC001-E-MDB0001",
+      "name": "Evaporators",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 100,
+          "threshold": 50,
+          "target": 100,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 1000
+        }
+      ]
+    },
+    {
+      "sku": "SC001-C-MDB0001",
+      "name": "Condensers",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 80,
+          "threshold": 40,
+          "target": 80,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 800
+        }
+      ]
+    },
+    {
+      "sku": "SC001-FAB-MDB0001",
+      "name": "Fans and Blowers",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 200,
+          "threshold": 100,
+          "target": 200,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 2000
+        }
+      ]
+    },
+    {
+      "sku": "SC001-HE-MDB0001",
+      "name": "Heat Exchangers",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 120,
+          "threshold": 60,
+          "target": 120,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 1200
+        }
+      ]
+    },
+    {
+      "sku": "SC001-EV-MDB0001",
+      "name": "Expansion Valves",
+      "unit": "pieces",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 50,
+          "threshold": 25,
+          "target": 50,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 500
+        }
+      ]
+    },
+    {
+      "sku": "SC001-TFAB-MDB0001",
+      "name": "Tubing for Air Blowing",
+      "unit": "meters",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "factory",
+            "id": {
+              "$oid": "65c63cb61526ffd3415fadbd"
+            }
+          },
+          "amount": 300,
+          "threshold": 150,
+          "target": 300,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 3000
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 9000
+    },
+    {
+      "location": {
+        "type": "factory",
+        "id": {
+          "$oid": "65c63cb61526ffd3415fadbd"
+        }
+      },
+      "amount": 900,
+      "threshold": 450,
+      "target": 900,
+      "ordered": 0
+    }
+  ],
+  "image": {
+    "url": "/images/products/system_components.png"
+  }
+}]
