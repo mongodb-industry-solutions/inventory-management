@@ -34,9 +34,9 @@ MyApp.getInitialProps = async ({ ctx }) => {
       'APP_SERVICES_URI',
       'API_KEY',
       'REALM_APP_ID',
-      'EDGE_SERVER_HOST',
+      //'EDGE_SERVER_HOST',
       'MONGODB_DATABASE_NAME',
-      'DEMO_INDUSTRY',
+      //'DEMO_INDUSTRY',
       'CHARTS_EMBED_SDK_BASEURL',
       'DASHBOARD_ID_GENERAL',
       'DASHBOARD_ID_PRODUCT'
@@ -51,9 +51,9 @@ MyApp.getInitialProps = async ({ ctx }) => {
     const uri = process.env.APP_SERVICES_URI;
     const key = process.env.API_KEY;
     const appId = process.env.REALM_APP_ID;
-    const edgeHost = process.env.EDGE_SERVER_HOST;
+    const edgeHost = process.env.EDGE_SERVER_HOST || 'localhost';
     const dbName = process.env.MONGODB_DATABASE_NAME;
-    const industry = process.env.DEMO_INDUSTRY;
+    const industry = process.env.DEMO_INDUSTRY || 'retail';
     const chartsBaseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
     const dashboardIdGeneral = process.env.DASHBOARD_ID_GENERAL;
     const dashboardIdProduct = process.env.DASHBOARD_ID_PRODUCT;
