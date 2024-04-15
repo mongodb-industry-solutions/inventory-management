@@ -1,0 +1,18 @@
+{
+  "clientAppId": "<your-app-id>",
+  "query": "*",
+  "cloudSyncServerAuthSecret": "<your-auth-secret>",
+  "httpListenPort": 80,
+  "wireprotocolListenPort": 27021,
+  "insecureDisableAuthentication": false,
+  "cloudTimeoutSeconds": 1,
+  "tls" : {
+    "enabled": false,
+    "certificates": [
+      {
+        "publicKeyPath": "certs/cert.pem",
+        "privateKeyPath": "certs/certkey.pem"
+      }
+    ]
+  }
+} 
