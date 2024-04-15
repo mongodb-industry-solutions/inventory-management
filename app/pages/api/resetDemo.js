@@ -9,12 +9,9 @@ export default async (req, res) => {
         if (!process.env.MONGODB_DATABASE_NAME) {
             throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
         }
-        if (!process.env.DEMO_INDUSTRY) {
-            throw new Error('Invalid/Missing environment variables: "DEMO_INDUSTRY"')
-        }
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
-        const industry = process.env.DEMO_INDUSTRY;
+        const industry = process.env.DEMO_INDUSTRY || 'retail';
         const client = await getClientPromise();
         const db = client.db(dbName);
 
