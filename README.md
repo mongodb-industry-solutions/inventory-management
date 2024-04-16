@@ -88,7 +88,7 @@ Now it's time to clone the [demo app source code from GitHub](https://github.com
 To replicate the demo database on your MongoDB Atlas cluster, run the following command in your terminal:
 
    ```bash
-   mongorestore --uri <your-connection-string> dump/inventory_management_demo/
+   mongorestore --uri <your-connection-string> dump/
    ```
 
 Make sure to replace `<your-connection-string>` with your MongoDB Atlas connection string. If you've already followed the initial configuration steps, you should have obtained this connection string. Ensure that the URI includes the username, password, and cluster details.
