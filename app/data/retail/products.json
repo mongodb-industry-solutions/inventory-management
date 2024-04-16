@@ -92,7 +92,7 @@
           "location": {
             "type": "warehouse"
           },
-          "amount": 388
+          "amount": 400
         }
       ]
     },
@@ -251,7 +251,8 @@
       },
       "amount": 100
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -507,7 +508,7 @@
       "target": 100
     }
   ],
-  "autoreplenishment": true
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -762,7 +763,8 @@
       "target": 100,
       "ordered": 0
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -1017,7 +1019,8 @@
       },
       "amount": 2000
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -1272,7 +1275,8 @@
       "threshold": 50,
       "target": 100
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -1527,7 +1531,8 @@
       "target": 100,
       "ordered": 0
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -1783,7 +1788,7 @@
       "ordered": 0
     }
   ],
-  "autoreplenishment": true
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -2038,7 +2043,8 @@
       },
       "amount": 2000
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -2293,7 +2299,8 @@
       "threshold": 50,
       "target": 100
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -2548,7 +2555,8 @@
       },
       "amount": 2000
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -2803,7 +2811,8 @@
       },
       "amount": 100
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -3058,7 +3067,8 @@
       "amount": 100,
       "threshold": 50
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -3313,7 +3323,8 @@
       "target": 100,
       "ordered": 0
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -3568,7 +3579,8 @@
       },
       "amount": 2000
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -3823,7 +3835,8 @@
       "target": 100,
       "ordered": 0
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -4078,7 +4091,8 @@
       },
       "amount": 2000
     }
-  ]
+  ],
+  "autoreplenishment": false
 },
 {
   "_id": {
@@ -4334,6 +4348,5 @@
       "ordered": 0
     }
   ],
-  "editableField": "Lilac T-shirtt",
-  "field": "Lilac T-shirtt"
+  "autoreplenishment": false
 }]
