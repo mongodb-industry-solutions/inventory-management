@@ -5,6 +5,7 @@ import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
 import { UserContext } from '../context/UserContext';
 import { ServerContext } from './_app';
 import styles from '../styles/dashboard.module.css';
+import { useToast } from '@leafygreen-ui/toast';
 
 const Dashboard = () => {
     const channelOptions = ['Online', 'In-store'];
@@ -16,8 +17,10 @@ const Dashboard = () => {
     const router = useRouter();
     const { location, edge } = router.query;
 
+    const { pushToast } = useToast();
+
     const utils = useContext(ServerContext);
-    const {startWatchDashboard, stopWatchDashboard} = useContext(UserContext);
+    const {startWatchDashboard, stopWatchDashboard, startWatchInventoryCheck, stopWatchInventoryCheck} = useContext(UserContext);
 
     const sdk = new ChartsEmbedSDK({ baseUrl: utils.analyticsInfo.chartsBaseUrl });
     const dashboardDiv = useRef(null);
@@ -27,7 +30,8 @@ const Dashboard = () => {
     if (location) {
         locationFilter= { $or: [
           {'location.destination.id': new ObjectId(location)}
-          ,{'location.origin.id': new ObjectId(location)}
+          ,{'location.origin.id': new ObjectId(location)},
+          {'checkResult': {$exists: true}}
         ]};
     };
     const [dashboard] = useState(sdk.createDashboard({ 
@@ -60,7 +64,11 @@ const Dashboard = () => {
     if (edge !== 'true') {
       //initializeApp(utils.appServiceInfo.appId);
       startWatchDashboard(dashboard, utils);
-      return () => stopWatchDashboard();
+      startWatchInventoryCheck(dashboard, addAlert, utils);
+      return () => {
+        stopWatchDashboard(dashboard, utils);
+        stopWatchInventoryCheck(dashboard, utils);
+      }
     }
   }, [edge]);
 
@@ -85,6 +93,22 @@ const Dashboard = () => {
         setSelectedChannel('All');
         setFilterName('Channel');
         dashboard.setFilter({}).catch(err => console.log("Error while clearing filters.", err));
+    };
+
+    const addAlert = (checkResult) => {
+      
+      if(checkResult) {
+        pushToast({
+          title: "Hooray! Perfect inventory match!", 
+          variant: "success"
+        });
+      } else {
+        pushToast({
+          title: "Oops! Inventory Discrepancy Detected.", 
+          variant: "warning"
+        });
+      }
+      
     };
 
   return (
