@@ -15,6 +15,7 @@ export const UserProvider = ({ children, value }) => {
   let closeStreamProductList;
   let closeStreamProductDetail;
   let closeStreamDashboard;
+  let closeStreamInventoryCheck;
   let closeStreamControl;
 
   useEffect(() => {
@@ -184,6 +185,29 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
     }
   };
 
+  const  startWatchInventoryCheck = async (dashboard, addAlert, utils) => {
+    console.log("Start watching stream");
+    const runs = await getMongoCollection(utils.dbInfo.dbName, "inventoryCheck");
+    const filter = {
+      filter: {
+          operationType: "insert"
+      }
+    };
+
+    const stream = runs.watch(filter);
+
+    closeStreamInventoryCheck= () => {
+      console.log("Closing stream");
+      stream.return(null)
+    };
+
+    for await (const  change  of  stream) {
+      console.log(change.fullDocument);
+      addAlert(change.fullDocument.checkResult);
+      dashboard.refresh();
+    }
+  };
+
   const  startWatchControl = async (setProducts, utils) => {
     console.log("Start watching stream");
     const runs = await getMongoCollection(utils.dbInfo.dbName, "products");
@@ -225,7 +249,9 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
     closeStreamDashboard();
   };
 
-
+  const stopWatchInventoryCheck = () => {
+    closeStreamInventoryCheck();
+  };
 
   const stopWatchControl = () => {
     closeStreamControl();
@@ -240,6 +266,8 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
       stopWatchProductDetail,
       startWatchDashboard,
       stopWatchDashboard,
+      startWatchInventoryCheck,
+      stopWatchInventoryCheck,
       startWatchControl,
       stopWatchControl
     }}>
