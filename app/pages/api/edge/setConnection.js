@@ -14,14 +14,14 @@ export default async (req, res) => {
     const { action } = req.body;
     const edgeHost = process.env.EDGE_SERVER_HOST;
 
-    if (!action || (action !== 'enable' && action !== 'disable')) {
+    if (!action || (action !== 'enable-connection' && action !== 'disable-connection')) {
         return res.status(400).json({ error: 'Invalid action' });
     }
 
     try {
 
         if(edgeHost == 'localhost' || edgeHost == '127.0.0.1') {
-            const command = `../edge_server/bin/demo/edge-connection.sh ${action}`;
+            const command = `edgectl offline-demo ${action}`;
 
             const { stdout, stderr } = await execAsync(command);
             console.log(`Command output (stdout): ${stdout}`);
@@ -36,7 +36,7 @@ export default async (req, res) => {
 
             //API call to remote edge server
             const response = await fetch(`http://${edgeHost}:8000/${action}`);
-            const output = await response.json();
+            const output = await response.text();
             console.log(output);
 
             res.status(200).json({ success: true });
