@@ -6,9 +6,9 @@ app = FastAPI()
 @app.get("/{action}")
 def change_connection(action: str):
 
-    script_path = "./bin/demo/edge-connection.sh"
+    script_path = "~/.mongodb-edge/bin/edgectl offline-demo"
     
-    allowed_actions = ["enable", "disable"] 
+    allowed_actions = ["enable-connection", "disable-connection"]
     if action not in allowed_actions:
         raise HTTPException(status_code=400, detail="Invalid action")
 

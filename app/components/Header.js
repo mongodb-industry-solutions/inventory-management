@@ -128,7 +128,7 @@ function Header( ) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          action: isOnline ? 'disable' : 'enable', // Toggle the connection status
+          action: isOnline ? 'disable-connection' : 'enable-connection', // Toggle the connection status
         }),
       });
   
