@@ -15,7 +15,7 @@ export default async (req, res) => {
 
         const edgeHost = process.env.EDGE_SERVER_HOST;
     
-        const response = await fetch(`http://${edgeHost}:80/api/client/v2.0/tiered-sync/status`);
+        const response = await fetch(`http://${edgeHost}:80/api/client/v2.0/edge/status`);
         const status = await response.json();
 
         res.status(200).json(status);
