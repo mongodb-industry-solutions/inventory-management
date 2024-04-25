@@ -5,6 +5,7 @@ import { ServerContext } from '../_app';
 import { FaSearch } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
+import { ObjectId } from 'bson';
 import { autocompleteProductsPipeline } from '../../data/aggregations/autocomplete';
 import { searchProductsPipeline } from '../../data/aggregations/search';
 import { UserContext } from '../../context/UserContext';
@@ -156,7 +157,7 @@ export default function Products({ products, facets }) {
               dataSource: 'mongodb-atlas',
               database: utils.dbInfo.dbName,
               collection: 'products',
-              pipeline: autocompleteProductsPipeline(searchValue)
+              pipeline: autocompleteProductsPipeline(searchValue, location)
             }),
           });
         }
@@ -419,8 +420,9 @@ export async function getServerSideProps({ query }) {
     const db = client.db(dbName);
     
     const collectionName = locationId ? "products" : "products_area_view";
+    const productsFilter = locationId ? { "total_stock_sum.location.id": new ObjectId(locationId) } : {};
 
-    const products = await db.collection(collectionName).find({}).toArray();
+    const products = await db.collection(collectionName).find(productsFilter).toArray();
 
     let facets = [];
 
