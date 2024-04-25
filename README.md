@@ -88,7 +88,7 @@ Now it's time to clone the [demo app source code from GitHub](https://github.com
 To replicate the demo database on your MongoDB Atlas cluster, run the following command in your terminal:
 
    ```bash
-   mongorestore --uri <your-connection-string> dump/inventory_management_demo/
+   mongorestore --uri <your-connection-string> dump/
    ```
 
 Make sure to replace `<your-connection-string>` with your MongoDB Atlas connection string. If you've already followed the initial configuration steps, you should have obtained this connection string. Ensure that the URI includes the username, password, and cluster details.
@@ -283,60 +283,40 @@ Follow these instructions to set up and run the Edge Server on your own device:
    cd edge_server
    ```
 
-2. The edge_server directory needs a config.json file you must edit with the appropriate values to configure the server.
+2. Edge Server requires several dependencies, which are listed in the [README](edge_server/README.md) file in the edge_server directory. If you haven't completed this step in the prerequisites section, you will need to do it now.
 
-   Start by creating a copy of the `config.json.example` with the appropriate name `config.json`.
-   
+3. We will configure Edge Server using the command-line tool `edgectl`. By default, this tool will be installed at ``.mongodb-edge` in your home directory. You can reference the entire path to use this tool, `~/.mongodb-edge/bin/edgectl`, or simply add it to your PATH by running the command below: 
+
    ```bash
-   cp config.json.example config.json
+   export PATH="~/.mongodb-edge/bin/:$PATH"
    ```
 
-   Using `vim` or the text editor of your choice, edit the content of the file. Replace `<your-app-id>` with the value obtained in the [Import the App Backend with Atlas App Services](#import-the-app-backend-with-atlas-app-services) section.
+   The next command will generate a docker-compose file in your current directory with all the necessary steps to deploy and manage your Edge Server instance. Replace `<your-app-id>` with the value obtained in the first part of this tutorial series, and `<your-auth-secret>` with the token generated in the previous section. You will also need to specify the deployment region where your app service was deployed,  `<cloud-region>` and `<cloud-provider>`. 
 
-   ```
-   {
-      "clientAppId": "<your-app-id>",
-      "query": "*",
-      "cloudSyncServerAuthSecret": "<your-auth-secret>",
-      "httpListenPort": 80,
-      "wireprotocolListenPort": 27021,
-      "insecureDisableAuthentication": false,
-      "cloudTimeoutSeconds": 1,
-      "tls" : {
-         "enabled": false,
-         "certificates": [
-            {
-            "publicKeyPath": "certs/cert.pem",
-            "privateKeyPath": "certs/certkey.pem"
-            }
-         ]
-      }
-   } 
+   ```bash
+   edgectl config --platform compose --app-id <your-app-id> --insecure-disable-auth --registration-token <your-registration-token> --cloud-sync-server-base-url=https://<cloud-region>.<cloud-provider>.services.cloud.mongodb.com
    ```
 
 > [!Tip]
-> To learn more about each of the config fields, visit our documentation on how to [Install and Configure the Edge Server](https://www.mongodb.com/docs/atlas/app-services/edge-server/configure/#install-and-configure-the-edge-server).
+> To learn more about each of the config flags, visit our documentation on how to [Install and Configure the Edge Server](https://www.mongodb.com/docs/atlas/app-services/edge-server/configure/).
    
-
-3. The Edge Server requires several dependencies, which are listed in the [README.md](edge_server/README.md) in the edge_server directory. If you haven't completed this step in the prerequisites section you will need to do it now.
-
 4. This application is able to simulate offline scenarios by setting the edge server connectivity off. In order to enable this feature in the Edge Server, run the command below.
 
    ```bash
-   make config ./bin/demo/setup-offline-demo.sh
+   edgectl offline-demo setup
    ```
 
 5. To start the server, from the edge_server directory run:
 
    ```bash
-   make up
+   edgectl up
    ```
 
-   Check the status by running `make status`, you should see the value `"cloud_connected": true` indicating that the Edge Server is connected to MongoDB Atlas.
+   Check the status by running `edgectl status`, you should see the value `"cloud_connected": true` indicating that the Edge Server is connected to MongoDB Atlas.
 
 
 > [!Important]
-> Once you are done with the tutorial, remember to stop the server by running `make down` in the edge_server directory.
+> Once you are done with the tutorial, remember to stop the server by running `edgectl down` in the edge_server directory.
 
 
 ## Frontend Configuration

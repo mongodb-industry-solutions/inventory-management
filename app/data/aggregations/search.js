@@ -4,22 +4,37 @@ export const searchProductsPipeline = (searchQuery, location) => {
       {
         $search: {
           index: 'default',
-          text: {
-            query: searchQuery,
-            path: {
-              wildcard: '*',
-            },
-            fuzzy: {
-              maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
-            },
-          },
+          compound: {
+            must: [
+              {
+                text: {
+                  query: searchQuery,
+                  path: {
+                    wildcard: '*',
+                  },
+                  fuzzy: {
+                    maxEdits: 2, // Adjust the number of maximum edits for typo-tolerance
+                  },
+                },
+              }
+            ],
+            filter: [
+            ]
+          }
         },
       },
       { $limit: 20 },
     ];
 
     // display product area view if no location
-    if (location == null) {
+    if (location) {
+      pipeline[0].$search.compound.filter.push({
+        equals: {
+          path: "total_stock_sum.location.id",
+          value: {$oid: location}
+        }
+      });
+    } else {
       pipeline.push(
         {
           $lookup: {
