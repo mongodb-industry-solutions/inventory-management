@@ -1,6 +1,8 @@
 import { getEdgeClientPromise } from '../../../lib/mongodb';
 import { ObjectId } from 'bson';
 
+let client = null;
+
 export default async (req, res) => {
     try {
         if (!process.env.MONGODB_DATABASE_NAME) {
@@ -8,7 +10,10 @@ export default async (req, res) => {
         }
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
-        const client = await getEdgeClientPromise();
+
+        if (!client) {
+            client = await getEdgeClientPromise();
+        }
         const db = client.db(dbName);
 
         const id = req.query.id;
