@@ -1,12 +1,16 @@
 import { getEdgeClientPromise } from '../../../lib/mongodb';
 import { ObjectId } from 'bson';
 
+let client = null;
+
 export default async (req, res) => {
     try {
 
         const { update, filter, database, collection } = req.body;
 
-        const client = await getEdgeClientPromise();
+        if (!client) {
+            client = await getEdgeClientPromise();
+        }
         const db = client.db(database);
         
         const productId = new ObjectId(filter._id.$oid);
