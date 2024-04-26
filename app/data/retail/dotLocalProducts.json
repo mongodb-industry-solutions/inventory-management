@@ -1,0 +1,5928 @@
+[{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3c6"
+  },
+  "name": "ADIDAS Men Spry M Black Sandals",
+  "code": "AMSMBS-MDB0001",
+  "autoreplenishment": true,
+  "id": 12967,
+  "gender": "Men",
+  "masterCategory": "Footwear",
+  "subCategory": "Sandal",
+  "articleType": "Sandals",
+  "baseColour": "Black",
+  "season": "Fall",
+  "year": 2011,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/c5a22e9ccf9b10e0a89ffbbf3e386584_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "ADIDAS Men Spry M Black Sandals",
+  "brand": "ADIDAS",
+  "items": [
+    {
+      "sku": "AMSMBS-MDB0001-8",
+      "name": "8",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 149
+        }
+      ]
+    },
+    {
+      "sku": "AMSMBS-MDB0001-9",
+      "name": "9",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 175
+        }
+      ]
+    },
+    {
+      "sku": "AMSMBS-MDB0001-10",
+      "name": "10",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "AMSMBS-MDB0001-11",
+      "name": "11",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "AMSMBS-MDB0001-12",
+      "name": "12",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 924
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 10.7611351
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3ca"
+  },
+  "name": "Classic Polo Men Stripes Blue Tshirts",
+  "code": "CPMSBT-MDB0001",
+  "autoreplenishment": false,
+  "id": 14293,
+  "gender": "Men",
+  "masterCategory": "Apparel",
+  "subCategory": "Topwear",
+  "articleType": "Tshirts",
+  "baseColour": "Blue",
+  "season": "Fall",
+  "year": 2011,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/8e4099bc672a376b156e1fe903fd5e16_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Classic Polo Men Stripes Blue Tshirts",
+  "brand": "Classic",
+  "items": [
+    {
+      "sku": "CPMSBT-MDB0001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          }
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 185
+        }
+      ]
+    },
+    {
+      "sku": "CPMSBT-MDB0001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "CPMSBT-MDB0001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "CPMSBT-MDB0001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "CPMSBT-MDB0001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      }
+    },
+    {
+      "amount": 985,
+      "location": {
+        "type": "warehouse"
+      }
+    },
+    {
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100
+    }
+  ],
+  "pred_price": 8.20527077
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3cd"
+  },
+  "name": "Green MongoDB Puffer Vest ",
+  "code": "GMPV-MDB0001",
+  "autoreplenishment": true,
+  "id": 98796,
+  "gender": "Unisex",
+  "masterCategory": "Apparel",
+  "subCategory": "Topwear",
+  "articleType": "Vest",
+  "baseColour": "Green",
+  "season": "Winter",
+  "year": 2024,
+  "usage": "Casual",
+  "image": {
+    "url": "https://storage.googleapis.com/retail-product-images/storeProducts/98796.jpg?GoogleAccessId=bucket-images%40ist-retail-demo.iam.gserviceaccount.com&Expires=1714053601&Signature=GSY6aC%2FqFJsOXtuYbp%2BsFrTdhGV7KbEhiOTcwTI%2FDxdZf2MXXkx0Xqkcp%2FG%2BOcVuTrXkfdUjZXa%2Ba03qaWWpWuBxX8qddWyHrSeP%2BsZqlRfP%2Fp3%2Be805SCrCcY4oRwogp%2FGSia5Zr8RM%2FY4ZYXHrDDt28yoshbIat%2BgYmwJwFLzFcfR2%2FWCRF0b%2BI20rlAOKzOUSIOK2GYvnZqTVdPO26c5BJmYuUdX6Z2pgd9PGbhITYnJADmGzoD2Oplw5M4VPThJ0DAM%2Fqreo20NzHc01rrgLkh9ztN8%2F3sZ6X2eWi1CTmeWvI%2FniREAlYP%2B9bmtedu10PJetqd8LeYGab53xNA%3D%3D"
+  },
+  "price": {
+    "amount": 49,
+    "currency": "USD"
+  },
+  "description": "Make a statement with this vibrant green puffer vest showcasing the MongoDB logo, offering both warmth and a pop of color to your outfit, perfect for outdoor adventures or everyday wear.",
+  "brand": "MongoDB",
+  "items": [
+    {
+      "sku": "GMPV-MDB0001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 2,
+          "threshold": 1,
+          "target": 2,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 2,
+          "threshold": 1,
+          "target": 2,
+          "ordered": 0
+        },{
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "662a127ad31c9091c4feab45"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 16
+        }
+      ]
+    },
+    {
+      "sku": "GMPV-MDB0001-M ",
+      "name": "M ",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 5,
+          "threshold": 2,
+          "target": 5,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 5,
+          "threshold": 2,
+          "target": 5,
+          "ordered": 0
+        },{
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "662a127ad31c9091c4feab45"
+            }
+          },
+          "amount": 4,
+          "threshold": 2,
+          "target": 4,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 50
+        }
+      ]
+    },
+    {
+      "sku": "GMPV-MDB0001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 2,
+          "threshold": 1,
+          "target": 2,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 2,
+          "threshold": 1,
+          "target": 2,
+          "ordered": 0
+        },{
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "662a127ad31c9091c4feab45"
+            }
+          },
+          "amount": 2,
+          "threshold": 1,
+          "target": 2,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 20
+        }
+      ]
+    },
+    {
+      "sku": "GMPV-MDB0001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },{
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "662a127ad31c9091c4feab45"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 30
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 11,
+      "threshold": 5,
+      "target": 12,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 116
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 12,
+      "threshold": 5,
+      "target": 12,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 8.6975069
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3d5"
+  },
+  "name": "MongoDB Rubber Duck",
+  "code": "MRD-MDB0001",
+  "autoreplenishment": false,
+  "id": 98798,
+  "gender": "NA",
+  "masterCategory": "Merch",
+  "subCategory": "NA",
+  "articleType": "NA",
+  "baseColour": "Yellow",
+  "season": "NA",
+  "year": 2024,
+  "usage": "Casual",
+  "image": {
+    "url": "https://storage.googleapis.com/retail-product-images/storeProducts/98798.jpg?GoogleAccessId=bucket-images%40ist-retail-demo.iam.gserviceaccount.com&Expires=1714053601&Signature=d80SIITLnMH6T59Su%2BR5ti3AkQ8vw9yy6kPM%2F%2BycUIjk7qJzcGK3UTRswIYMY%2Bo%2BGQu0uuWmPVDDEw9L9scOwcevujyHQ8cdH2nSYDuXrR9idGtYFDFUahhiWrY5olkCjbytOp%2FSRvJZ8P08689VJUycrVp1WHSMqeXY6VLBydbcq0oMM4%2B6X9aAjtQIYCrukqZwc8dn3v%2FXkIRsEMa6asxpR2FosG%2BUnRE0igtIncO%2BMnlsZ7ruolQqQ15xi%2BkiC68Gy%2B7aDdL%2BxYJRG34kPPJpN1te%2BZtRhph2mxujdrjzfhrTZM74hoj91XPo4QucIkdlfTuWbIMTC6BwH5dfdQ%3D%3D"
+  },
+  "price": {
+    "amount": 100,
+    "currency": "USD"
+  },
+  "description": "Make your bath time more fun and tech-savvy with this adorable MongoDB rubber duck, a quirky addition to your collection of tech-themed memorabilia.",
+  "brand": "MongoDB",
+  "items": [
+    {
+      "sku": "MRD-MDB0001-OS",
+      "name": "One size",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },{
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "662a127ad31c9091c4feab45"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 30
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 30
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 3,
+      "threshold": 1,
+      "target": 3,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 3,
+      "threshold": 1,
+      "target": 3,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 30.2724895
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3da"
+  },
+  "name": "Power Up Your Skills Pin",
+  "code": "PYSP-MDB0001",
+  "autoreplenishment": false,
+  "id": 98801,
+  "gender": "NA",
+  "masterCategory": "Merch",
+  "subCategory": "NA",
+  "articleType": "NA",
+  "baseColour": "NA",
+  "season": "NA",
+  "year": 2024,
+  "usage": "Casual",
+  "image": {
+    "url": "https://storage.googleapis.com/retail-product-images/storeProducts/98801.jpg?GoogleAccessId=bucket-images%40ist-retail-demo.iam.gserviceaccount.com&Expires=1714053601&Signature=g4eAGc4dHG8537tQOMM5%2BG5KAgCCQFjMLxRAdfntNu0cP%2Fa8WDz8OjNqQusqA5OVmQ1tJ9oWHi0y59k4ETF%2BcJ4NGGN%2BUfa0UPPtqFTRjo8kH1wnXyZGCp%2BdxO5szXIhxPNxR%2F1vDRUIFog8JYENBa4dUqV2O30FavWhwW6TnA1DpYQ3AwZ3dQCg%2B50pA4s3XQBH2uOyQ92ZpeQBfpbkJFJ%2BcwhvIkqJzJ2C5HloXaqNDGIqKsoxXSApiS4IpUagUktU1qLpfqlkZFuI58jjoaXVYlY6GHKrJn9bahdcTCux%2B7zet86jhovgH488M47%2FAS3FGwXGG0efQ0R7E2XWPA%3D%3D"
+  },
+  "price": {
+    "amount": 9,
+    "currency": "USD"
+  },
+  "description": "Showcase your dedication to skill improvement with this \"Power Up Your Skills\" pin, a motivational accessory perfect for adorning your bag or clothing as a reminder to keep learning and growing.",
+  "brand": "MongoDB",
+  "items": [
+    {
+      "sku": "PYSP-MDB0001-OS",
+      "name": "One size",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 2,
+          "threshold": 1,
+          "target": 2,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 2,
+          "threshold": 1,
+          "target": 2,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "662a127ad31c9091c4feab45"
+            }
+          },
+          "amount": 2,
+          "threshold": 1,
+          "target": 2,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 20
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 2,
+      "threshold": 1,
+      "target": 2,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 20
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 1,
+      "threshold": 1,
+      "target": 2,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 8.13348579
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3de"
+  },
+  "name": "Reebok Men Pack of 2 Pirates of the Caribbean Deos",
+  "code": "RMPO2POTCD-MDB0001",
+  "autoreplenishment": false,
+  "id": 26735,
+  "gender": "Men",
+  "masterCategory": "Personal Care",
+  "subCategory": "Fragrance",
+  "articleType": "Deodorant",
+  "baseColour": "Black",
+  "season": "Spring",
+  "year": 2017,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/4f56561974db43db763f18a06caedbd0_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Reebok Men Pack of 2 Pirates of the Caribbean Deos",
+  "brand": "Reebok",
+  "items": [
+    {
+      "sku": "RMPO2POTCD-MDB0001-FS",
+      "name": "Full size (2.5 oz)",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "amount": 10,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            },
+            "type": "store"
+          }
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "RMPO2POTCD-MDB0001-T",
+      "name": "Travel (1.7 oz)",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          }
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 185
+        }
+      ]
+    },
+    {
+      "sku": "RMPO2POTCD-MDB0001-M",
+      "name": "Mini (0.5 oz)",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          }
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "ordered": 0,
+      "location": {
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        },
+        "type": "store"
+      },
+      "amount": 50,
+      "threshold": 30,
+      "target": 60
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 60,
+      "threshold": 30,
+      "target": 60,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 585
+    }
+  ],
+  "pred_price": 32.0605392
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3df"
+  },
+  "name": "Sepia Women Printed Magenta Top",
+  "code": "SWPMT-MDB0001",
+  "autoreplenishment": false,
+  "id": 33213,
+  "gender": "Women",
+  "masterCategory": "Apparel",
+  "subCategory": "Topwear",
+  "articleType": "Tops",
+  "baseColour": "Magenta",
+  "season": "Summer",
+  "year": 2012,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/cd2a1ae491facf0acf36443998a0c217_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Sepia Women Printed Magenta Top",
+  "brand": "Sepia",
+  "items": [
+    {
+      "sku": "SWPMT-MDB0001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "SWPMT-MDB0001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "SWPMT-MDB0001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "SWPMT-MDB0001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "SWPMT-MDB0001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 12.226615
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3cf"
+  },
+  "name": "Indigo Nation Men Printed Black T-shirt",
+  "code": "INMPBT-MDB0001",
+  "autoreplenishment": false,
+  "id": 29584,
+  "gender": "Men",
+  "masterCategory": "Apparel",
+  "subCategory": "Topwear",
+  "articleType": "Tshirts",
+  "baseColour": "Black",
+  "season": "Summer",
+  "year": 2012,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/7a1bc7d255671c7f4b85f1b1b35e945b_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Indigo Nation Men Printed Black T-shirt",
+  "brand": "Indigo",
+  "items": [
+    {
+      "sku": "INMPBT-MDB0001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "INMPBT-MDB0001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "INMPBT-MDB0001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "INMPBT-MDB0001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "INMPBT-MDB0001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 29.7043686
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3d2"
+  },
+  "name": "Manchester United Men Solid White Cap",
+  "code": "MUMSWC-MDB0001",
+  "autoreplenishment": false,
+  "id": 18208,
+  "gender": "Men",
+  "masterCategory": "Accessories",
+  "subCategory": "Headwear",
+  "articleType": "Caps",
+  "baseColour": "White",
+  "season": "Fall",
+  "year": 2011,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/4d0de24d6538a8507059625949e34878_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Manchester United Men Solid White Cap",
+  "brand": "Manchester",
+  "items": [
+    {
+      "sku": "MUMSWC-MDB0001-OS",
+      "name": "One size",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 200
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 20,
+      "threshold": 10,
+      "target": 20,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 20,
+      "threshold": 10,
+      "target": 20,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 19.4154968
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3d3"
+  },
+  "name": "MongoDB Bottle",
+  "code": "MB-MDB0001",
+  "autoreplenishment": false,
+  "id": 98800,
+  "gender": "NA",
+  "masterCategory": "Merch",
+  "subCategory": "NA",
+  "articleType": "NA",
+  "baseColour": "Grey",
+  "season": "NA",
+  "year": 2024,
+  "usage": "Casual",
+  "image": {
+    "url": "https://storage.googleapis.com/retail-product-images/storeProducts/98800.jpg?GoogleAccessId=bucket-images%40ist-retail-demo.iam.gserviceaccount.com&Expires=1714053601&Signature=Rv7PS%2Bbufh0ArBRPY3GQP42nfHsu7UF%2FYAp7z5QeyGNCOsmZ2Iy3RmVJ51v5ITBs7CchVxlmN8F1k1u6F3qyoZjPTLOBSbPaM7ENAwdJ%2FWnzLKCbETb1k8KAw592uq17cvE%2BTF4Jp8Ob4IKqB0KbWbiOoPIu%2BmZz%2FR8KsDaZXhbhsBC7v1WB%2FJ2WdutUhBuqPyGs4p5o06jxzQrUzd3zxUL1HqPyBpwFgGMr4w7uJZ%2FbYg7x%2Fcd8gtHyQl5orrBMk%2FZTK9NSH%2BzZRm%2B9%2Bttyg5AenBY4m9VFA8fOARFjuYK7c1b0IwgUCODfmZ%2FVoeLhiiTNPaQL%2BQ%2BBKfD6MGP0uw%3D%3D"
+  },
+  "price": {
+    "amount": 29,
+    "currency": "USD"
+  },
+  "description": "Stay hydrated on the go with this sleek MongoDB-branded water bottle, featuring a durable design and convenient size for carrying with you throughout the day.",
+  "brand": "MongoDB",
+  "items": [
+    {
+      "sku": "MB-MDB0001-OS",
+      "name": "One size",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },{
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "662a127ad31c9091c4feab45"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 30
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 30
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 3,
+      "threshold": 1,
+      "target": 3,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 3,
+      "threshold": 1,
+      "target": 3,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 19.1469936
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3d8"
+  },
+  "name": "MongoDB White Socks",
+  "code": "MWS-MDB0001",
+  "autoreplenishment": false,
+  "id": 98797,
+  "gender": "Unisex",
+  "masterCategory": "Accessories",
+  "subCategory": "Socks",
+  "articleType": "Socks",
+  "baseColour": "White",
+  "season": "NA",
+  "year": 2024,
+  "usage": "Casual",
+  "image": {
+    "url": "https://storage.googleapis.com/retail-product-images/storeProducts/98797.jpg?GoogleAccessId=bucket-images%40ist-retail-demo.iam.gserviceaccount.com&Expires=1714053601&Signature=ZDSEC8n7tvTxfyanQvhfJQpnPDuj2Bct3zTymBfUYRIBs%2BzbVXN4g6dOnzUDftfVi3gCZZ2CXtBW2psPXNOulgEw4sTlbKhosWhFOpmCyo53XtbTpn427cgcS1dyGxHHnUAeYV%2B%2FEnmV2viRANXI0NCks4Kn9%2BQkjiDnKoz0WAxp8XwfM0EAmbaHB36sRFjaUwkCp4Pz0ReaNpR%2BWqfyMvPLUiL1BeT9cJ4c6FVOlFyA3ZltMXI14D9BcqNqF3mYULMG%2BOQSgy96EYzNiK15pJyiUtWCPtHOZ9gv4YeF%2Fz%2BNqfbKvOxu%2FG8XS4N9FQzVhW9JRC6xPjrb0z%2F74vTh1Q%3D%3D"
+  },
+  "price": {
+    "amount": 11,
+    "currency": "USD"
+  },
+  "description": "Keep your feet cozy and stylish with these white socks featuring the MongoDB logo, adding a touch of geeky charm to your sock drawer.",
+  "brand": "MongoDB",
+  "items": [
+    {
+      "sku": "MWS-MDB0001-OS",
+      "name": "One size",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 2,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 30
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 2,
+      "threshold": 1,
+      "target": 3,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 30
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 3,
+      "threshold": 1,
+      "target": 3,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 13.9726753
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3d9"
+  },
+  "name": "Peter England Unisex Orange Sleeve Bag",
+  "code": "PEUOSB-MDB0001",
+  "autoreplenishment": false,
+  "id": 39524,
+  "gender": "Unisex",
+  "masterCategory": "Accessories",
+  "subCategory": "Bags",
+  "articleType": "Laptop Bag",
+  "baseColour": "Orange",
+  "season": "Summer",
+  "year": 2012,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/1847a81fa1d237bfbae1e797dff55909_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Peter England Unisex Orange Sleeve Bag",
+  "brand": "Peter",
+  "items": [
+    {
+      "sku": "PEUOSB-MDB0001-OR",
+      "name": "orange",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 20,
+      "threshold": 10,
+      "target": 20,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 200
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 20,
+      "threshold": 10,
+      "target": 20,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 17.9277153
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3db"
+  },
+  "name": "Puma Men ducati logo tee Yellow Tshirts",
+  "code": "PMDLTYT-MDB0001",
+  "autoreplenishment": false,
+  "id": 10065,
+  "gender": "Men",
+  "masterCategory": "Apparel",
+  "subCategory": "Topwear",
+  "articleType": "Tshirts",
+  "baseColour": "Yellow",
+  "season": "Fall",
+  "year": 2011,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/ef754e63472dece06abfa6d6c1266d91_images.jpg"
+  },
+  "price": {
+    "amount": 25,
+    "currency": "USD"
+  },
+  "description": "Puma Men ducati logo tee Yellow Tshirts",
+  "brand": "Puma",
+  "items": [
+    {
+      "sku": "PMDLTYT-MDB0001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 189
+        }
+      ]
+    },
+    {
+      "sku": "PMDLTYT-MDB0001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 10,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "PMDLTYT-MDB0001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 185
+        }
+      ]
+    },
+    {
+      "sku": "PMDLTYT-MDB0001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "PMDLTYT-MDB0001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "target": 20,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        },
+        "type": "store"
+      },
+      "amount": 90
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 974
+    },
+    {
+      "target": 100,
+      "ordered": 0,
+      "location": {
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        },
+        "type": "store"
+      },
+      "amount": 100,
+      "threshold": 50
+    }
+  ],
+  "pred_price": 18.9136753
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3c8"
+  },
+  "name": "Black MongoDB Tshirt",
+  "code": "BMT-MDB0001",
+  "autoreplenishment": false,
+  "id": 98794,
+  "gender": "Unisex",
+  "masterCategory": "Apparel",
+  "subCategory": "Topwear",
+  "articleType": "Tshirts",
+  "baseColour": "Black",
+  "season": "Summer",
+  "year": 2024,
+  "usage": "Casual",
+  "image": {
+    "url": "https://storage.googleapis.com/retail-product-images/storeProducts/98794.jpg?GoogleAccessId=bucket-images%40ist-retail-demo.iam.gserviceaccount.com&Expires=1714053601&Signature=FT%2Ba%2BNd7sALG6pd%2FJdrUPVWR3kOTEGbRYR3n1hMlPHteviCs4%2FfGxwIg1ThJG0H6sAFLfq3X4Sb0VS2IJj%2BH2muKMfPDZWfC7wmaa6tFxCpmXPo5dEl2AyyBadk9Jo%2Ffa95Hn2NKROptSeH7z8FdyCYNSxq5lItfn%2BpSkAlND%2BRHYo%2B7fyTBeViPEiuxsjG1urBKYvxvm719UbGI3WRiLko%2BhN6k%2F494%2FFzD0sYFoq8xCGiwB2TbV8HXyjhSwGg61HXJLwZ0v3D27FWVRwh4jHTirfiezKyvCZk%2FkOOfuJlHVvOVs9CRj2wC%2FdX1qj%2BOIYydq0hPgLakz5t3Px37aQ%3D%3D"
+  },
+  "price": {
+    "amount": 29,
+    "currency": "USD"
+  },
+  "description": "Show your love for MongoDB in style with this sleek black T-shirt featuring the iconic MongoDB logo, perfect for casual wear or tech events.",
+  "brand": "MongoDB",
+  "items": [
+    {
+      "sku": "BMT-MDB0001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 1,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 28
+        }
+      ]
+    },
+    {
+      "sku": "BMT-MDB0001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "target": 3,
+          "ordered": 0,
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 1,
+          "threshold": 1
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 30
+        }
+      ]
+    },
+    {
+      "sku": "BMT-MDB0001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 2,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 26
+        }
+      ]
+    },
+    {
+      "sku": "BMT-MDB0001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 30
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 8,
+      "threshold": 4,
+      "target": 12,
+      "ordered": 0
+    },
+    {
+      "amount": 114,
+      "location": {
+        "type": "warehouse"
+      }
+    },
+    {
+      "amount": 11,
+      "threshold": 4,
+      "target": 12,
+      "ordered": 0,
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      }
+    }
+  ],
+  "pred_price": 31.8553181
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3c9"
+  },
+  "name": "Bulgari Women Omnia Perfume",
+  "code": "BWOP-MDB0001",
+  "autoreplenishment": false,
+  "id": 36933,
+  "gender": "Women",
+  "masterCategory": "Personal Care",
+  "subCategory": "Fragrance",
+  "articleType": "Perfume and Body Mist",
+  "baseColour": "Purple",
+  "season": "Spring",
+  "year": 2017,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/f98d1337a330597f69db87bdcbe2c3f7_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Bulgari Women Omnia Perfume",
+  "brand": "Bulgari",
+  "items": [
+    {
+      "sku": "BWOP-MDB0001-084",
+      "name": "0.84 oz",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "BWOP-MDB0001-220",
+      "name": "2.2 oz",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "BWOP-MDB0001-340",
+      "name": "3.4 oz",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 60,
+      "threshold": 30,
+      "target": 60,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 600
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 60,
+      "threshold": 30,
+      "target": 60,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 18.4109325
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3ce"
+  },
+  "name": "Helix Women Silver Dial Watch",
+  "code": "HWSDW-MDB0001",
+  "autoreplenishment": false,
+  "id": 39375,
+  "gender": "Women",
+  "masterCategory": "Accessories",
+  "subCategory": "Watches",
+  "articleType": "Watches",
+  "baseColour": "Silver",
+  "season": "Winter",
+  "year": 2016,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/Helix-Women-Silver-Dial-Watch_43fa66002d9a709539eb6ff7ed9384ce_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Helix Women Silver Dial Watch",
+  "brand": "Helix",
+  "items": [
+    {
+      "sku": "HWSDW-MDB0001-OS",
+      "name": "One size",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 16,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 20,
+      "threshold": 10,
+      "target": 20,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 16,
+      "threshold": 10,
+      "target": 20,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 200
+    }
+  ],
+  "pred_price": 17.7740116
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3d0"
+  },
+  "name": "Jockey Women Black Lounge Pants",
+  "code": "JWBLP-MDB0001",
+  "autoreplenishment": false,
+  "id": 27419,
+  "gender": "Women",
+  "masterCategory": "Apparel",
+  "subCategory": "Loungewear and Nightwear",
+  "articleType": "Lounge Pants",
+  "baseColour": "Black",
+  "season": "Winter",
+  "year": 2015,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/2ebe09ca473dc308c580e25f41fdd66f_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Jockey Women Black Lounge Pants",
+  "brand": "Jockey",
+  "items": [
+    {
+      "sku": "JWBLP-MDB0001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "JWBLP-MDB0001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "JWBLP-MDB0001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "JWBLP-MDB0001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "JWBLP-MDB0001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 18,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 98,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 18.1625099
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3d4"
+  },
+  "name": "MongoDB Notebook",
+  "code": "MN-MDB0001",
+  "autoreplenishment": false,
+  "id": 98803,
+  "gender": "NA",
+  "masterCategory": "Merch",
+  "subCategory": "NA",
+  "articleType": "NA",
+  "baseColour": "Black",
+  "season": "NA",
+  "year": 2024,
+  "usage": "Casual",
+  "image": {
+    "url": "https://storage.googleapis.com/retail-product-images/storeProducts/98803.jpg?GoogleAccessId=bucket-images%40ist-retail-demo.iam.gserviceaccount.com&Expires=1714053601&Signature=AwWq3Zb17UUapBGchn6mwvPoO%2F%2BQsjjp%2BAvJ36t2j019KslOjj6T%2F4VxMPPskHyTRpxrq6GXW1dr3DzZva1n8l8SwuJl2Mzrd9rX%2FY69DfH%2BEaNoIWaj1LuB4J%2FZTkiP7L4xZyMBlHTB340uqdZT1FIWkQUhNZSJ86oSF1vkwVeNbnDBlA8P1GG09jpSBCMycHhrmCxmIY2eOQAho%2BI51pNThk5Oi2HQ3Km%2FCP94uWVHzQ0fuW1v3WRRZnuKFzN3vQVWLVPnFNsRxcw8p8XuulQixQcm1tfDrG9gKQw%2BGVIqGDWov34VM7QmxXnAudM%2Boq2%2F35sO9V2IB7KsonPSDg%3D%3D"
+  },
+  "price": {
+    "amount": 15,
+    "currency": "USD"
+  },
+  "description": "Keep your thoughts organized and your creativity flowing with this MongoDB-themed notebook, featuring quality paper and a stylish design that reflects your passion for databases and technology.",
+  "brand": "MongoDB",
+  "items": [
+    {
+      "sku": "MN-MDB0001-OS",
+      "name": "One size",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },{
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "662a127ad31c9091c4feab45"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 30
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 30
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 3,
+      "threshold": 1,
+      "target": 3,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 3,
+      "threshold": 1,
+      "target": 3,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 10.3747396
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3e2"
+  },
+  "name": "Wrangler Women White Smocked Top",
+  "code": "WWWST-MDB0001",
+  "autoreplenishment": false,
+  "id": 41401,
+  "gender": "Women",
+  "masterCategory": "Apparel",
+  "subCategory": "Topwear",
+  "articleType": "Tops",
+  "baseColour": "White",
+  "season": "Summer",
+  "year": 2012,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/907aca262d340d45f49d7d3690fdc953_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Wrangler Women White Smocked Top",
+  "brand": "Wrangler",
+  "items": [
+    {
+      "sku": "WWWST-MDB0001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "WWWST-MDB0001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "WWWST-MDB0001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "WWWST-MDB0001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "WWWST-MDB0001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    }
+  ],
+  "pred_price": 17.7072659
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3c7"
+  },
+  "name": "Basics Men Pack of 3 T-shirt",
+  "code": "BMPO3T-MDB0001",
+  "autoreplenishment": false,
+  "id": 29789,
+  "gender": "Men",
+  "masterCategory": "Apparel",
+  "subCategory": "Topwear",
+  "articleType": "Tshirts",
+  "baseColour": "Pink",
+  "season": "Summer",
+  "year": 2013,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/b5fe34a5c5a88054357f33b0d2b4ce46_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Basics Men Pack of 3 T-shirt",
+  "brand": "Basics",
+  "items": [
+    {
+      "sku": "BMPO3T-MDB0001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "BMPO3T-MDB0001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "BMPO3T-MDB0001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 19,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "BMPO3T-MDB0001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "BMPO3T-MDB0001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 99,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    }
+  ],
+  "pred_price": 29.6501274
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3cb"
+  },
+  "name": "Enamor Women Pack of 3 Mid-Rise Bikini Brief",
+  "code": "EWPO3MBB-MDB0001",
+  "autoreplenishment": false,
+  "id": 28831,
+  "gender": "Women",
+  "masterCategory": "Apparel",
+  "subCategory": "Innerwear",
+  "articleType": "Briefs",
+  "baseColour": "Brown",
+  "season": "Summer",
+  "year": 2017,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/9d76cb50cdc99a3519f78164dbc691ae_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Enamor Women Pack of 3 Mid-Rise Bikini Brief",
+  "brand": "Enamor",
+  "items": [
+    {
+      "sku": "EWPO3MBB-MDB0001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "EWPO3MBB-MDB0001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "EWPO3MBB-MDB0001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 17,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "EWPO3MBB-MDB0001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "EWPO3MBB-MDB0001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 97,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 9.09868336
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3cc"
+  },
+  "name": "Enroute Women Casual Black Flats",
+  "code": "EWCBF-MDB0001",
+  "autoreplenishment": false,
+  "id": 14431,
+  "gender": "Women",
+  "masterCategory": "Footwear",
+  "subCategory": "Shoes",
+  "articleType": "Heels",
+  "baseColour": "Black",
+  "season": "Summer",
+  "year": 2012,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/33fe789a39b0590d649cd052e53b80b6_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Enroute Women Casual Black Flats",
+  "brand": "Enroute",
+  "items": [
+    {
+      "sku": "EWCBF-MDB0001-6",
+      "name": "6",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "EWCBF-MDB0001-7",
+      "name": "7",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "EWCBF-MDB0001-8",
+      "name": "8",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "EWCBF-MDB0001-9",
+      "name": "9",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "EWCBF-MDB0001-10",
+      "name": "10",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 17,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 97,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 11.0061073
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3d1"
+  },
+  "name": "Lee Cooper Men Brown Casual Sandals",
+  "code": "LCMBCS-MDB0001",
+  "autoreplenishment": false,
+  "id": 22153,
+  "gender": "Men",
+  "masterCategory": "Footwear",
+  "subCategory": "Sandal",
+  "articleType": "Sandals",
+  "baseColour": "Brown",
+  "season": "Summer",
+  "year": 2011,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/99808c9bdfee6165a0cec81d0219c1a1_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Lee Cooper Men Brown Casual Sandals",
+  "brand": "Lee",
+  "items": [
+    {
+      "sku": "LCMBCS-MDB0001-8",
+      "name": "8",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "LCMBCS-MDB0001-9",
+      "name": "9",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "LCMBCS-MDB0001-10",
+      "name": "10",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 15,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "LCMBCS-MDB0001-11",
+      "name": "11",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "LCMBCS-MDB0001-12",
+      "name": "12",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 95,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 11.2192726
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3d6"
+  },
+  "name": "MongoDB Toy Car",
+  "code": "MTC-MDB0001",
+  "autoreplenishment": false,
+  "id": 98802,
+  "gender": "NA",
+  "masterCategory": "Merch",
+  "subCategory": "NA",
+  "articleType": "NA",
+  "baseColour": "Black",
+  "season": "NA",
+  "year": 2024,
+  "usage": "Casual",
+  "image": {
+    "url": "https://storage.googleapis.com/retail-product-images/storeProducts/98802.jpg?GoogleAccessId=bucket-images%40ist-retail-demo.iam.gserviceaccount.com&Expires=1714053601&Signature=NEYxmlZonjb0MoWqOlqCJLdwTkNJh4kto%2FjrIpsAJg9S2DlT1gUV5YAXyzoky9oEmFmcRE5%2FamSN5i%2F4kEr0bpFUY%2BJtvbxtkBLxu%2BOEiL5wvbP1SPGk9hxQU1kA%2BH893FBU0LXadoBl4ll2gBNNbk3oBs6zd%2BrtBwlwbZm2dcL1e%2FODsDgYsrmD6CsI81W5y0XdOE0F49tJgqB5JYeFTcTOe5LFrOgr60wOujQaVlENvya3G6SSuhy9wA4BbMmN6wiECPL8vaR2WrpFBItTY9Tny%2BP4jiKdS2nBHDZXGhNgnPJuZKwlVrMn98zircyCak0vE3lrI6m1iGP7YtUBJQ%3D%3D"
+  },
+  "price": {
+    "amount": 19,
+    "currency": "USD"
+  },
+  "description": "Zoom into the world of MongoDB with this playful toy car adorned with the MongoDB logo, perfect for enthusiasts of all ages to enjoy imaginative play.",
+  "brand": "MongoDB",
+  "items": [
+    {
+      "sku": "MTC-MDB0001-OS",
+      "name": "One size",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 2,
+          "threshold": 1,
+          "target": 2,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 2,
+          "threshold": 1,
+          "target": 2,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 20
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 20
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 2,
+      "threshold": 1,
+      "target": 2,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 2,
+      "threshold": 1,
+      "target": 2,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 33.4841728
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3d7"
+  },
+  "name": "MongoDB University Lego Set",
+  "code": "MULS-MDB0001",
+  "autoreplenishment": false,
+  "id": 98799,
+  "gender": "NA",
+  "masterCategory": "Merch",
+  "subCategory": "NA",
+  "articleType": "NA",
+  "baseColour": "NA",
+  "season": "NA",
+  "year": 2024,
+  "usage": "Casual",
+  "image": {
+    "url": "https://storage.googleapis.com/retail-product-images/storeProducts/98799.jpg?GoogleAccessId=bucket-images%40ist-retail-demo.iam.gserviceaccount.com&Expires=1714053601&Signature=al2lhCKsKcABaPjOXughNsjqfyiyRL6piu552oUYme9a6HJDB7LzsD55c4uDgspG6JMlZv55BKViIsY5BZmxnvXbqBA5ydHl99oek6eJu%2BQSZuAFXDxUrLD7oK5X2R7EMgEann%2BGZdRlh1UYZYaYZnepWXy01CbQehuIjjC8fgud2QNYza62QKQ5DBMWXHiYFoJiurcL%2B4cBy9NVlnVKj3qa%2BHCaEX63pVi6zZC9QGUmrX2CehU9Xe3auPXjgLQAvGanO008hEf4hKJTEekSL3wjYKqel5v%2B2nVhc8rUutXuf%2FhEb8izA9PXjNRoOahOAB4cM2GfsqKneq%2FJc4mrHw%3D%3D"
+  },
+  "price": {
+    "amount": 25,
+    "currency": "USD"
+  },
+  "description": "Combine learning with fun with this MongoDB University Lego set, allowing you to build and play while exploring the world of databases in a hands-on way.",
+  "brand": "MongoDB",
+  "items": [
+    {
+      "sku": "MULS-MDB0001-OS",
+      "name": "One size",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },{
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "662a127ad31c9091c4feab45"
+            }
+          },
+          "amount": 3,
+          "threshold": 1,
+          "target": 3,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 30
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 3,
+      "threshold": 1,
+      "target": 3,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 3,
+      "threshold": 1,
+      "target": 3,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 30
+    }
+  ],
+  "pred_price": 10.0197783
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3dc"
+  },
+  "name": "Red Chief Men Black Shoes",
+  "code": "RCMBS-MDB0001",
+  "autoreplenishment": false,
+  "id": 50741,
+  "gender": "Men",
+  "masterCategory": "Footwear",
+  "subCategory": "Shoes",
+  "articleType": "Casual Shoes",
+  "baseColour": "Black",
+  "season": "Winter",
+  "year": 2018,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/2dba90668d61bd7dd5e25a02d7612ee3_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Red Chief Men Black Shoes",
+  "brand": "Red",
+  "items": [
+    {
+      "sku": "RCMBS-MDB0001-8",
+      "name": "8",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 18,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "RCMBS-MDB0001-9",
+      "name": "9",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 16,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "RCMBS-MDB0001-10",
+      "name": "10",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "RCMBS-MDB0001-11",
+      "name": "11",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 16,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "RCMBS-MDB0001-12",
+      "name": "12",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 90,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    }
+  ],
+  "pred_price": 12.4720459
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3dd"
+  },
+  "name": "Reebok Men Black Possession Flip Flops",
+  "code": "RMBPFF-MDB0001",
+  "autoreplenishment": false,
+  "id": 43369,
+  "gender": "Men",
+  "masterCategory": "Footwear",
+  "subCategory": "Flip Flops",
+  "articleType": "Flip Flops",
+  "baseColour": "Black",
+  "season": "Summer",
+  "year": 2013,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/647838a2e988ab55b76c9aa9ddd15ad7_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Reebok Men Black Possession Flip Flops",
+  "brand": "Reebok",
+  "items": [
+    {
+      "sku": "RMBPFF-MDB0001-8",
+      "name": "8",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "RMBPFF-MDB0001-9",
+      "name": "9",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "RMBPFF-MDB0001-10",
+      "name": "10",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "RMBPFF-MDB0001-11",
+      "name": "11",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "RMBPFF-MDB0001-12",
+      "name": "12",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    }
+  ],
+  "pred_price": 21.459198
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3e0"
+  },
+  "name": "Turtle Check Men Yellow Shirt",
+  "code": "TCMYS-MDB0001",
+  "autoreplenishment": false,
+  "id": 15984,
+  "gender": "Men",
+  "masterCategory": "Apparel",
+  "subCategory": "Topwear",
+  "articleType": "Shirts",
+  "baseColour": "Yellow",
+  "season": "Fall",
+  "year": 2011,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/1049df82b306da238c324c6c7031b135_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "Turtle Check Men Yellow Shirt",
+  "brand": "Turtle",
+  "items": [
+    {
+      "sku": "TCMYS-MDB0001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "TCMYS-MDB0001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "TCMYS-MDB0001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 16,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "TCMYS-MDB0001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "TCMYS-MDB0001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 96,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    }
+  ],
+  "pred_price": 11.7156897
+},
+{
+  "_id": {
+    "$oid": "65e1e313cffbb90f3409a3e1"
+  },
+  "name": "United Colors of Benetton Men Pack of 2 Grey Socks",
+  "code": "UCOBMPO2GS-MDB0001",
+  "autoreplenishment": false,
+  "id": 14603,
+  "gender": "Men",
+  "masterCategory": "Accessories",
+  "subCategory": "Socks",
+  "articleType": "Socks",
+  "baseColour": "Grey",
+  "season": "Summer",
+  "year": 2011,
+  "usage": "Casual",
+  "image": {
+    "url": "http://assets.myntassets.com/v1/images/style/properties/a82a928bfbfba2e299574580ffa61dc9_images.jpg"
+  },
+  "price": {
+    "amount": 20,
+    "currency": "USD"
+  },
+  "description": "United Colors of Benetton Men Pack of 2 Grey Socks",
+  "brand": "United",
+  "items": [
+    {
+      "sku": "UCOBMPO2GS-MDB0001-XS",
+      "name": "XS",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "UCOBMPO2GS-MDB0001-S",
+      "name": "S",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "UCOBMPO2GS-MDB0001-M",
+      "name": "M",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "UCOBMPO2GS-MDB0001-L",
+      "name": "L",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    },
+    {
+      "sku": "UCOBMPO2GS-MDB0001-XL",
+      "name": "XL",
+      "unit": "units",
+      "delivery_time": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "stock": [
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb897"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "store",
+            "id": {
+              "$oid": "65a545fb4a8f64e8f88fb896"
+            }
+          },
+          "amount": 20,
+          "threshold": 10,
+          "target": 20,
+          "ordered": 0
+        },
+        {
+          "location": {
+            "type": "warehouse"
+          },
+          "amount": 200
+        }
+      ]
+    }
+  ],
+  "total_stock_sum": [
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb896"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "store",
+        "id": {
+          "$oid": "65a545fb4a8f64e8f88fb897"
+        }
+      },
+      "amount": 100,
+      "threshold": 50,
+      "target": 100,
+      "ordered": 0
+    },
+    {
+      "location": {
+        "type": "warehouse"
+      },
+      "amount": 1000
+    }
+  ],
+  "pred_price": 18.5783596
+}]
