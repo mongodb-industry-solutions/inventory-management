@@ -14,7 +14,7 @@ export default async (req, res) => {
     const { action } = req.body;
     const edgeHost = process.env.EDGE_SERVER_HOST;
 
-    if (!action || (action !== 'enable-connection' && action !== 'disable-connection')) {
+    if (!action || (action !== 'enable' && action !== 'disable')) {
         return res.status(400).json({ error: 'Invalid action' });
     }
 
