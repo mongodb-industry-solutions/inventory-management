@@ -288,7 +288,7 @@ Edge Server is a "local" server that sits between your client devices and MongoD
 
 Follow these instructions to set up and run the Edge Server on your own device:
 
-1. We will configure Edge Server using the command-line tool `edgectl`. By default, this tool will be installed at ``.mongodb-edge` in your home directory. You can reference the entire path to use this tool, `~/.mongodb-edge/bin/edgectl`, or simply add it to your PATH by running the command below: 
+1. We will configure Edge Server using the command-line tool `edgectl`. By default, this tool will be installed at `.mongodb-edge` in your home directory. You can reference the entire path to use this tool, `~/.mongodb-edge/bin/edgectl`, or simply add it to your PATH by running the command below: 
 
    ```bash
    export PATH="~/.mongodb-edge/bin/:$PATH"
