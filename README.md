@@ -35,7 +35,13 @@ Before you begin working with this project, ensure that you have the following p
 
 - **App Services CLI** (version 1.3.1 or higher): The [Atlas App Services Command Line Interface](https://www.mongodb.com/docs/atlas/app-services/cli/) (`appservices`) allows you to programmatically manage your Applications. We will use it to speed up the app backend set up by using the provided template in the [app_services](app_services) directory. App Services CLI is available on npm. To install the CLI on your system, ensure that you have [Node.js](https://nodejs.org/en/download/) installed and then run the following command in your shell: `npm install -g atlas-app-services-cli`.
 
-- **Edge Server Dependencies** (Edge Server version 0.20.0 or higher): The Edge Server will enable our app with real-time sync, conflict resolution and disconnection tolerance. It requires several dependencies, which are listed in the [README.md](edge_server/README.md) of the edge_server directory. Follow the instructions to install the required dependencies. To learn more, visit our documentation on how to [Configure Edge Server](https://www.mongodb.com/docs/atlas/app-services/edge-server/configure/).
+- **jq** (version 1.6 or higher): `jq` is a lightweight and flexible command-line JSON processor. We will use it to filter and format some command outputs to better identify the values we are interested in. Visit the official [Download jq](https://jqlang.github.io/jq/download/) page to get the latest version.
+
+- **Docker** (version 24 or higher): Docker allows us to package our application into containers, making it easy to deploy and manage across different environments. Since Edge Server is a containerized product, Docker is essential to run it. You can choose to [install Docker Engine](https://docs.docker.com/engine/install/) alone if you're using one of the supported platforms or as part of the [Docker Desktop](https://docs.docker.com/get-docker/) package for other platforms.
+
+- **Docker Compose** (version 2.26 or higher): Docker Compose is a tool for defining and running multi-container Docker applications. The Edge Server package deploys a group of containers that need to be orchestrated effectively. If you have installed Docker Desktop in the previous step, Docker Compose will be available by default. For Linux users, you can install Docker Compose manually from this page: [Install the Docker Compose plugin](https://docs.docker.com/compose/install/linux/).
+
+- **edgectl** (version 0.23.2 or higher): edgectl is the CLI tool for Edge Server, allowing you to manage and interact with Edge Server instances. To install this tool, you can visit the official documentation on how to [configure Edge Server](https://www.mongodb.com/docs/atlas/app-services/edge-server/configure/) or simply run the following command in your terminal: `curl https://services.cloud.mongodb.com/edge/install.sh | bash`.
 
 - **MongoDB Atlas Cluster** (M0 or higher): This project uses a MongoDB Atlas cluster to manage the database. You should have a MongoDB Atlas account and a minimum free tier cluster set up. If you don't have an account, you can sign up for free at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register). Once you have an account, follow these steps to set up a minimum free tier cluster or follow the [Getting Started](https://www.mongodb.com/docs/atlas/getting-started/) guide:
   - Log in to your MongoDB Atlas account.
@@ -43,6 +49,7 @@ Before you begin working with this project, ensure that you have the following p
   - Choose the free tier option (M0).
   - You can choose the cloud provider of your choice but we recommend using the same provider and region both for the cluster and the app hosting in order to improve performance. 
   - Configure the cluster settings according to your preferences and then click “finish and close” on the bottom right.
+  - Finally, add your IP to the network access list so you can access your cluster remotely.
 
 ## Initial Configuration
 
@@ -139,13 +146,15 @@ To enable to enable real-time sync, change streams and workflow automation trigg
 
    Once the app is successfully created, you will be asked to confirm some changes. These changes will load the functions, triggers, HTTP endpoints and other configuration parameters our inventory management system will use. 
    
-   After some seconds you will see a success message like `Successfully pushed app up: <your-app-id>`. Take note of the obtained App Id.
+   After some seconds you will see a success message like `Successfully pushed app up: <your-app-id>`. Take note of the obtained **App Id**.
 
 5. In addition to the App Id, our front end will also need the base URL to send HTTP requests to the backend. Run the command below in your terminal to obtain it. Remember to replace `<your-app-id>` with your own value. The `jq` tool will help us to get the appropriate field and format. Take note of the obtained URI.
 
    ```
    appservices apps describe --app <your-app-id> -f json | jq -r '.doc.http_endpoints[0].url | split("/") | (.[0] + "//" + .[2])'
    ```
+
+   You will get a result similar to `https://eu-west-2.aws.data.mongodb-api.com`.
 
 6. Finally, our calls to the backend will need to be authenticated. For this reason we will create an API Key that will be used by the server-side of our inventory management system to generate an access token. It is only this Access Token what will be passed to the client-side of the system to authenticate the calls to the backend.
 
@@ -168,7 +177,7 @@ Follow these steps to configure search indexes for full-text search and filter f
 
 1. Navigate to the "Data Services" section within Atlas. Select your cluster and click on "Atlas Search" located next to "Collections".
 
-2. If you are in the M0 tier, you can create two search indexes for the products collection. This will allow you to merely search across the products collection; however, if you have a tier above M0, you can create additional search indexes. This will come handy if you want to search and filter not only across your product catalog but also your transaction records such as sales and replenishment orders.
+2. If you are in the **M0 tier**, we will create only two search indexes for the products collection. This will allow you to merely search across the products collection; however, if you have a **tier above M0**, you can create additional search indexes. This will come handy if you want to search and filter not only across your *product* catalog but also your *transaction* records such as sales and replenishment orders.
 
 3. Let's begin with creating the indexes for full-text search:
    - Click "Create Search Index".
@@ -184,7 +193,7 @@ Follow these steps to configure search indexes for full-text search and filter f
       }
       ```
    - Click "Next" and, in the next screen, confirm by clicking "Create Search Index".
-   - After a few moments, your index will be ready for use. While you wait, you can create the other search index for the *transactions* collection. You need to repeat the same process but change the selected collection in the "Database and Collection" menu next to the JSON Editor.
+   - After a few moments, your index will be ready for use. While you wait, if you have a tier above M0, you can create the other search index for the *transactions* collection. You need to repeat the same process but change the selected collection in the "Database and Collection" menu next to the JSON Editor. If you are on a M0 cluster, you can continue to the next step. 
   
 > [!Important]
 > The name of the index (`default`) must be the same in order for the application to be able to work properly. 
@@ -216,7 +225,7 @@ Follow these steps to configure search indexes for full-text search and filter f
       }
       ```
 
-   - Click "Next" and confirm by clicking "Create Search Index". The indexing process will take some time. You can create the *transactions* index while waiting for the indexing to complete. In order to do that just repeat the process but changing the selected collection and the index definition by the one below:
+   - Click "Next" and confirm by clicking "Create Search Index". The indexing process will take some time. If your cluster tier is M0, you can continue to the next section. If your tier is above M0, you can create the *transactions* index while waiting for the indexing to complete. In order to do that just repeat the process but changing the selected collection and the index definition by the one below:
 
       - **Facets Index Definition for Transactions**
       ```json
@@ -257,10 +266,12 @@ Enhance your application's visualization and analytics capabilities with Atlas C
 1. Navigate to the "Charts" section located next to "App Services".
 
 2. Let's begin by creating the product dashboard:
-   - If this is your first time using Atlas Charts, click on “Chart builder”. Then select the relevant project, the database, and the collection. 
-   - If you’ve already used Atlas Charts (i.e. not a first-time user), then click on "Add Dashboard" in the top right corner. Give the dashboard a name and an optional description. Choose a name that clearly reflects the purpose of the dashboard. You don't need to worry about the charts in the dashboard for now. You'll configure them after the app is ready to use.
+   - If this is your first time using Atlas Charts, click on “Chart builder”. Then select the relevant project, the database, and the collection. For this first chart, we recommend using the *transactions* collection.
+   - If you’ve already used Atlas Charts (i.e. not a first-time user), then click on "Add Dashboard" in the top right corner. Give the dashboard a name and an optional description. Choose a name that clearly reflects the purpose of the dashboard. 
+   
+   You don't need to worry about the charts in the dashboard for now. You can just choose any of the predefined chart examples. You'll configure them after the app is ready to use.
 
-3. Return to the Dashboards menu, click on the three dots in the top right corner of the newly created dashboard, and select "Embed".
+3. Click "save and close" to return to the Dashboards menu. Then, click on the three dots in the top right corner of the newly created dashboard, and select "Embed".
 
 4. Check the "Enable unauthenticated access" option. In the "Allowed filter fields" section, edit the fields and select "Allow all fields in the data sources used in this dashboard". Choose the embedding method through the JavaScript SDK, and copy both the "Base URL" and the "Dashboard ID". Click close.
 
@@ -277,56 +288,48 @@ Edge Server is a "local" server that sits between your client devices and MongoD
 
 Follow these instructions to set up and run the Edge Server on your own device:
 
-1. In your terminal, navigate to the [edge_server](/edge_server) directory. 
-
-   ```bash
-   cd edge_server
-   ```
-
-2. Edge Server requires several dependencies, which are listed in the [README](edge_server/README.md) file in the edge_server directory. If you haven't completed this step in the prerequisites section, you will need to do it now.
-
-3. We will configure Edge Server using the command-line tool `edgectl`. By default, this tool will be installed at ``.mongodb-edge` in your home directory. You can reference the entire path to use this tool, `~/.mongodb-edge/bin/edgectl`, or simply add it to your PATH by running the command below: 
+1. We will configure Edge Server using the command-line tool `edgectl`. By default, this tool will be installed at `.mongodb-edge` in your home directory. You can reference the entire path to use this tool, `~/.mongodb-edge/bin/edgectl`, or simply add it to your PATH by running the command below: 
 
    ```bash
    export PATH="~/.mongodb-edge/bin/:$PATH"
    ```
 
-   The next command will generate a docker-compose file in your current directory with all the necessary steps to deploy and manage your Edge Server instance. Replace `<your-app-id>` with the value obtained in the first part of this tutorial series, and `<your-auth-secret>` with the token generated in the previous section. You will also need to specify the deployment region where your app service was deployed,  `<cloud-region>` and `<cloud-provider>`. 
+   The next command will generate a docker-compose file in your current directory with all the necessary steps to deploy and manage your Edge Server instance. Replace `<your-app-id>` with the value obtained in the first part of this tutorial series, and `<your-auth-secret>` with the token generated in the previous section. 
 
    ```bash
-   edgectl config --platform compose --app-id <your-app-id> --insecure-disable-auth --registration-token <your-registration-token> --cloud-sync-server-base-url=https://<cloud-region>.<cloud-provider>.services.cloud.mongodb.com
+   edgectl init --platform compose --app-id <your-app-id> --registration-token <your-registration-token> --insecure-disable-auth
    ```
 
 > [!Tip]
 > To learn more about each of the config flags, visit our documentation on how to [Install and Configure the Edge Server](https://www.mongodb.com/docs/atlas/app-services/edge-server/configure/).
    
-4. This application is able to simulate offline scenarios by setting the edge server connectivity off. In order to enable this feature in the Edge Server, run the command below.
+2. This application is able to simulate offline scenarios by setting the edge server connectivity off. In order to enable this feature in the Edge Server, run the command below.
 
    ```bash
    edgectl offline-demo setup
    ```
 
-5. To start the server, from the edge_server directory run:
+3. To start the server, from the edge_server directory run:
 
    ```bash
-   edgectl up
+   edgectl start
    ```
 
    Check the status by running `edgectl status`, you should see the value `"cloud_connected": true` indicating that the Edge Server is connected to MongoDB Atlas.
 
 
 > [!Important]
-> Once you are done with the tutorial, remember to stop the server by running `edgectl down` in the edge_server directory.
+> Once you are done with the tutorial, remember to stop the server by running `edgectl stop` in the edge_server directory.
 
 
 ## Frontend Configuration
 
 ### Set up Environment Variables
 
-Navigate to the [app](app) directory. If you are currently in the [edge_server](edge_server) one, you can run the command below:
+Navigate to the [app](app) directory. If you are currently in the root directory, you can run the command below:
 
 ```bash
-cd ../app
+cd app
 ```
 
 Now copy the `env.local.example` file in this directory to `.env.local` (which will be ignored by Git) as seen below:
