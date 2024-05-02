@@ -194,7 +194,8 @@ function Header( ) {
             </ul>
             <IconButton
               aria-label='Control Panel'
-              href='/control'
+              href={`/control?${new URLSearchParams(router.query).toString()}`}
+              target="_blank"
             >
               <Icon glyph="Settings" />
             </IconButton>
