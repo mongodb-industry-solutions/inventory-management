@@ -6,6 +6,7 @@ import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
 import { UserContext } from '../context/UserContext';
 import { useToast } from '@leafygreen-ui/toast';
+import { ObjectId } from 'bson';
 import Button from "@leafygreen-ui/button";
 import { Spinner } from '@leafygreen-ui/loading-indicator';
 
@@ -446,14 +447,17 @@ export async function getServerSideProps({ query }) {
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
 
+        const locationId = query.location;
         const edge = (query.edge === 'true');
 
         const client = edge ? await getEdgeClientPromise() : await getClientPromise();
         const db = client.db(dbName);
 
+        const productsFilter = locationId ? { "total_stock_sum.location.id": new ObjectId(locationId) } : {};
+
         const products = await db
             .collection("products")
-            .find({})
+            .find(productsFilter)
             .toArray();
         
         const locations = await db

@@ -6,10 +6,14 @@ const STORAGE_KEY = 'selectedUser';
 
 export const UserContext = createContext();
 
+let app = null;
+
 export const UserProvider = ({ children, value }) => {
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const app = new App(value.appServiceInfo.appId);
+  if (!app) {
+    app = new App(value.appServiceInfo.appId);
+  }
 
   const credentials = Credentials.anonymous();
   let closeStreamProductList;
@@ -54,7 +58,7 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
     closeStreamProductList = () => {
       console.log("Closing stream");
-      stream.return(null)
+      stream.return();
     };
 
     let updatedProduct = null;
@@ -128,7 +132,7 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
     closeStreamProductDetail = () => {
       console.log("Closing stream");
-      stream.return(null)
+      stream.return();
     };
 
     let updatedProduct = null;
@@ -177,7 +181,7 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
     closeStreamDashboard = () => {
       console.log("Closing stream");
-      stream.return(null)
+      stream.return();
     };
 
     for await (const  change  of  stream) {
@@ -198,7 +202,7 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
     closeStreamInventoryCheck= () => {
       console.log("Closing stream");
-      stream.return(null)
+      stream.return();
     };
 
     for await (const  change  of  stream) {
@@ -218,7 +222,7 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
     closeStreamControl = () => {
       console.log("Closing stream");
-      stream.return(null)
+      stream.return();
     };
 
     for await (const  change  of  stream) {
