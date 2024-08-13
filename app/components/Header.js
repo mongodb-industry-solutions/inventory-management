@@ -3,13 +3,16 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '../context/UserContext';
 import { ServerContext } from '../pages/_app';
-import { Spinner } from '@leafygreen-ui/loading-indicator';
 import { MongoDBLogoMark } from '@leafygreen-ui/logo';
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import { H2 } from '@leafygreen-ui/typography';
 import Button from "@leafygreen-ui/button";
 import styles from '../styles/header.module.css';
+import dynamic from 'next/dynamic';
+
+const Spinner = dynamic(() => import('@leafygreen-ui/loading-indicator'), { ssr: false });
+
 
 function Header( ) {
 
