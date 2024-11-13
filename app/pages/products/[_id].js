@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { getClientPromise, getEdgeClientPromise } from '../../lib/mongodb';
+import { getClientPromise } from '../../lib/mongodb'; // Removed getEdgeClientPromise
 import { useRouter } from 'next/router';
 import { UserContext } from '../../context/UserContext';
 import { ObjectId } from "bson";
@@ -24,33 +24,31 @@ export default function Product({ preloadedProduct }) {
     const [editedValue, setEditedValue] = useState('');
 
     const router = useRouter();
-    const { location, edge } = router.query;
-
+    const { location } = router.query;
     const utils = useContext(ServerContext);
-    const {startWatchProductDetail, stopWatchProductDetail} = useContext(UserContext);
+    const { startWatchProductDetail, stopWatchProductDetail } = useContext(UserContext);
 
     const lightColors = [
-        '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
-        '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9', '#ffffff', '#FFFFFF'
+        '#B1FF05', '#E9FF99', '#B45AF2', '#F2C5EE',
+        '#00D2FF', '#A6FFEC', '#FFE212', '#FFEEA9', '#ffffff', '#FFFFFF'
     ];
 
     const leafUrl = lightColors.includes(product.color?.hex) ? "/images/leaf_dark.png" : "/images/leaf_white.png";
 
-    const productFilter = {'items.product.id': new ObjectId(preloadedProduct._id)};
+    const productFilter = { 'items.product.id': new ObjectId(preloadedProduct._id) };
     let locationFilter = {};
-    //Add location filter if exists
     if (location) {
-        locationFilter= { 'location.destination.id': new ObjectId(location)};
+        locationFilter = { 'location.destination.id': new ObjectId(location) };
     }
-    
-    const sdk = new ChartsEmbedSDK({ baseUrl: utils.analyticsInfo.chartsBaseUrl});
+
+    const sdk = new ChartsEmbedSDK({ baseUrl: utils.analyticsInfo.chartsBaseUrl });
     const dashboardDiv = useRef(null);
     const [rendered, setRendered] = useState(false);
-    const [dashboard] = useState(sdk.createDashboard({ 
-        dashboardId: utils.analyticsInfo.dashboardIdProduct, 
-        filter: { $and: [productFilter, locationFilter]},
-        widthMode: 'scale', 
-        heightMode: 'scale', 
+    const [dashboard] = useState(sdk.createDashboard({
+        dashboardId: utils.analyticsInfo.dashboardIdProduct,
+        filter: { $and: [productFilter, locationFilter] },
+        widthMode: 'scale',
+        heightMode: 'scale',
         background: '#fff'
     }));
 
@@ -63,7 +61,7 @@ export default function Product({ preloadedProduct }) {
                 headers['If-None-Match'] = lastEtag;
             }
 
-            const response = await fetch(`/api/edge/getProducts?id=${preloadedProduct._id}`, {
+            const response = await fetch(`/api/getProducts?id=${preloadedProduct._id}`, { // Removed 'edge' path
                 method: 'GET',
                 headers: headers
             });
@@ -75,20 +73,19 @@ export default function Product({ preloadedProduct }) {
                 if (etagHeader) {
                     lastEtag = etagHeader;
                 }
-            const refreshedProduct = await response.json();
-            setProduct(refreshedProduct.products[0]);
-          }
+                const refreshedProduct = await response.json();
+                setProduct(refreshedProduct.products[0]);
+            }
         } catch (error) {
-          console.error('Error refreshing data:', error);
+            console.error('Error refreshing data:', error);
         }
-    };
-    
+    }
 
     useEffect(() => {
         dashboard.render(dashboardDiv.current)
             .then(() => setRendered(true))
             .catch(err => console.log("Error during Charts rendering.", err));
-      }, [dashboard]);
+    }, [dashboard]);
 
     useEffect(() => {
         // Update autoreplenishment state if it changes
@@ -97,27 +94,22 @@ export default function Product({ preloadedProduct }) {
         }
 
         // Update dashboard if product change is detected
-        if (rendered && edge !== 'true') {
-            dashboard.setFilter({ $and: [productFilter, locationFilter]});
+        if (rendered) {
+            dashboard.setFilter({ $and: [productFilter, locationFilter] });
             dashboard.refresh();
         }
     }, [product]);
 
     useEffect(() => {
-        if (edge !== 'true') {
-          //initializeApp(utils.appServiceInfo.appId);
-          startWatchProductDetail(setProduct,preloadedProduct, location, utils);
-          return () => stopWatchProductDetail();
-        } else {
-            const interval = setInterval(refreshProduct, 1000);
-            return () => clearInterval(interval);
-        }
-      }, [edge]);
+        // Removed conditional `edge` logic
+        startWatchProductDetail(setProduct, preloadedProduct, location, utils);
+        return () => stopWatchProductDetail();
+    }, []);
 
     useEffect(() => {
         setProduct(preloadedProduct);
         if (rendered) {
-            dashboard.setFilter({ $and: [productFilter, locationFilter]});
+            dashboard.setFilter({ $and: [productFilter, locationFilter] });
             dashboard.refresh();
         }
     }, [router.asPath]);
@@ -134,25 +126,25 @@ export default function Product({ preloadedProduct }) {
     const handleToggleAutoreplenishment = async () => {
         try {
             setIsAutoDisabled(true);
-            let url = (edge==='true') ? '/api/edge/setAutoreplenishment' : utils.apiInfo.dataUri + '/action/updateOne';
+            const url = utils.apiInfo.dataUri + '/action/updateOne';
 
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
-                  'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
                 },
                 body: JSON.stringify({
-                  dataSource: "mongodb-atlas",
-                  database: utils.dbInfo.dbName,
-                  collection: "products",
-                  filter: { "_id": { "$oid": preloadedProduct._id } },
-                  update: {
-                    "$set": { "autoreplenishment": !isAutoOn }
-                  }
+                    dataSource: "mongodb-atlas",
+                    database: utils.dbInfo.dbName,
+                    collection: "products",
+                    filter: { "_id": { "$oid": preloadedProduct._id } },
+                    update: {
+                        "$set": { "autoreplenishment": !isAutoOn }
+                    }
                 }),
-              });
+            });
             if (response.ok) {
                 setIsAutoOn(!isAutoOn);
             } else {
@@ -167,39 +159,37 @@ export default function Product({ preloadedProduct }) {
 
     const handleEdit = (field) => {
         if (!location) {
-          setEditableField(field);
+            setEditableField(field);
 
-          field === 'price' ? 
-            setEditedValue(product[field].amount) :
-            setEditedValue(product[field]);
+            field === 'price' ?
+                setEditedValue(product[field].amount) :
+                setEditedValue(product[field]);
         }
-      };
+    };
 
     const handleSaveEdit = async () => {
-
         try {
-            let url = utils.apiInfo.dataUri + '/action/updateOne';
-            console.log(editableField, editedValue);
+            const url = utils.apiInfo.dataUri + '/action/updateOne';
             const field = editableField === 'price' ? 'price.amount' : editableField;
             const value = editableField === 'price' ? parseInt(editedValue) : editedValue;
 
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
-                  'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
                 },
                 body: JSON.stringify({
-                  dataSource: "mongodb-atlas",
-                  database: utils.dbInfo.dbName,
-                  collection: "products",
-                  filter: { "_id": { "$oid": preloadedProduct._id } },
-                  update: {
-                    "$set": { [field] : value }
-                  }
+                    dataSource: "mongodb-atlas",
+                    database: utils.dbInfo.dbName,
+                    collection: "products",
+                    filter: { "_id": { "$oid": preloadedProduct._id } },
+                    update: {
+                        "$set": { [field]: value }
+                    }
                 }),
-              });
+            });
             if (response.ok) {
                 const updatedProduct = { ...product, [field]: value };
                 setProduct(updatedProduct);
@@ -209,7 +199,7 @@ export default function Product({ preloadedProduct }) {
             }
         } catch (e) {
             console.error(e);
-        } 
+        }
     };
 
     const handleCancelEdit = () => {
@@ -219,7 +209,7 @@ export default function Product({ preloadedProduct }) {
 
     const handleInputChange = (event) => {
         setEditedValue(event.target.value);
-      };
+    };
 
     return (
         <>
@@ -400,30 +390,25 @@ export default function Product({ preloadedProduct }) {
 
 export async function getServerSideProps(context) {
     try {
-        if (!process.env.MONGODB_DATABASE_NAME) {
-            throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
-        }
-
         const dbName = process.env.MONGODB_DATABASE_NAME;
 
         const { params, query } = context;
         const locationId = query.location;
-        const edge = (query.edge === 'true');
 
-        const client = edge ? await getEdgeClientPromise() : await getClientPromise();
+        const client = await getClientPromise(); // Removed `edge` logic for client selection
         const db = client.db(dbName);
 
         const collectionName = locationId ? "products" : "products_area_view";
-       
+
         const product = await db
             .collection(collectionName)
-            .findOne({ _id: new ObjectId(params._id)});
+            .findOne({ _id: new ObjectId(params._id) });
 
         return {
             props: { preloadedProduct: JSON.parse(JSON.stringify(product)) },
         };
     } catch (e) {
         console.error(e);
-        return { props: {ok: false, reason: "Server error"}};
+        return { props: { ok: false, reason: "Server error" } };
     }
 }

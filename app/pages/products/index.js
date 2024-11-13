@@ -1,4 +1,4 @@
-import { getClientPromise, getEdgeClientPromise }  from "../../lib/mongodb";
+import { getClientPromise } from "../../lib/mongodb"; // Removed getEdgeClientPromise
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { ServerContext } from '../_app';
@@ -21,14 +21,12 @@ export default function Products({ products, facets }) {
   const [previousItems, setPreviousItems] = useState(products.flatMap(product => product.items));
 
   const { pushToast } = useToast();
-
   const router = useRouter();
-  const { location, edge } = router.query;
+  const { location } = router.query;
 
   const utils = useContext(ServerContext);
-  const {startWatchProductList, stopWatchProductList} = useContext(UserContext);
+  const { startWatchProductList, stopWatchProductList } = useContext(UserContext);
   
-  // Create a ref for the input element
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
 
@@ -41,12 +39,12 @@ export default function Products({ products, facets }) {
           headers['If-None-Match'] = lastEtag;
       }
 
-      const response = await fetch('/api/edge/getProducts', {
+      const response = await fetch('/api/edge/getProducts', { // Using the local Next.js API route
         method: 'GET',
         headers: headers
       });
       
-      if (response.status === 304) { // 304 Not Modified
+      if (response.status === 304) {
         return;
       } else if (response.status === 200) {
 
@@ -65,18 +63,16 @@ export default function Products({ products, facets }) {
   };
 
   useEffect(() => {
-    if (edge !== 'true') {
-      startWatchProductList(setDisplayProducts,addAlert, location, utils);
-      return () => stopWatchProductList();
-    }
-  }, [edge]);
+    startWatchProductList(setDisplayProducts, addAlert, location, utils);
+    return () => stopWatchProductList();
+  }, []);
 
   useEffect(() => {
-    if (edge === 'true' && searchQuery.length === 0) {
+    if (searchQuery.length === 0) {
       const interval = setInterval(refreshProducts, 1000);
       return () => clearInterval(interval);
     }
-  }, [edge, searchQuery]);
+  }, [searchQuery]);
 
   useEffect(() => {
     handleSearch();
@@ -89,32 +85,14 @@ export default function Products({ products, facets }) {
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        let response;
-        if (edge === 'true') {
-          response = await fetch('/api/edge/search?collection=products', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify(searchQuery),
-          });
-        } else {
-          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: 'products',
-              pipeline: searchProductsPipeline(searchQuery, location)
-            }),
-          });
-        }
+        const response = await fetch('/api/edge/search?collection=products', { // Using Next.js API for search
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(searchQuery),
+        });
         
         const data = await response.json();
         const searchResults = data.documents;
@@ -135,32 +113,15 @@ export default function Products({ products, facets }) {
   
     if (searchValue.length > 0) {
       try {
-        let response;
-        if (edge === 'true') {
-          response = await fetch('/api/edge/autocomplete?collection=products', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify(searchValue),
-          });
-        } else {
-          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: 'products',
-              pipeline: autocompleteProductsPipeline(searchValue, location)
-            }),
-          });
-        }
+        const response = await fetch('/api/edge/autocomplete?collection=products', { // Using Next.js API for autocomplete
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(searchValue),
+        });
+        
         const data = await response.json();
         setSuggestions(data.documents[0].suggestions);
       } catch (error) {
@@ -174,54 +135,36 @@ export default function Products({ products, facets }) {
   };
   
   const handleKeyDown = (e) => {
-    // Check if the input element is focused
     const isInputFocused = document.activeElement === inputRef.current;
 
     if (isInputFocused && suggestions.length > 0) {
       const lastIndex = suggestions.length - 1;
 
-      // Check if the user pressed the down arrow key
       if (e.key === "ArrowDown") {
-        e.preventDefault(); // Prevents scrolling the page
-
-        // If no suggestion is selected, select the first one (index 0)
-        if (selectedSuggestionIndex === null) {
-          setSelectedSuggestionIndex(0);
-        } else {
-          // If not at the last suggestion, move to the next one
-          setSelectedSuggestionIndex((prevIndex) =>
-            prevIndex < lastIndex ? prevIndex + 1 : lastIndex
-          );
-        }
+        e.preventDefault();
+        setSelectedSuggestionIndex((prevIndex) =>
+          prevIndex < lastIndex ? prevIndex + 1 : lastIndex
+        );
       }
 
-      // Check if the user pressed the up arrow key
       if (e.key === "ArrowUp") {
-        e.preventDefault(); // Prevents scrolling the page
-
-        // If no suggestion is selected, do nothing
-        if (selectedSuggestionIndex !== null) {
-          // If not at the first suggestion, move to the previous one
-          setSelectedSuggestionIndex((prevIndex) =>
-            prevIndex > 0 ? prevIndex - 1 : 0
-          );
-        }
+        e.preventDefault();
+        setSelectedSuggestionIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : 0
+        );
       }
 
-      // Check if the user pressed the Enter key
       if (e.key === "Enter") {
-        e.preventDefault(); // Prevents form submission or other default behavior
+        e.preventDefault();
         if (selectedSuggestionIndex !== null && selectedSuggestionIndex >= 0) {
-          // If a suggestion is selected, use its value as the search query
           setSearchQuery(suggestions[selectedSuggestionIndex]);
-          setSuggestions([]); // Hide the suggestions
+          setSuggestions([]);
         }
       }
     }
   };
 
   const filterProducts = (itemsFilter, productsFilter) => {
-    // Filter products based on items and products
     let updatedFilteredProducts = products.filter(product => {
       const items = product.items.map((item) => item.name);
       const products = product.name ? [product.name] : [];
@@ -231,13 +174,10 @@ export default function Products({ products, facets }) {
 
       return itemMatch && productMatch;
     });
-    setDisplayProducts(updatedFilteredProducts); // Update sorted products when filters change
-    //console.log('items:' + itemsFilter + ' products:' + productsFilter + ' products: ' + updatedFilteredProducts.length);
+    setDisplayProducts(updatedFilteredProducts);
   };
 
-  // Function to add a new alert to the list
   const addAlert = (item) => {
-
     const queryParameters = new URLSearchParams(router.query).toString();
     const href = `/products/${item.product_id}?${queryParameters}`;
 
@@ -260,7 +200,6 @@ export default function Products({ products, facets }) {
         newProduct.items.forEach(newItem => {
             const previousItem = previousItems.find(prevItem => prevItem.sku === newItem.sku);
 
-            // Compare stock amounts
             const newStock = location ? 
                 newItem.stock.find(stock => stock.location.id === location)
                 : newItem.stock.find(stock => stock.location.type !== "warehouse");
@@ -271,60 +210,49 @@ export default function Products({ products, facets }) {
 
             if (newStock.amount + newStock.ordered < newStock.threshold && newStock.amount < previousStock.amount) {
                 newItem.product_id = newProduct._id;
-                console.log(newItem);
                 addAlert(newItem);
             }
         });
     });
 
-    // Update previous state with new data
     setPreviousItems(newProducts.flatMap(product => product.items));
   }
 
   const handleSortByPopularity = () => {
-    console.log('Sorting by popularity');
     setSortBy('popularity');
     setDisplayProducts(prevProducts => [...prevProducts].sort((a, b) => b.popularity_index - a.popularity_index));
   };
 
   const handleSortByLowStock = () => {
-    console.log('Sorting by low stock');
     setSortBy('lowStock');
     setDisplayProducts((prevProducts) => {
       const displayedProducts = [...prevProducts].sort((a, b) => {
         
-        var countLowStockSizes = null;
-        if(location){
-          countLowStockSizes = (product) =>
-            product.items.reduce((count, item) => (item.stock.find(stock => stock.location.id === location)?.amount < 10 ? count + 1 : count), 0);
-        } else {
-          countLowStockSizes = (product) =>
-            product.items.reduce((count, item) => (item.stock.find(stock => stock.location.type !== "warehouse")?.amount < 10 ? count + 1 : count), 0);
-        }
-    
+        const countLowStockSizes = location
+          ? (product) =>
+              product.items.reduce((count, item) => (item.stock.find(stock => stock.location.id === location)?.amount < 10 ? count + 1 : count), 0)
+          : (product) =>
+              product.items.reduce((count, item) => (item.stock.find(stock => stock.location.type !== "warehouse")?.amount < 10 ? count + 1 : count), 0);
+
         const lowStockSizesA = countLowStockSizes(a);
         const lowStockSizesB = countLowStockSizes(b);
-  
+
         if (lowStockSizesA > 0 && lowStockSizesB === 0) {
-          return -1; // Prioritize 'a' if it has at least one low stock size and 'b' doesn't
+          return -1;
         } else if (lowStockSizesA === 0 && lowStockSizesB > 0) {
-          return 1; // Prioritize 'b' if it has at least one low stock size and 'a' doesn't
+          return 1;
         } else if (lowStockSizesA !== lowStockSizesB) {
           return lowStockSizesB - lowStockSizesA;
         } else {
-          // If both have the same count of low stock sizes, sort by total stock amount
-          var totalStockAmount = null;
-          if(location){
-            totalStockAmount = (product) =>
-              product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.id === location)?.amount, 0);
-          } else {
-            totalStockAmount = (product) =>
-              product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.type !== "warehouse")?.amount, 0);
-          }
+          const totalStockAmount = location
+            ? (product) =>
+                product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.id === location)?.amount, 0)
+            : (product) =>
+                product.items.reduce((total, item) => total + item.stock.find(stock => stock.location.type !== "warehouse")?.amount, 0);
 
           const totalStockA = totalStockAmount(a);
           const totalStockB = totalStockAmount(b);
-          return totalStockA - totalStockB; // Higher total stock amount will appear last
+          return totalStockA - totalStockB;
         }
       });
   
@@ -333,7 +261,6 @@ export default function Products({ products, facets }) {
   };
 
   const handleInputKeyUp = (e) => {
-    // Listen for the keyup event and clear the suggestions if the input value is empty
     if (e.target.value === '') {
       setSuggestions([]);
     }
@@ -345,7 +272,7 @@ export default function Products({ products, facets }) {
       <Sidebar facets={facets} filterProducts={filterProducts} page="products" />
         <div className="search-bar">
           <input
-            ref={inputRef} // Attach the ref to the input element
+            ref={inputRef}
             className="search-input"
             type="text"
             placeholder=" Search..."
@@ -414,9 +341,8 @@ export async function getServerSideProps({ query }) {
     const dbName = process.env.MONGODB_DATABASE_NAME;
 
     const locationId = query.location;
-    const edge = (query.edge === 'true');
 
-    const client = edge ? await getEdgeClientPromise() : await getClientPromise();
+    const client = await getClientPromise();
     const db = client.db(dbName);
     
     const collectionName = locationId ? "products" : "products_area_view";
@@ -424,49 +350,21 @@ export async function getServerSideProps({ query }) {
 
     const products = await db.collection(collectionName).find(productsFilter).toArray();
 
-    let facets = [];
-
-    if (edge){
-  
-      const itemsAggregated = products.flatMap(product => product.items.map(item => item.name));
-      const itemsFacetBuckets = Array.from(new Set(itemsAggregated)).map(item => ({ _id: item, count: itemsAggregated.filter(i => i === item).length }));
-
-      const productsFacetBuckets = products.map(product => {
-        return {
-          _id: product.name,
-          count: 1,
-        };
-      });
-
-      const facetGroup = {
-        facet: {
-          itemsFacet: { buckets: itemsFacetBuckets },
-          productsFacet: { buckets: productsFacetBuckets },
-        }
-      };
-
-      facets.push(facetGroup);
-    } else {
-      const agg = [
-        {
-          $searchMeta: {
-            index: "facets",
-            facet: {
-              facets: {
-                productsFacet: { type: "string", path: "name", numBuckets: 50 },
-                itemsFacet: { type: "string", path: "items.name", numBuckets: 50 },
-              },
+    const agg = [
+      {
+        $searchMeta: {
+          index: "facets",
+          facet: {
+            facets: {
+              productsFacet: { type: "string", path: "name", numBuckets: 50 },
+              itemsFacet: { type: "string", path: "items.name", numBuckets: 50 },
             },
           },
         },
-      ];
-  
-      facets = await db
-        .collection("products")
-        .aggregate(agg)
-        .toArray();
+      },
+    ];
 
-    }
+    const facets = await db.collection("products").aggregate(agg).toArray();
 
     return {
       props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)) },

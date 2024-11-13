@@ -61,18 +61,6 @@ const Dashboard = () => {
     }, [selectedChannel]);
 
   useEffect(() => {
-    if (edge !== 'true') {
-      //initializeApp(utils.appServiceInfo.appId);
-      startWatchDashboard(dashboard, utils);
-      startWatchInventoryCheck(dashboard, addAlert, utils);
-      return () => {
-        stopWatchDashboard(dashboard, utils);
-        stopWatchInventoryCheck(dashboard, utils);
-      }
-    }
-  }, [edge]);
-
-  useEffect(() => {
     if (rendered) {
         dashboard.setFilter(locationFilter);
         dashboard.refresh();

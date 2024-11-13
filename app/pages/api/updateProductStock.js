@@ -1,18 +1,19 @@
-import { getEdgeClientPromise } from '../../../lib/mongodb';
+import { getClientPromise } from '../../lib/mongodb';
 import { ObjectId } from 'bson';
 
 let client = null;
 
 export default async (req, res) => {
     try {
-
         if (!process.env.MONGODB_DATABASE_NAME) {
-            throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
+            throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"');
         }
 
         const dbName = process.env.MONGODB_DATABASE_NAME;
+        
+        // Initialize the MongoDB client if it hasn't been initialized yet
         if (!client) {
-            client = await getEdgeClientPromise();
+            client = await getClientPromise();
         }
         const db = client.db(dbName);
 
@@ -21,10 +22,11 @@ export default async (req, res) => {
 
         // Update item stock
         for (const item of product.items) {
-
+            // Find the updated stock for the given location
             const updatedStock = item.stock.find((stock) => stock.location.id === locationId);
             updatedStock.location.id = new ObjectId(updatedStock.location.id);
 
+            // Update the stock information for the product
             await db.collection("products").updateOne(
                 { "_id": new ObjectId(product._id) },
                 { "$set": 
@@ -61,10 +63,18 @@ export default async (req, res) => {
         
         console.log(`Items successfully updated.`);
         
+        // Send a success response
         res.status(200).json({ success: true });
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
-        res.status(500).json({ error: 'Error reseting stock' });
+        // Return an error response if an exception is caught
+        res.status(500).json({ error: 'Error resetting stock' });
     }
 };
+
+/*
+Changes made:
+1. Replaced the import of `getEdgeClientPromise` with `getClientPromise` to remove edge-related references.
+2. Removed any logic distinguishing between server types, treating the server as primary.
+3. Added inline comments to explain each part of the code, especially the stock update logic.
+*/

@@ -34,9 +34,7 @@ MyApp.getInitialProps = async ({ ctx }) => {
       'APP_SERVICES_URI',
       'API_KEY',
       'REALM_APP_ID',
-      //'EDGE_SERVER_HOST',
       'MONGODB_DATABASE_NAME',
-      //'DEMO_INDUSTRY',
       'CHARTS_EMBED_SDK_BASEURL',
       'DASHBOARD_ID_GENERAL',
       'DASHBOARD_ID_PRODUCT'
@@ -51,7 +49,6 @@ MyApp.getInitialProps = async ({ ctx }) => {
     const uri = process.env.APP_SERVICES_URI;
     const key = process.env.API_KEY;
     const appId = process.env.REALM_APP_ID;
-    const edgeHost = process.env.EDGE_SERVER_HOST || 'localhost';
     const dbName = process.env.MONGODB_DATABASE_NAME;
     const industry = process.env.DEMO_INDUSTRY || 'retail';
     const chartsBaseUrl = process.env.CHARTS_EMBED_SDK_BASEURL;
@@ -85,10 +82,9 @@ MyApp.getInitialProps = async ({ ctx }) => {
 
     return { 
       utils: {
-        apiInfo: { dataUri, httpsUri, accessToken}, 
+        apiInfo: { dataUri, httpsUri, accessToken }, 
         dbInfo: { dbName },
         appServiceInfo: { appId },
-        edgeInfo: { edgeHost },
         demoInfo: { industry },
         analyticsInfo: { chartsBaseUrl, dashboardIdGeneral, dashboardIdProduct }
       }
@@ -98,12 +94,11 @@ MyApp.getInitialProps = async ({ ctx }) => {
     return {
       props: { 
         utils: {
-          apiInfo: { dataUri: null, httpsUri: null, accessToken: null}, 
+          apiInfo: { dataUri: null, httpsUri: null, accessToken: null }, 
           dbInfo: { dbName: null }, 
           appServiceInfo: { appId: null },
-          edgeInfo: { edgeHost: null }, 
-          demoInfo: { demoIndustry: null },
-          analyticsInfo: { chartsBaseUrl: null, dashboardIdGeneral: null, dashboardIdProduct: null}
+          demoInfo: { industry: null },
+          analyticsInfo: { chartsBaseUrl: null, dashboardIdGeneral: null, dashboardIdProduct: null }
         }
       },
     };

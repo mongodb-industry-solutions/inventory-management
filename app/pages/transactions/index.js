@@ -1,4 +1,4 @@
-import { getClientPromise, getEdgeClientPromise } from "../../lib/mongodb";
+import { getClientPromise } from "../../lib/mongodb"; // Removed getEdgeClientPromise
 import { useState, useEffect, useRef, useContext } from 'react';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
@@ -17,22 +17,21 @@ export default function Transactions({ orders, facets }) {
   const [displayOrders, setDisplayOrders] = useState(orders);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
-  const [itemsPerPage, setItemsPerPage] = useState(10); // Set the number of items per page
-  const [currentPage, setCurrentPage] = useState(1); // Set the initial current page to 1
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const lightColors = [
     '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
     '#00D2FF','#A6FFEC', '#FFE212', '#FFEEA9', '#ffffff', '#FFFFFF'
   ];
 
-  // Calculate the total number of pages
   const totalPages = Math.ceil(displayOrders.length / itemsPerPage);
 
   const { selectedUser } = useUser();
   const utils = useContext(ServerContext);
 
   const router = useRouter();
-  const { location, type, edge } = router.query;
+  const { location, type } = router.query;
 
   const { pushToast } = useToast();
 
@@ -40,48 +39,27 @@ export default function Transactions({ orders, facets }) {
     handleSearch();
   }, [searchQuery, router.asPath]);
 
-  // Function to handle pagination control clicks
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  // Calculate the start and end index for items to display on the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  // Create refs for the input element and suggestions list
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
 
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        let response;
-        if (edge === 'true') {
-          response = await fetch(`/api/edge/search?collection=transactions&type=${type}&location=${location}&industry=${utils.demoInfo.demoIndustry}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify(searchQuery),
-          });
-        } else {
-          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: 'transactions',
-              pipeline: searchTransactionsPipeline(searchQuery, location, type)
-            }),
-          });
-        }
+        const response = await fetch(`/api/edge/search?collection=transactions&type=${type}&location=${location}&industry=${utils.demoInfo.demoIndustry}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(searchQuery),
+        });
         
         const data = await response.json();
         const searchResults = data.documents;
@@ -102,36 +80,19 @@ export default function Transactions({ orders, facets }) {
   
     if (searchValue.length > 0) {
       try {
-        let response;
-        if (edge === 'true') {
-          response = await fetch(`/api/edge/autocomplete?collection=transactions&type=${type}&location=${location}&industry=${utils.demoInfo.demoIndustry}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify(searchValue),
-          });
-        } else {
-          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: 'transactions',
-              pipeline: autocompleteTransactionsPipeline(searchValue)
-            }),
-          });
-        }
+        const response = await fetch(`/api/edge/autocomplete?collection=transactions&type=${type}&location=${location}&industry=${utils.demoInfo.demoIndustry}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(searchValue),
+        });
+        
         const data = await response.json();
         setSuggestions(data.documents[0].suggestions);
       } catch (error) {
-        setSuggestions([]); // Set an empty array if there's an error to prevent undefined value
+        setSuggestions([]);
       }
     } else {
       setSuggestions([]);
@@ -142,7 +103,6 @@ export default function Transactions({ orders, facets }) {
   
 
   const filterOrders = (itemsFilter, productsFilter) => {
-    // Filter orders based on sizes and colors
     let updatedFilteredOrders = orders.filter(order => {
       const item = order.items?.name;
       const product = order.items?.product?.name;
@@ -153,70 +113,49 @@ export default function Transactions({ orders, facets }) {
       return itemMatch && productMatch;
     });
 
-    setDisplayOrders(updatedFilteredOrders); // Update displayed orders when filters change
+    setDisplayOrders(updatedFilteredOrders);
     console.log('sizes:' + itemsFilter + ' colors:' + productsFilter + ' orders: ' + updatedFilteredOrders.length);
   };
 
   const handleInputKeyUp = (e) => {
-    // Listen for the keyup event and clear the suggestions if the input value is empty
     if (e.target.value === '') {
       setSuggestions([]);
     }
   };
 
   const handleKeyDown = (e) => {
-    // Check if the input element is focused
     const isInputFocused = document.activeElement === inputRef.current;
 
     if (isInputFocused && suggestions.length > 0) {
       const lastIndex = suggestions.length - 1;
 
-      // Check if the user pressed the down arrow key
       if (e.key === "ArrowDown") {
-        e.preventDefault(); // Prevents scrolling the page
-
-        // If no suggestion is selected, select the first one (index 0)
-        if (selectedSuggestionIndex === null) {
-          setSelectedSuggestionIndex(0);
-        } else {
-          // If not at the last suggestion, move to the next one
-          setSelectedSuggestionIndex((prevIndex) =>
-            prevIndex < lastIndex ? prevIndex + 1 : lastIndex
-          );
-        }
+        e.preventDefault();
+        setSelectedSuggestionIndex((prevIndex) =>
+          prevIndex < lastIndex ? prevIndex + 1 : lastIndex
+        );
       }
 
-      // Check if the user pressed the up arrow key
       if (e.key === "ArrowUp") {
-        e.preventDefault(); // Prevents scrolling the page
-
-        // If no suggestion is selected, do nothing
-        if (selectedSuggestionIndex !== null) {
-          // If not at the first suggestion, move to the previous one
-          setSelectedSuggestionIndex((prevIndex) =>
-            prevIndex > 0 ? prevIndex - 1 : 0
-          );
-        }
+        e.preventDefault();
+        setSelectedSuggestionIndex((prevIndex) =>
+          prevIndex > 0 ? prevIndex - 1 : 0
+        );
       }
 
-      // Check if the user pressed the Enter key
       if (e.key === "Enter") {
-        e.preventDefault(); // Prevents form submission or other default behavior
+        e.preventDefault();
         if (selectedSuggestionIndex !== null && selectedSuggestionIndex >= 0) {
-          // If a suggestion is selected, use its value as the search query
           setSearchQuery(suggestions[selectedSuggestionIndex]);
-          setSuggestions([]); // Hide the suggestions
+          setSuggestions([]);
         }
       }
     }
   };
 
   const handleReorder = async (originalItem) => {
-
-    //Create a copy of the original item
     const item = JSON.parse(JSON.stringify(originalItem));
 
-    //find location that match location query 
     const selectedLocation = selectedUser?.permissions?.locations.find(s => s.id === location);
 
     const transaction = {
@@ -241,8 +180,7 @@ export default function Transactions({ orders, facets }) {
     transaction.items.push(item);
     
     try {
-        let url = (edge === 'true') ? '/api/edge/addTransaction': utils.apiInfo.httpsUri + '/addTransaction';
-        const response = await fetch(url, {
+        const response = await fetch('/api/edge/addTransaction', { // Simplified URL without `edge` conditional
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -274,10 +212,8 @@ function formatTimestamp(timestamp) {
     hour12: true,
   };
 
-  return date.toLocaleString('en-US', options); // Format the date for display
+  return date.toLocaleString('en-US', options);
 }
-
-
 
   return (
     <>
@@ -285,13 +221,13 @@ function formatTimestamp(timestamp) {
       <Sidebar facets={facets} filterOrders={filterOrders} page="orders"/>
       <div className="search-bar">
           <input
-            ref={inputRef} // Attach the ref to the input element
+            ref={inputRef}
             className="search-input"
             type="text"
             placeholder=" Search..."
             value={searchQuery}
             onChange={handleSearchInputChange}
-            onKeyDown={handleKeyDown} // Add the onKeyDown event handler
+            onKeyDown={handleKeyDown}
             onKeyUp={handleInputKeyUp}
           />
           <button className="search-button" onClick={handleSearch}>
@@ -299,7 +235,6 @@ function formatTimestamp(timestamp) {
           </button>
         </div>
 
-        {/* Display autocomplete suggestions */}
         {suggestions.length > 0 && (
           <ul className="autocomplete-list" ref={suggestionsRef} tabIndex={0} onKeyDown={handleKeyDown}>
             {suggestions.map((suggestion, index) => (
@@ -310,7 +245,7 @@ function formatTimestamp(timestamp) {
                   }`}
                   onClick={() => {
                     setSearchQuery(suggestion);
-                    setSuggestions([]); // Hide the suggestions
+                    setSuggestions([]);
                   }}
                 >
                   {suggestion}
@@ -413,7 +348,6 @@ function formatTimestamp(timestamp) {
 }
 
 export async function getServerSideProps(context) {
-  
   try {
     if (!process.env.MONGODB_DATABASE_NAME) {
       throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
@@ -425,87 +359,15 @@ export async function getServerSideProps(context) {
     const { query } = context;
     const type = query.type;
     const location = query.location;
-    const edge = (query.edge === 'true');
 
-    const client = edge ? await getEdgeClientPromise() : await getClientPromise();
+    const client = await getClientPromise();
     const db = client.db(dbName);
 
-    let transactions = [];
-    let facets = [];
+    const agg = fetchTransactionsPipeline(industry, location, type);
+    const transactions = await db.collection("transactions").aggregate(agg).toArray();
 
-    if (edge) {
-
-      // Fetch transactions edge
-      const locationFilter = location
-        ? type === 'inbound'
-          ? { 'location.destination.id': new ObjectId(location) }
-          : { 'location.origin.id': new ObjectId(location) }
-        : {};
-
-      const manufacturingFilter =
-        industry === 'manufacturing'
-          ? type === 'inbound'
-            ? { 'items.product.name': { $ne: "Finished Goods" } }
-            : { 'items.product.name': "Finished Goods" }
-          : {};
-
-      const transactionGroup = await db
-        .collection("transactions")
-        .find({
-          ...locationFilter,
-          ...manufacturingFilter,
-        })
-        .sort({'items.status.0.update_timestamp': -1})
-        .toArray();
-      
-      if (transactionGroup.length > 0) {
-        transactions = transactionGroup.flatMap(transaction =>
-          transaction.items.map(item => ({ ...transaction, items: item }))
-        );
-      }
-
-      // Fetch filter facets edge
-      const itemsAggregated = transactions.flatMap(transaction => transaction.items.name);
-      const productsAggregated = transactions.map(transaction => transaction.items.product.name);
-      
-      const itemsFacetBuckets = Array.from(new Set(itemsAggregated)).map(item => ({
-        _id: item,
-        count: itemsAggregated.filter(i => i === item).length,
-      }));
-      
-      const productsFacetBuckets = Array.from(new Set(productsAggregated)).map(product => ({
-        _id: product,
-        count: productsAggregated.filter(p => p === product).length,
-      }));
-      
-      const facetGroup = {
-        facet: {
-          itemsFacet: { buckets: itemsFacetBuckets },
-          productsFacet: { buckets: productsFacetBuckets },
-        },
-      };
-
-      facets.push(facetGroup);
-
-    } else {
-
-      // Fetch transactions
-      const agg = fetchTransactionsPipeline(industry, location, type);
-
-      transactions = await db
-        .collection("transactions")
-        .aggregate(agg)
-        .toArray();
-
-      // Fetch filter facets
-      const facetsAgg = facetsTransactionsPipeline(industry, type);
-
-      facets = await db
-        .collection("transactions")
-        .aggregate(facetsAgg)
-        .toArray();
-    }
-    
+    const facetsAgg = facetsTransactionsPipeline(industry, type);
+    const facets = await db.collection("transactions").aggregate(facetsAgg).toArray();
 
     return {
       props: { orders: JSON.parse(JSON.stringify(transactions)), facets: JSON.parse(JSON.stringify(facets)) },

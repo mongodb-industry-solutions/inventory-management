@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb'
 
-
+// Function to get the primary MongoDB client
 export function getClientPromise() {
   const uri = process.env.MONGODB_URI;
   const options = {};
@@ -34,40 +34,12 @@ export function getClientPromise() {
   return clientPromise;
 }
 
-export function getEdgeClientPromise() {
-  const uriEdge = 'mongodb://' + process.env.EDGE_SERVER_HOST + ':27021';
-  const optionsEdge = {};
-
-  if (!uriEdge) {
-    throw new Error('Invalid/Missing environment variable: "EDGE_SERVER_HOST"');
-  }
-
-  let edgeClient;
-  let edgeClientPromise: Promise<MongoClient>;
-
-  if (process.env.NODE_ENV === 'development') {
-    // In development mode, use a global variable so that the value
-    // is preserved across module reloads caused by HMR (Hot Module Replacement).
-    let globalWithMongo = global as typeof globalThis & {
-      _mongoEdgeClientPromise?: Promise<MongoClient>;
-    }
-  
-    if (!globalWithMongo._mongoEdgeClientPromise) {
-      edgeClient = new MongoClient(uriEdge, optionsEdge);
-      globalWithMongo._mongoEdgeClientPromise = edgeClient.connect();
-    }
-    edgeClientPromise = globalWithMongo._mongoEdgeClientPromise;
-  
-  } else {
-    // In production mode, it's best to not use a global variable.
-    edgeClient = new MongoClient(uriEdge, optionsEdge);
-    edgeClientPromise = edgeClient.connect();
-  }
-
-  return edgeClientPromise;
-}
-
-
 // Export a module-scoped MongoClient promise. By doing this in a
 // separate module, the client can be shared across functions.
-export default { getClientPromise, getEdgeClientPromise }
+export default { getClientPromise }
+
+/*
+Changes made:
+1. Removed all references to the secondary MongoDB client.
+2. Deleted the `getEdgeClientPromise` function and related variables.
+*/
