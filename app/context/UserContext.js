@@ -1,15 +1,30 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { App, Credentials } from "realm-web";
 import { ObjectId } from "bson";
-
-const STORAGE_KEY = 'selectedUser';
 
 export const UserContext = createContext();
 
 let app = null;
 
+// Specific dummy user configuration
+const DUMMY_USER = {
+  name: "Eddie",
+  surname: "Grant",
+  title: "Inventory Manager",
+  permissions: {
+    locations: [
+      {
+        id: new ObjectId("65c63cb61526ffd3415fadbd"),
+        role: "inventory manager",
+        name: "Bogatell Factory",
+        area_code: "ES"
+      }
+    ]
+  }
+};
+
 export const UserProvider = ({ children, value }) => {
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(DUMMY_USER);
 
   if (!app) {
     app = new App(value.appServiceInfo.appId);
@@ -22,35 +37,21 @@ export const UserProvider = ({ children, value }) => {
   let closeStreamInventoryCheck;
   let closeStreamControl;
 
-  useEffect(() => {
-    // Load the selected user from local storage on component mount
-    const storedUser = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (storedUser && !selectedUser) {
-      setSelectedUser(storedUser);
-    }
-  }, []);
-  
-  const setUser = (user) => {
-    setSelectedUser(user);
-    // Save the selected user to local storage
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-  };
-
   const getUser = async () => {
-      if(app.currentUser){
-        return app.currentUser;
-      } else {
-        return app.logIn(credentials);
-      }
+    if(app.currentUser){
+      return app.currentUser;
+    } else {
+      return app.logIn(credentials);
+    }
   };
 
   const getMongoCollection = async (dbName, collection) => {
     const user = await getUser();
     const client = user.mongoClient("mongodb-atlas");
     return client.db(dbName).collection(collection);
-};
+  };
 
-const  startWatchProductList = async (setDisplayProducts, addAlert, location, utils ) => {
+  const startWatchProductList = async (setDisplayProducts, addAlert, location, utils ) => {
     console.log("Start watching stream");
     const runs = await getMongoCollection(utils.dbInfo.dbName, "products");
     const filter = {filter: {operationType: "update"}};
@@ -63,14 +64,13 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
     let updatedProduct = null;
 
-    for await (const  change  of  stream) {
+    for await (const change of stream) {
       console.log("Change detected");
       
       if (location) { 
         updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
-      }
-      else {
-          try {
+      } else {
+        try {
           const response = await fetch(utils.apiInfo.dataUri + '/action/findOne', {
             method: 'POST',
             headers: {
@@ -100,7 +100,6 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
       const pattern = /^items\.(\d+)\.stock/;
       for(const key of Object.keys(change.updateDescription.updatedFields)){
-
         if (pattern.test(key)) {
           let sku = change.fullDocument.items[parseInt(key.match(pattern)[1], 10)].sku;
           let item = updatedProduct.items.find(item => item.sku === sku);
@@ -109,7 +108,7 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
             item.stock.find(stock => stock.location.id === location)
             : item.stock.find(stock => stock.location.type !== "warehouse");
           
-          if(itemStock?.amount + itemStock?.ordered  < itemStock?.threshold) {
+          if(itemStock?.amount + itemStock?.ordered < itemStock?.threshold) {
             item.product_id = updatedProduct._id;
             addAlert(item);
           }
@@ -118,13 +117,13 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
     }
   };
 
-  const  startWatchProductDetail = async (setProduct, product, location, utils ) => {
+  const startWatchProductDetail = async (setProduct, product, location, utils ) => {
     console.log("Start watching stream");
     const runs = await getMongoCollection(utils.dbInfo.dbName, "products");
     const filter = {
       filter: {
-          operationType: "update",
-          "fullDocument._id": new ObjectId(product._id)
+        operationType: "update",
+        "fullDocument._id": new ObjectId(product._id)
       }
     };
 
@@ -137,7 +136,7 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
     let updatedProduct = null;
 
-    for await (const  change  of  stream) {
+    for await (const change of stream) {
       if (location) {
         updatedProduct = change.fullDocument;
       } else {
@@ -167,13 +166,13 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
     }
   };
 
-  const  startWatchDashboard = async (dashboard, utils) => {
+  const startWatchDashboard = async (dashboard, utils) => {
     console.log("Start watching stream");
     const runs = await getMongoCollection(utils.dbInfo.dbName, "transactions");
     const filter = {
       filter: {
-          operationType: "insert",
-          "fullDocument.type": "outbound"
+        operationType: "insert",
+        "fullDocument.type": "outbound"
       }
     };
 
@@ -184,86 +183,84 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
       stream.return();
     };
 
-    for await (const  change  of  stream) {
+    for await (const change of stream) {
       dashboard.refresh();
     }
   };
 
-  const  startWatchInventoryCheck = async (dashboard, addAlert, utils) => {
+  const startWatchInventoryCheck = async (dashboard, addAlert, utils) => {
     console.log("Start watching stream");
     const runs = await getMongoCollection(utils.dbInfo.dbName, "inventoryCheck");
     const filter = {
       filter: {
-          operationType: "insert"
+        operationType: "insert"
       }
     };
 
     const stream = runs.watch(filter);
 
-    closeStreamInventoryCheck= () => {
+    closeStreamInventoryCheck = () => {
       console.log("Closing stream");
       stream.return();
     };
 
-    for await (const  change  of  stream) {
+    for await (const change of stream) {
       console.log(change.fullDocument);
       addAlert(change.fullDocument.checkResult);
       dashboard.refresh();
     }
   };
 
-  const  startWatchControl = async (setProducts, utils) => {
+  const startWatchControl = async (setProducts, utils) => {
     console.log("Start watching stream");
     const runs = await getMongoCollection(utils.dbInfo.dbName, "products");
     const filter = {filter: {operationType: "update"}};
-
     const stream = runs.watch(filter);
-
 
     closeStreamControl = () => {
       console.log("Closing stream");
       stream.return();
     };
 
-    for await (const  change  of  stream) {
+    for await (const change of stream) {
       const updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
 
       setProducts((prevProducts) => {
         const updatedIndex = prevProducts.findIndex((product) => product._id === updatedProduct._id);
         if (updatedIndex !== -1) {
-            const updatedProducts = [...prevProducts];
-            updatedProducts[updatedIndex] = updatedProduct;
-            return updatedProducts;
+          const updatedProducts = [...prevProducts];
+          updatedProducts[updatedIndex] = updatedProduct;
+          return updatedProducts;
         } else {
-            return prevProducts;
+          return prevProducts;
         }
       });
     }
   };
 
   const stopWatchProductList = () => {
-    closeStreamProductList();
+    if (closeStreamProductList) closeStreamProductList();
   };
 
   const stopWatchProductDetail = () => {
-    closeStreamProductDetail();
+    if (closeStreamProductDetail) closeStreamProductDetail();
   };
 
   const stopWatchDashboard = () => {
-    closeStreamDashboard();
+    if (closeStreamDashboard) closeStreamDashboard();
   };
 
   const stopWatchInventoryCheck = () => {
-    closeStreamInventoryCheck();
+    if (closeStreamInventoryCheck) closeStreamInventoryCheck();
   };
 
   const stopWatchControl = () => {
-    closeStreamControl();
+    if (closeStreamControl) closeStreamControl();
   };
 
   return (
-    <UserContext.Provider value={{ selectedUser, 
-      setUser, 
+    <UserContext.Provider value={{ 
+      currentUser,
       startWatchProductList, 
       stopWatchProductList, 
       startWatchProductDetail, 
@@ -287,3 +284,5 @@ export const useUser = () => {
   }
   return context;
 };
+
+export default UserProvider;
