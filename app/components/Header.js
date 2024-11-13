@@ -29,27 +29,20 @@ function Header() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(utils.apiInfo.dataUri + '/action/find', {
-          method: 'POST',
+        const response = await fetch('/api/getUsers', {
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
           },
-          body: JSON.stringify({
-            dataSource: 'mongodb-atlas',
-            database: utils.dbInfo.dbName,
-            collection: 'users',
-            filter: {},
-          }),
         });
-        
+
         const data = await response.json();
 
         if (data.documents) {
           setUsersList(data.documents);
 
-          if (!localStorage.getItem('selectedUser')){
+          if (!localStorage.getItem('selectedUser')) {
             setUser(data.documents[0]);
           } 
         }
@@ -59,7 +52,7 @@ function Header() {
     };
 
     fetchData();
-  }, [ ]);
+  }, []);
 
   useEffect(() => {
     // Update location query param on user change
@@ -199,7 +192,7 @@ export default Header;
 
 /*
 Changes made:
-1. Removed all references to "secondary" and treated the server as a primary one.
+1. Removed all references to "edge" and treated the server as a primary one.
 2. Removed any logic distinguishing between server types.
 3. Updated API endpoints from `/api/secondary/*` to `/api/*`.
 4. Removed `serverType` query parameter and relevant conditionals.
