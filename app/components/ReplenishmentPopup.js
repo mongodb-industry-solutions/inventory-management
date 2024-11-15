@@ -5,7 +5,6 @@ import Select from 'react-select';
 import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
 import { useUser } from '../context/UserContext';
 import { useRouter } from 'next/router';
-import { ServerContext } from '../pages/_app';
 import { useToast } from '@leafygreen-ui/toast';
 import StockLevelBar from './StockLevelBar';
 import styles from '../styles/popup.module.css';
@@ -16,10 +15,9 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
     const { pushToast } = useToast();
 
     const { selectedUser } = useUser();
-    const utils = useContext(ServerContext);
 
     const router = useRouter();
-    const { location, edge } = router.query;
+    const { location } = router.query;
 
     const transaction = {
         type: 'inbound',
@@ -135,7 +133,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
         transaction.items = data;
         
         try {
-            let url = (edge === 'true') ? '/api/edge/addTransaction': utils.apiInfo.httpsUri + '/addTransaction';
+            let url = '/api/addTransaction';
             const response = await fetch( url, {
                 method: 'POST',
                 headers: {

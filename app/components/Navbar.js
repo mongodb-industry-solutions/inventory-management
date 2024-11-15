@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useUser } from '../context/UserContext';
 import { useRouter } from 'next/router';
-import { ServerContext } from '../pages/_app';
+//import { ServerContext } from '../pages/_app';
 import { FaStore, FaIndustry } from "react-icons/fa";
 import styles from '../styles/navbar.module.css';
 
@@ -12,12 +12,31 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
   const [selectedLocationId, setSelectedLocationId] = useState('');
+  const [industry, setIndustry] = useState('retail'); // Default value is 'retail'
 
   const { selectedUser } = useUser();
-  const utils = useContext(ServerContext);
+  //const utils = useContext(ServerContext);
 
   const router = useRouter();
   const { type } = router.query;
+    // Fetch the industry from the API when the component mounts
+    useEffect(() => {
+      const fetchIndustry = async () => {
+        try {
+          const response = await fetch('/api/getIndustry');
+          if (response.ok) {
+            const data = await response.json();
+            setIndustry(data.industry);
+          } else {
+            console.error('Failed to fetch industry information');
+          }
+        } catch (error) {
+          console.error('Error fetching industry:', error);
+        }
+      };
+  
+      fetchIndustry();
+    }, []);
 
   const handleDropdownToggle = () => {
     setIsOpen(!isOpen);
@@ -48,7 +67,7 @@ function Navbar() {
   return (
     <div className={`${styles["layout-navbar"]} ${selectedLocationId ? styles["branch"] : styles["hq"]}`}>
       <div className={styles["dropdown"]}>
-        {utils.demoInfo.industry == 'manufacturing' ? 
+        {industry == 'manufacturing' ? //replaced utils.demoInfo.industry
           <FaIndustry /> :
           <FaStore />}
         <button className={styles["dropdown-toggle"]} onClick={handleDropdownToggle}>
@@ -90,7 +109,7 @@ function Navbar() {
         router.pathname === '/transactions' && type === 'outbound' ? styles["bold-text"] : ''
       }`}
     >
-       {utils.demoInfo.industry == 'manufacturing' ? 
+       {industry == 'manufacturing' ? //replaced utils.demoInfo.industry
           <>Dispatch Events</> :
           <>Sales Events</>}
     </button>

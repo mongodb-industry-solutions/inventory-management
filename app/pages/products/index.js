@@ -89,36 +89,18 @@ export default function Products({ products, facets }) {
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        let response;
-        if (edge === 'true') {
-          response = await fetch('/api/edge/search?collection=products', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify(searchQuery),
-          });
-        } else {
-          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: 'products',
-              pipeline: searchProductsPipeline(searchQuery, location)
-            }),
-          });
-        }
-        
+        const response = await fetch('/api/search?collection=products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(searchQuery),
+        });
+  
         const data = await response.json();
         const searchResults = data.documents;
-
+  
         setDisplayProducts(searchResults);
       } catch (error) {
         console.error(error);
@@ -135,32 +117,15 @@ export default function Products({ products, facets }) {
   
     if (searchValue.length > 0) {
       try {
-        let response;
-        if (edge === 'true') {
-          response = await fetch('/api/edge/autocomplete?collection=products', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify(searchValue),
-          });
-        } else {
-          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: 'products',
-              pipeline: autocompleteProductsPipeline(searchValue, location)
-            }),
-          });
-        }
+        const response = await fetch('/api/autocomplete?collection=products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(searchValue),
+        });
+  
         const data = await response.json();
         setSuggestions(data.documents[0].suggestions);
       } catch (error) {
@@ -169,9 +134,10 @@ export default function Products({ products, facets }) {
     } else {
       setSuggestions([]);
     }
-
+  
     setSelectedSuggestionIndex(-1);
   };
+  
   
   const handleKeyDown = (e) => {
     // Check if the input element is focused

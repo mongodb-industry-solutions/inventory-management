@@ -133,37 +133,34 @@ export default function Product({ preloadedProduct }) {
 
     const handleToggleAutoreplenishment = async () => {
         try {
-            setIsAutoDisabled(true);
-            let url = (edge==='true') ? '/api/edge/setAutoreplenishment' : utils.apiInfo.dataUri + '/action/updateOne';
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
-                  'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-                },
-                body: JSON.stringify({
-                  dataSource: "mongodb-atlas",
-                  database: utils.dbInfo.dbName,
-                  collection: "products",
-                  filter: { "_id": { "$oid": preloadedProduct._id } },
-                  update: {
-                    "$set": { "autoreplenishment": !isAutoOn }
-                  }
-                }),
-              });
-            if (response.ok) {
-                setIsAutoOn(!isAutoOn);
-            } else {
-                console.log('Error toggling autoreplenishment');
-            }
+          setIsAutoDisabled(true);
+      
+          const response = await fetch('/api/setAutoreplenishment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+              filter: { "_id": { "$oid": preloadedProduct._id } },
+              update: {
+                "$set": { "autoreplenishment": !isAutoOn }
+              }
+            }),
+          });
+      
+          if (response.ok) {
+            setIsAutoOn(!isAutoOn);
+          } else {
+            console.log('Error toggling autoreplenishment');
+          }
         } catch (e) {
-            console.error(e);
+          console.error(e);
         } finally {
-            setIsAutoDisabled(false);
+          setIsAutoDisabled(false);
         }
-    };
+      };
+      
 
     const handleEdit = (field) => {
         if (!location) {

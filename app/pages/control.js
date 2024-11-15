@@ -67,7 +67,7 @@ export default function Control({ preloadedProducts, locations }) {
 
     useEffect(() => {
         if (edge !== 'true') {
-          startWatchControl(setProducts, utils);
+          startWatchControl(setProducts, utils); 
           return () => stopWatchControl();
         } else {
             const interval = setInterval(refreshProduct, 1000);
@@ -189,7 +189,7 @@ export default function Control({ preloadedProducts, locations }) {
         transaction.items.push(newItem);
     
         try {
-            let url = (edge === 'true') ? '/api/edge/addTransaction': utils.apiInfo.httpsUri + '/addTransaction';
+            let url = '/api/addTransaction';
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -294,7 +294,7 @@ export default function Control({ preloadedProducts, locations }) {
     const handleSave = async (product) => {
         try {
             setIsSaving(true);
-            let path = (edge === 'true') ? '/api/edge': utils.apiInfo.httpsUri;
+            let path = (edge === 'true') ? '/api/edge': '/api';  //replaced path
             const response = await fetch(path + `/updateProductStock?location_id=${selectedLocation}`, {
                 method: 'POST',
                 headers: {
