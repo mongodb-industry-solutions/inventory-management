@@ -143,9 +143,8 @@ export default function Product({ preloadedProduct }) {
             },
             body: JSON.stringify({
               filter: { "_id": { "$oid": preloadedProduct._id } },
-              update: {
-                "$set": { "autoreplenishment": !isAutoOn }
-              }
+              update: {"$set": { "autoreplenishment": !isAutoOn }},
+              collection: "products" //added missing required field in request body
             }),
           });
       
