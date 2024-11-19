@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useContext, useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
-import { ServerContext } from '../pages/_app';
+//import { ServerContext } from '../pages/_app';
 import { FaTshirt, FaWhmcs } from 'react-icons/fa';
 import styles from '../styles/productbox.module.css';
 
@@ -12,8 +12,28 @@ const ProductBox = ({ product }) => {
 
     const router = useRouter();
     const { location, edge } = router.query;
+    const [industry, setIndustry] = useState('retail'); // Default value is 'retail'
 
-    const utils = useContext(ServerContext);
+//    const utils = useContext(ServerContext);
+
+    // Fetch the industry from the API when the component mounts
+    useEffect(() => {
+        const fetchIndustry = async () => {
+          try {
+            const response = await fetch('/api/getIndustry');
+            if (response.ok) {
+              const data = await response.json();
+              setIndustry(data.industry);
+            } else {
+              console.error('Failed to fetch industry information');
+            }
+          } catch (error) {
+            console.error('Error fetching industry:', error);
+          }
+        };
+    
+        fetchIndustry();
+      }, []);
 
     const lightColors = [
         '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
@@ -73,7 +93,7 @@ const ProductBox = ({ product }) => {
                             {
                                 imageError || !product.image?.url ? 
                                     (
-                                        utils.demoInfo.industry == 'manufacturing' ?
+                                        industry == 'manufacturing' ?  //removed utils
                                             (
                                                 <FaWhmcs color="grey" className={styles["default-icon"]}/>
                                             ) :

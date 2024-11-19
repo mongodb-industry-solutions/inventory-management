@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '../context/UserContext';
-import { ServerContext } from '../pages/_app';
+//import { ServerContext } from '../pages/_app'; remove the ServerContext
 import { MongoDBLogoMark } from '@leafygreen-ui/logo';
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
@@ -24,7 +24,7 @@ function Header( ) {
   const router = useRouter();
   const { location, edge, ...otherQueryParams } = router.query;
 
-  const utils = useContext(ServerContext);
+  //const utils = useContext(ServerContext);
 
   const { selectedUser, setUser } = useUser();
 
@@ -35,19 +35,12 @@ function Header( ) {
         if (edge === 'true') {
           response = await fetch('/api/edge/getUsers');
         } else {
-          response = await fetch(utils.apiInfo.dataUri + '/action/find', {
+          //use the new NextJS api route
+          response = await fetch('/api/getUsers', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
             },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: 'users',
-              filter: {},
-            }),
           });
         }
         
@@ -97,7 +90,7 @@ function Header( ) {
 
   }, [selectedUser]);
 
-  const fetchStatus = async (isToggle) => {
+  /*const fetchStatus = async (isToggle) => {
     try {
       const response = await fetch('/api/edge/getStatus');
       const status = await response.json();
@@ -120,9 +113,9 @@ function Header( ) {
       console.error('Error fetching status:', error);
       setLoading(false);
     }
-  };
+  };*/
 
-  const handleConnectionToggle = async () => {
+  /*const handleConnectionToggle = async () => {
     setLoading(true);
     try {
       const response = await fetch('/api/edge/setConnection', {
@@ -146,7 +139,7 @@ function Header( ) {
       console.error('Error toggling connection status:', error);
       setLoading(false);
     }
-  };
+  };*/
 
   const handleDropdownToggle = () => {
     setShowDropdown(!showDropdown);
