@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
 import { useUser } from '../../context/UserContext';
-import { ServerContext } from '../_app';
+//import { ServerContext } from '../_app';
 import { FaSearch, FaTshirt, FaWhmcs } from 'react-icons/fa';
 import { useToast } from '@leafygreen-ui/toast';
 import Sidebar from '../../components/Sidebar';
@@ -19,6 +19,27 @@ export default function Transactions({ orders, facets }) {
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Set the number of items per page
   const [currentPage, setCurrentPage] = useState(1); // Set the initial current page to 1
+  const [industry, setIndustry] = useState('retail'); // Default value is 'retail'
+  
+    // Fetch the industry from the API when the component mounts
+  useEffect(() => {
+    const fetchIndustry = async () => {
+      try {
+         const response = await fetch('/api/getIndustry');
+         if (response.ok) {
+           const data = await response.json();
+           setIndustry(data.industry);
+         } else {
+           console.error('Failed to fetch industry information');
+         }
+       } catch (error) {
+         console.error('Error fetching industry:', error);
+       }
+     };
+ 
+     fetchIndustry();
+  }, []);
+
 
   const lightColors = [
     '#B1FF05','#E9FF99','#B45AF2','#F2C5EE',
@@ -29,7 +50,7 @@ export default function Transactions({ orders, facets }) {
   const totalPages = Math.ceil(displayOrders.length / itemsPerPage);
 
   const { selectedUser } = useUser();
-  const utils = useContext(ServerContext);
+  //const utils = useContext(ServerContext);
 
   const router = useRouter();
   const { location, type, edge } = router.query;
@@ -56,36 +77,18 @@ export default function Transactions({ orders, facets }) {
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        let response;
-        if (edge === 'true') {
-          response = await fetch(`/api/edge/search?collection=transactions&type=${type}&location=${location}&industry=${utils.demoInfo.demoIndustry}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify(searchQuery),
-          });
-        } else {
-          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: 'transactions',
-              pipeline: searchTransactionsPipeline(searchQuery, location, type)
-            }),
-          });
-        }
-        
+        const response = await fetch('/api/search?collection=transactions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(searchQuery),
+        });
+  
         const data = await response.json();
         const searchResults = data.documents;
-        
+  
         setDisplayOrders(searchResults);
       } catch (error) {
         console.error(error);
@@ -93,7 +96,7 @@ export default function Transactions({ orders, facets }) {
     } else {
       setDisplayOrders(orders);
     }
-  };
+  };  
   
 
   const handleSearchInputChange = async (e) => {
@@ -102,32 +105,15 @@ export default function Transactions({ orders, facets }) {
   
     if (searchValue.length > 0) {
       try {
-        let response;
-        if (edge === 'true') {
-          response = await fetch(`/api/edge/autocomplete?collection=transactions&type=${type}&location=${location}&industry=${utils.demoInfo.demoIndustry}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: JSON.stringify(searchValue),
-          });
-        } else {
-          response = await fetch(utils.apiInfo.dataUri + '/action/aggregate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: 'transactions',
-              pipeline: autocompleteTransactionsPipeline(searchValue)
-            }),
-          });
-        }
+        const response = await fetch('/api/autocomplete?collection=transactions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(searchValue),
+        });
+  
         const data = await response.json();
         setSuggestions(data.documents[0].suggestions);
       } catch (error) {
@@ -136,10 +122,9 @@ export default function Transactions({ orders, facets }) {
     } else {
       setSuggestions([]);
     }
-
+  
     setSelectedSuggestionIndex(-1);
   };
-  
 
   const filterOrders = (itemsFilter, productsFilter) => {
     // Filter orders based on sizes and colors
@@ -241,7 +226,7 @@ export default function Transactions({ orders, facets }) {
     transaction.items.push(item);
     
     try {
-        let url = (edge === 'true') ? '/api/edge/addTransaction': utils.apiInfo.httpsUri + '/addTransaction';
+        let url = '/api/addTransaction'; //replaced utils
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -356,7 +341,7 @@ function formatTimestamp(timestamp) {
                                 />
                             ) :
                             (
-                                utils.demoInfo.industry == 'manufacturing' ?
+                                industry == 'manufacturing' ? //replaced utils
                                     (
                                         <FaWhmcs color="grey" className="default-icon"/>
                                     ) :
