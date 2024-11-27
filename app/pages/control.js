@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext  } from 'react';
 import { useRouter } from 'next/router';
 import { getClientPromise, getEdgeClientPromise } from "../lib/mongodb";
-import { ServerContext } from './_app';
 import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
 import { UserContext } from '../context/UserContext';
@@ -25,8 +24,7 @@ export default function Control({ preloadedProducts, locations }) {
     const router = useRouter();
     const { location, edge } = router.query;
 
-    const utils = useContext(ServerContext);
-    const {startWatchControl, stopWatchControl} = useContext(UserContext);
+    const {startWatchControl} = useContext(UserContext);
 
     let lastEtag = null;
 
@@ -66,14 +64,18 @@ export default function Control({ preloadedProducts, locations }) {
     }, [isSelling]);
 
     useEffect(() => {
-        if (edge !== 'true') {
-          startWatchControl(setProducts, utils); 
-          return () => stopWatchControl();
-        } else {
-            const interval = setInterval(refreshProduct, 1000);
-            return () => clearInterval(interval);
-        }
-      }, [edge]);
+        console.log('Starting SSE stream for control.');
+      
+        // Initialize the SSE-based control stream
+        const stopControlStream = startWatchControl(setProducts);
+      
+        // Cleanup function to stop the stream when component unmounts or dependencies change
+        return () => {
+          console.log('Stopping SSE stream for control.');
+          stopControlStream();
+        };
+      }, [setProducts]);
+      
 
       useEffect(() => {
         setSelectedLocation(location);

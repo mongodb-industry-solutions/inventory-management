@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useUser } from '../context/UserContext';
 import { useRouter } from 'next/router';
-//import { ServerContext } from '../pages/_app';
 import { FaStore, FaIndustry } from "react-icons/fa";
 import styles from '../styles/navbar.module.css';
 
@@ -15,7 +14,6 @@ function Navbar() {
   const [industry, setIndustry] = useState('retail'); // Default value is 'retail'
 
   const { selectedUser } = useUser();
-  //const utils = useContext(ServerContext);
 
   const router = useRouter();
   const { type } = router.query;
@@ -67,7 +65,7 @@ function Navbar() {
   return (
     <div className={`${styles["layout-navbar"]} ${selectedLocationId ? styles["branch"] : styles["hq"]}`}>
       <div className={styles["dropdown"]}>
-        {industry == 'manufacturing' ? //replaced utils.demoInfo.industry
+        {industry == 'manufacturing' ? 
           <FaIndustry /> :
           <FaStore />}
         <button className={styles["dropdown-toggle"]} onClick={handleDropdownToggle}>
@@ -109,7 +107,7 @@ function Navbar() {
         router.pathname === '/transactions' && type === 'outbound' ? styles["bold-text"] : ''
       }`}
     >
-       {industry == 'manufacturing' ? //replaced utils.demoInfo.industry
+       {industry == 'manufacturing' ? 
           <>Dispatch Events</> :
           <>Sales Events</>}
     </button>

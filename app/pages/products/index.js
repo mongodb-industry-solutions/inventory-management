@@ -1,13 +1,10 @@
 import { getClientPromise, getEdgeClientPromise }  from "../../lib/mongodb";
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useRouter } from 'next/router';
-import { ServerContext } from '../_app';
 import { FaSearch } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
 import { ObjectId } from 'bson';
-import { autocompleteProductsPipeline } from '../../data/aggregations/autocomplete';
-import { searchProductsPipeline } from '../../data/aggregations/search';
 import { UserContext } from '../../context/UserContext';
 import { useToast } from '@leafygreen-ui/toast';
 
@@ -25,7 +22,6 @@ export default function Products({ products, facets }) {
   const router = useRouter();
   const { location, edge } = router.query;
 
-  const utils = useContext(ServerContext);
   const {startWatchProductList, stopWatchProductList} = useContext(UserContext);
   
   // Create a ref for the input element
@@ -64,19 +60,44 @@ export default function Products({ products, facets }) {
     }
   };
 
+  // REPLACEMENT: Replace the `startWatchProductList` logic with SSE
   useEffect(() => {
-    if (edge !== 'true') {
-      startWatchProductList(setDisplayProducts,addAlert, location, utils);
-      return () => stopWatchProductList();
-    }
-  }, [edge]);
+    const eventSource = new EventSource('/api/streams/products'); // Open an SSE connection
 
-  useEffect(() => {
-    if (edge === 'true' && searchQuery.length === 0) {
-      const interval = setInterval(refreshProducts, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [edge, searchQuery]);
+    eventSource.onmessage = (event) => {
+      const change = JSON.parse(event.data);
+
+      if (change.fullDocument) {
+        setDisplayProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === change.fullDocument._id ? change.fullDocument : product
+          )
+        );
+
+        // Handle low-stock alerts
+        const pattern = /^items\.(\d+)\.stock/;
+        for (const key of Object.keys(change.updateDescription.updatedFields)) {
+          if (pattern.test(key)) {
+            const updatedItemIndex = parseInt(key.match(pattern)[1], 10);
+            const updatedItem = change.fullDocument.items[updatedItemIndex];
+            const itemStock = updatedItem.stock.find((stock) => stock.location.type !== "warehouse");
+            if (itemStock?.amount + itemStock?.ordered < itemStock?.threshold) {
+              addAlert(updatedItem);
+            }
+          }
+        }
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close(); // Clean up SSE connection on unmount
+    };
+  }, []); // No dependencies, runs once on mount
 
   useEffect(() => {
     handleSearch();

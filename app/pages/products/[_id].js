@@ -3,7 +3,6 @@ import { getClientPromise, getEdgeClientPromise } from '../../lib/mongodb';
 import { useRouter } from 'next/router';
 import { UserContext } from '../../context/UserContext';
 import { ObjectId } from "bson";
-import { ServerContext } from '../_app';
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom';
 import { FaTshirt, FaWhmcs } from 'react-icons/fa';
 import styles from '../../styles/product.module.css';
@@ -22,11 +21,11 @@ export default function Product({ preloadedProduct }) {
     const [isAutoDisabled, setIsAutoDisabled] = useState(false);
     const [editableField, setEditableField] = useState(null);
     const [editedValue, setEditedValue] = useState('');
+    const [industry, setIndustry] = useState('retail'); // Default value is 'retail'
 
     const router = useRouter();
     const { location, edge } = router.query;
 
-    const utils = useContext(ServerContext);
     const {startWatchProductDetail, stopWatchProductDetail} = useContext(UserContext);
 
     const lightColors = [
@@ -42,19 +41,61 @@ export default function Product({ preloadedProduct }) {
     if (location) {
         locationFilter= { 'location.destination.id': new ObjectId(location)};
     }
-    
-    const sdk = new ChartsEmbedSDK({ baseUrl: utils.analyticsInfo.chartsBaseUrl});
+    const [analyticsInfo, setAnalyticsInfo] = useState(null);
+    const [dashboard, setDashboard] = useState(null);
     const dashboardDiv = useRef(null);
     const [rendered, setRendered] = useState(false);
-    const [dashboard] = useState(sdk.createDashboard({ 
-        dashboardId: utils.analyticsInfo.dashboardIdProduct, 
-        filter: { $and: [productFilter, locationFilter]},
-        widthMode: 'scale', 
-        heightMode: 'scale', 
-        background: '#fff'
-    }));
+
 
     let lastEtag = null;
+
+    // Fetch the industry from the API when the component mounts
+    useEffect(() => {
+        const fetchIndustry = async () => {
+          try {
+            const response = await fetch('/api/getIndustry');
+            if (response.ok) {
+              const data = await response.json();
+              setIndustry(data.industry);
+            } else {
+              console.error('Failed to fetch industry information');
+            }
+          } catch (error) {
+            console.error('Error fetching industry:', error);
+          }
+        };
+    
+        fetchIndustry();
+      }, []);
+
+    // Fetch analytics info from API and initialize the dashboard
+    useEffect(() => {
+        const fetchAnalyticsInfo = async () => {
+            try {
+                const response = await fetch('/api/config');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch analytics configuration');
+                }
+                const data = await response.json();
+                setAnalyticsInfo(data.analyticsInfo);
+
+                // Initialize the dashboard
+                const sdk = new ChartsEmbedSDK({ baseUrl: data.analyticsInfo.chartsBaseUrl });
+                const initializedDashboard = sdk.createDashboard({
+                    dashboardId: data.analyticsInfo.dashboardIdProduct,
+                    filter: { $and: [productFilter, locationFilter] },
+                    widthMode: 'scale',
+                    heightMode: 'scale',
+                    background: '#fff'
+                });
+                setDashboard(initializedDashboard);
+            } catch (error) {
+                console.error('Error fetching analytics info:', error);
+            }
+        };
+
+        fetchAnalyticsInfo();
+    }, []);
 
     async function refreshProduct() {
         try {
@@ -85,10 +126,13 @@ export default function Product({ preloadedProduct }) {
     
 
     useEffect(() => {
-        dashboard.render(dashboardDiv.current)
-            .then(() => setRendered(true))
-            .catch(err => console.log("Error during Charts rendering.", err));
-      }, [dashboard]);
+        if (dashboard && dashboardDiv.current) { // Ensure dashboard and dashboardDiv.current are defined
+            dashboard.render(dashboardDiv.current)
+                .then(() => setRendered(true))
+                .catch(err => console.log("Error during Charts rendering.", err));
+        }
+    }, [dashboard]);
+    
 
     useEffect(() => {
         // Update autoreplenishment state if it changes
@@ -105,12 +149,13 @@ export default function Product({ preloadedProduct }) {
 
     useEffect(() => {
         if (edge !== 'true') {
-          //initializeApp(utils.appServiceInfo.appId);
-          startWatchProductDetail(setProduct,preloadedProduct, location, utils);
-          return () => stopWatchProductDetail();
-        } else {
-            const interval = setInterval(refreshProduct, 1000);
-            return () => clearInterval(interval);
+          // **Start watching product detail updates using SSE**
+          const stopWatching = startWatchProductDetail(setProduct, preloadedProduct._id, location);
+    
+          return () => {
+            // Cleanup SSE on unmount
+            stopWatching();
+          };
         }
       }, [edge]);
 
@@ -171,42 +216,39 @@ export default function Product({ preloadedProduct }) {
         }
       };
 
-    const handleSaveEdit = async () => {
-
+      const handleSaveEdit = async () => {
         try {
-            let url = utils.apiInfo.dataUri + '/action/updateOne';
-            console.log(editableField, editedValue);
             const field = editableField === 'price' ? 'price.amount' : editableField;
-            const value = editableField === 'price' ? parseInt(editedValue) : editedValue;
-
-            const response = await fetch(url, {
+            const value = editableField === 'price' ? parseInt(editedValue, 10) : editedValue;
+    
+            // Make the API request to update the product stock
+            const response = await fetch('/api/updateProductStock', {
                 method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
-                  'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify({
-                  dataSource: "mongodb-atlas",
-                  database: utils.dbInfo.dbName,
-                  collection: "products",
-                  filter: { "_id": { "$oid": preloadedProduct._id } },
-                  update: {
-                    "$set": { [field] : value }
-                  }
+                    filter: { _id: preloadedProduct._id },
+                    update: {
+                        $set: { [field]: value }
+                    }
                 }),
-              });
+            });
+    
             if (response.ok) {
                 const updatedProduct = { ...product, [field]: value };
                 setProduct(updatedProduct);
                 setEditableField(null);
             } else {
-                console.log('Error updating product');
+                const errorData = await response.json();
+                console.error('Error updating product:', errorData);
             }
         } catch (e) {
-            console.error(e);
-        } 
+            console.error('Unexpected error while saving edits:', e);
+        }
     };
+    
 
     const handleCancelEdit = () => {
         setEditableField(null);
@@ -225,7 +267,7 @@ export default function Product({ preloadedProduct }) {
             {
                 imageError || !product.image?.url? 
                     (
-                        utils.demoInfo.industry == 'manufacturing' ?
+                        industry == 'manufacturing' ?
                             (
                                 <FaWhmcs color="grey" className={styles["default-icon"]}/>
                             ) :
@@ -320,14 +362,14 @@ export default function Product({ preloadedProduct }) {
                 <tr>
                     <td>
                         { 
-                            utils.demoInfo.industry == 'manufacturing' ? 
+                            industry == 'manufacturing' ? 
                                 "Item" : 
                                 "Size"
                         }
                     </td>
                     <td>
                         { 
-                            utils.demoInfo.industry == 'manufacturing' ? 
+                            industry == 'manufacturing' ? 
                                 "Factory" : 
                                 "Store"
                         }

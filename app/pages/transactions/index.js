@@ -3,12 +3,9 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
 import { useUser } from '../../context/UserContext';
-//import { ServerContext } from '../_app';
 import { FaSearch, FaTshirt, FaWhmcs } from 'react-icons/fa';
 import { useToast } from '@leafygreen-ui/toast';
 import Sidebar from '../../components/Sidebar';
-import { autocompleteTransactionsPipeline } from '../../data/aggregations/autocomplete';
-import { searchTransactionsPipeline } from '../../data/aggregations/search';
 import { facetsTransactionsPipeline } from '../../data/aggregations/facets';
 import { fetchTransactionsPipeline } from "../../data/aggregations/fetch";
 
@@ -50,7 +47,6 @@ export default function Transactions({ orders, facets }) {
   const totalPages = Math.ceil(displayOrders.length / itemsPerPage);
 
   const { selectedUser } = useUser();
-  //const utils = useContext(ServerContext);
 
   const router = useRouter();
   const { location, type, edge } = router.query;
@@ -226,7 +222,7 @@ export default function Transactions({ orders, facets }) {
     transaction.items.push(item);
     
     try {
-        let url = '/api/addTransaction'; //replaced utils
+        let url = '/api/addTransaction'; 
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -341,7 +337,7 @@ function formatTimestamp(timestamp) {
                                 />
                             ) :
                             (
-                                industry == 'manufacturing' ? //replaced utils
+                                industry == 'manufacturing' ? 
                                     (
                                         <FaWhmcs color="grey" className="default-icon"/>
                                     ) :

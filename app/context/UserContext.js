@@ -1,245 +1,211 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { App, Credentials } from "realm-web";
-import { ObjectId } from "bson";
 
 const STORAGE_KEY = 'selectedUser';
 
 export const UserContext = createContext();
 
-let app = null;
+export const UserProvider = ({ children }) => {
+  // Define the default user
+  const defaultUser = {
+    name: "Eddie",
+    surname: "Grant",
+    title: "Inventory Manager",
+    permissions: {
+      locations: [
+        {
+          id: { $oid: "65c63cb61526ffd3415fadbd" },
+          role: "inventory manager",
+          name: "Bogatell Factory",
+          area_code: "ES",
+        },
+      ],
+    },
+  };
 
-export const UserProvider = ({ children, value }) => {
-  const [selectedUser, setSelectedUser] = useState(null);
+  // Initialize state with default user
+  const [selectedUser, setSelectedUser] = useState(defaultUser);
 
-  if (!app) {
-    app = new App(value.appServiceInfo.appId);
-  }
-
-  const credentials = Credentials.anonymous();
-  let closeStreamProductList;
-  let closeStreamProductDetail;
-  let closeStreamDashboard;
-  let closeStreamInventoryCheck;
-  let closeStreamControl;
-
+  // On component mount, check if there's a stored user
   useEffect(() => {
-    // Load the selected user from local storage on component mount
-    const storedUser = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (storedUser && !selectedUser) {
-      setSelectedUser(storedUser);
+    if (typeof window !== "undefined") {
+      const storedUser = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (storedUser) {
+        setSelectedUser(storedUser);
+      }
     }
   }, []);
-  
+
+  // Save selected user to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(selectedUser));
+    }
+  }, [selectedUser]);
+
+  // Function to update the user
   const setUser = (user) => {
     setSelectedUser(user);
-    // Save the selected user to local storage
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
   };
 
-  const getUser = async () => {
-      if(app.currentUser){
-        return app.currentUser;
-      } else {
-        return app.logIn(credentials);
-      }
-  };
+const startWatchProductList = (setDisplayProducts, addAlert) => {
+  // Create an EventSource to connect to the SSE endpoint
+  const eventSource = new EventSource('/api/streams/products');
 
-  const getMongoCollection = async (dbName, collection) => {
-    const user = await getUser();
-    const client = user.mongoClient("mongodb-atlas");
-    return client.db(dbName).collection(collection);
-};
+  eventSource.onmessage = (event) => {
+    const change = JSON.parse(event.data);
 
-const  startWatchProductList = async (setDisplayProducts, addAlert, location, utils ) => {
-    console.log("Start watching stream");
-    const runs = await getMongoCollection(utils.dbInfo.dbName, "products");
-    const filter = {filter: {operationType: "update"}};
-    const stream = runs.watch(filter);
-
-    closeStreamProductList = () => {
-      console.log("Closing stream");
-      stream.return();
-    };
-
-    let updatedProduct = null;
-
-    for await (const  change  of  stream) {
-      console.log("Change detected");
-      
-      if (location) { 
-        updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
-      }
-      else {
-          try {
-          const response = await fetch(utils.apiInfo.dataUri + '/action/findOne', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: "products_area_view",
-              filter: { _id: { $oid: change.fullDocument._id}}
-            }),
-          });
-          const data = await response.json();
-          updatedProduct = JSON.parse(JSON.stringify(data.document));
-        } catch (error) {
-          console.error(error);
-        }
-      }
-
+    if (change.fullDocument) {
+      // Update the product list in the frontend
       setDisplayProducts((prevProducts) =>
         prevProducts.map((product) =>
-          product._id === updatedProduct._id ? updatedProduct : product
+          product._id === change.fullDocument._id ? change.fullDocument : product
         )
       );
 
+      // Handle alerts if stock is low
       const pattern = /^items\.(\d+)\.stock/;
-      for(const key of Object.keys(change.updateDescription.updatedFields)){
-
+      for (const key of Object.keys(change.updateDescription.updatedFields)) {
         if (pattern.test(key)) {
-          let sku = change.fullDocument.items[parseInt(key.match(pattern)[1], 10)].sku;
-          let item = updatedProduct.items.find(item => item.sku === sku);
-
-          let itemStock = location ? 
-            item.stock.find(stock => stock.location.id === location)
-            : item.stock.find(stock => stock.location.type !== "warehouse");
-          
-          if(itemStock?.amount + itemStock?.ordered  < itemStock?.threshold) {
-            item.product_id = updatedProduct._id;
-            addAlert(item);
+          const updatedItemIndex = parseInt(key.match(pattern)[1], 10);
+          const updatedItem = change.fullDocument.items[updatedItemIndex];
+          const itemStock = updatedItem.stock.find((stock) => stock.location.type !== 'warehouse');
+          if (itemStock?.amount + itemStock?.ordered < itemStock?.threshold) {
+            addAlert(updatedItem);
           }
         }
       }
     }
   };
 
-  const  startWatchProductDetail = async (setProduct, product, location, utils ) => {
-    console.log("Start watching stream");
-    const runs = await getMongoCollection(utils.dbInfo.dbName, "products");
-    const filter = {
-      filter: {
-          operationType: "update",
-          "fullDocument._id": new ObjectId(product._id)
-      }
-    };
+  eventSource.onerror = (error) => {
+    console.error('SSE error:', error);
+    eventSource.close();
+  };
 
-    const stream = runs.watch(filter);
+  // Return a function to stop the SSE connection
+  return () => {
+    eventSource.close();
+  };
+};
 
-    closeStreamProductDetail = () => {
-      console.log("Closing stream");
-      stream.return();
-    };
 
-    let updatedProduct = null;
+const startWatchProductDetail = (setProduct, productId, location) => {
+  // Create an EventSource to connect to the SSE endpoint
+  const eventSource = new EventSource(
+    `/api/streams/productDetail?productId=${productId}&location=${location || ''}`
+  );
 
-    for await (const  change  of  stream) {
-      if (location) {
-        updatedProduct = change.fullDocument;
+  eventSource.onmessage = (event) => {
+    const updatedProduct = JSON.parse(event.data);
+    setProduct(updatedProduct); // Update product state in the frontend
+  };
+
+  eventSource.onerror = (error) => {
+    console.error('SSE error for product detail:', error);
+    eventSource.close();
+  };
+
+  // Return a function to stop the SSE connection
+  return () => {
+    eventSource.close();
+  };
+};
+
+
+const startWatchDashboard = (dashboard) => {
+  console.log("Start watching dashboard via SSE");
+
+  // Create an EventSource to connect to the SSE endpoint
+  const eventSource = new EventSource('/api/streams/dashboard');
+
+  eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log('Dashboard update received:', data);
+
+    // Trigger a refresh or update the dashboard with the new data
+    dashboard.refresh(data);
+  };
+
+  eventSource.onerror = (error) => {
+    console.error('Error in dashboard SSE:', error);
+    eventSource.close();
+  };
+
+  // Return a function to stop the SSE connection
+  return () => {
+    console.log('Stopping dashboard SSE');
+    eventSource.close();
+  };
+};
+
+
+const startWatchInventoryCheck = (dashboard, addAlert) => {
+  console.log('Starting inventory check SSE stream.');
+
+  // Create an EventSource to connect to the SSE API
+  const eventSource = new EventSource('/api/streams/inventoryCheck');
+
+  eventSource.onmessage = (event) => {
+    const newCheckResult = JSON.parse(event.data);
+
+    console.log('Received new inventory check result:', newCheckResult);
+
+    // Trigger the addAlert callback with the new result
+    addAlert(newCheckResult);
+
+    // Refresh the dashboard
+    dashboard.refresh();
+  };
+
+  eventSource.onerror = (error) => {
+    console.error('Inventory check SSE error:', error);
+    eventSource.close();
+  };
+
+  // Return a function to stop the SSE connection
+  return () => {
+    console.log('Closing inventory check SSE stream.');
+    eventSource.close();
+  };
+};
+
+
+const startWatchControl = (setProducts) => {
+  console.log('Starting control SSE stream.');
+
+  // Create an EventSource to connect to the SSE API
+  const eventSource = new EventSource('/api/streams/control');
+
+  eventSource.onmessage = (event) => {
+    const updatedProduct = JSON.parse(event.data);
+
+    console.log('Received updated product:', updatedProduct);
+
+    // Update the products state in the frontend
+    setProducts((prevProducts) => {
+      const updatedIndex = prevProducts.findIndex((product) => product._id === updatedProduct._id);
+      if (updatedIndex !== -1) {
+        const updatedProducts = [...prevProducts];
+        updatedProducts[updatedIndex] = updatedProduct;
+        return updatedProducts;
       } else {
-        try {
-          const response = await fetch(utils.apiInfo.dataUri + '/action/findOne', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: "products_area_view",
-              filter: { _id: { $oid: product._id}}
-            }),
-          });
-          const data = await response.json();
-          updatedProduct = JSON.parse(JSON.stringify(data.document));
-        } catch (error) {
-          console.error(error);
-        }
+        return prevProducts;
       }
-    
-      setProduct(JSON.parse(JSON.stringify(updatedProduct)));
-    }
+    });
   };
 
-  const  startWatchDashboard = async (dashboard, utils) => {
-    console.log("Start watching stream");
-    const runs = await getMongoCollection(utils.dbInfo.dbName, "transactions");
-    const filter = {
-      filter: {
-          operationType: "insert",
-          "fullDocument.type": "outbound"
-      }
-    };
-
-    const stream = runs.watch(filter);
-
-    closeStreamDashboard = () => {
-      console.log("Closing stream");
-      stream.return();
-    };
-
-    for await (const  change  of  stream) {
-      dashboard.refresh();
-    }
+  eventSource.onerror = (error) => {
+    console.error('Control SSE error:', error);
+    eventSource.close();
   };
 
-  const  startWatchInventoryCheck = async (dashboard, addAlert, utils) => {
-    console.log("Start watching stream");
-    const runs = await getMongoCollection(utils.dbInfo.dbName, "inventoryCheck");
-    const filter = {
-      filter: {
-          operationType: "insert"
-      }
-    };
-
-    const stream = runs.watch(filter);
-
-    closeStreamInventoryCheck= () => {
-      console.log("Closing stream");
-      stream.return();
-    };
-
-    for await (const  change  of  stream) {
-      console.log(change.fullDocument);
-      addAlert(change.fullDocument.checkResult);
-      dashboard.refresh();
-    }
+  // Return a function to stop the SSE connection
+  return () => {
+    console.log('Closing control SSE stream.');
+    eventSource.close();
   };
+};
 
-  const  startWatchControl = async (setProducts, utils) => {
-    console.log("Start watching stream");
-    const runs = await getMongoCollection(utils.dbInfo.dbName, "products");
-    const filter = {filter: {operationType: "update"}};
-
-    const stream = runs.watch(filter);
-
-
-    closeStreamControl = () => {
-      console.log("Closing stream");
-      stream.return();
-    };
-
-    for await (const  change  of  stream) {
-      const updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
-
-      setProducts((prevProducts) => {
-        const updatedIndex = prevProducts.findIndex((product) => product._id === updatedProduct._id);
-        if (updatedIndex !== -1) {
-            const updatedProducts = [...prevProducts];
-            updatedProducts[updatedIndex] = updatedProduct;
-            return updatedProducts;
-        } else {
-            return prevProducts;
-        }
-      });
-    }
-  };
 
   const stopWatchProductList = () => {
     closeStreamProductList();

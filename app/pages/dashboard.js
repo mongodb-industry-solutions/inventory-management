@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { ObjectId } from "bson";
 import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
 import { UserContext } from "../context/UserContext";
-import { ServerContext } from "./_app";
 import styles from "../styles/dashboard.module.css";
 import { useToast } from "@leafygreen-ui/toast";
 
@@ -13,23 +12,18 @@ const Dashboard = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [filterName, setFilterName] = useState("Channel"); // Initial filter name
   const [rendered, setRendered] = useState(false);
+  const [analyticsInfo, setAnalyticsInfo] = useState(null); // Store API config info
 
   const router = useRouter();
   const { location, edge } = router.query;
 
   const { pushToast } = useToast();
 
-  const utils = useContext(ServerContext);
   const {
     startWatchDashboard,
-    stopWatchDashboard,
     startWatchInventoryCheck,
-    stopWatchInventoryCheck,
   } = useContext(UserContext);
 
-  const sdk = new ChartsEmbedSDK({
-    baseUrl: utils.analyticsInfo.chartsBaseUrl,
-  });
   const dashboardDiv = useRef(null);
 
   let locationFilter = {};
@@ -43,26 +37,65 @@ const Dashboard = () => {
       ],
     };
   }
-  const [dashboard] = useState(
-    sdk.createDashboard({
-      dashboardId: utils.analyticsInfo.dashboardIdGeneral,
-      widthMode: "scale",
-      filter: locationFilter,
-      heightMode: "scale",
-      background: "#fff",
-    })
-  );
+  const [dashboard, setDashboard] = useState(null);
 
-  useEffect(() => {
-    dashboard
-      .render(dashboardDiv.current)
-      .then(() => setRendered(true))
-      .catch((err) => console.log("Error during Charts rendering.", err));
-
-    if (dashboardDiv.current) {
-      dashboardDiv.current.style.height = "900px";
+  // Renamed addAlert to handleAlert to avoid conflicts
+  const addAlert = (checkResult) => {
+    if (checkResult) {
+      pushToast({
+        title: "Hooray! Perfect inventory match!",
+        variant: "success"
+      });
+    } else {
+      pushToast({
+        title: "Oops! Inventory Discrepancy Detected.",
+        variant: "warning"
+      });
     }
-  }, [dashboard]);
+  };
+
+   // Fetch configuration from API route
+   useEffect(() => {
+    const fetchAnalyticsInfo = async () => {
+        try {
+            const response = await fetch('/api/config');
+            if (!response.ok) {
+                throw new Error('Failed to fetch analytics configuration');
+            }
+            const data = await response.json();
+            setAnalyticsInfo(data.analyticsInfo);
+        } catch (error) {
+            console.error('Error fetching analytics info:', error);
+        }
+    };
+
+    fetchAnalyticsInfo();
+}, []);
+
+
+  // Initialize and render dashboard
+  useEffect(() => {
+    if (analyticsInfo) {
+        const sdk = new ChartsEmbedSDK({ baseUrl: analyticsInfo.chartsBaseUrl });
+        const initializedDashboard = sdk.createDashboard({
+            dashboardId: analyticsInfo.dashboardIdGeneral,
+            widthMode: 'scale',
+            filter: locationFilter,
+            heightMode: 'scale',
+            background: '#fff'
+        });
+
+        setDashboard(initializedDashboard);
+
+        initializedDashboard.render(dashboardDiv.current)
+            .then(() => setRendered(true))
+            .catch(err => console.error("Error during Charts rendering.", err));
+
+        if (dashboardDiv.current) {
+            dashboardDiv.current.style.height = "900px";
+        }
+    }
+}, [analyticsInfo]);
 
   useEffect(() => {
     if (selectedChannel === "All") {
@@ -73,16 +106,19 @@ const Dashboard = () => {
   }, [selectedChannel]);
 
   useEffect(() => {
-    if (edge !== "true") {
-      //initializeApp(utils.appServiceInfo.appId);
-      startWatchDashboard(dashboard, utils);
-      startWatchInventoryCheck(dashboard, addAlert, utils);
-      return () => {
-        stopWatchDashboard(dashboard, utils);
-        stopWatchInventoryCheck(dashboard, utils);
-      };
-    }
-  }, [edge]);
+    console.log("Starting real-time dashboard and inventory check streams.");
+
+    // Start watching the dashboard and inventory check streams
+    const stopDashboardStream = startWatchDashboard(dashboard);
+    const stopInventoryCheckStream = startWatchInventoryCheck(dashboard, addAlert);
+
+    // Cleanup function to stop the streams
+    return () => {
+      console.log("Stopping real-time dashboard and inventory check streams.");
+      stopDashboardStream();
+      stopInventoryCheckStream();
+    };
+  }, [dashboard, addAlert, startWatchDashboard, startWatchInventoryCheck]);
 
   useEffect(() => {
     if (rendered) {
@@ -111,19 +147,6 @@ const Dashboard = () => {
       .catch((err) => console.log("Error while clearing filters.", err));
   };
 
-  const addAlert = (checkResult) => {
-    if (checkResult) {
-      pushToast({
-        title: "Hooray! Perfect inventory match!",
-        variant: "success",
-      });
-    } else {
-      pushToast({
-        title: "Oops! Inventory Discrepancy Detected.",
-        variant: "warning",
-      });
-    }
-  };
 
   return (
     <div className="App">

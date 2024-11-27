@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '../context/UserContext';
-//import { ServerContext } from '../pages/_app'; remove the ServerContext
 import { MongoDBLogoMark } from '@leafygreen-ui/logo';
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
@@ -24,7 +23,6 @@ function Header( ) {
   const router = useRouter();
   const { location, edge, ...otherQueryParams } = router.query;
 
-  //const utils = useContext(ServerContext);
 
   const { selectedUser, setUser } = useUser();
 

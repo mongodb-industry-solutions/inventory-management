@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
-//import { ServerContext } from '../pages/_app';
 import { FaTshirt, FaWhmcs } from 'react-icons/fa';
 import styles from '../styles/productbox.module.css';
 
@@ -14,7 +13,6 @@ const ProductBox = ({ product }) => {
     const { location, edge } = router.query;
     const [industry, setIndustry] = useState('retail'); // Default value is 'retail'
 
-//    const utils = useContext(ServerContext);
 
     // Fetch the industry from the API when the component mounts
     useEffect(() => {
@@ -93,7 +91,7 @@ const ProductBox = ({ product }) => {
                             {
                                 imageError || !product.image?.url ? 
                                     (
-                                        industry == 'manufacturing' ?  //removed utils
+                                        industry == 'manufacturing' ?  
                                             (
                                                 <FaWhmcs color="grey" className={styles["default-icon"]}/>
                                             ) :
