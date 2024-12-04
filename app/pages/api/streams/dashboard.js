@@ -27,14 +27,27 @@ export default async function handler(req, res) {
 
     const changeStream = collection.watch(pipeline);
 
-    changeStream.on('change', (change) => {
-      console.log('Change detected in transactions:', change);
+    const heartbeat = setInterval(() => {
+      res.write(`event: ping\ndata: {}\n\n`);
+    }, 30000); // Heartbeat every 30 seconds
 
-      res.write(`data: ${JSON.stringify(change.fullDocument)}\n\n`);
+    changeStream.on('change', (change) => {
+      console.log('Change detected in transactions:', change); // This log will help verify if changes are being picked up
+      try {
+        if (change.fullDocument) {
+          console.log('Change detected in transactions:', change);
+          res.write(`data: ${JSON.stringify(change.fullDocument)}\n\n`);
+        } else {
+          console.warn('Change detected without fullDocument:', change);
+        }
+      } catch (err) {
+        console.error('Error processing change event:', err);
+      }
     });
 
     req.on('close', () => {
       console.log('Client disconnected from dashboard stream');
+      clearInterval(heartbeat);
       changeStream.close();
       res.end();
     });

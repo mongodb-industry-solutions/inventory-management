@@ -1,29 +1,27 @@
-// /pages/api/streams/productDetail.js
 import { getClientPromise } from '../../../lib/mongodb';
 import { ObjectId } from 'bson';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
-    res.status(405).json({ error: 'Method not allowed. Use GET.' });
-    return;
+    res.setHeader('Allow', ['GET']);
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   const { productId, location } = req.query;
 
   if (!productId) {
-    res.status(400).json({ error: 'Missing required query parameter: productId' });
-    return;
+    return res.status(400).json({ error: 'Missing required query parameter: productId' });
   }
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders(); // Send headers before data
 
   try {
     const client = await getClientPromise();
     const db = client.db(process.env.MONGODB_DATABASE_NAME);
     const collection = db.collection('products');
-
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.flushHeaders(); // Send headers before data
 
     const pipeline = [
       {
@@ -35,6 +33,9 @@ export default async function handler(req, res) {
     ];
 
     const changeStream = collection.watch(pipeline);
+
+    // Notify client of connection initialization
+    res.write(`data: ${JSON.stringify({ message: 'Connection initialized' })}\n\n`);
 
     changeStream.on('change', async (change) => {
       let updatedProduct = change.fullDocument;
@@ -51,11 +52,13 @@ export default async function handler(req, res) {
     });
 
     req.on('close', () => {
+      console.log('Client disconnected from product detail stream');
       changeStream.close(); // Close the change stream when the connection is closed
       res.end();
     });
   } catch (error) {
     console.error('Error in productDetail SSE:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.write(`data: ${JSON.stringify({ error: 'Internal Server Error' })}\n\n`);
+    res.end();
   }
 }

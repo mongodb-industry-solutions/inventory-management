@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
 import { ObjectId } from "bson";
 import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
@@ -8,145 +8,149 @@ import { useToast } from "@leafygreen-ui/toast";
 
 const Dashboard = () => {
   const channelOptions = ["Online", "In-store"];
-  const [selectedChannel, setSelectedChannel] = useState("All"); // Default to 'All'
+  const [selectedChannel, setSelectedChannel] = useState("All");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [filterName, setFilterName] = useState("Channel"); // Initial filter name
-  const [rendered, setRendered] = useState(false);
-  const [analyticsInfo, setAnalyticsInfo] = useState(null); // Store API config info
+  const [filterName, setFilterName] = useState("Channel");
+  const [analyticsInfo, setAnalyticsInfo] = useState(null);
+  const [dashboardRendered, setDashboardRendered] = useState(false); // Track dashboard rendering status
 
   const router = useRouter();
-  const { location, edge } = router.query;
+  const { location } = router.query;
 
   const { pushToast } = useToast();
-
-  const {
-    startWatchDashboard,
-    startWatchInventoryCheck,
-  } = useContext(UserContext);
+  const { startWatchDashboard, startWatchInventoryCheck } = useContext(UserContext);
 
   const dashboardDiv = useRef(null);
+  const dashboard = useRef(null);
+  const streamsActive = useRef(false);
 
-  let locationFilter = {};
+  // Define locationFilter for use in rendering the dashboard
+  const locationFilter = location
+    ? {
+        $or: [
+          { "location.destination.id": ObjectId.createFromHexString(location) },
+          { "location.origin.id": ObjectId.createFromHexString(location) },
+          { checkResult: { $exists: true } },
+        ],
+      }
+    : {};
 
-  if (location) {
-    locationFilter = {
-      $or: [
-        { "location.destination.id": ObjectId.createFromHexString(location) },
-        { "location.origin.id": ObjectId.createFromHexString(location) },
-        { checkResult: { $exists: true } },
-      ],
-    };
-  }
-  const [dashboard, setDashboard] = useState(null);
+  // Function to handle alerts for inventory checks
+  const handleAlert = useCallback(
+    (checkResult) => {
+      if (checkResult) {
+        pushToast({
+          title: "Hooray! Perfect inventory match!",
+          variant: "success",
+        });
+      } else {
+        pushToast({
+          title: "Oops! Inventory Discrepancy Detected.",
+          variant: "warning",
+        });
+      }
+    },
+    [pushToast]
+  );
 
-  // Renamed addAlert to handleAlert to avoid conflicts
-  const addAlert = (checkResult) => {
-    if (checkResult) {
-      pushToast({
-        title: "Hooray! Perfect inventory match!",
-        variant: "success"
-      });
-    } else {
-      pushToast({
-        title: "Oops! Inventory Discrepancy Detected.",
-        variant: "warning"
-      });
-    }
-  };
-
-   // Fetch configuration from API route
-   useEffect(() => {
+  // Fetch analytics configuration from the backend
+  useEffect(() => {
     const fetchAnalyticsInfo = async () => {
-        try {
-            const response = await fetch('/api/config');
-            if (!response.ok) {
-                throw new Error('Failed to fetch analytics configuration');
-            }
-            const data = await response.json();
-            setAnalyticsInfo(data.analyticsInfo);
-        } catch (error) {
-            console.error('Error fetching analytics info:', error);
+      try {
+        console.log("Fetching analytics configuration...");
+        const response = await fetch("/api/config");
+        if (!response.ok) {
+          throw new Error("Failed to fetch analytics configuration");
         }
+        const data = await response.json();
+        setAnalyticsInfo(data.analyticsInfo);
+        console.log("Analytics configuration fetched successfully:", data.analyticsInfo);
+      } catch (error) {
+        console.error("Error fetching analytics info:", error);
+      }
     };
 
     fetchAnalyticsInfo();
-}, []);
+  }, []);
 
-
-  // Initialize and render dashboard
+  // Initialize the dashboard with ChartsEmbedSDK
   useEffect(() => {
-    if (analyticsInfo) {
-        const sdk = new ChartsEmbedSDK({ baseUrl: analyticsInfo.chartsBaseUrl });
-        const initializedDashboard = sdk.createDashboard({
-            dashboardId: analyticsInfo.dashboardIdGeneral,
-            widthMode: 'scale',
-            filter: locationFilter,
-            heightMode: 'scale',
-            background: '#fff'
-        });
+    if (analyticsInfo && !dashboard.current) {
+      console.log("Initializing the dashboard with analytics info:", analyticsInfo);
+      const sdk = new ChartsEmbedSDK({ baseUrl: analyticsInfo.chartsBaseUrl });
+      dashboard.current = sdk.createDashboard({
+        dashboardId: analyticsInfo.dashboardIdGeneral,
+        widthMode: "scale",
+        filter: locationFilter,
+        heightMode: "scale",
+        background: "#fff",
+      });
 
-        setDashboard(initializedDashboard);
+      dashboard.current
+        .render(dashboardDiv.current)
+        .then(() => {
+          console.log("Dashboard successfully rendered");
+          setDashboardRendered(true); // Mark dashboard as rendered
+        })
+        .catch((err) => console.error("Error during Charts rendering.", err));
 
-        initializedDashboard.render(dashboardDiv.current)
-            .then(() => setRendered(true))
-            .catch(err => console.error("Error during Charts rendering.", err));
-
-        if (dashboardDiv.current) {
-            dashboardDiv.current.style.height = "900px";
-        }
+      if (dashboardDiv.current) {
+        dashboardDiv.current.style.height = "900px";
+      }
     }
-}, [analyticsInfo]);
+  }, [analyticsInfo, locationFilter]);
 
+  // Manage real-time streams once the dashboard is rendered
   useEffect(() => {
-    if (selectedChannel === "All") {
-      setFilterName("Channel");
-    } else {
-      setFilterName(selectedChannel);
+    if (dashboardRendered && dashboard.current && !streamsActive.current) {
+      console.log("Starting real-time streams for dashboard and inventory check...");
+
+      const stopDashboardStream = startWatchDashboard(dashboard.current);
+      const stopInventoryCheckStream = startWatchInventoryCheck(dashboard.current, handleAlert);
+
+      streamsActive.current = true;
+
+      return () => {
+        console.log("Stopping real-time streams for dashboard and inventory check.");
+        if (stopDashboardStream) stopDashboardStream();
+        if (stopInventoryCheckStream) stopInventoryCheckStream();
+        streamsActive.current = false;
+      };
     }
+  }, [dashboardRendered, startWatchDashboard, startWatchInventoryCheck, handleAlert]);
+
+  // Update the filter name when the channel changes
+  useEffect(() => {
+    setFilterName(selectedChannel === "All" ? "Channel" : selectedChannel);
   }, [selectedChannel]);
 
-  useEffect(() => {
-    console.log("Starting real-time dashboard and inventory check streams.");
-
-    // Start watching the dashboard and inventory check streams
-    const stopDashboardStream = startWatchDashboard(dashboard);
-    const stopInventoryCheckStream = startWatchInventoryCheck(dashboard, addAlert);
-
-    // Cleanup function to stop the streams
-    return () => {
-      console.log("Stopping real-time dashboard and inventory check streams.");
-      stopDashboardStream();
-      stopInventoryCheckStream();
-    };
-  }, [dashboard, addAlert, startWatchDashboard, startWatchInventoryCheck]);
-
-  useEffect(() => {
-    if (rendered) {
-      dashboard.setFilter(locationFilter);
-      dashboard.refresh();
-    }
-  }, [router.asPath]);
-
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+  const toggleMenu = () => setMenuOpen(!menuOpen);
 
   const handleChannelChange = (value) => {
     setSelectedChannel(value);
     toggleMenu();
-    dashboard
-      .setFilter({ channel: value })
-      .catch((err) => console.log("Error while filtering.", err));
+    if (dashboard.current) {
+      dashboard.current
+        .setFilter({ channel: value })
+        .then(() => {
+          console.log("Dashboard filter applied for channel:", value);
+        })
+        .catch((err) => console.error("Error while filtering.", err));
+    }
   };
 
   const handleClearFilters = () => {
     setSelectedChannel("All");
     setFilterName("Channel");
-    dashboard
-      .setFilter({})
-      .catch((err) => console.log("Error while clearing filters.", err));
+    if (dashboard.current) {
+      dashboard.current
+        .setFilter({})
+        .then(() => {
+          console.log("Dashboard filters cleared");
+        })
+        .catch((err) => console.error("Error while clearing filters.", err));
+    }
   };
-
 
   return (
     <div className="App">
@@ -173,7 +177,6 @@ const Dashboard = () => {
                           onChange={() => handleChannelChange(value)}
                           checked={value === selectedChannel}
                         />
-
                         <label htmlFor={value} title={option}>
                           {option}
                         </label>
@@ -193,16 +196,5 @@ const Dashboard = () => {
     </div>
   );
 };
-
-export async function getServerSideProps(context) {
-  try {
-    return {
-      props: {},
-    };
-  } catch (e) {
-    console.error(e);
-    return { props: { ok: false, reason: "Server error" } };
-  }
-}
 
 export default Dashboard;

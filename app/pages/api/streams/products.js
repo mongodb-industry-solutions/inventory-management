@@ -13,6 +13,7 @@ export default async function handler(req, res) {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders(); // Send headers before data
 
   try {
     if (!client) {
@@ -25,7 +26,7 @@ export default async function handler(req, res) {
     const changeStream = collection.watch([{ $match: { operationType: 'update' } }]);
 
     // Notify client of connection initialization
-    res.write(`data: Connection initialized\n\n`);
+    res.write(`data: ${JSON.stringify({ message: 'Connection initialized' })}\n\n`);
 
     // Listen for changes in the collection
     changeStream.on('change', (change) => {

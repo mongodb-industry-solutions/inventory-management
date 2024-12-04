@@ -4,8 +4,8 @@ const STORAGE_KEY = 'selectedUser';
 
 export const UserContext = createContext();
 
-export const UserProvider = ({ children }) => {
-  // Define the default user
+export const UserProvider = ({ children, defaultLocationId }) => {
+  // Define the default user with a default location
   const defaultUser = {
     name: "Eddie",
     surname: "Grant",
@@ -13,7 +13,7 @@ export const UserProvider = ({ children }) => {
     permissions: {
       locations: [
         {
-          id: { $oid: "65c63cb61526ffd3415fadbd" },
+          id: { $oid: defaultLocationId || "65c63cb61526ffd3415fadbd" },
           role: "inventory manager",
           name: "Bogatell Factory",
           area_code: "ES",
@@ -23,17 +23,13 @@ export const UserProvider = ({ children }) => {
   };
 
   // Initialize state with default user
-  const [selectedUser, setSelectedUser] = useState(defaultUser);
-
-  // On component mount, check if there's a stored user
-  useEffect(() => {
+  const [selectedUser, setSelectedUser] = useState(() => {
     if (typeof window !== "undefined") {
       const storedUser = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      if (storedUser) {
-        setSelectedUser(storedUser);
-      }
+      return storedUser || defaultUser;
     }
-  }, []);
+    return defaultUser;
+  });
 
   // Save selected user to localStorage whenever it changes
   useEffect(() => {
@@ -47,200 +43,205 @@ export const UserProvider = ({ children }) => {
     setSelectedUser(user);
   };
 
-const startWatchProductList = (setDisplayProducts, addAlert) => {
-  // Create an EventSource to connect to the SSE endpoint
-  const eventSource = new EventSource('/api/streams/products');
+  // Function to get the default location ID
+  const getDefaultLocationId = () => {
+    return selectedUser.permissions?.locations?.[0]?.id?.$oid || defaultLocationId;
+  };
 
-  eventSource.onmessage = (event) => {
-    const change = JSON.parse(event.data);
+  // SSE: Start watching product list
+  const startWatchProductList = (setDisplayProducts, addAlert) => {
+    console.log("Attempting to start EventSource for Product List...");
 
-    if (change.fullDocument) {
-      // Update the product list in the frontend
-      setDisplayProducts((prevProducts) =>
-        prevProducts.map((product) =>
-          product._id === change.fullDocument._id ? change.fullDocument : product
-        )
-      );
+    const eventSource = new EventSource('/api/streams/products');
+    console.log("EventSource for Product List started."); // Verify if the stream started
 
-      // Handle alerts if stock is low
-      const pattern = /^items\.(\d+)\.stock/;
-      for (const key of Object.keys(change.updateDescription.updatedFields)) {
-        if (pattern.test(key)) {
-          const updatedItemIndex = parseInt(key.match(pattern)[1], 10);
-          const updatedItem = change.fullDocument.items[updatedItemIndex];
-          const itemStock = updatedItem.stock.find((stock) => stock.location.type !== 'warehouse');
-          if (itemStock?.amount + itemStock?.ordered < itemStock?.threshold) {
-            addAlert(updatedItem);
+    eventSource.onmessage = (event) => {
+      console.log("Product list event received:", event); // Log received events for debugging
+      const change = JSON.parse(event.data);
+
+      if (change.fullDocument) {
+        setDisplayProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === change.fullDocument._id ? change.fullDocument : product
+          )
+        );
+
+        // Handle alerts if stock is low
+        const pattern = /^items\.(\d+)\.stock/;
+        for (const key of Object.keys(change.updateDescription.updatedFields)) {
+          if (pattern.test(key)) {
+            const updatedItemIndex = parseInt(key.match(pattern)[1], 10);
+            const updatedItem = change.fullDocument.items[updatedItemIndex];
+            const itemStock = updatedItem.stock.find((stock) => stock.location.type !== 'warehouse');
+            if (itemStock?.amount + itemStock?.ordered < itemStock?.threshold) {
+              addAlert(updatedItem);
+            }
           }
         }
       }
-    }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('SSE error:', error);
+      eventSource.close();
+
+      // Attempt reconnection after a delay
+      setTimeout(() => {
+        console.log('Attempting to reconnect SSE for product list...');
+        startWatchProductList(setDisplayProducts, addAlert);
+      }, 5000);
+    };
+
+    return () => {
+      console.log("Closing EventSource for Product List");
+      eventSource.close();
+    };
   };
 
-  eventSource.onerror = (error) => {
-    console.error('SSE error:', error);
-    eventSource.close();
+  // SSE: Start watching product detail
+  const startWatchProductDetail = (setProduct, productId, location) => {
+    console.log("Attempting to start EventSource for Product Detail...");
+
+    const eventSource = new EventSource(
+      `/api/streams/productDetail?productId=${productId}&location=${location || ''}`
+    );
+    console.log("EventSource for Product Detail started."); // Verify if the stream started
+
+    eventSource.onmessage = (event) => {
+      console.log("Product detail event received:", event); // Log received events for debugging
+      const updatedProduct = JSON.parse(event.data);
+      setProduct(updatedProduct);
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('SSE error for product detail:', error);
+      eventSource.close();
+
+      // Attempt reconnection after a delay
+      setTimeout(() => {
+        console.log('Attempting to reconnect SSE for product detail...');
+        startWatchProductDetail(setProduct, productId, location);
+      }, 5000);
+    };
+
+    return () => {
+      console.log("Closing EventSource for Product Detail");
+      eventSource.close();
+    };
   };
 
-  // Return a function to stop the SSE connection
-  return () => {
-    eventSource.close();
-  };
-};
-
-
-const startWatchProductDetail = (setProduct, productId, location) => {
-  // Create an EventSource to connect to the SSE endpoint
-  const eventSource = new EventSource(
-    `/api/streams/productDetail?productId=${productId}&location=${location || ''}`
-  );
-
-  eventSource.onmessage = (event) => {
-    const updatedProduct = JSON.parse(event.data);
-    setProduct(updatedProduct); // Update product state in the frontend
-  };
-
-  eventSource.onerror = (error) => {
-    console.error('SSE error for product detail:', error);
-    eventSource.close();
-  };
-
-  // Return a function to stop the SSE connection
-  return () => {
-    eventSource.close();
-  };
-};
-
-
-const startWatchDashboard = (dashboard) => {
-  console.log("Start watching dashboard via SSE");
-
-  // Create an EventSource to connect to the SSE endpoint
-  const eventSource = new EventSource('/api/streams/dashboard');
-
-  eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('Dashboard update received:', data);
-
-    // Trigger a refresh or update the dashboard with the new data
-    dashboard.refresh(data);
-  };
-
-  eventSource.onerror = (error) => {
-    console.error('Error in dashboard SSE:', error);
-    eventSource.close();
-  };
-
-  // Return a function to stop the SSE connection
-  return () => {
-    console.log('Stopping dashboard SSE');
-    eventSource.close();
-  };
-};
-
-
-const startWatchInventoryCheck = (dashboard, addAlert) => {
-  console.log('Starting inventory check SSE stream.');
-
-  // Create an EventSource to connect to the SSE API
-  const eventSource = new EventSource('/api/streams/inventoryCheck');
-
-  eventSource.onmessage = (event) => {
-    const newCheckResult = JSON.parse(event.data);
-
-    console.log('Received new inventory check result:', newCheckResult);
-
-    // Trigger the addAlert callback with the new result
-    addAlert(newCheckResult);
-
-    // Refresh the dashboard
-    dashboard.refresh();
-  };
-
-  eventSource.onerror = (error) => {
-    console.error('Inventory check SSE error:', error);
-    eventSource.close();
-  };
-
-  // Return a function to stop the SSE connection
-  return () => {
-    console.log('Closing inventory check SSE stream.');
-    eventSource.close();
-  };
-};
-
-
-const startWatchControl = (setProducts) => {
-  console.log('Starting control SSE stream.');
-
-  // Create an EventSource to connect to the SSE API
-  const eventSource = new EventSource('/api/streams/control');
-
-  eventSource.onmessage = (event) => {
-    const updatedProduct = JSON.parse(event.data);
-
-    console.log('Received updated product:', updatedProduct);
-
-    // Update the products state in the frontend
-    setProducts((prevProducts) => {
-      const updatedIndex = prevProducts.findIndex((product) => product._id === updatedProduct._id);
-      if (updatedIndex !== -1) {
-        const updatedProducts = [...prevProducts];
-        updatedProducts[updatedIndex] = updatedProduct;
-        return updatedProducts;
-      } else {
-        return prevProducts;
+  const startWatchDashboard = (dashboard) => {
+    console.log("Attempting to start EventSource for Dashboard...");
+    const eventSource = new EventSource('/api/streams/dashboard');
+  
+    eventSource.onopen = () => {
+      console.log("EventSource for Dashboard opened successfully.");
+    };
+  
+    eventSource.onmessage = (event) => {
+      console.log("Real-time data received from Dashboard stream:", event.data);
+      const data = JSON.parse(event.data);
+  
+      // If relevant data is received, refresh the dashboard
+      if (data) {
+        console.log("Refreshing dashboard...");
+        dashboard.refresh()
+          .then(() => {
+            console.log("Dashboard successfully refreshed with real-time data.");
+          })
+          .catch(err => {
+            console.error("Error refreshing dashboard with real-time data:", err);
+          });
       }
-    });
+    };
+  
+    eventSource.onerror = (error) => {
+      console.error('SSE error for Dashboard:', error);
+      eventSource.close();
+  
+      // Attempt reconnection after a delay
+      setTimeout(() => {
+        console.log('Attempting to reconnect SSE for Dashboard...');
+        startWatchDashboard(dashboard);
+      }, 5000);
+    };
+  
+    return () => {
+      console.log("Closing EventSource for Dashboard");
+      eventSource.close();
+    };
+  };
+  
+  
+
+  // SSE: Start watching inventory check
+  const startWatchInventoryCheck = (dashboard, addAlert) => {
+    console.log("Attempting to start EventSource for Inventory Check...");
+    const eventSource = new EventSource('/api/streams/inventoryCheck');
+    console.log("EventSource for Inventory Check started.");  // Verify initialization
+
+    eventSource.onmessage = (event) => {
+      console.log('Received new inventory check result:', event); // Log received events for debugging
+      const newCheckResult = JSON.parse(event.data);
+      addAlert(newCheckResult);
+      dashboard.refresh();
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('Inventory check SSE error:', error);
+      eventSource.close();
+    };
+
+    return () => {
+      console.log("Closing EventSource for Inventory Check");
+      eventSource.close();
+    };
   };
 
-  eventSource.onerror = (error) => {
-    console.error('Control SSE error:', error);
-    eventSource.close();
-  };
+  // SSE: Start watching control
+  const startWatchControl = (setProducts) => {
+    console.log("Attempting to start EventSource for Control...");
+    const eventSource = new EventSource('/api/streams/control');
+    console.log("EventSource for Control started.");  // Verify initialization
 
-  // Return a function to stop the SSE connection
-  return () => {
-    console.log('Closing control SSE stream.');
-    eventSource.close();
-  };
-};
+    eventSource.onmessage = (event) => {
+      console.log('Control update received:', event); // Log received events for debugging
+      const updatedProduct = JSON.parse(event.data);
+      setProducts((prevProducts) => {
+        const updatedIndex = prevProducts.findIndex((product) => product._id === updatedProduct._id);
+        if (updatedIndex !== -1) {
+          const updatedProducts = [...prevProducts];
+          updatedProducts[updatedIndex] = updatedProduct;
+          return updatedProducts;
+        }
+        return prevProducts;
+      });
+    };
 
+    eventSource.onerror = (error) => {
+      console.error('Control SSE error:', error);
+      eventSource.close();
+    };
 
-  const stopWatchProductList = () => {
-    closeStreamProductList();
-  };
-
-  const stopWatchProductDetail = () => {
-    closeStreamProductDetail();
-  };
-
-  const stopWatchDashboard = () => {
-    closeStreamDashboard();
-  };
-
-  const stopWatchInventoryCheck = () => {
-    closeStreamInventoryCheck();
-  };
-
-  const stopWatchControl = () => {
-    closeStreamControl();
+    return () => {
+      console.log("Closing EventSource for Control");
+      eventSource.close();
+    };
   };
 
   return (
-    <UserContext.Provider value={{ selectedUser, 
-      setUser, 
-      startWatchProductList, 
-      stopWatchProductList, 
-      startWatchProductDetail, 
-      stopWatchProductDetail,
-      startWatchDashboard,
-      stopWatchDashboard,
-      startWatchInventoryCheck,
-      stopWatchInventoryCheck,
-      startWatchControl,
-      stopWatchControl
-    }}>
+    <UserContext.Provider
+      value={{
+        selectedUser,
+        setUser,
+        getDefaultLocationId,
+        startWatchProductList,
+        startWatchProductDetail,
+        startWatchDashboard,
+        startWatchInventoryCheck,
+        startWatchControl,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
