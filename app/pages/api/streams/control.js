@@ -1,33 +1,33 @@
 // /pages/api/streams/control.js
-import { getClientPromise } from '../../../lib/mongodb';
+import { clientPromise } from "../../../lib/mongodb";
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    res.status(405).json({ error: 'Method not allowed. Use GET.' });
+  if (req.method !== "GET") {
+    res.status(405).json({ error: "Method not allowed. Use GET." });
     return;
   }
 
   try {
-    const client = await getClientPromise();
+    const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE_NAME);
-    const collection = db.collection('products');
+    const collection = db.collection("products");
 
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
     res.flushHeaders(); // Send headers before sending data
 
     const pipeline = [
       {
         $match: {
-          operationType: 'update',
+          operationType: "update",
         },
       },
     ];
 
     const changeStream = collection.watch(pipeline);
 
-    changeStream.on('change', (change) => {
+    changeStream.on("change", (change) => {
       const updatedProduct = change.fullDocument;
 
       if (updatedProduct) {
@@ -35,12 +35,12 @@ export default async function handler(req, res) {
       }
     });
 
-    req.on('close', () => {
+    req.on("close", () => {
       changeStream.close(); // Close the change stream when the client disconnects
       res.end();
     });
   } catch (error) {
-    console.error('Error in control SSE:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error in control SSE:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 }

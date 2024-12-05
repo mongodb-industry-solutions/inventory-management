@@ -1,22 +1,28 @@
-import { getClientPromise, getEdgeClientPromise } from "../../lib/mongodb";
-import { useState, useEffect, useRef, useContext } from 'react';
-import { useRouter } from 'next/router';
-import { FaSearch } from 'react-icons/fa';
-import Sidebar from '../../components/Sidebar';
-import ProductBox from '../../components/ProductBox';
-import { ObjectId } from 'bson';
-import { UserContext } from '../../context/UserContext';
-import { useToast } from '@leafygreen-ui/toast';
+import { clientPromise } from "../../lib/mongodb";
+import { useCallback, useState, useEffect, useRef, useContext } from "react";
+import { useRouter } from "next/router";
+import { FaSearch } from "react-icons/fa";
+import Sidebar from "../../components/Sidebar";
+import ProductBox from "../../components/ProductBox";
+import { ObjectId } from "bson";
+import { UserContext } from "../../context/UserContext";
+import { useToast } from "@leafygreen-ui/toast";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Products({ products, facets }) {
-
   // State variables
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [displayProducts, setDisplayProducts] = useState(products);
-  const [sortBy, setSortBy] = useState('');
+  const [sortBy, setSortBy] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
-  const [previousItems, setPreviousItems] = useState(products.flatMap(product => product.items));
+  const [previousItems, setPreviousItems] = useState(
+    products.flatMap((product) => product.items)
+  );
+
+  const sseConnection = useRef(null);
+  const sessionId = useRef(uuidv4());
+  const collection = "products";
 
   const { pushToast } = useToast();
   const router = useRouter();
@@ -26,16 +32,75 @@ export default function Products({ products, facets }) {
   // Refs
   const inputRef = useRef(null);
 
-  useEffect(() => {
-    console.log("Products component mounted. Starting watchProductList SSE...");
+  // Function to add a new alert to the list
+  const addAlert = (item) => {
+    const queryParameters = new URLSearchParams(router.query).toString();
+    const href = `/products/${item.product_id}?${queryParameters}`;
 
-    const stopWatch = startWatchProductList(setDisplayProducts, addAlert); // Start SSE stream
+    pushToast({
+      title: (
+        <span>
+          Item &nbsp;
+          <a href={href}>{item.sku}</a>
+          &nbsp; is low stock!
+        </span>
+      ),
+      variant: "warning",
+    });
+  };
 
-    return () => {
-      console.log("Products component unmounted. Stopping watchProductList SSE...");
-      stopWatch(); // Stop SSE stream on unmount
+  const listenToSSEUpdates = useCallback(() => {
+    console.log("Listening to SSE updates for collection " + collection);
+    const eventSource = new EventSource(
+      "/api/sse?sessionId=" + sessionId.current + "&colName=" + collection
+    );
+
+    eventSource.onopen = () => {
+      console.log("SSE connection opened.");
+      // Save the SSE connection reference in the state
     };
-  }, [startWatchProductList]); // Add dependency to re-run if startWatchProductList changes
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.fullDocument) {
+        console.log("Change detected");
+        setDisplayProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === data.fullDocument._id ? data.fullDocument : product
+          )
+        );
+
+        // Handle alerts if stock is low
+        const pattern = /^items\.(\d+)\.stock/;
+        for (const key of Object.keys(data.updateDescription.updatedFields)) {
+          if (pattern.test(key)) {
+            const updatedItemIndex = parseInt(key.match(pattern)[1], 10);
+            const updatedItem = data.fullDocument.items[updatedItemIndex];
+            const itemStock = updatedItem.stock.find(
+              (stock) => stock.location.id == location
+            );
+            if (itemStock?.amount + itemStock?.ordered < itemStock?.threshold) {
+              addAlert(updatedItem);
+            }
+          }
+        }
+      }
+    };
+
+    eventSource.onerror = (event) => {
+      console.error("SSE Error:", event);
+    };
+
+    // Close the previous connection if it exists
+    if (sseConnection.current) {
+      sseConnection.current.close();
+      console.log("Previous SSE connection closed.");
+    }
+
+    sseConnection.current = eventSource;
+
+    return eventSource;
+  }, []);
 
   useEffect(() => {
     handleSearch(); // Trigger search whenever the search query changes
@@ -43,17 +108,25 @@ export default function Products({ products, facets }) {
 
   useEffect(() => {
     setDisplayProducts(products); // Update displayed products when router path changes
-  }, [router.asPath]);
+    const eventSource = listenToSSEUpdates();
+
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+        console.log("SSE connection closed.");
+      }
+    };
+  }, [router.asPath, listenToSSEUpdates]);
 
   // Function to handle changes in the search bar
   const handleSearch = async () => {
     if (searchQuery.length > 0) {
       try {
-        const response = await fetch('/api/search?collection=products', {
-          method: 'POST',
+        const response = await fetch("/api/search?collection=products", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            "Content-Type": "application/json",
+            Accept: "application/json",
           },
           body: JSON.stringify(searchQuery),
         });
@@ -75,11 +148,11 @@ export default function Products({ products, facets }) {
 
     if (searchValue.length > 0) {
       try {
-        const response = await fetch('/api/autocomplete?collection=products', {
-          method: 'POST',
+        const response = await fetch("/api/autocomplete?collection=products", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            "Content-Type": "application/json",
+            Accept: "application/json",
           },
           body: JSON.stringify(searchValue),
         });
@@ -87,7 +160,7 @@ export default function Products({ products, facets }) {
         const data = await response.json();
         setSuggestions(data.documents[0].suggestions);
       } catch (error) {
-        console.error('Autocomplete error:', error);
+        console.error("Autocomplete error:", error);
         setSuggestions([]);
       }
     } else {
@@ -96,33 +169,17 @@ export default function Products({ products, facets }) {
     setSelectedSuggestionIndex(-1);
   };
 
-  // Function to add a new alert to the list
-  const addAlert = (item) => {
-    const queryParameters = new URLSearchParams(router.query).toString();
-    const href = `/products/${item.product_id}?${queryParameters}`;
-
-    pushToast({
-      title: (
-        <span>
-          Item &nbsp;
-          <a href={href}>
-            {item.sku}
-          </a>
-          &nbsp; is low stock!
-        </span>
-      ),
-      variant: "warning"
-    });
-  };
-
   // Function to filter products based on selected items and products
   const filterProducts = (itemsFilter, productsFilter) => {
-    const updatedFilteredProducts = products.filter(product => {
+    const updatedFilteredProducts = products.filter((product) => {
       const items = product.items.map((item) => item.name);
       const products = product.name ? [product.name] : [];
 
-      const itemMatch = itemsFilter.length === 0 || items.some(i => itemsFilter.includes(i));
-      const productMatch = productsFilter.length === 0 || products.some(p => productsFilter.includes(p));
+      const itemMatch =
+        itemsFilter.length === 0 || items.some((i) => itemsFilter.includes(i));
+      const productMatch =
+        productsFilter.length === 0 ||
+        products.some((p) => productsFilter.includes(p));
 
       return itemMatch && productMatch;
     });
@@ -131,24 +188,38 @@ export default function Products({ products, facets }) {
 
   // Function to handle sorting by popularity
   const handleSortByPopularity = () => {
-    console.log('Sorting by popularity');
-    setSortBy('popularity');
-    setDisplayProducts(prevProducts => [...prevProducts].sort((a, b) => b.popularity_index - a.popularity_index));
+    console.log("Sorting by popularity");
+    setSortBy("popularity");
+    setDisplayProducts((prevProducts) =>
+      [...prevProducts].sort((a, b) => b.popularity_index - a.popularity_index)
+    );
   };
 
   // Function to handle sorting by low stock
   const handleSortByLowStock = () => {
-    console.log('Sorting by low stock');
-    setSortBy('lowStock');
-    setDisplayProducts(prevProducts => {
+    console.log("Sorting by low stock");
+    setSortBy("lowStock");
+    setDisplayProducts((prevProducts) => {
       return [...prevProducts].sort((a, b) => {
         const countLowStockSizes = (product) => {
           if (location) {
-            return product.items.reduce((count, item) =>
-              item.stock.find(stock => stock.location.id === location)?.amount < 10 ? count + 1 : count, 0);
+            return product.items.reduce(
+              (count, item) =>
+                item.stock.find((stock) => stock.location.id === location)
+                  ?.amount < 10
+                  ? count + 1
+                  : count,
+              0
+            );
           } else {
-            return product.items.reduce((count, item) =>
-              item.stock.find(stock => stock.location.type !== "warehouse")?.amount < 10 ? count + 1 : count, 0);
+            return product.items.reduce(
+              (count, item) =>
+                item.stock.find((stock) => stock.location.type !== "warehouse")
+                  ?.amount < 10
+                  ? count + 1
+                  : count,
+              0
+            );
           }
         };
 
@@ -164,11 +235,22 @@ export default function Products({ products, facets }) {
         } else {
           const totalStockAmount = (product) => {
             if (location) {
-              return product.items.reduce((total, item) =>
-                total + item.stock.find(stock => stock.location.id === location)?.amount, 0);
+              return product.items.reduce(
+                (total, item) =>
+                  total +
+                  item.stock.find((stock) => stock.location.id === location)
+                    ?.amount,
+                0
+              );
             } else {
-              return product.items.reduce((total, item) =>
-                total + item.stock.find(stock => stock.location.type !== "warehouse")?.amount, 0);
+              return product.items.reduce(
+                (total, item) =>
+                  total +
+                  item.stock.find(
+                    (stock) => stock.location.type !== "warehouse"
+                  )?.amount,
+                0
+              );
             }
           };
 
@@ -186,11 +268,19 @@ export default function Products({ products, facets }) {
 
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        setSelectedSuggestionIndex(prevIndex => (prevIndex === null ? 0 : Math.min(prevIndex + 1, lastIndex)));
+        setSelectedSuggestionIndex((prevIndex) =>
+          prevIndex === null ? 0 : Math.min(prevIndex + 1, lastIndex)
+        );
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
-        setSelectedSuggestionIndex(prevIndex => (prevIndex === null ? lastIndex : Math.max(prevIndex - 1, 0)));
-      } else if (e.key === "Enter" && selectedSuggestionIndex !== null && selectedSuggestionIndex >= 0) {
+        setSelectedSuggestionIndex((prevIndex) =>
+          prevIndex === null ? lastIndex : Math.max(prevIndex - 1, 0)
+        );
+      } else if (
+        e.key === "Enter" &&
+        selectedSuggestionIndex !== null &&
+        selectedSuggestionIndex >= 0
+      ) {
         e.preventDefault();
         setSearchQuery(suggestions[selectedSuggestionIndex]);
         setSuggestions([]);
@@ -200,8 +290,12 @@ export default function Products({ products, facets }) {
 
   return (
     <>
-      <div className='content'>
-        <Sidebar facets={facets} filterProducts={filterProducts} page="products" />
+      <div className="content">
+        <Sidebar
+          facets={facets}
+          filterProducts={filterProducts}
+          page="products"
+        />
         <div className="search-bar">
           <input
             ref={inputRef}
@@ -223,7 +317,9 @@ export default function Products({ products, facets }) {
             {suggestions.map((suggestion, index) => (
               <li key={suggestion} className="autocomplete-item">
                 <button
-                  className={`autocomplete-button ${index === selectedSuggestionIndex ? "selected" : ""}`}
+                  className={`autocomplete-button ${
+                    index === selectedSuggestionIndex ? "selected" : ""
+                  }`}
                   onClick={() => {
                     setSearchQuery(suggestion);
                     setSuggestions([]);
@@ -240,13 +336,17 @@ export default function Products({ products, facets }) {
           <p className="order-by-text">Order by:</p>
           <div className="buttons">
             <button
-              className={`sidebar-button ${sortBy === 'popularity' ? 'selected' : ''}`}
+              className={`sidebar-button ${
+                sortBy === "popularity" ? "selected" : ""
+              }`}
               onClick={handleSortByPopularity}
             >
               Most Popular
             </button>
             <button
-              className={`sidebar-button ${sortBy === 'lowStock' ? 'selected' : ''}`}
+              className={`sidebar-button ${
+                sortBy === "lowStock" ? "selected" : ""
+              }`}
               onClick={handleSortByLowStock}
             >
               Low Stock
@@ -271,27 +371,41 @@ export default function Products({ products, facets }) {
 export async function getServerSideProps({ query }) {
   try {
     if (!process.env.MONGODB_DATABASE_NAME) {
-      throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
+      throw new Error(
+        'Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"'
+      );
     }
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
     const locationId = query.location;
-    const edge = (query.edge === 'true');
+    const edge = query.edge === "true";
 
-    const client = edge ? await getEdgeClientPromise() : await getClientPromise();
+    const client = await clientPromise;
     const db = client.db(dbName);
     const collectionName = locationId ? "products" : "products_area_view";
-    const productsFilter = locationId ? { "total_stock_sum.location.id": new ObjectId(locationId) } : {};
+    const productsFilter = locationId
+      ? { "total_stock_sum.location.id": new ObjectId(locationId) }
+      : {};
 
-    const products = await db.collection(collectionName).find(productsFilter).toArray();
+    const products = await db
+      .collection(collectionName)
+      .find(productsFilter)
+      .toArray();
 
     let facets = [];
 
     if (edge) {
-      const itemsAggregated = products.flatMap(product => product.items.map(item => item.name));
-      const itemsFacetBuckets = Array.from(new Set(itemsAggregated)).map(item => ({ _id: item, count: itemsAggregated.filter(i => i === item).length }));
+      const itemsAggregated = products.flatMap((product) =>
+        product.items.map((item) => item.name)
+      );
+      const itemsFacetBuckets = Array.from(new Set(itemsAggregated)).map(
+        (item) => ({
+          _id: item,
+          count: itemsAggregated.filter((i) => i === item).length,
+        })
+      );
 
-      const productsFacetBuckets = products.map(product => {
+      const productsFacetBuckets = products.map((product) => {
         return {
           _id: product.name,
           count: 1,
@@ -302,7 +416,7 @@ export async function getServerSideProps({ query }) {
         facet: {
           itemsFacet: { buckets: itemsFacetBuckets },
           productsFacet: { buckets: productsFacetBuckets },
-        }
+        },
       };
 
       facets.push(facetGroup);
@@ -314,21 +428,25 @@ export async function getServerSideProps({ query }) {
             facet: {
               facets: {
                 productsFacet: { type: "string", path: "name", numBuckets: 50 },
-                itemsFacet: { type: "string", path: "items.name", numBuckets: 50 },
+                itemsFacet: {
+                  type: "string",
+                  path: "items.name",
+                  numBuckets: 50,
+                },
               },
             },
           },
         },
       ];
 
-      facets = await db
-        .collection("products")
-        .aggregate(agg)
-        .toArray();
+      facets = await db.collection("products").aggregate(agg).toArray();
     }
 
     return {
-      props: { products: JSON.parse(JSON.stringify(products)), facets: JSON.parse(JSON.stringify(facets)) },
+      props: {
+        products: JSON.parse(JSON.stringify(products)),
+        facets: JSON.parse(JSON.stringify(facets)),
+      },
     };
   } catch (e) {
     console.error(e);
