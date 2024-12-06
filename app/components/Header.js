@@ -35,7 +35,7 @@ function Header( ) {
         } else {
           //use the new NextJS api route
           response = await fetch('/api/getUsers', {
-            method: 'POST',
+            method: 'GET',
             headers: {
               'Content-Type': 'application/json',
             },

@@ -1,62 +1,90 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 const STORAGE_KEY = 'selectedUser';
 
 export const UserContext = createContext();
 
-export const UserProvider = ({ children, defaultLocationId }) => {
-  // Define the default user with a default location
-  const defaultUser = {
-    name: "Eddie",
-    surname: "Grant",
-    title: "Inventory Manager",
-    permissions: {
-      locations: [
-        {
-          id: { $oid: defaultLocationId || "65c63cb61526ffd3415fadbd" },
-          role: "inventory manager",
-          name: "Bogatell Factory",
-          area_code: "ES",
-        },
-      ],
-    },
-  };
+export const UserProvider = ({ children }) => {
+  const router = useRouter(); // Use Next.js router for navigation and query handling
+  const [selectedUser, setSelectedUser] = useState(null); // State for the selected user
+  const [loading, setLoading] = useState(true); // Loading state for initial fetch
 
-  // Initialize state with default user
-  const [selectedUser, setSelectedUser] = useState(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      return storedUser || defaultUser;
-    }
-    return defaultUser;
-  });
+  // Fetch user from the backend or localStorage
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        // Check if user is stored in localStorage
+        const storedUser = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (storedUser) {
+          setSelectedUser(storedUser);
+          setLoading(false);
+          return;
+        }
+
+        // Fetch the user from the database (via API)
+        const response = await fetch('/api/getUsers');
+        if (!response.ok) {
+          throw new Error('Failed to fetch user');
+        }
+        const user = await response.json();
+        setSelectedUser(user);
+
+        // Save the fetched user to localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   // Save selected user to localStorage whenever it changes
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (selectedUser) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(selectedUser));
     }
   }, [selectedUser]);
 
+  // Redirect to a URL with default location if missing
+  useEffect(() => {
+    const currentLocation = router.query.location;
+    const defaultLocation = selectedUser?.permissions?.locations?.[0]?.id?.$oid;
+
+    if (!currentLocation && defaultLocation) {
+      const updatedQuery = {
+        ...router.query,
+        location: defaultLocation,
+        edge: router.query.edge || 'false', // Preserve `edge` value or set default
+      };
+
+      // Update the URL without reloading the page
+      router.replace({ pathname: router.pathname, query: updatedQuery });
+    }
+  }, [router, selectedUser]);
+
   // Function to update the user
   const setUser = (user) => {
     setSelectedUser(user);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
   };
 
   // Function to get the default location ID
   const getDefaultLocationId = () => {
-    return selectedUser.permissions?.locations?.[0]?.id?.$oid || defaultLocationId;
+    return selectedUser?.permissions?.locations?.[0]?.id?.$oid || null;
   };
 
   // SSE: Start watching product list
   const startWatchProductList = (setDisplayProducts, addAlert) => {
-    console.log("Attempting to start EventSource for Product List...");
+    console.log('Attempting to start EventSource for Product List...');
 
     const eventSource = new EventSource('/api/streams/products');
-    console.log("EventSource for Product List started."); // Verify if the stream started
+    console.log('EventSource for Product List started.');
 
     eventSource.onmessage = (event) => {
-      console.log("Product list event received:", event); // Log received events for debugging
       const change = JSON.parse(event.data);
 
       if (change.fullDocument) {
@@ -87,95 +115,73 @@ export const UserProvider = ({ children, defaultLocationId }) => {
 
       // Attempt reconnection after a delay
       setTimeout(() => {
-        console.log('Attempting to reconnect SSE for product list...');
+        console.log('Reconnecting SSE for Product List...');
         startWatchProductList(setDisplayProducts, addAlert);
       }, 5000);
     };
 
     return () => {
-      console.log("Closing EventSource for Product List");
+      console.log('Closing EventSource for Product List');
       eventSource.close();
     };
   };
 
   // SSE: Start watching product detail
   const startWatchProductDetail = (setProduct, productId, location) => {
-    console.log("Attempting to start EventSource for Product Detail...");
+    console.log('Attempting to start EventSource for Product Detail...');
 
     const eventSource = new EventSource(
       `/api/streams/productDetail?productId=${productId}&location=${location || ''}`
     );
-    console.log("EventSource for Product Detail started."); // Verify if the stream started
 
     eventSource.onmessage = (event) => {
-      console.log("Product detail event received:", event); // Log received events for debugging
       const updatedProduct = JSON.parse(event.data);
       setProduct(updatedProduct);
     };
 
     eventSource.onerror = (error) => {
-      console.error('SSE error for product detail:', error);
+      console.error('SSE error for Product Detail:', error);
       eventSource.close();
 
-      // Attempt reconnection after a delay
+      // Attempt reconnection
       setTimeout(() => {
-        console.log('Attempting to reconnect SSE for product detail...');
         startWatchProductDetail(setProduct, productId, location);
       }, 5000);
     };
 
     return () => {
-      console.log("Closing EventSource for Product Detail");
       eventSource.close();
     };
   };
 
+  // SSE: Start watching dashboard
   const startWatchDashboard = (dashboard) => {
-    console.log("Attempting to start EventSource for Dashboard...");
     const eventSource = new EventSource('/api/streams/dashboard');
-  
-    eventSource.onopen = () => {
-      console.log("EventSource for Dashboard opened successfully.");
-    };
-  
+
     eventSource.onmessage = (event) => {
-      console.log("Real-time data received from Dashboard stream:", event.data);
       const data = JSON.parse(event.data);
-  
-      // If relevant data is received, refresh the dashboard
       if (data) {
-        console.log("Refreshing dashboard...");
-        dashboard.refresh()
-          .then(() => {
-            console.log("Dashboard successfully refreshed with real-time data.");
-          })
-          .catch(err => {
-            console.error("Error refreshing dashboard with real-time data:", err);
-          });
+        dashboard.refresh();
       }
     };
-  
+
     eventSource.onerror = (error) => {
       console.error('SSE error for Dashboard:', error);
       eventSource.close();
-  
-      // Attempt reconnection after a delay
+
+      // Attempt reconnection
       setTimeout(() => {
-        console.log('Attempting to reconnect SSE for Dashboard...');
         startWatchDashboard(dashboard);
       }, 5000);
     };
-  
+
     return () => {
-      console.log("Closing EventSource for Dashboard");
       eventSource.close();
     };
   };
-  
-  
 
-  // SSE: Start watching inventory check
-  const startWatchInventoryCheck = (dashboard, addAlert) => {
+   // SSE: Start watching inventory check
+   const startWatchInventoryCheck = (dashboard, addAlert) => {
     console.log("Attempting to start EventSource for Inventory Check...");
     const eventSource = new EventSource('/api/streams/inventoryCheck');
     console.log("EventSource for Inventory Check started.");  // Verify initialization
@@ -197,37 +203,43 @@ export const UserProvider = ({ children, defaultLocationId }) => {
       eventSource.close();
     };
   };
-
-  // SSE: Start watching control
-  const startWatchControl = (setProducts) => {
-    console.log("Attempting to start EventSource for Control...");
-    const eventSource = new EventSource('/api/streams/control');
-    console.log("EventSource for Control started.");  // Verify initialization
-
-    eventSource.onmessage = (event) => {
-      console.log('Control update received:', event); // Log received events for debugging
-      const updatedProduct = JSON.parse(event.data);
-      setProducts((prevProducts) => {
-        const updatedIndex = prevProducts.findIndex((product) => product._id === updatedProduct._id);
-        if (updatedIndex !== -1) {
-          const updatedProducts = [...prevProducts];
-          updatedProducts[updatedIndex] = updatedProduct;
-          return updatedProducts;
-        }
-        return prevProducts;
-      });
+  
+    // SSE: Start watching control
+    const startWatchControl = (setProducts) => {
+      console.log("Attempting to start EventSource for Control...");
+      const eventSource = new EventSource('/api/streams/control');
+      console.log("EventSource for Control started.");  // Verify initialization
+  
+      eventSource.onmessage = (event) => {
+        console.log('Control update received:', event); // Log received events for debugging
+        const updatedProduct = JSON.parse(event.data);
+        setProducts((prevProducts) => {
+          const updatedIndex = prevProducts.findIndex((product) => product._id === updatedProduct._id);
+          if (updatedIndex !== -1) {
+            const updatedProducts = [...prevProducts];
+            updatedProducts[updatedIndex] = updatedProduct;
+            return updatedProducts;
+          }
+          return prevProducts;
+        });
+      };
+  
+      eventSource.onerror = (error) => {
+        console.error('Control SSE error:', error);
+        eventSource.close();
+      };
+  
+      return () => {
+        console.log("Closing EventSource for Control");
+        eventSource.close();
+      };
     };
+  
 
-    eventSource.onerror = (error) => {
-      console.error('Control SSE error:', error);
-      eventSource.close();
-    };
-
-    return () => {
-      console.log("Closing EventSource for Control");
-      eventSource.close();
-    };
-  };
+  // Prevent app from rendering prematurely
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <UserContext.Provider
@@ -238,8 +250,6 @@ export const UserProvider = ({ children, defaultLocationId }) => {
         startWatchProductList,
         startWatchProductDetail,
         startWatchDashboard,
-        startWatchInventoryCheck,
-        startWatchControl,
       }}
     >
       {children}

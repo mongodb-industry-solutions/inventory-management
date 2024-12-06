@@ -1,27 +1,26 @@
 import { getClientPromise } from '../../lib/mongodb';
 
-let client = null;
+export default async function handler(req, res) {
+  if (req.method !== 'GET') {
+    res.status(405).json({ error: 'Method not allowed. Use GET.' });
+    return;
+  }
 
-export default async (req, res) => {
-    try {
-        if (!process.env.MONGODB_DATABASE_NAME) {
-            throw new Error('Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"')
-        }
+  try {
+    const client = await getClientPromise();
+    const db = client.db(process.env.MONGODB_DATABASE_NAME);
+    const collection = db.collection('users');
 
-        const dbName = process.env.MONGODB_DATABASE_NAME;
-        if (!client) {
-            client = await getClientPromise();
-        }
-        const db = client.db(dbName);
+    const user = await collection.findOne({ name: 'Eddie' });
 
-        const users = await db
-            .collection("users")
-            .find({})
-            .toArray();
-
-        res.status(200).json({documents: users});
-    } catch (e) {
-        console.error(e);
-        res.status(500).json({ error: 'Error fetching users' });
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
     }
- };
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
