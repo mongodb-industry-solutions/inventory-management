@@ -1,128 +1,161 @@
-import { useEffect, useState, useRef, useContext, useCallback } from "react";
-import { useRouter } from "next/router";
-import { ObjectId } from "bson";
-import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
-import { UserContext } from "../context/UserContext";
-import styles from "../styles/dashboard.module.css";
-import { useToast } from "@leafygreen-ui/toast";
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { useRouter } from 'next/router';
+import { ObjectId } from 'bson';
+import { useToast } from '@leafygreen-ui/toast';
+import styles from '../styles/dashboard.module.css';
 
 const Dashboard = () => {
-  const channelOptions = ["Online", "In-store"];
-  const [selectedChannel, setSelectedChannel] = useState("All");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [filterName, setFilterName] = useState("Channel");
-  const [analyticsInfo, setAnalyticsInfo] = useState(null);
-  const [dashboardRendered, setDashboardRendered] = useState(false); // Track dashboard rendering status
-
   const router = useRouter();
   const { location } = router.query;
 
   const { pushToast } = useToast();
-  const { startWatchDashboard, startWatchInventoryCheck } = useContext(UserContext);
-
   const dashboardDiv = useRef(null);
   const dashboard = useRef(null);
   const streamsActive = useRef(false);
 
-  // Define locationFilter for use in rendering the dashboard
+  const [analyticsInfo, setAnalyticsInfo] = useState(null);
+  const [rendered, setRendered] = useState(false); // New state to track rendering
+  const [selectedChannel, setSelectedChannel] = useState('All');
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [filterName, setFilterName] = useState('Channel');
+
+  const channelOptions = ['Online', 'In-store'];
+  const sessionId = useRef(
+    `dashboard_${Math.random().toString(36).substr(2, 9)}`
+  );
+
   const locationFilter = location
     ? {
         $or: [
-          { "location.destination.id": ObjectId.createFromHexString(location) },
-          { "location.origin.id": ObjectId.createFromHexString(location) },
+          {
+            'location.destination.id':
+              ObjectId.createFromHexString(location),
+          },
+          {
+            'location.origin.id':
+              ObjectId.createFromHexString(location),
+          },
           { checkResult: { $exists: true } },
         ],
       }
     : {};
 
-  // Function to handle alerts for inventory checks
-  const handleAlert = useCallback(
-    (checkResult) => {
-      if (checkResult) {
-        pushToast({
-          title: "Hooray! Perfect inventory match!",
-          variant: "success",
-        });
-      } else {
-        pushToast({
-          title: "Oops! Inventory Discrepancy Detected.",
-          variant: "warning",
-        });
-      }
-    },
-    [pushToast]
-  );
-
   // Fetch analytics configuration from the backend
   useEffect(() => {
     const fetchAnalyticsInfo = async () => {
       try {
-        console.log("Fetching analytics configuration...");
-        const response = await fetch("/api/config");
-        if (!response.ok) {
-          throw new Error("Failed to fetch analytics configuration");
-        }
+        const response = await fetch('/api/config');
+        if (!response.ok)
+          throw new Error('Failed to fetch analytics configuration');
+
         const data = await response.json();
         setAnalyticsInfo(data.analyticsInfo);
-        console.log("Analytics configuration fetched successfully:", data.analyticsInfo);
       } catch (error) {
-        console.error("Error fetching analytics info:", error);
+        console.error('Error fetching analytics info:', error);
       }
     };
 
     fetchAnalyticsInfo();
   }, []);
 
-  // Initialize the dashboard with ChartsEmbedSDK
+  // Initialize the dashboard using ChartsEmbedSDK
   useEffect(() => {
     if (analyticsInfo && !dashboard.current) {
-      console.log("Initializing the dashboard with analytics info:", analyticsInfo);
-      const sdk = new ChartsEmbedSDK({ baseUrl: analyticsInfo.chartsBaseUrl });
+      const ChartsEmbedSDK =
+        require('@mongodb-js/charts-embed-dom').default;
+      const sdk = new ChartsEmbedSDK({
+        baseUrl: analyticsInfo.chartsBaseUrl,
+      });
+
       dashboard.current = sdk.createDashboard({
         dashboardId: analyticsInfo.dashboardIdGeneral,
-        widthMode: "scale",
+        widthMode: 'scale',
         filter: locationFilter,
-        heightMode: "scale",
-        background: "#fff",
+        heightMode: 'scale',
+        background: '#fff',
       });
 
       dashboard.current
         .render(dashboardDiv.current)
         .then(() => {
-          console.log("Dashboard successfully rendered");
-          setDashboardRendered(true); // Mark dashboard as rendered
+          console.log('Dashboard successfully rendered');
+          setRendered(true); // Mark the dashboard as rendered
         })
-        .catch((err) => console.error("Error during Charts rendering.", err));
+        .catch((err) =>
+          console.error('Error during Charts rendering.', err)
+        );
 
       if (dashboardDiv.current) {
-        dashboardDiv.current.style.height = "900px";
+        dashboardDiv.current.style.height = '900px';
       }
     }
   }, [analyticsInfo, locationFilter]);
 
-  // Manage real-time streams once the dashboard is rendered
+  // SSE updates handler
+  const listenToSSEUpdates = useCallback(() => {
+    console.log('Listening to SSE updates for the dashboard');
+    const dashboardPath = `/api/sse?sessionId=${sessionId.current}&colName=transactions`;
+    const inventoryPath = `/api/sse?sessionId=${sessionId.current}_inventory&colName=inventoryCheck`;
+
+    const dashboardEventSource = new EventSource(dashboardPath);
+    const inventoryEventSource = new EventSource(inventoryPath);
+
+    dashboardEventSource.onopen = () =>
+      console.log('Dashboard SSE connection opened.');
+    inventoryEventSource.onopen = () =>
+      console.log('InventoryCheck SSE connection opened.');
+
+    dashboardEventSource.onmessage = (event) => {
+      dashboard.current?.refresh().catch(console.error);
+    };
+
+    inventoryEventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      pushToast({
+        title: data.checkResult
+          ? 'Hooray! Perfect inventory match!'
+          : 'Oops! Inventory Discrepancy Detected.',
+        variant: data.checkResult ? 'success' : 'warning',
+      });
+      dashboard.current?.refresh().catch(console.error);
+    };
+
+    dashboardEventSource.onerror = (error) => {
+      console.error('Dashboard SSE error:', error);
+      dashboardEventSource.close();
+    };
+
+    inventoryEventSource.onerror = (error) => {
+      console.error('InventoryCheck SSE error:', error);
+      inventoryEventSource.close();
+    };
+
+    return () => {
+      console.log('Closing SSE connections.');
+      dashboardEventSource.close();
+      inventoryEventSource.close();
+    };
+  }, [pushToast]);
+
+  // Start SSE updates after dashboard is rendered
   useEffect(() => {
-    if (dashboardRendered && dashboard.current && !streamsActive.current) {
-      console.log("Starting real-time streams for dashboard and inventory check...");
+    console.log('Checking streamsActive and rendered:', {
+      streamsActive: streamsActive.current,
+      rendered,
+    });
 
-      const stopDashboardStream = startWatchDashboard(dashboard.current);
-      const stopInventoryCheckStream = startWatchInventoryCheck(dashboard.current, handleAlert);
-
+    if (rendered && !streamsActive.current) {
+      console.log('Initializing SSE updates...');
+      const stopListening = listenToSSEUpdates();
       streamsActive.current = true;
 
       return () => {
-        console.log("Stopping real-time streams for dashboard and inventory check.");
-        if (stopDashboardStream) stopDashboardStream();
-        if (stopInventoryCheckStream) stopInventoryCheckStream();
+        console.log('Cleaning up SSE updates...');
+        stopListening();
         streamsActive.current = false;
       };
     }
-  }, [dashboardRendered, startWatchDashboard, startWatchInventoryCheck, handleAlert]);
-
-  // Update the filter name when the channel changes
-  useEffect(() => {
-    setFilterName(selectedChannel === "All" ? "Channel" : selectedChannel);
-  }, [selectedChannel]);
+  }, [rendered, listenToSSEUpdates]);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
@@ -132,23 +165,25 @@ const Dashboard = () => {
     if (dashboard.current) {
       dashboard.current
         .setFilter({ channel: value })
-        .then(() => {
-          console.log("Dashboard filter applied for channel:", value);
-        })
-        .catch((err) => console.error("Error while filtering.", err));
+        .then(() =>
+          console.log(
+            `Dashboard filter applied for channel: ${value}`
+          )
+        )
+        .catch((err) => console.error('Error while filtering.', err));
     }
   };
 
   const handleClearFilters = () => {
-    setSelectedChannel("All");
-    setFilterName("Channel");
+    setSelectedChannel('All');
+    setFilterName('Channel');
     if (dashboard.current) {
       dashboard.current
         .setFilter({})
-        .then(() => {
-          console.log("Dashboard filters cleared");
-        })
-        .catch((err) => console.error("Error while clearing filters.", err));
+        .then(() => console.log('Dashboard filters cleared'))
+        .catch((err) =>
+          console.error('Error while clearing filters.', err)
+        );
     }
   };
 
@@ -158,9 +193,14 @@ const Dashboard = () => {
         <div className="filters">
           <div className="filter-buttons">
             <div className="dropdown">
-              <button className="dropdown-toggle" onClick={toggleMenu}>
+              <button
+                className="dropdown-toggle"
+                onClick={toggleMenu}
+              >
                 {filterName}
-                <span className={`chevron ${menuOpen ? "up" : "down"}`}>
+                <span
+                  className={`chevron ${menuOpen ? 'up' : 'down'}`}
+                >
                   &#9660;
                 </span>
               </button>
@@ -187,11 +227,14 @@ const Dashboard = () => {
               )}
             </div>
           </div>
-          <button className="clear-filters-button" onClick={handleClearFilters}>
+          <button
+            className="clear-filters-button"
+            onClick={handleClearFilters}
+          >
             Clear Filters
           </button>
         </div>
-        <div className={styles["dashboard"]} ref={dashboardDiv} />
+        <div className={styles.dashboard} ref={dashboardDiv} />
       </div>
     </div>
   );

@@ -1,13 +1,14 @@
 module.exports = {
   webpack: (config, { isServer }) => {
-    // Exclude fs module from being bundled
     if (!isServer) {
+      // Prevent MongoDB from being bundled on the client side
       config.resolve.fallback = {
-        fs: false,
-        dgram: false,
+        ...config.resolve.fallback,
+        net: false,
+        tls: false,
+        dns: false,
       };
     }
-
     return config;
   },
 };

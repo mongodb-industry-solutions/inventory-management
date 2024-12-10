@@ -1,67 +1,63 @@
-import { clientPromise } from "../../lib/mongodb";
-import { ObjectId } from "bson";
+import { clientPromise } from '../../lib/mongodb';
+import { ObjectId } from 'bson';
 
 let client = null;
 
 export default async (req, res) => {
   try {
-    // Check if the method is POST
-    if (req.method !== "POST") {
-      console.error("Invalid HTTP method");
-      return res.status(405).json({ error: "Only POST requests are allowed" });
+    if (req.method !== 'POST') {
+      return res
+        .status(405)
+        .json({ error: 'Only POST requests are allowed' });
     }
 
     const { update, filter, collection } = req.body;
 
-    // Validate request body
     if (!filter || !update || !collection) {
-      console.error("Missing required fields in request body");
       return res
         .status(400)
-        .json({ error: "Missing required fields in request body" });
+        .json({ error: 'Missing required fields in request body' });
     }
 
-    // Use database name from the environment file
     const database = process.env.MONGODB_DATABASE_NAME;
     if (!database) {
-      console.error("Database name is missing in environment variables");
       return res
         .status(500)
-        .json({ error: "Server configuration error: Missing database name" });
+        .json({
+          error: 'Missing database name in environment variables',
+        });
     }
 
-    // Connect to MongoDB client
     if (!client) {
       client = await clientPromise;
     }
     const db = client.db(database);
 
-    // Parse filter to ObjectId if applicable
-    const productId = new ObjectId(filter._id.$oid);
+    const productId = ObjectId.isValid(filter._id)
+      ? new ObjectId(filter._id)
+      : filter._id;
     const autoStatus = update.$set.autoreplenishment;
 
-    // Perform update operation
-    const result = await db.collection(collection).updateOne(
-      {
-        _id: productId,
-      },
-      {
-        $set: {
-          autoreplenishment: autoStatus,
-        },
-      }
-    );
+    console.log('Filter:', { _id: productId });
+    console.log('Collection:', collection);
+    console.log('Database:', database);
 
-    // Check if the update was successful
+    const result = await db
+      .collection(collection)
+      .updateOne(
+        { _id: productId },
+        { $set: { autoreplenishment: autoStatus } }
+      );
+
     if (result.matchedCount === 0) {
-      console.error("No matching document found");
-      return res.status(404).json({ error: "No matching document found" });
+      return res
+        .status(404)
+        .json({ error: 'No matching document found' });
     }
 
     res.status(200).json({ success: true });
   } catch (e) {
-    // Log any critical errors
-    console.error("Error in setAutoreplenishment API:", e.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error('Error in setAutoreplenishment API:', e.message);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };

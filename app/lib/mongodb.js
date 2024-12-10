@@ -1,8 +1,10 @@
-import { MongoClient } from "mongodb";
-import { EJSON } from "bson";
+import { MongoClient } from 'mongodb';
+import { EJSON } from 'bson';
 
 if (!process.env.MONGODB_URI) {
-  throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
+  throw new Error(
+    'Invalid/Missing environment variable: "MONGODB_URI"'
+  );
 }
 if (!process.env.MONGODB_DATABASE_NAME) {
   throw new Error(
@@ -12,7 +14,7 @@ if (!process.env.MONGODB_DATABASE_NAME) {
 
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DATABASE_NAME;
-const options = { appName: "automotive-acoustic-diagnostics" };
+const options = { appName: 'automotive-acoustic-diagnostics' };
 
 let client;
 let clientPromise;
@@ -34,14 +36,16 @@ async function getChangeStream(filter, key) {
     const filterEJSON = EJSON.parse(JSON.stringify(filter));
 
     const pipeline = [{ $match: filterEJSON }];
-    const changeStream = db.watch(pipeline, { fullDocument: "updateLookup" });
+    const changeStream = db.watch(pipeline, {
+      fullDocument: 'updateLookup',
+    });
 
-    changeStream.on("change", (change) => {
+    changeStream.on('change', (change) => {
       //console.log("Change: ", change);
     });
 
-    changeStream.on("error", (error) => {
-      console.log("Error: ", error);
+    changeStream.on('error', (error) => {
+      console.log('Error: ', error);
     });
 
     changeStreams.set(key, changeStream);

@@ -1,6 +1,6 @@
-import { getChangeStream } from "../../lib/mongodb";
-import { NextResponse } from "next/server";
-import { AbortController } from "abort-controller";
+import { getChangeStream } from '../../lib/mongodb';
+import { NextResponse } from 'next/server';
+import { AbortController } from 'abort-controller';
 
 const HEARTBEAT_INTERVAL = 5000; // Keep alive interval in milliseconds
 
@@ -11,7 +11,7 @@ export default async (req, res) => {
   const { accept } = req.headers;
 
   // Check if the client accepts SSE
-  if (accept === "text/event-stream") {
+  if (accept === 'text/event-stream') {
     const { readable, writable } = new TransformStream();
     const writer = writable.getWriter();
     const encoder = new TextEncoder();
@@ -21,7 +21,9 @@ export default async (req, res) => {
 
     // Check if required parameters are provided
     if (!sessionId) {
-      res.status(400).json({ error: "Missing required parameter: clientId" });
+      res
+        .status(400)
+        .json({ error: 'Missing required parameter: clientId' });
       return;
     }
 
@@ -30,11 +32,15 @@ export default async (req, res) => {
     const intervalId = setInterval(() => {
       // Send a heartbeat message to keep the connection alive
       if (writable.locked) {
-        writer.write(encoder.encode(": heartbeat\n\n")).catch((error) => {
-          console.error("Error writing heartbeat:", error);
-        });
+        writer
+          .write(encoder.encode(': heartbeat\n\n'))
+          .catch((error) => {
+            console.error('Error writing heartbeat:', error);
+          });
       } else {
-        console.warn("Writable stream is not locked, skipping heartbeat.");
+        console.warn(
+          'Writable stream is not locked, skipping heartbeat.'
+        );
       }
     }, HEARTBEAT_INTERVAL);
 
@@ -43,19 +49,27 @@ export default async (req, res) => {
       if (writable.locked) {
         const event = `data: ${JSON.stringify(data)}\n\n`;
         writer.write(encoder.encode(event)).catch((error) => {
-          console.error("Error writing update:", error);
+          console.error('Error writing update:', error);
         });
       } else {
-        console.warn("Writable stream is not locked, skipping update.");
+        console.warn(
+          'Writable stream is not locked, skipping update.'
+        );
       }
     };
 
     const filter = {};
     if (colName) {
-      filter["ns.coll"] = colName;
+      filter['ns.coll'] = colName;
+    }
+    if (colName === 'transactions') {
+      filter['fullDocument.type'] = 'outbound'; // Specific filter for dashboard
     }
     if (_id) {
-      filter["documentKey._id"] = { $oid: _id };
+      filter['documentKey._id'] = { $oid: _id };
+    }
+    if (req.query.operationType) {
+      filter['operationType'] = req.query.operationType;
     }
 
     const changeStream = await getChangeStream(filter, key);
@@ -65,7 +79,7 @@ export default async (req, res) => {
       sendUpdate(change);
     };
 
-    changeStream.on("change", changeListener);
+    changeStream.on('change', changeListener);
     changeStreams.set(key, changeStream);
     changeListeners.set(key, changeListener);
 
@@ -73,27 +87,29 @@ export default async (req, res) => {
     const controller = new AbortController();
     const { signal } = controller;
 
-    signal.addEventListener("abort", () => {
+    signal.addEventListener('abort', () => {
       // Clean up resources and stop sending updates when the client disconnects
-      console.log("Client disconnected");
+      console.log('Client disconnected');
       clearInterval(intervalId);
       if (changeStreams.has(key)) {
-        changeStreams.get(key).off("change", changeListeners.get(key));
+        changeStreams
+          .get(key)
+          .off('change', changeListeners.get(key));
         changeStreams.delete(key);
         changeListeners.delete(key);
       }
       writer.close().catch((error) => {
-        console.error("Error closing writer:", error);
+        console.error('Error closing writer:', error);
       });
     });
 
     // Pass the signal to the req object
     req.signal = signal;
 
-    res.setHeader("Content-Type", "text/event-stream");
-    res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
-    res.setHeader("Content-Encoding", "none");
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('Content-Encoding', 'none');
 
     readable.pipeTo(
       new WritableStream({
@@ -107,6 +123,6 @@ export default async (req, res) => {
     );
   } else {
     // Return a 404 response for non-SSE requests
-    res.status(404).json({ error: "Not Found" });
+    res.status(404).json({ error: 'Not Found' });
   }
 };
