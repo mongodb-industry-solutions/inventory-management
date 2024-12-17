@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useContext } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-//import { ServerContext } from '../pages/_app';
 
 import styles from '../styles/sidebar.module.css';
 
@@ -14,7 +13,6 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
   const [numColorsToShow, setNumColorsToShow] = useState(10);
   const [industry, setIndustry] = useState('retail'); // Default value is 'retail'
 
-//  const utils = useContext(ServerContext);
 
     // Fetch the industry from the API when the component mounts
     useEffect(() => {
