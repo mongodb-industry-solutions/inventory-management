@@ -12,6 +12,7 @@ export default async (req, res) => {
     }
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
+
     if (!client) {
       client = await clientPromise;
     }
@@ -38,7 +39,7 @@ export default async (req, res) => {
       transaction.location.destination.id = new ObjectId(
         transaction.location.destination.id
       );
-    if (transaction.location.origin.id)
+    if (transaction.location.origin?.id)
       transaction.location.origin.id = new ObjectId(
         transaction.location.origin.id
       );
@@ -51,6 +52,65 @@ export default async (req, res) => {
       transactionId: insertTransactionResponse.insertedId,
     });
 
+    // Deduplicate items to avoid redundant updates
+    const uniqueItems = transaction.items.reduce((acc, item) => {
+      const exists = acc.find(
+        (i) =>
+          i.sku === item.sku && i.product.id.equals(item.product.id)
+      );
+      if (!exists) acc.push(item);
+      return acc;
+    }, []);
+
+    console.log('Deduplicated items:', uniqueItems);
+
+    // Update warehouse stock and increment ordered amount
+    for (const item of uniqueItems) {
+      const productID = item.product.id;
+      const sku = item.sku;
+      const amount = parseInt(item.amount, 10);
+
+      console.log(
+        `Processing stock update for SKU: ${sku}, Amount: ${amount}`
+      );
+
+      // Decrement warehouse stock and increment ordered amount
+      const updateResult = await db.collection('products').updateOne(
+        { _id: productID },
+        {
+          $inc: {
+            'items.$[i].stock.$[warehouse].amount': -amount, // Decrement warehouse stock
+            'items.$[i].stock.$[store].ordered': amount, // Increment store ordered amount
+            'total_stock_sum.$[warehouse].amount': -amount, // Update total warehouse stock
+            'total_stock_sum.$[store].ordered': amount, // Increment total ordered stock
+          },
+        },
+        {
+          arrayFilters: [
+            { 'i.sku': sku },
+            { 'warehouse.location.type': 'warehouse' },
+            {
+              'store.location.id':
+                transaction.location.destination.id,
+            },
+          ],
+        }
+      );
+
+      console.log('Stock update result:', {
+        matchedCount: updateResult.matchedCount,
+        modifiedCount: updateResult.modifiedCount,
+        acknowledged: updateResult.acknowledged,
+      });
+
+      if (updateResult.modifiedCount === 0) {
+        console.warn(
+          `No stock updates applied for SKU: ${sku}. Check filters or data integrity.`
+        );
+      }
+    }
+
+    console.log('Stock updates completed.');
     console.log('Transaction successfully committed.');
 
     // Respond to the client
