@@ -7,7 +7,6 @@ import { UserContext } from "../context/UserContext";
 import { useToast } from "@leafygreen-ui/toast";
 import { ObjectId } from "bson";
 import Button from "@leafygreen-ui/button";
-import { Spinner } from "@leafygreen-ui/loading-indicator";
 
 import styles from "../styles/control.module.css";
 
@@ -477,7 +476,6 @@ export default function Control({ preloadedProducts, locations }) {
                         </table>
                         <Button
                           isLoading={isSaving}
-                          loadingIndicator={<Spinner />}
                           disabled={!selectedLocation}
                           variant={"primaryOutline"}
                           onClick={() => handleSave(product)}
