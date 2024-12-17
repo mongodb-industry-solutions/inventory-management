@@ -21,11 +21,9 @@ export default async (req, res) => {
 
     const database = process.env.MONGODB_DATABASE_NAME;
     if (!database) {
-      return res
-        .status(500)
-        .json({
-          error: 'Missing database name in environment variables',
-        });
+      return res.status(500).json({
+        error: 'Missing database name in environment variables',
+      });
     }
 
     if (!client) {
@@ -40,7 +38,6 @@ export default async (req, res) => {
 
     console.log('Filter:', { _id: productId });
     console.log('Collection:', collection);
-    console.log('Database:', database);
 
     const result = await db
       .collection(collection)
@@ -55,7 +52,15 @@ export default async (req, res) => {
         .json({ error: 'No matching document found' });
     }
 
-    res.status(200).json({ success: true });
+    // Fetch the updated document and return it
+    const updatedProduct = await db
+      .collection(collection)
+      .findOne({ _id: productId });
+    console.log(
+      'Updated product being returned from API:',
+      updatedProduct
+    );
+    res.status(200).json(updatedProduct);
   } catch (e) {
     console.error('Error in setAutoreplenishment API:', e.message);
     res.status(500).json({ error: 'Internal Server Error' });

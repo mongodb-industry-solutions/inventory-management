@@ -21,8 +21,9 @@ export default async (req, res) => {
     const id = req.query.id;
     const location = req.query.location;
 
+    // Use the direct _id filter for product
     let productFilter = id
-      ? { 'items.product.id': new ObjectId(id) }
+      ? { _id: new ObjectId(id) } // Query directly by _id
       : {};
     let locationFilter = location
       ? { 'location.destination.id': new ObjectId(location) }
@@ -32,12 +33,13 @@ export default async (req, res) => {
       .collection('products')
       .find({ $and: [productFilter, locationFilter] })
       .toArray();
-    // Log the fetched products for debugging
+
     console.log('API Response - Products fetched:', products);
 
-    res.status(200).json({ products });
+    // Ensure products array is always returned
+    res.status(200).json({ products: products || [] });
   } catch (e) {
-    console.error(e);
+    console.error('Error fetching products:', e);
     res.status(500).json({ error: 'Error fetching products' });
   }
 };
