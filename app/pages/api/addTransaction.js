@@ -31,16 +31,17 @@ export default async (req, res) => {
     transaction.placement_timestamp = placementTimestamp;
     transaction.items.forEach((item) => item.status.push(status));
     transaction.items.forEach(
-      (item) => (item.product.id = new ObjectId(item.product.id))
+      (item) =>
+        (item.product.id = ObjectId.createFromHexString(item.product.id))
     );
     if (transaction.user_id)
-      transaction.user_id = new ObjectId(transaction.user_id);
+      transaction.user_id = ObjectId.createFromHexString(transaction.user_id);
     if (transaction.location.destination.id)
-      transaction.location.destination.id = new ObjectId(
+      transaction.location.destination.id = ObjectId.createFromHexString(
         transaction.location.destination.id
       );
     if (transaction.location.origin?.id)
-      transaction.location.origin.id = new ObjectId(
+      transaction.location.origin.id = ObjectId.createFromHexString(
         transaction.location.origin.id
       );
     const transactionOptions = {

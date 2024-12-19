@@ -384,7 +384,10 @@ export async function getServerSideProps({ query }) {
     const db = client.db(dbName);
     const collectionName = locationId ? "products" : "products_area_view";
     const productsFilter = locationId
-      ? { "total_stock_sum.location.id": new ObjectId(locationId) }
+      ? {
+          "total_stock_sum.location.id":
+            ObjectId.createFromHexString(locationId),
+        }
       : {};
 
     const products = await db
