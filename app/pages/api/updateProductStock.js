@@ -25,10 +25,12 @@ export default async (req, res) => {
       const updatedStock = item.stock.find(
         (stock) => stock.location.id === locationId
       );
-      updatedStock.location.id = new ObjectId(updatedStock.location.id);
+      updatedStock.location.id = ObjectId.createFromHexString(
+        updatedStock.location.id
+      );
 
       await db.collection("products").updateOne(
-        { _id: new ObjectId(product._id) },
+        { _id: ObjectId.createFromHexString(product._id) },
         {
           $set: {
             "items.$[i].stock.$[j]": updatedStock,
@@ -37,7 +39,7 @@ export default async (req, res) => {
         {
           arrayFilters: [
             { "i.sku": item.sku },
-            { "j.location.id": new ObjectId(locationId) },
+            { "j.location.id": ObjectId.createFromHexString(locationId) },
           ],
         }
       );
@@ -47,19 +49,21 @@ export default async (req, res) => {
     const updatedTotalStockSum = product.total_stock_sum.find(
       (stock) => stock.location.id === locationId
     );
-    updatedTotalStockSum.location.id = new ObjectId(
+    updatedTotalStockSum.location.id = ObjectId.createFromHexString(
       updatedTotalStockSum.location.id
     );
 
     await db.collection("products").updateOne(
-      { _id: new ObjectId(product._id) },
+      { _id: ObjectId.createFromHexString(product._id) },
       {
         $set: {
           "total_stock_sum.$[j]": updatedTotalStockSum,
         },
       },
       {
-        arrayFilters: [{ "j.location.id": new ObjectId(locationId) }],
+        arrayFilters: [
+          { "j.location.id": ObjectId.createFromHexString(locationId) },
+        ],
       }
     );
 
