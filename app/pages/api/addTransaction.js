@@ -1,5 +1,5 @@
-import { clientPromise } from "../../lib/mongodb";
-import { ObjectId } from "bson";
+import { clientPromise } from '../../lib/mongodb';
+import { ObjectId } from 'bson';
 
 let client = null;
 
@@ -12,6 +12,7 @@ export default async (req, res) => {
     }
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
+
     if (!client) {
       client = await clientPromise;
     }
@@ -22,10 +23,11 @@ export default async (req, res) => {
     const placementTimestamp = new Date();
 
     const status = {
-      name: transaction.type === "inbound" ? "placed" : "picked",
+      name: transaction.type === 'inbound' ? 'placed' : 'picked',
       update_timestamp: placementTimestamp,
     };
 
+    // Prepare transaction object
     transaction.placement_timestamp = placementTimestamp;
     transaction.items.forEach((item) => item.status.push(status));
     transaction.items.forEach(
@@ -37,79 +39,87 @@ export default async (req, res) => {
       transaction.location.destination.id = new ObjectId(
         transaction.location.destination.id
       );
-    if (transaction.location.origin.id)
+    if (transaction.location.origin?.id)
       transaction.location.origin.id = new ObjectId(
         transaction.location.origin.id
       );
 
-    var insertTransactionResponse = null;
-
-    insertTransactionResponse = await db
-      .collection("transactions")
+    console.log('Starting transaction insertion...');
+    const insertTransactionResponse = await db
+      .collection('transactions')
       .insertOne(transaction);
+    console.log('Transaction successfully inserted:', {
+      transactionId: insertTransactionResponse.insertedId,
+    });
 
-    for (let i = 0; i < transaction.items?.length; i++) {
-      let item = transaction.items[i];
-      let productID = item.product.id;
-      let sku = item.sku;
-      let amount = item.amount;
+    // Deduplicate items to avoid redundant updates
+    const uniqueItems = transaction.items.reduce((acc, item) => {
+      const exists = acc.find(
+        (i) =>
+          i.sku === item.sku && i.product.id.equals(item.product.id)
+      );
+      if (!exists) acc.push(item);
+      return acc;
+    }, []);
 
-      if (transaction.type === "inbound") {
-        await db.collection("products").updateOne(
-          {
-            _id: new ObjectId(productID),
+    console.log('Deduplicated items:', uniqueItems);
+
+    // Update warehouse stock and increment ordered amount
+    for (const item of uniqueItems) {
+      const productID = item.product.id;
+      const sku = item.sku;
+      const amount = parseInt(item.amount, 10);
+
+      console.log(
+        `Processing stock update for SKU: ${sku}, Amount: ${amount}`
+      );
+
+      // Decrement warehouse stock and increment ordered amount
+      const updateResult = await db.collection('products').updateOne(
+        { _id: productID },
+        {
+          $inc: {
+            'items.$[i].stock.$[warehouse].amount': -amount, // Decrement warehouse stock
+            'items.$[i].stock.$[store].ordered': amount, // Increment store ordered amount
+            'total_stock_sum.$[warehouse].amount': -amount, // Update total warehouse stock
+            'total_stock_sum.$[store].ordered': amount, // Increment total ordered stock
           },
-          {
-            $inc: {
-              "items.$[i].stock.$[j].amount": -amount,
-              "items.$[i].stock.$[k].ordered": amount,
-              "total_stock_sum.$[j].amount": -amount,
-              "total_stock_sum.$[k].ordered": amount,
+        },
+        {
+          arrayFilters: [
+            { 'i.sku': sku },
+            { 'warehouse.location.type': 'warehouse' },
+            {
+              'store.location.id':
+                transaction.location.destination.id,
             },
-          },
-          {
-            arrayFilters: [
-              { "i.sku": sku },
-              { "j.location.type": "warehouse" },
-              {
-                "k.location.id": new ObjectId(
-                  transaction.location.destination.id
-                ),
-              },
-            ],
-          }
-        );
-      } else {
-        await db.collection("products").updateOne(
-          {
-            _id: new ObjectId(productID),
-          },
-          {
-            $inc: {
-              "items.$[i].stock.$[j].amount": amount,
-              "total_stock_sum.$[j].amount": amount,
-            },
-          },
-          {
-            arrayFilters: [
-              { "i.sku": sku },
-              { "j.location.id": new ObjectId(transaction.location.origin.id) },
-            ],
-          }
+          ],
+        }
+      );
+
+      console.log('Stock update result:', {
+        matchedCount: updateResult.matchedCount,
+        modifiedCount: updateResult.modifiedCount,
+        acknowledged: updateResult.acknowledged,
+      });
+
+      if (updateResult.modifiedCount === 0) {
+        console.warn(
+          `No stock updates applied for SKU: ${sku}. Check filters or data integrity.`
         );
       }
     }
 
-    console.log("Transaction successfully committed.");
+    console.log('Stock updates completed.');
+    console.log('Transaction successfully committed.');
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        transactionId: insertTransactionResponse.insertedId,
-      });
+    // Respond to the client
+    res.status(200).json({
+      success: true,
+      transactionId: insertTransactionResponse.insertedId,
+    });
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Error adding transaction" });
+    console.error('Error adding transaction:', e);
+    res.status(500).json({ error: 'Error adding transaction' });
   }
 };

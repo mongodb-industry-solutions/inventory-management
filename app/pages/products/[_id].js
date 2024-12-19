@@ -35,6 +35,7 @@ export default function Product({ preloadedProduct }) {
   const dashboardDiv = useRef(null);
   const router = useRouter();
   const streamsActive = useRef(false);
+  const eventSourceRef = useRef(null); // To track the active SSE connection
   const sessionId = useRef(
     `session_${Math.random().toString(36).substr(2, 9)}`
   );
@@ -201,48 +202,42 @@ export default function Product({ preloadedProduct }) {
   // Handle SSE updates for real-time updates
   const listenToSSEUpdates = useCallback(() => {
     const path = `/api/sse?sessionId=${sessionId.current}&colName=products&_id=${preloadedProduct._id}`;
-    const eventSource = new EventSource(path);
 
-    console.log('Listening to SSE updates for product:', path);
+    console.log('Setting up SSE connection for product:', path);
+
+    // Clean up existing SSE connection
+    if (eventSourceRef.current) {
+      console.log('Cleaning up previous SSE connection...');
+      eventSourceRef.current.close();
+    }
+
+    const eventSource = new EventSource(path);
+    eventSourceRef.current = eventSource;
 
     eventSource.onmessage = (event) => {
       const updatedProduct = JSON.parse(event.data);
       console.log('SSE update received:', updatedProduct);
 
-      // Validate fullDocument for completeness
-      if (!updatedProduct?.fullDocument) {
-        console.warn(
-          "SSE update is missing 'fullDocument'. Triggering product refresh..."
-        );
+      if (updatedProduct?.fullDocument) {
+        setProduct(updatedProduct.fullDocument);
+      } else {
+        console.warn('Incomplete SSE update, refreshing product...');
         refreshProduct();
-        return;
       }
-
-      console.log('SSE fullDocument:', updatedProduct.fullDocument);
-
-      // Check if the fullDocument has the 'items' array
-      if (
-        !updatedProduct.fullDocument.items ||
-        !Array.isArray(updatedProduct.fullDocument.items)
-      ) {
-        console.warn(
-          'SSE fullDocument is incomplete. Triggering product refresh...'
-        );
-        refreshProduct();
-        return;
-      }
-
-      // Update product state with valid fullDocument
-      setProduct(updatedProduct.fullDocument);
     };
 
-    eventSource.onerror = (err) => {
-      console.error('Error in SSE connection:', err);
+    eventSource.onerror = (error) => {
+      console.error('SSE connection error:', error);
       eventSource.close();
-      setTimeout(() => listenToSSEUpdates(), 5000); // Retry connection after 5s
+      setTimeout(() => listenToSSEUpdates(), 5000); // Retry after 5 seconds
     };
 
-    return () => eventSource.close();
+    // Cleanup function for SSE
+    return () => {
+      console.log('Cleaning up SSE connection...');
+      eventSource.close();
+      eventSourceRef.current = null;
+    };
   }, [preloadedProduct]);
 
   useEffect(() => {
@@ -253,16 +248,16 @@ export default function Product({ preloadedProduct }) {
     }
   }, [router.asPath, productFilter, locationFilter]);
 
+  // SSE Effect with Cleanup
   useEffect(() => {
-    if (product && !streamsActive.current) {
-      const stopListening = listenToSSEUpdates();
-      streamsActive.current = true;
-      return () => {
-        stopListening();
-        streamsActive.current = false;
-      };
-    }
-  }, [product, listenToSSEUpdates]);
+    const cleanupSSE = listenToSSEUpdates();
+
+    return () => {
+      if (cleanupSSE) {
+        cleanupSSE();
+      }
+    };
+  }, [listenToSSEUpdates]);
 
   const handleOpenPopup = () => {
     setShowPopup(true);
