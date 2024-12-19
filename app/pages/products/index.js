@@ -1,28 +1,27 @@
-import { clientPromise } from '../../lib/mongodb';
-import { useCallback, useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
-import { FaSearch } from 'react-icons/fa';
-import Sidebar from '../../components/Sidebar';
-import ProductBox from '../../components/ProductBox';
-import { ObjectId } from 'bson';
-import { useToast } from '@leafygreen-ui/toast';
-import { v4 as uuidv4 } from 'uuid';
+import { clientPromise } from "../../lib/mongodb";
+import { useCallback, useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import { FaSearch } from "react-icons/fa";
+import Sidebar from "../../components/Sidebar";
+import ProductBox from "../../components/ProductBox";
+import { ObjectId } from "bson";
+import { useToast } from "@leafygreen-ui/toast";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Products({ products, facets }) {
   // State variables
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [displayProducts, setDisplayProducts] = useState(products);
-  const [sortBy, setSortBy] = useState('');
+  const [sortBy, setSortBy] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [selectedSuggestionIndex, setSelectedSuggestionIndex] =
-    useState(null);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
   const [previousItems, setPreviousItems] = useState(
     products.flatMap((product) => product.items)
   );
 
   const sseConnection = useRef(null);
   const sessionId = useRef(uuidv4());
-  const collection = 'products';
+  const collection = "products";
 
   const { pushToast } = useToast();
   const router = useRouter();
@@ -32,9 +31,7 @@ export default function Products({ products, facets }) {
 
   // Function to add a new alert to the list
   const addAlert = (item) => {
-    const queryParameters = new URLSearchParams(
-      router.query
-    ).toString();
+    const queryParameters = new URLSearchParams(router.query).toString();
     const href = `/products/${item.product_id}?${queryParameters}`;
 
     pushToast({
@@ -45,57 +42,42 @@ export default function Products({ products, facets }) {
           &nbsp; is low stock!
         </span>
       ),
-      variant: 'warning',
+      variant: "warning",
     });
   };
 
   const listenToSSEUpdates = useCallback(() => {
-    console.log(
-      'Listening to SSE updates for collection ' + collection
-    );
+    console.log("Listening to SSE updates for collection " + collection);
     const eventSource = new EventSource(
-      '/api/sse?sessionId=' +
-        sessionId.current +
-        '&colName=' +
-        collection
+      "/api/sse?sessionId=" + sessionId.current + "&colName=" + collection
     );
 
     eventSource.onopen = () => {
-      console.log('SSE connection opened.');
+      console.log("SSE connection opened.");
       // Save the SSE connection reference in the state
     };
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.fullDocument) {
-        console.log('Change detected');
+        console.log("Change detected");
         setDisplayProducts((prevProducts) =>
           prevProducts.map((product) =>
-            product._id === data.fullDocument._id
-              ? data.fullDocument
-              : product
+            product._id === data.fullDocument._id ? data.fullDocument : product
           )
         );
 
         // Handle alerts if stock is low
         const pattern = /^items\.(\d+)\.stock/;
-        for (const key of Object.keys(
-          data.updateDescription.updatedFields
-        )) {
+        for (const key of Object.keys(data.updateDescription.updatedFields)) {
           if (pattern.test(key)) {
-            const updatedItemIndex = parseInt(
-              key.match(pattern)[1],
-              10
-            );
-            const updatedItem =
-              data.fullDocument.items[updatedItemIndex];
+            const updatedItemIndex = parseInt(key.match(pattern)[1], 10);
+            const updatedItem = data.fullDocument.items[updatedItemIndex];
             const itemStock = updatedItem.stock.find(
               (stock) => stock.location.id == location
             );
-            if (
-              itemStock?.amount + itemStock?.ordered <
-              itemStock?.threshold
-            ) {
+            if (itemStock?.amount + itemStock?.ordered < itemStock?.threshold) {
+              updatedItem.product_id = data.fullDocument._id;
               addAlert(updatedItem);
             }
           }
@@ -104,13 +86,13 @@ export default function Products({ products, facets }) {
     };
 
     eventSource.onerror = (event) => {
-      console.error('SSE Error:', event);
+      console.error("SSE Error:", event);
     };
 
     // Close the previous connection if it exists
     if (sseConnection.current) {
       sseConnection.current.close();
-      console.log('Previous SSE connection closed.');
+      console.log("Previous SSE connection closed.");
     }
 
     sseConnection.current = eventSource;
@@ -129,7 +111,7 @@ export default function Products({ products, facets }) {
     return () => {
       if (eventSource) {
         eventSource.close();
-        console.log('SSE connection closed.');
+        console.log("SSE connection closed.");
       }
     };
   }, [router.asPath, listenToSSEUpdates]);
@@ -139,24 +121,19 @@ export default function Products({ products, facets }) {
     if (searchQuery.trim().length > 0) {
       // Avoid empty space triggering a fetch
       try {
-        const response = await fetch(
-          '/api/search?collection=products',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-            body: JSON.stringify(searchQuery),
-          }
-        );
+        const response = await fetch("/api/search?collection=products", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(searchQuery),
+        });
 
         const data = await response.json();
-        setDisplayProducts(
-          Array.isArray(data.documents) ? data.documents : []
-        ); // Ensure it's an array
+        setDisplayProducts(Array.isArray(data.documents) ? data.documents : []); // Ensure it's an array
       } catch (error) {
-        console.error('Search error:', error);
+        console.error("Search error:", error);
         setDisplayProducts([]); // Fallback to empty array on error
       }
     } else {
@@ -172,23 +149,20 @@ export default function Products({ products, facets }) {
     if (searchValue.trim().length > 0) {
       // Avoid spaces triggering a fetch
       try {
-        const response = await fetch(
-          '/api/autocomplete?collection=products',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-            body: JSON.stringify(searchValue),
-          }
-        );
+        const response = await fetch("/api/autocomplete?collection=products", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(searchValue),
+        });
 
         const data = await response.json();
         const suggestions = data.documents?.[0]?.suggestions || []; // Safe access
         setSuggestions(suggestions);
       } catch (error) {
-        console.error('Autocomplete error:', error);
+        console.error("Autocomplete error:", error);
         setSuggestions([]); // Fallback to empty suggestions
       }
     } else {
@@ -204,8 +178,7 @@ export default function Products({ products, facets }) {
       const products = product.name ? [product.name] : [];
 
       const itemMatch =
-        itemsFilter.length === 0 ||
-        items.some((i) => itemsFilter.includes(i));
+        itemsFilter.length === 0 || items.some((i) => itemsFilter.includes(i));
       const productMatch =
         productsFilter.length === 0 ||
         products.some((p) => productsFilter.includes(p));
@@ -217,28 +190,25 @@ export default function Products({ products, facets }) {
 
   // Function to handle sorting by popularity
   const handleSortByPopularity = () => {
-    console.log('Sorting by popularity');
-    setSortBy('popularity');
+    console.log("Sorting by popularity");
+    setSortBy("popularity");
     setDisplayProducts((prevProducts) =>
-      [...prevProducts].sort(
-        (a, b) => b.popularity_index - a.popularity_index
-      )
+      [...prevProducts].sort((a, b) => b.popularity_index - a.popularity_index)
     );
   };
 
   // Function to handle sorting by low stock
   const handleSortByLowStock = () => {
-    console.log('Sorting by low stock');
-    setSortBy('lowStock');
+    console.log("Sorting by low stock");
+    setSortBy("lowStock");
     setDisplayProducts((prevProducts) => {
       return [...prevProducts].sort((a, b) => {
         const countLowStockSizes = (product) => {
           if (location) {
             return product.items.reduce(
               (count, item) =>
-                item.stock.find(
-                  (stock) => stock.location.id === location
-                )?.amount < 10
+                item.stock.find((stock) => stock.location.id === location)
+                  ?.amount < 10
                   ? count + 1
                   : count,
               0
@@ -246,9 +216,8 @@ export default function Products({ products, facets }) {
           } else {
             return product.items.reduce(
               (count, item) =>
-                item.stock.find(
-                  (stock) => stock.location.type !== 'warehouse'
-                )?.amount < 10
+                item.stock.find((stock) => stock.location.type !== "warehouse")
+                  ?.amount < 10
                   ? count + 1
                   : count,
               0
@@ -271,9 +240,8 @@ export default function Products({ products, facets }) {
               return product.items.reduce(
                 (total, item) =>
                   total +
-                  item.stock.find(
-                    (stock) => stock.location.id === location
-                  )?.amount,
+                  item.stock.find((stock) => stock.location.id === location)
+                    ?.amount,
                 0
               );
             } else {
@@ -281,7 +249,7 @@ export default function Products({ products, facets }) {
                 (total, item) =>
                   total +
                   item.stock.find(
-                    (stock) => stock.location.type !== 'warehouse'
+                    (stock) => stock.location.type !== "warehouse"
                   )?.amount,
                 0
               );
@@ -296,23 +264,22 @@ export default function Products({ products, facets }) {
 
   // Handle key events in the search input
   const handleKeyDown = (e) => {
-    const isInputFocused =
-      document.activeElement === inputRef.current;
+    const isInputFocused = document.activeElement === inputRef.current;
     if (isInputFocused && suggestions.length > 0) {
       const lastIndex = suggestions.length - 1;
 
-      if (e.key === 'ArrowDown') {
+      if (e.key === "ArrowDown") {
         e.preventDefault();
         setSelectedSuggestionIndex((prevIndex) =>
           prevIndex === null ? 0 : Math.min(prevIndex + 1, lastIndex)
         );
-      } else if (e.key === 'ArrowUp') {
+      } else if (e.key === "ArrowUp") {
         e.preventDefault();
         setSelectedSuggestionIndex((prevIndex) =>
           prevIndex === null ? lastIndex : Math.max(prevIndex - 1, 0)
         );
       } else if (
-        e.key === 'Enter' &&
+        e.key === "Enter" &&
         selectedSuggestionIndex !== null &&
         selectedSuggestionIndex >= 0
       ) {
@@ -353,9 +320,7 @@ export default function Products({ products, facets }) {
               <li key={suggestion} className="autocomplete-item">
                 <button
                   className={`autocomplete-button ${
-                    index === selectedSuggestionIndex
-                      ? 'selected'
-                      : ''
+                    index === selectedSuggestionIndex ? "selected" : ""
                   }`}
                   onClick={() => {
                     setSearchQuery(suggestion);
@@ -374,7 +339,7 @@ export default function Products({ products, facets }) {
           <div className="buttons">
             <button
               className={`sidebar-button ${
-                sortBy === 'popularity' ? 'selected' : ''
+                sortBy === "popularity" ? "selected" : ""
               }`}
               onClick={handleSortByPopularity}
             >
@@ -382,7 +347,7 @@ export default function Products({ products, facets }) {
             </button>
             <button
               className={`sidebar-button ${
-                sortBy === 'lowStock' ? 'selected' : ''
+                sortBy === "lowStock" ? "selected" : ""
               }`}
               onClick={handleSortByLowStock}
             >
@@ -417,11 +382,9 @@ export async function getServerSideProps({ query }) {
     const locationId = query.location;
     const client = await clientPromise;
     const db = client.db(dbName);
-    const collectionName = locationId
-      ? 'products'
-      : 'products_area_view';
+    const collectionName = locationId ? "products" : "products_area_view";
     const productsFilter = locationId
-      ? { 'total_stock_sum.location.id': new ObjectId(locationId) }
+      ? { "total_stock_sum.location.id": new ObjectId(locationId) }
       : {};
 
     const products = await db
@@ -434,17 +397,17 @@ export async function getServerSideProps({ query }) {
     const agg = [
       {
         $searchMeta: {
-          index: 'facets',
+          index: "facets",
           facet: {
             facets: {
               productsFacet: {
-                type: 'string',
-                path: 'name',
+                type: "string",
+                path: "name",
                 numBuckets: 50,
               },
               itemsFacet: {
-                type: 'string',
-                path: 'items.name',
+                type: "string",
+                path: "items.name",
                 numBuckets: 50,
               },
             },
@@ -453,7 +416,7 @@ export async function getServerSideProps({ query }) {
       },
     ];
 
-    facets = await db.collection('products').aggregate(agg).toArray();
+    facets = await db.collection("products").aggregate(agg).toArray();
 
     return {
       props: {
