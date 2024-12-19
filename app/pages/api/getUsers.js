@@ -1,4 +1,4 @@
-import { clientPromise } from "../../../lib/mongodb";
+import { clientPromise } from "../../lib/mongodb";
 
 let client = null;
 

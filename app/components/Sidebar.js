@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { ServerContext } from '../pages/_app';
 
 import styles from '../styles/sidebar.module.css';
 
@@ -12,8 +11,27 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [numColorsToShow, setNumColorsToShow] = useState(10);
+  const [industry, setIndustry] = useState('retail'); // Default value is 'retail'
 
-  const utils = useContext(ServerContext);
+
+    // Fetch the industry from the API when the component mounts
+    useEffect(() => {
+      const fetchIndustry = async () => {
+        try {
+          const response = await fetch('/api/getIndustry');
+          if (response.ok) {
+            const data = await response.json();
+            setIndustry(data.industry);
+          } else {
+            console.error('Failed to fetch industry information');
+          }
+        } catch (error) {
+          console.error('Error fetching industry:', error);
+        }
+      };
+  
+      fetchIndustry();
+    }, []);
 
   const handleItemChange = (event) => {
     const item = event;
@@ -84,7 +102,7 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
         <>
           <div className={styles["size-filters"]} >
             <h3>
-            { utils.demoInfo.industry == 'manufacturing' ? 
+            { industry == 'manufacturing' ? 
                 "Items" : 
                 "Size"
               }
@@ -108,7 +126,7 @@ function Sidebar({facets, filterProducts, filterOrders, filterSales, page }) {
 
           <div className={styles["color-filters"]} >
             <h3>
-              { utils.demoInfo.industry == 'manufacturing' ? 
+              { industry == 'manufacturing' ? 
                 "Category" : 
                 "Color"
               }

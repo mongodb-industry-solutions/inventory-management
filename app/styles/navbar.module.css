@@ -108,19 +108,25 @@
   }
   
   .architecture-container {
-    background-color: #ffffff;
-    box-shadow: 0px 0px 100px #7a7a7a;
     position: fixed;
     display: flex;
     flex-direction: column;
-    margin-left: -65%;
-    margin-top: 100px;
-  
-  }
-  
-  .architecture-img {
+    justify-content: center; /* Center content vertically */
+    align-items: center;     /* Center content horizontally */
+    top: 0;                 /* Ensure the fixed container covers the entire viewport */
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    margin-top: 0;          /* Override the previous margin-top */
+    margin-left: 0;         /* Override the previous margin-left */
+}
+.architecture-img {
     width: 900px;
-  }
+    max-width: 100%;        /* Ensure the image is responsive */
+    margin: auto;           /* Center the image itself */
+    background-color: #ffffff;
+    box-shadow: 0px 0px 100px #7a7a7a;
+}
 
   .mongodb-button-container {
     display: flex;

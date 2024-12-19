@@ -1,280 +1,105 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { App, Credentials } from "realm-web";
-import { ObjectId } from "bson";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
+import { useRouter } from 'next/router';
 
 const STORAGE_KEY = 'selectedUser';
-
 export const UserContext = createContext();
 
-let app = null;
-
-export const UserProvider = ({ children, value }) => {
+export const UserProvider = ({ children }) => {
+  const router = useRouter();
   const [selectedUser, setSelectedUser] = useState(null);
 
-  if (!app) {
-    app = new App(value.appServiceInfo.appId);
-  }
-
-  const credentials = Credentials.anonymous();
-  let closeStreamProductList;
-  let closeStreamProductDetail;
-  let closeStreamDashboard;
-  let closeStreamInventoryCheck;
-  let closeStreamControl;
-
+  // Load user from localStorage on initial load
   useEffect(() => {
-    // Load the selected user from local storage on component mount
-    const storedUser = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (storedUser && !selectedUser) {
-      setSelectedUser(storedUser);
-    }
+    const storedUser = localStorage.getItem(STORAGE_KEY);
+    if (storedUser) setSelectedUser(JSON.parse(storedUser));
   }, []);
-  
-  const setUser = (user) => {
-    setSelectedUser(user);
-    // Save the selected user to local storage
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-  };
 
-  const getUser = async () => {
-      if(app.currentUser){
-        return app.currentUser;
-      } else {
-        return app.logIn(credentials);
-      }
-  };
-
-  const getMongoCollection = async (dbName, collection) => {
-    const user = await getUser();
-    const client = user.mongoClient("mongodb-atlas");
-    return client.db(dbName).collection(collection);
-};
-
-const  startWatchProductList = async (setDisplayProducts, addAlert, location, utils ) => {
-    console.log("Start watching stream");
-    const runs = await getMongoCollection(utils.dbInfo.dbName, "products");
-    const filter = {filter: {operationType: "update"}};
-    const stream = runs.watch(filter);
-
-    closeStreamProductList = () => {
-      console.log("Closing stream");
-      stream.return();
-    };
-
-    let updatedProduct = null;
-
-    for await (const  change  of  stream) {
-      console.log("Change detected");
-      
-      if (location) { 
-        updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
-      }
-      else {
-          try {
-          const response = await fetch(utils.apiInfo.dataUri + '/action/findOne', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: "products_area_view",
-              filter: { _id: { $oid: change.fullDocument._id}}
-            }),
-          });
-          const data = await response.json();
-          updatedProduct = JSON.parse(JSON.stringify(data.document));
-        } catch (error) {
-          console.error(error);
-        }
-      }
-
-      setDisplayProducts((prevProducts) =>
-        prevProducts.map((product) =>
-          product._id === updatedProduct._id ? updatedProduct : product
-        )
-      );
-
-      const pattern = /^items\.(\d+)\.stock/;
-      for(const key of Object.keys(change.updateDescription.updatedFields)){
-
-        if (pattern.test(key)) {
-          let sku = change.fullDocument.items[parseInt(key.match(pattern)[1], 10)].sku;
-          let item = updatedProduct.items.find(item => item.sku === sku);
-
-          let itemStock = location ? 
-            item.stock.find(stock => stock.location.id === location)
-            : item.stock.find(stock => stock.location.type !== "warehouse");
-          
-          if(itemStock?.amount + itemStock?.ordered  < itemStock?.threshold) {
-            item.product_id = updatedProduct._id;
-            addAlert(item);
-          }
-        }
-      }
+  // Save user to localStorage whenever it changes
+  useEffect(() => {
+    if (selectedUser) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(selectedUser));
     }
-  };
+  }, [selectedUser]);
 
-  const  startWatchProductDetail = async (setProduct, product, location, utils ) => {
-    console.log("Start watching stream");
-    const runs = await getMongoCollection(utils.dbInfo.dbName, "products");
-    const filter = {
-      filter: {
-          operationType: "update",
-          "fullDocument._id": new ObjectId(product._id)
-      }
-    };
+  // Redirect to default location if not set
+  useEffect(() => {
+    const currentLocation = router.query.location;
+    const defaultLocation =
+      selectedUser?.permissions?.locations?.[0]?.id?.$oid;
 
-    const stream = runs.watch(filter);
-
-    closeStreamProductDetail = () => {
-      console.log("Closing stream");
-      stream.return();
-    };
-
-    let updatedProduct = null;
-
-    for await (const  change  of  stream) {
-      if (location) {
-        updatedProduct = change.fullDocument;
-      } else {
-        try {
-          const response = await fetch(utils.apiInfo.dataUri + '/action/findOne', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ' + utils.apiInfo.accessToken,
-            },
-            body: JSON.stringify({
-              dataSource: 'mongodb-atlas',
-              database: utils.dbInfo.dbName,
-              collection: "products_area_view",
-              filter: { _id: { $oid: product._id}}
-            }),
-          });
-          const data = await response.json();
-          updatedProduct = JSON.parse(JSON.stringify(data.document));
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    
-      setProduct(JSON.parse(JSON.stringify(updatedProduct)));
+    if (!currentLocation && defaultLocation) {
+      router.replace({
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          location: defaultLocation,
+          edge: router.query.edge || 'false',
+        },
+      });
     }
-  };
+  }, [router, selectedUser]);
 
-  const  startWatchDashboard = async (dashboard, utils) => {
-    console.log("Start watching stream");
-    const runs = await getMongoCollection(utils.dbInfo.dbName, "transactions");
-    const filter = {
-      filter: {
-          operationType: "insert",
-          "fullDocument.type": "outbound"
-      }
+  // Utility function to start an SSE connection
+  const startSSE = useCallback((path, onMessage, onError) => {
+    const eventSource = new EventSource(path);
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (onMessage) onMessage(data);
     };
 
-    const stream = runs.watch(filter);
+    eventSource.onerror = (error) => {
+      console.error(`SSE error on ${path}:`, error);
+      eventSource.close();
 
-    closeStreamDashboard = () => {
-      console.log("Closing stream");
-      stream.return();
+      if (onError) onError(error);
     };
 
-    for await (const  change  of  stream) {
-      dashboard.refresh();
-    }
-  };
-
-  const  startWatchInventoryCheck = async (dashboard, addAlert, utils) => {
-    console.log("Start watching stream");
-    const runs = await getMongoCollection(utils.dbInfo.dbName, "inventoryCheck");
-    const filter = {
-      filter: {
-          operationType: "insert"
-      }
+    return () => {
+      eventSource.close();
     };
+  }, []);
 
-    const stream = runs.watch(filter);
+  // Start watching control updates
+  const startWatchControl = (setProducts) => {
+    const path = `/api/sse?sessionId=control&colName=control`;
 
-    closeStreamInventoryCheck= () => {
-      console.log("Closing stream");
-      stream.return();
-    };
-
-    for await (const  change  of  stream) {
-      console.log(change.fullDocument);
-      addAlert(change.fullDocument.checkResult);
-      dashboard.refresh();
-    }
-  };
-
-  const  startWatchControl = async (setProducts, utils) => {
-    console.log("Start watching stream");
-    const runs = await getMongoCollection(utils.dbInfo.dbName, "products");
-    const filter = {filter: {operationType: "update"}};
-
-    const stream = runs.watch(filter);
-
-
-    closeStreamControl = () => {
-      console.log("Closing stream");
-      stream.return();
-    };
-
-    for await (const  change  of  stream) {
-      const updatedProduct = JSON.parse(JSON.stringify(change.fullDocument));
-
-      setProducts((prevProducts) => {
-        const updatedIndex = prevProducts.findIndex((product) => product._id === updatedProduct._id);
-        if (updatedIndex !== -1) {
+    return startSSE(
+      path,
+      (updatedProduct) => {
+        setProducts((prevProducts) => {
+          const updatedIndex = prevProducts.findIndex(
+            (product) => product._id === updatedProduct._id
+          );
+          if (updatedIndex !== -1) {
             const updatedProducts = [...prevProducts];
             updatedProducts[updatedIndex] = updatedProduct;
             return updatedProducts;
-        } else {
-            return prevProducts;
-        }
-      });
-    }
-  };
-
-  const stopWatchProductList = () => {
-    closeStreamProductList();
-  };
-
-  const stopWatchProductDetail = () => {
-    closeStreamProductDetail();
-  };
-
-  const stopWatchDashboard = () => {
-    closeStreamDashboard();
-  };
-
-  const stopWatchInventoryCheck = () => {
-    closeStreamInventoryCheck();
-  };
-
-  const stopWatchControl = () => {
-    closeStreamControl();
+          }
+          return prevProducts;
+        });
+      },
+      () => {
+        console.log('Attempting to reconnect SSE for control...');
+        startWatchControl(setProducts);
+      }
+    );
   };
 
   return (
-    <UserContext.Provider value={{ selectedUser, 
-      setUser, 
-      startWatchProductList, 
-      stopWatchProductList, 
-      startWatchProductDetail, 
-      stopWatchProductDetail,
-      startWatchDashboard,
-      stopWatchDashboard,
-      startWatchInventoryCheck,
-      stopWatchInventoryCheck,
-      startWatchControl,
-      stopWatchControl
-    }}>
+    <UserContext.Provider
+      value={{
+        selectedUser,
+        setSelectedUser,
+        startWatchControl,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
@@ -282,8 +107,7 @@ const  startWatchProductList = async (setDisplayProducts, addAlert, location, ut
 
 export const useUser = () => {
   const context = useContext(UserContext);
-  if (!context) {
+  if (!context)
     throw new Error('useUser must be used within a UserProvider');
-  }
   return context;
 };
