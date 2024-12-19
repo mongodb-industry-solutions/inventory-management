@@ -415,7 +415,6 @@ export async function getServerSideProps({ query }) {
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
     const locationId = query.location;
-
     const client = await clientPromise;
     const db = client.db(dbName);
     const collectionName = locationId
