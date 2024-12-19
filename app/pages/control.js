@@ -1,20 +1,19 @@
-import { useState, useEffect, useContext } from 'react';
-import { useRouter } from 'next/router';
-import { clientPromise } from '../lib/mongodb';
-import ProductBox from '../components/ProductBox';
-import StockLevelBar from '../components/StockLevelBar';
-import { useToast } from '@leafygreen-ui/toast';
-import { ObjectId } from 'bson';
-import Button from '@leafygreen-ui/button';
-
-import styles from '../styles/control.module.css';
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/router";
+import { clientPromise } from "../lib/mongodb";
+import ProductBox from "../components/ProductBox";
+import StockLevelBar from "../components/StockLevelBar";
+import { useToast } from "@leafygreen-ui/toast";
+import { ObjectId } from "bson";
+import Button from "@leafygreen-ui/button";
+import { v4 as uuidv4 } from "uuid";
+import styles from "../styles/control.module.css";
 
 export default function Control({ preloadedProducts, locations }) {
   const [products, setProducts] = useState(preloadedProducts);
   const [isSelling, setIsSelling] = useState(false); // State to keep track of sale status
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const [onlineToInPersonRatio, setOnlineToInPersonRatio] =
-    useState(0.5);
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [onlineToInPersonRatio, setOnlineToInPersonRatio] = useState(0.5);
   const [isSaving, setIsSaving] = useState(false);
 
   const { pushToast } = useToast();
@@ -22,30 +21,58 @@ export default function Control({ preloadedProducts, locations }) {
   const router = useRouter();
   const { location } = router.query;
 
-  let lastEtag = null;
+  const sseConnection = useRef(null);
+  const sessionId = useRef(uuidv4());
+  const collection = "products";
 
-  async function refreshProduct() {
-    try {
-      const headers = {};
-      if (lastEtag) {
-        headers['If-None-Match'] = lastEtag;
-      }
+  const listenToSSEUpdates = useCallback(() => {
+    console.log("Listening to SSE updates for collection " + collection);
+    const eventSource = new EventSource(
+      "/api/sse?sessionId=" + sessionId.current + "&colName=" + collection
+    );
 
-      if (response.status === 304) {
-        // 304 Not Modified
-        return;
-      } else if (response.status === 200) {
-        const etagHeader = response.headers.get('Etag');
-        if (etagHeader) {
-          lastEtag = etagHeader;
-        }
-        const refreshedProduct = await response.json();
-        setProducts(refreshedProduct.products);
+    eventSource.onopen = () => {
+      console.log("SSE connection opened.");
+      // Save the SSE connection reference in the state
+    };
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.fullDocument) {
+        console.log("Change detected");
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === data.fullDocument._id ? data.fullDocument : product
+          )
+        );
       }
-    } catch (error) {
-      console.error('Error refreshing data:', error);
+    };
+
+    eventSource.onerror = (event) => {
+      console.error("SSE Error:", event);
+    };
+
+    // Close the previous connection if it exists
+    if (sseConnection.current) {
+      sseConnection.current.close();
+      console.log("Previous SSE connection closed.");
     }
-  }
+
+    sseConnection.current = eventSource;
+
+    return eventSource;
+  }, []);
+
+  useEffect(() => {
+    const eventSource = listenToSSEUpdates();
+
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+        console.log("SSE connection closed.");
+      }
+    };
+  }, [router.asPath, listenToSSEUpdates]);
 
   useEffect(() => {
     // Start or stop selling based on the isSelling state
@@ -54,19 +81,6 @@ export default function Control({ preloadedProducts, locations }) {
       return () => clearInterval(saleInterval);
     }
   }, [isSelling]);
-
-  useEffect(() => {
-    console.log('Starting SSE stream for control.');
-
-    // Initialize the SSE-based control stream
-    const stopControlStream = startWatchControl(setProducts);
-
-    // Cleanup function to stop the stream when component unmounts or dependencies change
-    return () => {
-      console.log('Stopping SSE stream for control.');
-      stopControlStream();
-    };
-  }, [setProducts]);
 
   useEffect(() => {
     setSelectedLocation(location);
@@ -94,8 +108,7 @@ export default function Control({ preloadedProducts, locations }) {
     // Select a location
     var locationId;
     if (!selectedLocation && locations.length > 0) {
-      locationId =
-        locations[Math.floor(Math.random() * locations.length)]._id;
+      locationId = locations[Math.floor(Math.random() * locations.length)]._id;
     } else {
       locationId = selectedLocation;
     }
@@ -105,21 +118,18 @@ export default function Control({ preloadedProducts, locations }) {
       product.items.some((item) =>
         item.stock.some(
           (stockItem) =>
-            stockItem.location.id === locationId &&
-            stockItem.amount > 0
+            stockItem.location.id === locationId && stockItem.amount > 0
         )
       )
     );
 
     if (availableProducts.length === 0) {
-      console.log('No available products for the selected location.');
+      console.log("No available products for the selected location.");
       return;
     }
 
     const randomProduct =
-      availableProducts[
-        Math.floor(Math.random() * availableProducts.length)
-      ];
+      availableProducts[Math.floor(Math.random() * availableProducts.length)];
 
     // Select a random item
     const availableItems = randomProduct.items.filter((item) =>
@@ -131,49 +141,41 @@ export default function Control({ preloadedProducts, locations }) {
 
     if (availableItems.length === 0) {
       console.log(
-        'No available items for the selected location in the chosen product.'
+        "No available items for the selected location in the chosen product."
       );
       return;
     }
     const randomItem =
-      availableItems[
-        Math.floor(Math.random() * availableItems.length)
-      ];
+      availableItems[Math.floor(Math.random() * availableItems.length)];
 
     // Select a random amount
     const availableStock = randomItem.stock.find(
       (stockItem) => stockItem.location.id === locationId
     ).amount;
-    const randomAmount =
-      Math.floor(Math.random() * (availableStock / 4)) + 1;
+    const randomAmount = Math.floor(Math.random() * (availableStock / 4)) + 1;
 
     // Select a random channel
     const randomChannel =
-      Math.random() < onlineToInPersonRatio ? 'online' : 'in-person';
+      Math.random() < onlineToInPersonRatio ? "online" : "in-person";
 
     // Create new transaction
     const transaction = {
-      type: 'outbound',
+      type: "outbound",
       //user_id:  selectedUser?._id,
       location: {
         origin: {
-          type: locations.find(
-            (location) => location._id === locationId
-          ).type,
+          type: locations.find((location) => location._id === locationId).type,
           id: locationId,
-          name: locations.find(
-            (location) => location._id === locationId
-          ).name,
-          area_code: locations.find(
-            (location) => location._id === locationId
-          ).area.code,
+          name: locations.find((location) => location._id === locationId).name,
+          area_code: locations.find((location) => location._id === locationId)
+            .area.code,
         },
         destination: {
-          type: 'customer',
+          type: "customer",
         },
       },
       channel: randomChannel,
-      placement_timestamp: '',
+      placement_timestamp: "",
       items: [],
     };
 
@@ -198,18 +200,18 @@ export default function Control({ preloadedProducts, locations }) {
     transaction.items.push(newItem);
 
     try {
-      let url = '/api/addTransaction';
+      let url = "/api/addTransaction";
       const response = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(transaction),
       });
       if (response.ok) {
-        console.log('Transaction saved successfully');
+        console.log("Transaction saved successfully");
       } else {
-        console.log('Error saving transaction');
+        console.log("Error saving transaction");
       }
     } catch (error) {
       console.error(error);
@@ -224,9 +226,7 @@ export default function Control({ preloadedProducts, locations }) {
     */
   const handleUpdateStock = (product, item, customAmount, mode) => {
     setProducts((prevProducts) => {
-      const productIndex = prevProducts.findIndex(
-        (p) => p._id === product._id
-      );
+      const productIndex = prevProducts.findIndex((p) => p._id === product._id);
       if (productIndex === -1) {
         // Product not found, return the previous list unchanged
         return prevProducts;
@@ -237,41 +237,34 @@ export default function Control({ preloadedProducts, locations }) {
       const productToUpdate = { ...updatedProducts[productIndex] };
 
       const initialIndex =
-        mode === 'custom'
-          ? productToUpdate.items.findIndex(
-              (i) => i.sku === item?.sku
-            )
+        mode === "custom"
+          ? productToUpdate.items.findIndex((i) => i.sku === item?.sku)
           : 0;
       const itemsLength =
-        mode === 'custom'
-          ? initialIndex + 1
-          : productToUpdate.items.length;
+        mode === "custom" ? initialIndex + 1 : productToUpdate.items.length;
 
       let amount = null;
 
       switch (mode) {
-        case 'custom':
+        case "custom":
           amount = customAmount;
           break;
-        case 'target':
+        case "target":
           amount = 20;
           break;
-        case 'threshold':
+        case "threshold":
           amount = 10;
           break;
       }
 
       for (let i = initialIndex; i < itemsLength; i++) {
-        const locationIndex = productToUpdate.items[
-          i
-        ].stock.findIndex(
+        const locationIndex = productToUpdate.items[i].stock.findIndex(
           (loc) => loc.location.id === selectedLocation
         );
 
         // Calculate the difference between the new and previous amounts
         const prevAmount =
-          prevProducts[productIndex].items[i].stock[locationIndex]
-            .amount;
+          prevProducts[productIndex].items[i].stock[locationIndex].amount;
         const difference = amount - prevAmount;
 
         // Update the amount for the specific location
@@ -283,9 +276,8 @@ export default function Control({ preloadedProducts, locations }) {
             (loc) => loc.location.id === selectedLocation
           );
         if (totalStockLocationIndex !== -1) {
-          productToUpdate.total_stock_sum[
-            totalStockLocationIndex
-          ].amount += difference;
+          productToUpdate.total_stock_sum[totalStockLocationIndex].amount +=
+            difference;
         }
       }
 
@@ -298,20 +290,20 @@ export default function Control({ preloadedProducts, locations }) {
 
   const handleResetDemo = async () => {
     try {
-      const response = await fetch('/api/resetDemo', {
-        method: 'POST',
+      const response = await fetch("/api/resetDemo", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
       if (response.ok) {
-        console.log('Product reset successfully');
+        console.log("Product reset successfully");
         pushToast({
-          title: 'Demo reset successfully',
-          variant: 'success',
+          title: "Demo reset successfully",
+          variant: "success",
         });
       } else {
-        console.log('Error resetting product stock');
+        console.log("Error resetting product stock");
       }
     } catch (e) {
       console.error(e);
@@ -321,25 +313,25 @@ export default function Control({ preloadedProducts, locations }) {
   const handleSave = async (product) => {
     try {
       setIsSaving(true);
-      let path = '/api'; //replaced path
+      let path = "/api"; //replaced path
       const response = await fetch(
         path + `/updateProductStock?location_id=${selectedLocation}`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(product),
         }
       );
       if (response.ok) {
-        console.log('Product stock saved successfully');
+        console.log("Product stock saved successfully");
         pushToast({
-          title: 'Product stock saved successfully',
-          variant: 'success',
+          title: "Product stock saved successfully",
+          variant: "success",
         });
       } else {
-        console.log('Error saving updated product stock');
+        console.log("Error saving updated product stock");
       }
     } catch (e) {
       console.error(e);
@@ -353,27 +345,22 @@ export default function Control({ preloadedProducts, locations }) {
       <div className="content">
         <h1>Control Panel</h1>
         <div className="button-container">
-          <button
-            className="sale-button"
-            onClick={handleSaleButtonClick}
-          >
-            {isSelling ? 'Stop Selling' : 'Start Selling'}
+          <button className="sale-button" onClick={handleSaleButtonClick}>
+            {isSelling ? "Stop Selling" : "Start Selling"}
           </button>
           <select
             value={selectedLocation}
             disabled={isSelling}
             onChange={handleLocationChange}
           >
-            <option value={''}>All</option>
+            <option value={""}>All</option>
             {locations.map((location) => (
               <option key={location._id} value={location._id}>
                 {location.name}
               </option>
             ))}
           </select>
-          <label htmlFor="ratioInput">
-            Online to In-person Ratio:
-          </label>
+          <label htmlFor="ratioInput">Online to In-person Ratio:</label>
           <input
             type="number"
             id="ratioInput"
@@ -385,24 +372,21 @@ export default function Control({ preloadedProducts, locations }) {
             step="0.1"
           />
         </div>
-        <div className={styles['catalog']}>
+        <div className={styles["catalog"]}>
           <button
-            className={styles['reset-demo-button']}
+            className={styles["reset-demo-button"]}
             onClick={() => handleResetDemo()}
           >
             RESET ALL
           </button>
           <h2>Product Catalog</h2>
-          <div className={styles['table-wrapper']}>
-            <table className={styles['product-table']}>
+          <div className={styles["table-wrapper"]}>
+            <table className={styles["product-table"]}>
               <tbody>
                 {products.map((product, index) => (
                   <tr key={index}>
-                    <td className={styles['product-cell']}>
-                      <ProductBox
-                        key={product._id}
-                        product={product}
-                      />
+                    <td className={styles["product-cell"]}>
+                      <ProductBox key={product._id} product={product} />
                       {
                         <StockLevelBar
                           stock={product.total_stock_sum}
@@ -411,36 +395,26 @@ export default function Control({ preloadedProducts, locations }) {
                       }
                     </td>
                     <td>
-                      <div className={styles['item-table-wrapper']}>
+                      <div className={styles["item-table-wrapper"]}>
                         <button
-                          className={styles['reset-button']}
+                          className={styles["reset-button"]}
                           disabled={!selectedLocation}
                           onClick={() =>
-                            handleUpdateStock(
-                              product,
-                              {},
-                              0,
-                              'target'
-                            )
+                            handleUpdateStock(product, {}, 0, "target")
                           }
                         >
                           Reset Stock Target
                         </button>
                         <button
-                          className={styles['reset-button']}
+                          className={styles["reset-button"]}
                           disabled={!selectedLocation}
                           onClick={() =>
-                            handleUpdateStock(
-                              product,
-                              {},
-                              0,
-                              'threshold'
-                            )
+                            handleUpdateStock(product, {}, 0, "threshold")
                           }
                         >
                           Reset Stock Threshold
                         </button>
-                        <table className={styles['item-table']}>
+                        <table className={styles["item-table"]}>
                           <thead>
                             <tr>
                               <td>Item</td>
@@ -459,8 +433,7 @@ export default function Control({ preloadedProducts, locations }) {
                                     value={
                                       item?.stock.find(
                                         (stock) =>
-                                          stock.location.id ===
-                                          selectedLocation
+                                          stock.location.id === selectedLocation
                                       )?.amount ?? 0
                                     }
                                     onChange={(e) =>
@@ -468,7 +441,7 @@ export default function Control({ preloadedProducts, locations }) {
                                         product,
                                         item,
                                         parseInt(e.target.value),
-                                        'custom'
+                                        "custom"
                                       )
                                     }
                                   >
@@ -481,10 +454,7 @@ export default function Control({ preloadedProducts, locations }) {
                                         )?.target ?? 0) + 1
                                       ).keys(),
                                     ].map((value) => (
-                                      <option
-                                        key={value}
-                                        value={value}
-                                      >
+                                      <option key={value} value={value}>
                                         {value}
                                       </option>
                                     ))}
@@ -493,15 +463,13 @@ export default function Control({ preloadedProducts, locations }) {
                                 <td>
                                   {item?.stock.find(
                                     (stock) =>
-                                      stock.location.id ===
-                                      selectedLocation
+                                      stock.location.id === selectedLocation
                                   )?.threshold ?? 0}
                                 </td>
                                 <td>
                                   {item?.stock.find(
                                     (stock) =>
-                                      stock.location.id ===
-                                      selectedLocation
+                                      stock.location.id === selectedLocation
                                   )?.target ?? 0}
                                 </td>
                                 <td>
@@ -519,10 +487,10 @@ export default function Control({ preloadedProducts, locations }) {
                         <Button
                           isLoading={isSaving}
                           disabled={!selectedLocation}
-                          variant={'primaryOutline'}
+                          variant={"primaryOutline"}
                           onClick={() => handleSave(product)}
-                          children={'SAVE'}
-                          style={{ float: 'right' }}
+                          children={"SAVE"}
+                          style={{ float: "right" }}
                         />
                       </div>
                     </td>
@@ -553,18 +521,15 @@ export async function getServerSideProps({ query }) {
     const db = client.db(dbName);
 
     const productsFilter = locationId
-      ? { 'total_stock_sum.location.id': new ObjectId(locationId) }
+      ? { "total_stock_sum.location.id": new ObjectId(locationId) }
       : {};
 
     const products = await db
-      .collection('products')
+      .collection("products")
       .find(productsFilter)
       .toArray();
 
-    const locations = await db
-      .collection('locations')
-      .find({})
-      .toArray();
+    const locations = await db.collection("locations").find({}).toArray();
 
     return {
       props: {
@@ -574,6 +539,6 @@ export async function getServerSideProps({ query }) {
     };
   } catch (e) {
     console.error(e);
-    return { props: { ok: false, reason: 'Server error' } };
+    return { props: { ok: false, reason: "Server error" } };
   }
 }
