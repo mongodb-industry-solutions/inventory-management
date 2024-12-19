@@ -1,17 +1,10 @@
 import { clientPromise } from '../../lib/mongodb';
-import {
-  useCallback,
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-} from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { FaSearch } from 'react-icons/fa';
 import Sidebar from '../../components/Sidebar';
 import ProductBox from '../../components/ProductBox';
 import { ObjectId } from 'bson';
-import { UserContext } from '../../context/UserContext';
 import { useToast } from '@leafygreen-ui/toast';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -33,9 +26,7 @@ export default function Products({ products, facets }) {
 
   const { pushToast } = useToast();
   const router = useRouter();
-  const { location, edge } = router.query;
-  const { startWatchProductList } = useContext(UserContext); // Use UserContext for starting and stopping streams
-
+  const { location } = router.query;
   // Refs
   const inputRef = useRef(null);
 
@@ -424,7 +415,6 @@ export async function getServerSideProps({ query }) {
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
     const locationId = query.location;
-    const edge = query.edge === 'true';
 
     const client = await clientPromise;
     const db = client.db(dbName);
@@ -442,60 +432,29 @@ export async function getServerSideProps({ query }) {
 
     let facets = [];
 
-    if (edge) {
-      const itemsAggregated = products.flatMap((product) =>
-        product.items.map((item) => item.name)
-      );
-      const itemsFacetBuckets = Array.from(
-        new Set(itemsAggregated)
-      ).map((item) => ({
-        _id: item,
-        count: itemsAggregated.filter((i) => i === item).length,
-      }));
-
-      const productsFacetBuckets = products.map((product) => {
-        return {
-          _id: product.name,
-          count: 1,
-        };
-      });
-
-      const facetGroup = {
-        facet: {
-          itemsFacet: { buckets: itemsFacetBuckets },
-          productsFacet: { buckets: productsFacetBuckets },
-        },
-      };
-
-      facets.push(facetGroup);
-    } else {
-      const agg = [
-        {
-          $searchMeta: {
-            index: 'facets',
-            facet: {
-              facets: {
-                productsFacet: {
-                  type: 'string',
-                  path: 'name',
-                  numBuckets: 50,
-                },
-                itemsFacet: {
-                  type: 'string',
-                  path: 'items.name',
-                  numBuckets: 50,
-                },
+    const agg = [
+      {
+        $searchMeta: {
+          index: 'facets',
+          facet: {
+            facets: {
+              productsFacet: {
+                type: 'string',
+                path: 'name',
+                numBuckets: 50,
+              },
+              itemsFacet: {
+                type: 'string',
+                path: 'items.name',
+                numBuckets: 50,
               },
             },
           },
         },
-      ];
+      },
+    ];
 
-      facets = await db
-        .collection('products')
-        .aggregate(agg)
-        .toArray();
-    }
+    facets = await db.collection('products').aggregate(agg).toArray();
 
     return {
       props: {

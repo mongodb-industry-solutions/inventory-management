@@ -39,7 +39,6 @@ export const UserProvider = ({ children }) => {
         query: {
           ...router.query,
           location: defaultLocation,
-          edge: router.query.edge || 'false',
         },
       });
     }
