@@ -6,7 +6,6 @@ import { MongoDBLogoMark } from '@leafygreen-ui/logo';
 import Icon from '@leafygreen-ui/icon';
 import IconButton from '@leafygreen-ui/icon-button';
 import { H2 } from '@leafygreen-ui/typography';
-import Button from '@leafygreen-ui/button';
 import styles from '../styles/header.module.css';
 import dynamic from 'next/dynamic';
 
@@ -22,20 +21,17 @@ function Header() {
   const [isLoading, setLoading] = useState(false);
 
   const router = useRouter();
-  const { location, edge, ...otherQueryParams } = router.query;
+  const { location, ...otherQueryParams } = router.query;
 
   const { selectedUser, setSelectedUser } = useUser();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          edge === 'true' ? '/api/edge/getUsers' : '/api/getUsers',
-          {
-            method: edge === 'true' ? 'GET' : 'POST',
-            headers: { 'Content-Type': 'application/json' },
-          }
-        );
+        const response = await fetch('/api/getUsers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        });
 
         const data = await response.json();
         if (data.documents) {
@@ -62,7 +58,6 @@ function Header() {
         query: {
           ...otherQueryParams,
           location: defaultLocation,
-          edge: selectedUser.type === 'edge',
         },
       });
     }
@@ -82,20 +77,6 @@ function Header() {
       <H2>
         <MongoDBLogoMark height={32} /> LeafyInventory
       </H2>
-      {selectedUser?.type === 'edge' && (
-        <Button
-          isLoading={isLoading}
-          loadingIndicator={<Spinner />}
-          variant={isOnline ? 'primaryOutline' : 'dangerOutline'}
-          onClick={handleConnectionToggle}
-          children={isOnline ? 'ONLINE' : 'OFFLINE'}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        />
-      )}
       <div
         className={styles['user-info']}
         onClick={handleDropdownToggle}

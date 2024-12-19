@@ -56,7 +56,7 @@ export default function Transactions({ orders, facets }) {
   const { selectedUser } = useUser();
 
   const router = useRouter();
-  const { location, type, edge } = router.query;
+  const { location, type } = router.query;
 
   const { pushToast } = useToast();
 

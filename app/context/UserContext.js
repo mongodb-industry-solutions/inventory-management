@@ -4,10 +4,10 @@ import React, {
   useState,
   useEffect,
   useCallback,
-} from 'react';
-import { useRouter } from 'next/router';
+} from "react";
+import { useRouter } from "next/router";
 
-const STORAGE_KEY = 'selectedUser';
+const STORAGE_KEY = "selectedUser";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -30,8 +30,7 @@ export const UserProvider = ({ children }) => {
   // Redirect to default location if not set
   useEffect(() => {
     const currentLocation = router.query.location;
-    const defaultLocation =
-      selectedUser?.permissions?.locations?.[0]?.id?.$oid;
+    const defaultLocation = selectedUser?.permissions?.locations?.[0]?.id?.$oid;
 
     if (!currentLocation && defaultLocation) {
       router.replace({
@@ -39,7 +38,6 @@ export const UserProvider = ({ children }) => {
         query: {
           ...router.query,
           location: defaultLocation,
-          edge: router.query.edge || 'false',
         },
       });
     }
@@ -66,38 +64,11 @@ export const UserProvider = ({ children }) => {
     };
   }, []);
 
-  // Start watching control updates
-  const startWatchControl = (setProducts) => {
-    const path = `/api/sse?sessionId=control&colName=control`;
-
-    return startSSE(
-      path,
-      (updatedProduct) => {
-        setProducts((prevProducts) => {
-          const updatedIndex = prevProducts.findIndex(
-            (product) => product._id === updatedProduct._id
-          );
-          if (updatedIndex !== -1) {
-            const updatedProducts = [...prevProducts];
-            updatedProducts[updatedIndex] = updatedProduct;
-            return updatedProducts;
-          }
-          return prevProducts;
-        });
-      },
-      () => {
-        console.log('Attempting to reconnect SSE for control...');
-        startWatchControl(setProducts);
-      }
-    );
-  };
-
   return (
     <UserContext.Provider
       value={{
         selectedUser,
         setSelectedUser,
-        startWatchControl,
       }}
     >
       {children}
@@ -107,7 +78,6 @@ export const UserProvider = ({ children }) => {
 
 export const useUser = () => {
   const context = useContext(UserContext);
-  if (!context)
-    throw new Error('useUser must be used within a UserProvider');
+  if (!context) throw new Error("useUser must be used within a UserProvider");
   return context;
 };

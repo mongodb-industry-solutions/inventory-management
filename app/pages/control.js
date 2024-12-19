@@ -1,13 +1,12 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/router";
 import { clientPromise } from "../lib/mongodb";
 import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
-import { UserContext } from "../context/UserContext";
 import { useToast } from "@leafygreen-ui/toast";
 import { ObjectId } from "bson";
 import Button from "@leafygreen-ui/button";
-
+import { v4 as uuidv4 } from "uuid";
 import styles from "../styles/control.module.css";
 
 export default function Control({ preloadedProducts, locations }) {
@@ -20,39 +19,60 @@ export default function Control({ preloadedProducts, locations }) {
   const { pushToast } = useToast();
 
   const router = useRouter();
-  const { location, edge } = router.query;
+  const { location } = router.query;
 
-  const { startWatchControl } = useContext(UserContext);
+  const sseConnection = useRef(null);
+  const sessionId = useRef(uuidv4());
+  const collection = "products";
 
-  let lastEtag = null;
+  const listenToSSEUpdates = useCallback(() => {
+    console.log("Listening to SSE updates for collection " + collection);
+    const eventSource = new EventSource(
+      "/api/sse?sessionId=" + sessionId.current + "&colName=" + collection
+    );
 
-  async function refreshProduct() {
-    try {
-      const headers = {};
-      if (lastEtag) {
-        headers["If-None-Match"] = lastEtag;
+    eventSource.onopen = () => {
+      console.log("SSE connection opened.");
+      // Save the SSE connection reference in the state
+    };
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.fullDocument) {
+        console.log("Change detected");
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === data.fullDocument._id ? data.fullDocument : product
+          )
+        );
       }
+    };
 
-      const response = await fetch("/api/edge/getProducts", {
-        method: "GET",
-        headers: headers,
-      });
+    eventSource.onerror = (event) => {
+      console.error("SSE Error:", event);
+    };
 
-      if (response.status === 304) {
-        // 304 Not Modified
-        return;
-      } else if (response.status === 200) {
-        const etagHeader = response.headers.get("Etag");
-        if (etagHeader) {
-          lastEtag = etagHeader;
-        }
-        const refreshedProduct = await response.json();
-        setProducts(refreshedProduct.products);
-      }
-    } catch (error) {
-      console.error("Error refreshing data:", error);
+    // Close the previous connection if it exists
+    if (sseConnection.current) {
+      sseConnection.current.close();
+      console.log("Previous SSE connection closed.");
     }
-  }
+
+    sseConnection.current = eventSource;
+
+    return eventSource;
+  }, []);
+
+  useEffect(() => {
+    const eventSource = listenToSSEUpdates();
+
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+        console.log("SSE connection closed.");
+      }
+    };
+  }, [router.asPath, listenToSSEUpdates]);
 
   useEffect(() => {
     // Start or stop selling based on the isSelling state
@@ -61,19 +81,6 @@ export default function Control({ preloadedProducts, locations }) {
       return () => clearInterval(saleInterval);
     }
   }, [isSelling]);
-
-  useEffect(() => {
-    console.log("Starting SSE stream for control.");
-
-    // Initialize the SSE-based control stream
-    const stopControlStream = startWatchControl(setProducts);
-
-    // Cleanup function to stop the stream when component unmounts or dependencies change
-    return () => {
-      console.log("Stopping SSE stream for control.");
-      stopControlStream();
-    };
-  }, [setProducts]);
 
   useEffect(() => {
     setSelectedLocation(location);
@@ -291,7 +298,10 @@ export default function Control({ preloadedProducts, locations }) {
       });
       if (response.ok) {
         console.log("Product reset successfully");
-        pushToast({ title: "Demo reset successfully", variant: "success" });
+        pushToast({
+          title: "Demo reset successfully",
+          variant: "success",
+        });
       } else {
         console.log("Error resetting product stock");
       }
@@ -303,7 +313,7 @@ export default function Control({ preloadedProducts, locations }) {
   const handleSave = async (product) => {
     try {
       setIsSaving(true);
-      let path = edge === "true" ? "/api/edge" : "/api"; //replaced path
+      let path = "/api"; //replaced path
       const response = await fetch(
         path + `/updateProductStock?location_id=${selectedLocation}`,
         {
@@ -511,7 +521,10 @@ export async function getServerSideProps({ query }) {
     const db = client.db(dbName);
 
     const productsFilter = locationId
-      ? { "total_stock_sum.location.id": new ObjectId(locationId) }
+      ? {
+          "total_stock_sum.location.id":
+            ObjectId.createFromHexString(locationId),
+        }
       : {};
 
     const products = await db
