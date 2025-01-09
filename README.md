@@ -20,7 +20,7 @@ The architecture we're about to set up is depicted in the diagram below:
 If you want to learn more about Inventory Management and Event-Driven Architectures, visit the following pages:
 
 - [How to Enhance Inventory Management with Real-Time Data Strategies](https://www.mongodb.com/blog/post/how-enhance-inventory-management-real-time-data-strategies)
-- [Solutions Library (Coming soon!)](https://www.mongodb.com/solutions/solutions-library)
+- [Solutions Library](https://www.mongodb.com/solutions/solutions-library/event-driven-inventory-management)
 - [Tutorial (Coming soon!)](https://www.mongodb.com/developer/)
 - [Youtube Video](https://www.youtube.com/watch?v=sV2KfMk1CdM)
 
@@ -57,7 +57,7 @@ mongodb+srv://<username>:<password>@cluster-name.xxxxx.mongodb.net/
 
 ### Cloning the Github Repository
 
-Now it's time to clone the [demo app source code from GitHub](https://github.com/mongodb-industry-solutions/Inventory_mgmt) to your local machine:
+Now it's time to clone the [demo app source code from GitHub](https://github.com/mongodb-industry-solutions/inventory-management) to your local machine:
 
 1. Open your terminal or command prompt.
 
@@ -70,13 +70,13 @@ Now it's time to clone the [demo app source code from GitHub](https://github.com
 3. Once you're in the desired directory, use the `git clone` command to clone the repository. Copy the repository URL from the GitHub repository's main page:
 
    ```bash
-   git clone git@github.com:mongodb-industry-solutions/Inventory_mgmt.git
+   git clone git@github.com:mongodb-industry-solutions/inventory-management.git
    ```
 
 4. After running the `git clone` command, a new directory with the repository's name will be created in your chosen directory. To navigate into the cloned repository, use the `cd` command:
 
    ```bash
-   cd Inventory_mgmt
+   cd inventory-management
    ```
 
 ## MongoDB Atlas Configuration
@@ -228,7 +228,7 @@ Navigate to the [app](app) directory. If you are currently in the root directory
 cd app
 ```
 
-Now copy the `env.local.example` file in this directory to `.env.local` (which will be ignored by Git) as seen below:
+Now copy the `EXAMPLE.env` file in this directory to `.env.local` (which will be ignored by Git) as seen below:
 
 ```bash
 cp EXAMPLE.env .env.local
