@@ -20,7 +20,7 @@ The architecture we're about to set up is depicted in the diagram below:
 If you want to learn more about Inventory Management and Event-Driven Architectures, visit the following pages:
 
 - [How to Enhance Inventory Management with Real-Time Data Strategies](https://www.mongodb.com/blog/post/how-enhance-inventory-management-real-time-data-strategies)
-- [Solutions Library (Coming soon!)](https://www.mongodb.com/solutions/solutions-library)
+- [Solutions Library](https://www.mongodb.com/solutions/solutions-library/event-driven-inventory-management)
 - [Tutorial (Coming soon!)](https://www.mongodb.com/developer/)
 - [Youtube Video](https://www.youtube.com/watch?v=sV2KfMk1CdM)
 
@@ -57,7 +57,7 @@ mongodb+srv://<username>:<password>@cluster-name.xxxxx.mongodb.net/
 
 ### Cloning the Github Repository
 
-Now it's time to clone the [demo app source code from GitHub](https://github.com/mongodb-industry-solutions/Inventory_mgmt) to your local machine:
+Now it's time to clone the [demo app source code from GitHub](https://github.com/mongodb-industry-solutions/inventory-management) to your local machine:
 
 1. Open your terminal or command prompt.
 
@@ -70,13 +70,13 @@ Now it's time to clone the [demo app source code from GitHub](https://github.com
 3. Once you're in the desired directory, use the `git clone` command to clone the repository. Copy the repository URL from the GitHub repository's main page:
 
    ```bash
-   git clone git@github.com:mongodb-industry-solutions/Inventory_mgmt.git
+   git clone git@github.com:mongodb-industry-solutions/inventory-management.git
    ```
 
 4. After running the `git clone` command, a new directory with the repository's name will be created in your chosen directory. To navigate into the cloned repository, use the `cd` command:
 
    ```bash
-   cd Inventory_mgmt
+   cd inventory-management
    ```
 
 ## MongoDB Atlas Configuration
@@ -197,6 +197,42 @@ Follow these steps to configure search indexes for full-text search and filter f
 
 By setting up these search indexes and filter facets, your application will gain powerful search and filtering capabilities, making it more user-friendly and efficient in managing inventory data.
 
+### Set up the Database Triggers
+
+You will need to configure two database triggers. One will be used to enable autoreplenishment and the other to simulate item deliveries.
+
+#### Autoreplenishment Trigger
+
+Automate inventory replenishment by setting up a database trigger in MongoDB Atlas. Follow these steps to enable the trigger:
+
+1. Navigate to the "Data Services" section within Atlas. In the sidebar menu, click on "Triggers".
+
+2. For first-time users of Triggers, select your data source and then click “get started”. For non-first-time users, simply select "Add Trigger".
+
+3. Choose the trigger type as "Database". Under “Trigger Source Details”, provide a name for the trigger and select your cluster, database, and the _products_ collection. Set the operation type to "Update" only. Ensure that both "Full Document" and "Document Preimage" are enabled.
+
+4. In the "Function" section, replace the default code with the code available at [utils/triggers/autoreplenish.js](utils/triggers/autoreplenish.js).
+
+5. Open the "Advanced" section and insert the following code into the "Match Expression" field. This expression will ensure that the trigger function is executed only for products marked for auto-replenishment:
+
+   ```json
+   {
+     "fullDocument.autoreplenishment": true
+   }
+   ```
+
+6. Verify that all the configuration details are accurate and click "Save".
+
+7. For additional assistance, you can refer to the official documentation on how to create a [Database Trigger](https://docs.mongodb.com/stitch/triggers/database-triggers/).
+
+#### Simulate Item Delivery Trigger
+
+For a more realistic demo, we will set up another trigger that will wait the estimated delivery time of a particular item before recording it as delivered. Additionally, this trigger will automatically increment order numbers so we can have a numeric identifier of each order in addition to the unique `_id`. To achieve this, follow these steps:
+
+Just as in the previous section, navigate to the "Triggers" area within the "Data Services" section in Atlas. Create a new trigger by clicking "Add Trigger". Then choose the trigger type as "Database". Under “Trigger Source Details”, provide a name for the trigger and select your cluster, database, and the _transactions_ collection. Set the operation type to "Insert" only. Ensure that "Full Document" is enabled.
+
+The customized function for this trigger can be accessed at [utils/triggers/issueInboundTransaction.js](utils/triggers/issueInboundTransaction.js).
+
 ### Set up Atlas Charts
 
 Enhance your application's visualization and analytics capabilities with Atlas Charts. Follow these steps to set up two dashboards—one for product information and another for general analytics:
@@ -228,7 +264,7 @@ Navigate to the [app](app) directory. If you are currently in the root directory
 cd app
 ```
 
-Now copy the `env.local.example` file in this directory to `.env.local` (which will be ignored by Git) as seen below:
+Now copy the `EXAMPLE.env` file in this directory to `.env.local` (which will be ignored by Git) as seen below:
 
 ```bash
 cp EXAMPLE.env .env.local
