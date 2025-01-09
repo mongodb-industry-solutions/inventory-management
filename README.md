@@ -197,6 +197,42 @@ Follow these steps to configure search indexes for full-text search and filter f
 
 By setting up these search indexes and filter facets, your application will gain powerful search and filtering capabilities, making it more user-friendly and efficient in managing inventory data.
 
+### Set up the Database Triggers
+
+You will need to configure two database triggers. One will be used to enable autoreplenishment and the other to simulate item deliveries.
+
+#### Autoreplenishment Trigger
+
+Automate inventory replenishment by setting up a database trigger in MongoDB Atlas. Follow these steps to enable the trigger:
+
+1. Navigate to the "Data Services" section within Atlas. In the sidebar menu, click on "Triggers".
+
+2. For first-time users of Triggers, select your data source and then click “get started”. For non-first-time users, simply select "Add Trigger".
+
+3. Choose the trigger type as "Database". Under “Trigger Source Details”, provide a name for the trigger and select your cluster, database, and the _products_ collection. Set the operation type to "Update" only. Ensure that both "Full Document" and "Document Preimage" are enabled.
+
+4. In the "Function" section, replace the default code with the code available at [utils/triggers/autoreplenish.js](utils/triggers/autoreplenish.js).
+
+5. Open the "Advanced" section and insert the following code into the "Match Expression" field. This expression will ensure that the trigger function is executed only for products marked for auto-replenishment:
+
+   ```json
+   {
+     "fullDocument.autoreplenishment": true
+   }
+   ```
+
+6. Verify that all the configuration details are accurate and click "Save".
+
+7. For additional assistance, you can refer to the official documentation on how to create a [Database Trigger](https://docs.mongodb.com/stitch/triggers/database-triggers/).
+
+#### Simulate Item Delivery Trigger
+
+For a more realistic demo, we will set up another trigger that will wait the estimated delivery time of a particular item before recording it as delivered. Additionally, this trigger will automatically increment order numbers so we can have a numeric identifier of each order in addition to the unique `_id`. To achieve this, follow these steps:
+
+Just as in the previous section, navigate to the "Triggers" area within the "Data Services" section in Atlas. Create a new trigger by clicking "Add Trigger". Then choose the trigger type as "Database". Under “Trigger Source Details”, provide a name for the trigger and select your cluster, database, and the _transactions_ collection. Set the operation type to "Insert" only. Ensure that "Full Document" is enabled.
+
+The customized function for this trigger can be accessed at [utils/triggers/issueInboundTransaction.js](utils/triggers/issueInboundTransaction.js).
+
 ### Set up Atlas Charts
 
 Enhance your application's visualization and analytics capabilities with Atlas Charts. Follow these steps to set up two dashboards—one for product information and another for general analytics:
