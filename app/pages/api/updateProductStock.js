@@ -1,5 +1,5 @@
 import { clientPromise } from "../../lib/mongodb";
-import { ObjectId } from "bson";
+import { ObjectId } from "mongodb";
 
 let client = null;
 

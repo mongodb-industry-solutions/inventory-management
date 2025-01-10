@@ -4,7 +4,7 @@ import { clientPromise } from "../lib/mongodb";
 import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
 import { useToast } from "@leafygreen-ui/toast";
-import { ObjectId } from "bson";
+import { ObjectId } from "mongodb";
 import Button from "@leafygreen-ui/button";
 import { v4 as uuidv4 } from "uuid";
 import styles from "../styles/control.module.css";
