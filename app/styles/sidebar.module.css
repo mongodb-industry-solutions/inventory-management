@@ -150,3 +150,22 @@
     width: 0px;
     background: transparent; /* make scrollbar transparent */
 }
+
+.item-list {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.item-list button {
+  font-size: 10px;
+  color: #5e5555;
+  cursor: pointer;
+  border: none;
+  background: none;
+  text-decoration: underline;
+}
+
+.item-list::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}
