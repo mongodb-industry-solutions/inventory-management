@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { useRouter } from "next/router";
 import { clientPromise } from "../../lib/mongodb";
-import { ObjectId } from "bson";
+import { ObjectId } from "mongodb";
 import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
 import { FaTshirt, FaWhmcs } from "react-icons/fa";
 import styles from "../../styles/product.module.css";
@@ -58,16 +58,13 @@ export default function Product({ preloadedProduct }) {
 
   const productFilter = useMemo(
     () => ({
-      "items.product.id": ObjectId.createFromHexString(preloadedProduct._id),
+      "items.product.id": { $oid: preloadedProduct._id },
     }),
     [preloadedProduct]
   );
 
   const locationFilter = useMemo(
-    () =>
-      location
-        ? { "location.destination.id": ObjectId.createFromHexString(location) }
-        : {},
+    () => (location ? { "location.destination.id": { $oid: location } } : {}),
     [location]
   );
 

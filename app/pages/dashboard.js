@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { useRouter } from 'next/router';
-import { ObjectId } from 'bson';
-import { useToast } from '@leafygreen-ui/toast';
-import styles from '../styles/dashboard.module.css';
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useRouter } from "next/router";
+import { useToast } from "@leafygreen-ui/toast";
+import styles from "../styles/dashboard.module.css";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -15,11 +14,11 @@ const Dashboard = () => {
 
   const [analyticsInfo, setAnalyticsInfo] = useState(null);
   const [rendered, setRendered] = useState(false); // New state to track rendering
-  const [selectedChannel, setSelectedChannel] = useState('All');
+  const [selectedChannel, setSelectedChannel] = useState("All");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [filterName, setFilterName] = useState('Channel');
+  const [filterName, setFilterName] = useState("Channel");
 
-  const channelOptions = ['Online', 'In-store'];
+  const channelOptions = ["Online", "In-store"];
   const sessionId = useRef(
     `dashboard_${Math.random().toString(36).substr(2, 9)}`
   );
@@ -28,12 +27,10 @@ const Dashboard = () => {
     ? {
         $or: [
           {
-            'location.destination.id':
-              ObjectId.createFromHexString(location),
+            "location.destination.id": { $oid: location },
           },
           {
-            'location.origin.id':
-              ObjectId.createFromHexString(location),
+            "location.origin.id": { $oid: location },
           },
           { checkResult: { $exists: true } },
         ],
@@ -44,14 +41,14 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchAnalyticsInfo = async () => {
       try {
-        const response = await fetch('/api/config');
+        const response = await fetch("/api/config");
         if (!response.ok)
-          throw new Error('Failed to fetch analytics configuration');
+          throw new Error("Failed to fetch analytics configuration");
 
         const data = await response.json();
         setAnalyticsInfo(data.analyticsInfo);
       } catch (error) {
-        console.error('Error fetching analytics info:', error);
+        console.error("Error fetching analytics info:", error);
       }
     };
 
@@ -61,39 +58,36 @@ const Dashboard = () => {
   // Initialize the dashboard using ChartsEmbedSDK
   useEffect(() => {
     if (analyticsInfo && !dashboard.current) {
-      const ChartsEmbedSDK =
-        require('@mongodb-js/charts-embed-dom').default;
+      const ChartsEmbedSDK = require("@mongodb-js/charts-embed-dom").default;
       const sdk = new ChartsEmbedSDK({
         baseUrl: analyticsInfo.chartsBaseUrl,
       });
 
       dashboard.current = sdk.createDashboard({
         dashboardId: analyticsInfo.dashboardIdGeneral,
-        widthMode: 'scale',
+        widthMode: "scale",
         filter: locationFilter,
-        heightMode: 'scale',
-        background: '#fff',
+        heightMode: "scale",
+        background: "#fff",
       });
 
       dashboard.current
         .render(dashboardDiv.current)
         .then(() => {
-          console.log('Dashboard successfully rendered');
+          console.log("Dashboard successfully rendered");
           setRendered(true); // Mark the dashboard as rendered
         })
-        .catch((err) =>
-          console.error('Error during Charts rendering.', err)
-        );
+        .catch((err) => console.error("Error during Charts rendering.", err));
 
       if (dashboardDiv.current) {
-        dashboardDiv.current.style.height = '900px';
+        dashboardDiv.current.style.height = "900px";
       }
     }
   }, [analyticsInfo, locationFilter]);
 
   // SSE updates handler
   const listenToSSEUpdates = useCallback(() => {
-    console.log('Listening to SSE updates for the dashboard');
+    console.log("Listening to SSE updates for the dashboard");
     const dashboardPath = `/api/sse?sessionId=${sessionId.current}&colName=transactions`;
     const inventoryPath = `/api/sse?sessionId=${sessionId.current}_inventory&colName=inventoryCheck`;
 
@@ -101,9 +95,9 @@ const Dashboard = () => {
     const inventoryEventSource = new EventSource(inventoryPath);
 
     dashboardEventSource.onopen = () =>
-      console.log('Dashboard SSE connection opened.');
+      console.log("Dashboard SSE connection opened.");
     inventoryEventSource.onopen = () =>
-      console.log('InventoryCheck SSE connection opened.');
+      console.log("InventoryCheck SSE connection opened.");
 
     dashboardEventSource.onmessage = (event) => {
       dashboard.current?.refresh().catch(console.error);
@@ -113,25 +107,25 @@ const Dashboard = () => {
       const data = JSON.parse(event.data);
       pushToast({
         title: data.checkResult
-          ? 'Hooray! Perfect inventory match!'
-          : 'Oops! Inventory Discrepancy Detected.',
-        variant: data.checkResult ? 'success' : 'warning',
+          ? "Hooray! Perfect inventory match!"
+          : "Oops! Inventory Discrepancy Detected.",
+        variant: data.checkResult ? "success" : "warning",
       });
       dashboard.current?.refresh().catch(console.error);
     };
 
     dashboardEventSource.onerror = (error) => {
-      console.error('Dashboard SSE error:', error);
+      console.error("Dashboard SSE error:", error);
       dashboardEventSource.close();
     };
 
     inventoryEventSource.onerror = (error) => {
-      console.error('InventoryCheck SSE error:', error);
+      console.error("InventoryCheck SSE error:", error);
       inventoryEventSource.close();
     };
 
     return () => {
-      console.log('Closing SSE connections.');
+      console.log("Closing SSE connections.");
       dashboardEventSource.close();
       inventoryEventSource.close();
     };
@@ -139,18 +133,18 @@ const Dashboard = () => {
 
   // Start SSE updates after dashboard is rendered
   useEffect(() => {
-    console.log('Checking streamsActive and rendered:', {
+    console.log("Checking streamsActive and rendered:", {
       streamsActive: streamsActive.current,
       rendered,
     });
 
     if (rendered && !streamsActive.current) {
-      console.log('Initializing SSE updates...');
+      console.log("Initializing SSE updates...");
       const stopListening = listenToSSEUpdates();
       streamsActive.current = true;
 
       return () => {
-        console.log('Cleaning up SSE updates...');
+        console.log("Cleaning up SSE updates...");
         stopListening();
         streamsActive.current = false;
       };
@@ -166,24 +160,20 @@ const Dashboard = () => {
       dashboard.current
         .setFilter({ channel: value })
         .then(() =>
-          console.log(
-            `Dashboard filter applied for channel: ${value}`
-          )
+          console.log(`Dashboard filter applied for channel: ${value}`)
         )
-        .catch((err) => console.error('Error while filtering.', err));
+        .catch((err) => console.error("Error while filtering.", err));
     }
   };
 
   const handleClearFilters = () => {
-    setSelectedChannel('All');
-    setFilterName('Channel');
+    setSelectedChannel("All");
+    setFilterName("Channel");
     if (dashboard.current) {
       dashboard.current
         .setFilter({})
-        .then(() => console.log('Dashboard filters cleared'))
-        .catch((err) =>
-          console.error('Error while clearing filters.', err)
-        );
+        .then(() => console.log("Dashboard filters cleared"))
+        .catch((err) => console.error("Error while clearing filters.", err));
     }
   };
 
@@ -193,14 +183,9 @@ const Dashboard = () => {
         <div className="filters">
           <div className="filter-buttons">
             <div className="dropdown">
-              <button
-                className="dropdown-toggle"
-                onClick={toggleMenu}
-              >
+              <button className="dropdown-toggle" onClick={toggleMenu}>
                 {filterName}
-                <span
-                  className={`chevron ${menuOpen ? 'up' : 'down'}`}
-                >
+                <span className={`chevron ${menuOpen ? "up" : "down"}`}>
                   &#9660;
                 </span>
               </button>
@@ -227,10 +212,7 @@ const Dashboard = () => {
               )}
             </div>
           </div>
-          <button
-            className="clear-filters-button"
-            onClick={handleClearFilters}
-          >
+          <button className="clear-filters-button" onClick={handleClearFilters}>
             Clear Filters
           </button>
         </div>

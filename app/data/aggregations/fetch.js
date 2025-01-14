@@ -1,4 +1,4 @@
-import { ObjectId } from "bson";
+import { ObjectId } from "mongodb";
 
 export const fetchTransactionsPipeline = (industry, location, type) => {
   const pipeline = [
