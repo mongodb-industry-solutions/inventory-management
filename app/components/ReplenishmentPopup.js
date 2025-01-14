@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useContext } from 'react';
-import Select from 'react-select';
-import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
-import { useUser } from '../context/UserContext';
-import { useRouter } from 'next/router';
-import { useToast } from '@leafygreen-ui/toast';
-import StockLevelBar from './StockLevelBar';
-import { debounce } from 'lodash'; // Import lodash debounce
-import styles from '../styles/popup.module.css';
+import React, { useState, useEffect, useContext } from "react";
+import Select from "react-select";
+import { FaTimes, FaPlus, FaTrash } from "react-icons/fa";
+import { useUser } from "../context/UserContext";
+import { useRouter } from "next/router";
+import { useToast } from "@leafygreen-ui/toast";
+import StockLevelBar from "./StockLevelBar";
+import { debounce } from "lodash"; // Import lodash debounce
+import styles from "../styles/popup.module.css";
 
 const ReplenishmentPopup = ({ product, onClose, onSave }) => {
   const { pushToast } = useToast();
@@ -17,15 +17,14 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
   const { location } = router.query;
 
   const transaction = {
-    type: 'inbound',
+    type: "inbound",
     user_id: selectedUser?._id,
     location: {
-      origin: { type: 'warehouse' },
+      origin: { type: "warehouse" },
       destination: {
-        type: 'store',
-        id: selectedUser?.permissions?.locations.find(
-          (s) => s.id === location
-        )?.id,
+        type: "store",
+        id: selectedUser?.permissions?.locations.find((s) => s.id === location)
+          ?.id,
         name: selectedUser?.permissions?.locations.find(
           (s) => s.id === location
         )?.name,
@@ -34,7 +33,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
         )?.area_code,
       },
     },
-    placement_timestamp: '',
+    placement_timestamp: "",
     items: [],
   };
 
@@ -51,10 +50,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
         const newItem = structuredClone(item);
         delete newItem.stock;
         newItem.status = [];
-        newItem.amount = Math.max(
-          0,
-          itemStock.target - itemStock.amount
-        );
+        newItem.amount = Math.max(0, itemStock.target - itemStock.amount);
         newItem.product = {
           id: product._id,
           name: product.name,
@@ -78,9 +74,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
     )?.name;
 
     if (newItemSize) {
-      const item = product.items.find(
-        (item) => item.name === newItemSize
-      );
+      const item = product.items.find((item) => item.name === newItemSize);
       const itemStock = item?.stock.find(
         (stock) => stock.location.id === location
       );
@@ -88,10 +82,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
       const newItem = structuredClone(item);
       delete newItem.stock;
       newItem.status = [];
-      newItem.amount = Math.max(
-        0,
-        itemStock.target - itemStock.amount
-      );
+      newItem.amount = Math.max(0, itemStock.target - itemStock.amount);
       newItem.product = {
         id: product._id,
         name: product.name,
@@ -109,16 +100,11 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
   };
 
   const handleItemChange = (index, newItemName) => {
-    const newItem = product.items.find(
-      (item) => item.name === newItemName
-    );
+    const newItem = product.items.find((item) => item.name === newItemName);
     const newItemStock = newItem?.stock.find(
       (stock) => stock.location.id === location
     );
-    const newAmount = Math.max(
-      0,
-      newItemStock.target - newItemStock.amount
-    );
+    const newAmount = Math.max(0, newItemStock.target - newItemStock.amount);
 
     setRows((prevRows) =>
       prevRows.map((row, i) =>
@@ -138,9 +124,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
   const handleAmountUpdate = (index, newAmount) => {
     setRows((prevRows) =>
       prevRows.map((row, i) =>
-        i === index
-          ? { ...row, amount: parseInt(newAmount, 10) }
-          : row
+        i === index ? { ...row, amount: parseInt(newAmount, 10) } : row
       )
     );
   };
@@ -157,22 +141,22 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
     };
 
     try {
-      const response = await fetch('/api/addTransaction', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/addTransaction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTransaction),
       });
 
       if (response.ok) {
-        console.log('Transaction saved successfully');
+        console.log("Transaction saved successfully");
         onClose();
         pushToast({
-          title: 'Order placed successfully',
-          variant: 'success',
+          title: "Order placed successfully",
+          variant: "success",
         });
         setRows([]); // Clear rows after successful order
       } else {
-        console.error('Error saving transaction');
+        console.error("Error saving transaction");
       }
     } catch (e) {
       console.error(e);
@@ -181,18 +165,15 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
 
   return (
     <>
-      <div className={styles['backdrop']}></div>
-      <div className={styles['popup']}>
-        <div className={styles['popup-content']}>
-          <button
-            className={styles['close-button']}
-            onClick={onClose}
-          >
-            <FaTimes className={styles['close-icon']} />
+      <div className={styles["backdrop"]}></div>
+      <div className={styles["popup"]}>
+        <div className={styles["popup-content"]}>
+          <button className={styles["close-button"]} onClick={onClose}>
+            <FaTimes className={styles["close-icon"]} />
           </button>
           <h3>Replenish Stock</h3>
-          <div className={styles['table-container']}>
-            <div className={styles['table-wrapper']}>
+          <div className={styles["table-container"]}>
+            <div className={styles["table-wrapper"]}>
               <table>
                 <thead>
                   <tr>
@@ -222,17 +203,13 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                               value: row.name,
                             }}
                             onChange={(selectedOption) =>
-                              handleItemChange(
-                                index,
-                                selectedOption.value
-                              )
+                              handleItemChange(index, selectedOption.value)
                             }
                             options={product.items
                               .filter(
                                 (item) =>
                                   !rows.some(
-                                    (rowItem) =>
-                                      rowItem.name === item.name
+                                    (rowItem) => rowItem.name === item.name
                                   )
                               )
                               .map((item) => ({
@@ -256,10 +233,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                               value: row.amount,
                             }}
                             onChange={(selectedOption) =>
-                              handleAmountUpdate(
-                                index,
-                                selectedOption.value
-                              )
+                              handleAmountUpdate(index, selectedOption.value)
                             }
                             options={[
                               ...Array(
@@ -283,8 +257,8 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                           />
                         </td>
                         <td>
-                          {item?.delivery_time?.amount || 0}{' '}
-                          {item?.delivery_time?.unit || ''}
+                          {item?.delivery_time?.amount || 0}{" "}
+                          {item?.delivery_time?.unit || ""}
                         </td>
                         <td>
                           <StockLevelBar
@@ -294,12 +268,10 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                         </td>
                         <td>
                           <button
-                            className={styles['delete-button']}
+                            className={styles["delete-button"]}
                             onClick={() => handleDeleteRow(index)}
                           >
-                            <FaTrash
-                              className={styles['delete-icon']}
-                            />
+                            <FaTrash className={styles["delete-icon"]} />
                           </button>
                         </td>
                       </tr>
@@ -308,24 +280,19 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
                 </tbody>
               </table>
             </div>
-            <button
-              className={styles['add-button']}
-              onClick={handleAddRow}
-            >
-              <FaPlus className={styles['add-icon']} />
+            <button className={styles["add-button"]} onClick={handleAddRow}>
+              <FaPlus className={styles["add-icon"]} />
             </button>
           </div>
-          <div className={styles['total-time']}>
-            TOTAL TIME OF DELIVERY:{' '}
+          <div className={styles["total-time"]}>
+            TOTAL TIME OF DELIVERY:{" "}
             {rows.length > 0
-              ? Math.max(
-                  ...rows.map((item) => item.delivery_time.amount)
-                )
-              : 0}{' '}
+              ? Math.max(...rows.map((item) => item.delivery_time.amount))
+              : 0}{" "}
             SECONDS
           </div>
           <button
-            className={styles['save-button']}
+            className={styles["save-button"]}
             onClick={() => debouncedHandleSaveOrder(rows)} // Use debounced function
           >
             Save

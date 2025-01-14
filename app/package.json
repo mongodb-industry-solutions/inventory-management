@@ -6,9 +6,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.4.0",
-    "@fortawesome/free-solid-svg-icons": "^6.4.0",
-    "@fortawesome/react-fontawesome": "^0.2.0",
     "@leafygreen-ui/button": "^21.0.12",
     "@leafygreen-ui/icon": "^12.0.0",
     "@leafygreen-ui/icon-button": "^15.0.20",
@@ -23,9 +20,8 @@
     "bson": "^6.9.0",
     "lodash": "^4.17.21",
     "mongodb": "^6.10.0",
-    "next": "^15.1.2",
+    "next": "^15.1.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
     "react-select": "^5.7.4",
     "uuid": "^11.0.3"

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { FaSearch } from "react-icons/fa";
 import Sidebar from "../../components/Sidebar";
 import ProductBox from "../../components/ProductBox";
-import { ObjectId } from "bson";
+import { ObjectId } from "mongodb";
 import { useToast } from "@leafygreen-ui/toast";
 import { v4 as uuidv4 } from "uuid";
 
