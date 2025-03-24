@@ -5,7 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import Sidebar from "../../components/Sidebar";
 import ProductBox from "../../components/ProductBox";
 import { ObjectId } from "mongodb";
-import { useToast } from "@leafygreen-ui/toast";
+import { toast } from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 
 export default function Products({ products, facets }) {
@@ -23,7 +23,6 @@ export default function Products({ products, facets }) {
   const sessionId = useRef(uuidv4());
   const collection = "products";
 
-  const { pushToast } = useToast();
   const router = useRouter();
   const { location } = router.query;
   // Refs
@@ -34,16 +33,13 @@ export default function Products({ products, facets }) {
     const queryParameters = new URLSearchParams(router.query).toString();
     const href = `/products/${item.product_id}?${queryParameters}`;
 
-    pushToast({
-      title: (
-        <span>
-          Item &nbsp;
-          <a href={href}>{item.sku}</a>
-          &nbsp; is low stock!
-        </span>
-      ),
-      variant: "warning",
-    });
+    toast(() => (
+      <span>
+        Item &nbsp;
+        <a href={href}>{item.sku}</a>
+        &nbsp; is low stock!
+      </span>
+    ));
   };
 
   const listenToSSEUpdates = useCallback(() => {

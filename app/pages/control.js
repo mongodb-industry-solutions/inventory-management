@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { clientPromise } from "../lib/mongodb";
 import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
-import { useToast } from "@leafygreen-ui/toast";
+import { toast } from "react-hot-toast";
 import { ObjectId } from "mongodb";
 import Button from "@leafygreen-ui/button";
 import { v4 as uuidv4 } from "uuid";
@@ -15,8 +15,6 @@ export default function Control({ preloadedProducts, locations }) {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [onlineToInPersonRatio, setOnlineToInPersonRatio] = useState(0.5);
   const [isSaving, setIsSaving] = useState(false);
-
-  const { pushToast } = useToast();
 
   const router = useRouter();
   const { location } = router.query;
@@ -298,10 +296,7 @@ export default function Control({ preloadedProducts, locations }) {
       });
       if (response.ok) {
         console.log("Product reset successfully");
-        pushToast({
-          title: "Demo reset successfully",
-          variant: "success",
-        });
+        toast.success("Demo reset successfully");
       } else {
         console.log("Error resetting product stock");
       }
@@ -326,10 +321,7 @@ export default function Control({ preloadedProducts, locations }) {
       );
       if (response.ok) {
         console.log("Product stock saved successfully");
-        pushToast({
-          title: "Product stock saved successfully",
-          variant: "success",
-        });
+        toast.success("Product stock saved successfully");
       } else {
         console.log("Error saving updated product stock");
       }

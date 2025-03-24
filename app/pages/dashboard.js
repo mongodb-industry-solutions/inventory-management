@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/router";
-import { useToast } from "@leafygreen-ui/toast";
+import { toast } from "react-hot-toast";
 import styles from "../styles/dashboard.module.css";
 
 const Dashboard = () => {
   const router = useRouter();
   const { location } = router.query;
 
-  const { pushToast } = useToast();
   const dashboardDiv = useRef(null);
   const dashboard = useRef(null);
   const streamsActive = useRef(false);
@@ -105,12 +104,13 @@ const Dashboard = () => {
 
     inventoryEventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      pushToast({
-        title: data.checkResult
-          ? "Hooray! Perfect inventory match!"
-          : "Oops! Inventory Discrepancy Detected.",
-        variant: data.checkResult ? "success" : "warning",
-      });
+
+      if (data.checkResult) {
+        toast.success("Hooray! Perfect inventory match!");
+      } else {
+        toast.error("Oops! Inventory Discrepancy Detected.");
+      }
+
       dashboard.current?.refresh().catch(console.error);
     };
 
@@ -129,7 +129,7 @@ const Dashboard = () => {
       dashboardEventSource.close();
       inventoryEventSource.close();
     };
-  }, [pushToast]);
+  }, []);
 
   // Start SSE updates after dashboard is rendered
   useEffect(() => {
