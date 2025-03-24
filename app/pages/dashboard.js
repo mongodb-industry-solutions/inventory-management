@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
+import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
 import styles from "../styles/dashboard.module.css";
 
 const Dashboard = () => {
@@ -57,7 +58,7 @@ const Dashboard = () => {
   // Initialize the dashboard using ChartsEmbedSDK
   useEffect(() => {
     if (analyticsInfo && !dashboard.current) {
-      const ChartsEmbedSDK = require("@mongodb-js/charts-embed-dom").default;
+      //const ChartsEmbedSDK = require("@mongodb-js/charts-embed-dom").default;
       const sdk = new ChartsEmbedSDK({
         baseUrl: analyticsInfo.chartsBaseUrl,
       });
