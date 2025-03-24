@@ -34,7 +34,14 @@ function MyApp({ Component, pageProps }) {
   return (
     <ServerContext.Provider value={utils}>
       <UserProvider>
-        <Toaster />
+        <Toaster
+          position="bottom-left"
+          toastOptions={{
+            style: {
+              fontFamily: "Arial, sans-serif",
+            },
+          }}
+        />
         <div className="layout">
           <div className="header-container">
             <Header />
