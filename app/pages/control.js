@@ -16,6 +16,9 @@ export default function Control({ preloadedProducts, locations }) {
   const [onlineToInPersonRatio, setOnlineToInPersonRatio] = useState(0.5);
   const [isSaving, setIsSaving] = useState(false);
 
+  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
+  const keyword = industry === "retail" ? "Selling" : "Production";
+
   const router = useRouter();
   const { location } = router.query;
 
@@ -337,8 +340,11 @@ export default function Control({ preloadedProducts, locations }) {
       <div className="content">
         <h1>Control Panel</h1>
         <div className="button-container">
-          <button className="sale-button" onClick={handleSaleButtonClick}>
-            {isSelling ? "Stop Selling" : "Start Selling"}
+          <button
+            className={styles["sale-button"]}
+            onClick={handleSaleButtonClick}
+          >
+            {isSelling ? `Stop ${keyword}` : `Start ${keyword}`}
           </button>
           <select
             value={selectedLocation}

@@ -14,7 +14,7 @@ function Header() {
   const [usersList, setUsersList] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [openHelpModal, setOpenHelpModal] = useState(false);
-  const [industry, setIndustry] = useState("retail");
+  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
 
   const router = useRouter();
   const { location, ...otherQueryParams } = router.query;
@@ -22,20 +22,6 @@ function Header() {
   const { selectedUser, setSelectedUser } = useUser();
 
   useEffect(() => {
-    const fetchIndustry = async () => {
-      try {
-        const response = await fetch("/api/getIndustry");
-        if (response.ok) {
-          const data = await response.json();
-          setIndustry(data.industry);
-        } else {
-          console.error("Failed to fetch industry information");
-        }
-      } catch (error) {
-        console.error("Error fetching industry:", error);
-      }
-    };
-
     const fetchData = async () => {
       try {
         const response = await fetch("/api/getUsers", {
@@ -56,7 +42,6 @@ function Header() {
     };
 
     fetchData();
-    fetchIndustry();
   }, []);
 
   useEffect(() => {

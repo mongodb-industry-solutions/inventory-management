@@ -279,7 +279,7 @@ Remember all of the notes you took earlier? Grab them because you’ll use them 
 - `CHARTS_EMBED_SDK_BASEURL` - This variable should hold the URL of the charts you want to embed in your application.
 - `DASHBOARD_ID_PRODUCT` - This variable should store the Atlas Charts dashboard ID for product information.
 - `DASHBOARD_ID_GENERAL` - This variable should store the Atlas Charts dashboard ID for the general analytics tab.
-- `DEMO_INDUSTRY` - For demo purposes, this variable will slightly change the UI based on the use case's industry focus. You can choose either `retail` or `manufacturing`.
+- `NEXT_PUBLIC_DEMO_INDUSTRY` - For demo purposes, this variable will slightly change the UI based on the use case's industry focus. You can choose either `retail` or `manufacturing`.
 
 Please remember to save the updated file.
 

@@ -12,7 +12,7 @@ export default async (req, res) => {
     }
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
-    const industry = process.env.DEMO_INDUSTRY || "retail";
+    const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
     const client = await clientPromise;
     const db = client.db(dbName);
 

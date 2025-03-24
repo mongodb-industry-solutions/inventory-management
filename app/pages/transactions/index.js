@@ -15,26 +15,7 @@ export default function Transactions({ orders, facets }) {
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Set the number of items per page
   const [currentPage, setCurrentPage] = useState(1); // Set the initial current page to 1
-  const [industry, setIndustry] = useState("retail"); // Default value is 'retail'
-
-  // Fetch the industry from the API when the component mounts
-  useEffect(() => {
-    const fetchIndustry = async () => {
-      try {
-        const response = await fetch("/api/getIndustry");
-        if (response.ok) {
-          const data = await response.json();
-          setIndustry(data.industry);
-        } else {
-          console.error("Failed to fetch industry information");
-        }
-      } catch (error) {
-        console.error("Error fetching industry:", error);
-      }
-    };
-
-    fetchIndustry();
-  }, []);
+  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
 
   const lightColors = [
     "#B1FF05",
@@ -481,7 +462,7 @@ export async function getServerSideProps(context) {
     }
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
-    const industry = process.env.DEMO_INDUSTRY || "retail";
+    const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
 
     const { query } = context;
     const type = query.type;

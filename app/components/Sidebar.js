@@ -11,26 +11,7 @@ function Sidebar({ facets, filterProducts, filterOrders, filterSales, page }) {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [numColorsToShow, setNumColorsToShow] = useState(10);
   const [numItemsToShow, setNumItemsToShow] = useState(10); // State for "Items" list
-  const [industry, setIndustry] = useState("retail"); // Default value is 'retail'
-
-  // Fetch the industry from the API when the component mounts
-  useEffect(() => {
-    const fetchIndustry = async () => {
-      try {
-        const response = await fetch("/api/getIndustry");
-        if (response.ok) {
-          const data = await response.json();
-          setIndustry(data.industry);
-        } else {
-          console.error("Failed to fetch industry information");
-        }
-      } catch (error) {
-        console.error("Error fetching industry:", error);
-      }
-    };
-
-    fetchIndustry();
-  }, []);
+  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
 
   const handleItemChange = (event) => {
     const item = event;
