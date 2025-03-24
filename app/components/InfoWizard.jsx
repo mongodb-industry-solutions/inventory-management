@@ -52,7 +52,7 @@ const InfoWizard = ({
                               <li>
                                 {item.heading}
                                 <ul className={styles.list}>
-                                  {item.body.map((subItem, idx) => (
+                                  {item.body?.map((subItem, idx) => (
                                     <li key={idx}>
                                       <Body>{subItem}</Body>
                                     </li>
