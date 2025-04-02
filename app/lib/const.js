@@ -109,4 +109,141 @@ export const TALK_TRACK_MANUFACTURING = [
   },
 ];
 
-export const TALK_TRACK_RETAIL = [];
+export const TALK_TRACK_RETAIL = [
+  {
+    heading: "What is Inventory Management?",
+    content: [
+      {
+        body: (
+          <>
+        
+            <p><strong>Inventory management</strong> is the process of tracking and optimizing stock levels as products move between <strong>warehouses and stores</strong>, ensuring timely replenishment and efficient distribution. Effective management at this stage is crucial to prevent stockouts, reduce excess inventory, and maintain a seamless supply chain.</p>
+          </>
+        )
+      },
+      {
+        image: {
+          src: "/images/first-retail-image.png",
+          alt: "Inventory Management Overview"
+        }
+      },
+      {
+        heading: "Why it matters in the industry?",
+        body: (
+          <>
+            <p>In retail and manufacturing, having the right inventory in the right place at the right time is essential. Poor inventory management can lead to operational disruptions, missed opportunities, and increased costs. Businesses of all sizes face these challenges, but solutions like a <strong>single view of inventory, real-time analytics, and event-driven architectures</strong> can significantly improve efficiency.</p>
+          </>
+        )
+      },
+      {
+        image: {
+          src: "/images/second-retail-image.png",
+          alt: "Industry Impact"
+        }
+      },
+      {
+        heading: "",
+        body: (
+          <>
+            <p>Inventory management directly impacts customer experiences, ensuring products are available when needed. It also enhances stock control, enabling more accurate demand forecasting, and improves workforce efficiency by streamlining operations.</p>
+          </>
+        )
+      }
+    ]
+  },
+  {
+    heading: "Behind The Scenes",
+    content: [
+      {
+        body: (
+          <>
+            <p>At its core, the system operates with key collections that work together to provide a <strong>single view of inventory</strong> across warehouses, stores, and e-commerce.</p>
+            <p>We manage <strong>products</strong>, track <strong>sales events</strong>, generate <strong>orders</strong> for restocking, and maintain visibility and analytics across locations.</p>
+            <p>What makes this system powerful is how these collections communicate in real time using an event-driven architecture. This means you don’t have to manually check for updates—you will receive real-time notifications. Additionally, you can configure automated responses to inventory changes. These capabilities are made possible by MongoDB Atlas, leveraging:</p>
+          </>
+        )
+      },
+      {
+        body: (
+          <>
+            <p><strong>MongoDB Change Streams</strong> allows you to subscribe to specific database changes and react in real time, enabling applications to immediately respond to updates, inserts, or deletions without manual polling.</p>
+            <p><strong>MongoDB Atlas Triggers</strong> execute server-side logic in response to database events or on a scheduled basis, enabling workflow automation without manual intervention. In inventory management, Triggers can automatically generate restock orders when stock levels drop, ensuring timely replenishment and seamless operations.</p>
+          </>
+        )
+      },
+      {
+        image: {
+          src: "/images/third-retail-image.png",
+          alt: "Behind The Scenes"
+        }
+      },
+      {
+        body: (
+          <>
+            <p><strong>Analytics for Smarter Decisions</strong> To optimize inventory replenishment decisions, we leverage <strong>MongoDB Atlas Charts</strong> and the <strong>Aggregation Framework</strong>. These tools allow us to analyze sales trends, stock movements, and demand patterns in real time, enabling businesses to make <strong>data-driven decisions</strong> on when and how to restock efficiently.</p>
+            <p></p>
+            <p>With <strong>real-time inventory visibility, automation, and analytics</strong>, this system ensures that businesses can <strong>react instantly to changes, maintain accurate stock levels, and optimize supply chain operations.</strong></p>
+          </>
+        )
+      }
+    ]
+  },
+  {
+    heading: "How to Demo",
+    content: [
+      {
+        body: (
+          <>
+            <p>This demo is designed to showcase how <strong>inventory processes react automatically and in real time</strong>, making it ideal to present with <strong>two screens</strong>. The main screen should be <strong>visible to the audience</strong>, while you take the initial control from the <a href="/control">Control Panel</a> (accessible via the gear icon in the user profile menu). This setup ensures a smooth experience, keeping the demo focused on real-time updates while you manage the flow in the background.</p>
+            <p><strong>In this Demo, You Will Be Able To:</strong></p>
+            <ul>
+              <li>Simulate the opening of one or multiple stores, enabling sales events across different locations using the "Open Store" button in the <a href="/control">Control Panel</a> .</li>
+              <li>Start fresh with all stock at ideal levels by using the "Reset All" button in the <a href="/control">Control Panel</a> .</li>
+              <li>Monitor real-time sales trends in the <a href="/dashboard">Analytics View</a>  to make informed decisions or configure automated processes based on real-time data.</li>
+              <li>Access a single view of your <a href="/products">Real-time Inventory</a> and receive low-stock alerts, allowing you to configure auto-replenishment or place manual orders to keep stock levels optimized.</li>
+              <li>Review and filter orders in the <a href="transactions?type=inbound&location">Orders View</a>.</li>
+              <li>Review and filter sales events in the <a href="transactions?type=outbound&location">Sales Events View</a>.</li>
+              <li>Interact with stock levels and receive real-time notifications using the <a href="/control">Control Panel</a>, while your audience watches a single view inventory in the <a href="/products">Real-time Inventory</a> respond dynamically to stock adjustments and configurations in real time.</li>
+            </ul>
+          </>
+        )
+      }
+    ]
+  },
+  {
+    heading: "Why MongoDB?",
+    content: [
+      {
+        heading: "Easy",
+        body: (
+          <>
+            <p>The document model mirrors the way developers think, making data modeling intuitive and adaptable for evolving inventory needs.</p>
+          </>
+        )
+      },
+      {
+        heading: "Fast",
+        body: (
+          <>
+            <p>Its intuitive structure makes development faster and easier, improving time to market not just with simple queries, but also by enabling innovation—for example, seamlessly integrating Change Streams and Triggers for real-time updates and automation.</p>
+          </>
+        )
+      },
+      {
+        heading: "Superior Architecture",
+        body: (
+          <>
+            <p>Workload Isolation ensures operational queries and analytics run efficiently without impacting performance, keeping inventory visibility and business intelligence always up to date.</p>
+          </>
+        )
+      },
+      {
+        body: (
+          <>
+            <p>With MongoDB’s flexible document model, real-time processing, and workload isolation, businesses can maintain a single, up-to-date view of inventory, scale seamlessly, and drive innovation effortlessly.</p>
+          </>
+        )
+      }
+    ]
+  }
+];
