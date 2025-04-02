@@ -5,13 +5,12 @@ import Select from "react-select";
 import { FaTimes, FaPlus, FaTrash } from "react-icons/fa";
 import { useUser } from "../context/UserContext";
 import { useRouter } from "next/router";
-import { useToast } from "@leafygreen-ui/toast";
+import { toast } from "react-hot-toast";
 import StockLevelBar from "./StockLevelBar";
 import { debounce } from "lodash"; // Import lodash debounce
 import styles from "../styles/popup.module.css";
 
 const ReplenishmentPopup = ({ product, onClose, onSave }) => {
-  const { pushToast } = useToast();
   const { selectedUser } = useUser();
   const router = useRouter();
   const { location } = router.query;
@@ -150,10 +149,7 @@ const ReplenishmentPopup = ({ product, onClose, onSave }) => {
       if (response.ok) {
         console.log("Transaction saved successfully");
         onClose();
-        pushToast({
-          title: "Order placed successfully",
-          variant: "success",
-        });
+        toast.success("Order placed successfully");
         setRows([]); // Clear rows after successful order
       } else {
         console.error("Error saving transaction");
