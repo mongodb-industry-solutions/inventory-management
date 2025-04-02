@@ -78,6 +78,9 @@ export const UserProvider = ({ children }) => {
 
 export const useUser = () => {
   const context = useContext(UserContext);
-  if (!context) throw new Error("useUser must be used within a UserProvider");
+  if (!context) {
+    console.error("useUser must be used within a UserProvider");
+    throw new Error("useUser must be used within a UserProvider");
+  }
   return context;
 };

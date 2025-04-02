@@ -28,7 +28,7 @@ export default function Product({ preloadedProduct }) {
   const [editableField, setEditableField] = useState(null);
   const [editedValue, setEditedValue] = useState("");
   const [imageError, setImageError] = useState(false);
-  const [industry, setIndustry] = useState("retail"); // Default industry value
+  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
 
   const dashboardDiv = useRef(null);
   const router = useRouter();
@@ -67,25 +67,6 @@ export default function Product({ preloadedProduct }) {
     () => (location ? { "location.destination.id": { $oid: location } } : {}),
     [location]
   );
-
-  // Fetch the industry from the API when the component mounts
-  useEffect(() => {
-    const fetchIndustry = async () => {
-      try {
-        const response = await fetch("/api/getIndustry");
-        if (response.ok) {
-          const data = await response.json();
-          setIndustry(data.industry);
-        } else {
-          console.error("Failed to fetch industry information");
-        }
-      } catch (error) {
-        console.error("Error fetching industry:", error);
-      }
-    };
-
-    fetchIndustry();
-  }, []);
 
   // Fetch analytics configuration and initialize the dashboard
   useEffect(() => {

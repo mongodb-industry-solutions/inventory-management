@@ -1,10 +1,10 @@
-import React, { createContext, useEffect, useState } from 'react';
-import '../styles/layout.css';
+import React, { createContext, useEffect, useState } from "react";
+import "../styles/layout.css";
 import "../styles/global.css";
-import Header from '../components/Header';
-import Navbar from '../components/Navbar';
-import { UserProvider } from '../context/UserContext';
-import { ToastProvider } from '@leafygreen-ui/toast';
+import Header from "../components/Header";
+import Navbar from "../components/Navbar";
+import { UserProvider } from "../context/UserContext";
+import { Toaster } from "react-hot-toast";
 
 export const ServerContext = createContext();
 
@@ -15,11 +15,11 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        const response = await fetch('/api/config');
+        const response = await fetch("/api/config");
         const data = await response.json();
         setUtils(data); // Set the configuration data in state
       } catch (error) {
-        console.error('Error fetching config:', error);
+        console.error("Error fetching config:", error);
       }
     };
 
@@ -34,15 +34,21 @@ function MyApp({ Component, pageProps }) {
   return (
     <ServerContext.Provider value={utils}>
       <UserProvider>
-        <ToastProvider>
-          <div className="layout">
-            <div className="header-container">
-              <Header />
-              <Navbar />
-            </div>
-            <Component {...pageProps} />
+        <Toaster
+          position="bottom-left"
+          toastOptions={{
+            style: {
+              fontFamily: "Arial, sans-serif",
+            },
+          }}
+        />
+        <div className="layout">
+          <div className="header-container">
+            <Header />
+            <Navbar />
           </div>
-        </ToastProvider>
+          <Component {...pageProps} />
+        </div>
       </UserProvider>
     </ServerContext.Provider>
   );

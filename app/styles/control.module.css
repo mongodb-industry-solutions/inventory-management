@@ -55,3 +55,19 @@
 .product-cell {
     padding: 14px;;
 }
+
+.sale-button {
+    background-color: #4db33d;
+    padding: 6px 12px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 10px;
+    width: 120px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sale-button:hover {
+    background-color: #399d2e;
+  }
