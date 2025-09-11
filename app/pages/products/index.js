@@ -1,4 +1,6 @@
-import { clientPromise } from "../../lib/mongodb";
+import getMongoClientPromise from "../../lib/mongodb";
+import retail from "../../config/retail";
+import manufacturing from "../../config/manufacturing";
 import { useCallback, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { FaSearch } from "react-icons/fa";
@@ -8,7 +10,7 @@ import { ObjectId } from "mongodb";
 import { toast } from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 
-export default function Products({ products, facets }) {
+export default function Products({ products, facets, industry }) {
   // State variables
   const [searchQuery, setSearchQuery] = useState("");
   const [displayProducts, setDisplayProducts] = useState(products);
@@ -24,7 +26,11 @@ export default function Products({ products, facets }) {
   const collection = "products";
 
   const router = useRouter();
-  const { location } = router.query;
+  const { location, industry: industryParam } = router.query;
+  const runtimeIndustry =
+    industryParam === "manufacturing" || industryParam === "retail"
+      ? industryParam
+      : industry;
   // Refs
   const inputRef = useRef(null);
 
@@ -293,6 +299,7 @@ export default function Products({ products, facets }) {
           facets={facets}
           filterProducts={filterProducts}
           page="products"
+          industry={runtimeIndustry}
         />
         <div className="search-bar">
           <input
@@ -366,17 +373,19 @@ export default function Products({ products, facets }) {
   );
 }
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ query, resolvedUrl }) {
   try {
-    if (!process.env.MONGODB_DATABASE_NAME) {
-      throw new Error(
-        'Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"'
-      );
-    }
-
-    const dbName = process.env.MONGODB_DATABASE_NAME;
+    const industryFromQuery = query.industry;
+    const match = resolvedUrl.match(/^\/(retail|manufacturing)(?:\/|\?|$)/);
+    const industryFromPath = match ? match[1] : null;
+    const industry =
+      industryFromQuery === "manufacturing" || industryFromQuery === "retail"
+        ? industryFromQuery
+        : industryFromPath || "retail";
+    const dbName = (industry === "manufacturing" ? manufacturing : retail)
+      .mongodbDatabaseName;
     const locationId = query.location;
-    const client = await clientPromise;
+    const client = await getMongoClientPromise();
     const db = client.db(dbName);
     const collectionName = locationId ? "products" : "products_area_view";
     const productsFilter = locationId
@@ -421,6 +430,7 @@ export async function getServerSideProps({ query }) {
       props: {
         products: JSON.parse(JSON.stringify(products)),
         facets: JSON.parse(JSON.stringify(facets)),
+        industry,
       },
     };
   } catch (e) {

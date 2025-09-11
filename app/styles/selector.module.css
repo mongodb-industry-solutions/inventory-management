@@ -1,0 +1,86 @@
+.modalCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.centerText {
+  text-align: center;
+}
+
+.weightNormal {
+  font-weight: normal;
+}
+
+.cardsContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+  margin: 30px 0px 20px 0px;
+}
+
+.description {
+  font-size: 14px;
+  text-align: center;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(30, 32, 34, 0.65);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.box {
+  width: 800px;
+  max-width: 95vw;
+  height: 560px;
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 30px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  padding: 0;
+  overflow: auto;
+}
+
+.content {
+  padding: 32px 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.cardButton {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .box {
+    width: 98vw;
+    height: 98vh;
+    border-radius: 0;
+  }
+}
+
+

@@ -10,12 +10,16 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
   const [selectedLocationId, setSelectedLocationId] = useState("");
-  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
 
   const { selectedUser } = useUser();
 
   const router = useRouter();
-  const { type } = router.query;
+  const { type, industry: industryParam } = router.query;
+  const industry =
+    industryParam === "manufacturing" || industryParam === "retail"
+      ? industryParam
+      : "retail";
+  const prefix = industry ? `/${industry}` : "";
 
   const handleDropdownToggle = () => {
     setIsOpen(!isOpen);
@@ -65,8 +69,8 @@ function Navbar() {
           <a
             href={
               selectedLocationId
-                ? `/products?location=${selectedLocationId}`
-                : "/products"
+                ? `${prefix}/products?location=${selectedLocationId}`
+                : `${prefix}/products`
             }
           >
             <button
@@ -80,8 +84,8 @@ function Navbar() {
           <a
             href={
               selectedLocationId
-                ? `/transactions?type=inbound&location=${selectedLocationId}`
-                : "/transactions?type=inbound"
+                ? `${prefix}/transactions?type=inbound&location=${selectedLocationId}`
+                : `${prefix}/transactions?type=inbound`
             }
           >
             <button
@@ -97,8 +101,8 @@ function Navbar() {
           <a
             href={
               selectedLocationId
-                ? `/transactions?type=outbound&location=${selectedLocationId}`
-                : "/transactions?type=outbound"
+                ? `${prefix}/transactions?type=outbound&location=${selectedLocationId}`
+                : `${prefix}/transactions?type=outbound`
             }
           >
             <button
@@ -118,8 +122,8 @@ function Navbar() {
           <a
             href={
               selectedLocationId
-                ? `/dashboard?location=${selectedLocationId}`
-                : "/dashboard"
+                ? `${prefix}/dashboard?location=${selectedLocationId}`
+                : `${prefix}/dashboard`
             }
           >
             <button
