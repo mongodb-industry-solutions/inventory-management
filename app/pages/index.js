@@ -1,9 +1,9 @@
 import Head from "next/head";
-import { clientPromise } from "../lib/mongodb";
+import getMongoClientPromise from "../lib/mongodb";
 
 export const getServerSideProps = async () => {
   try {
-    await clientPromise;
+    await getMongoClientPromise();
 
     return {
       props: { isConnected: true },

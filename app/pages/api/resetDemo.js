@@ -1,4 +1,4 @@
-import { clientPromise } from "../../lib/mongodb";
+import getMongoClientPromise from "../../lib/mongodb";
 import fs from "fs";
 import path from "path";
 import { EJSON } from "bson";
@@ -13,7 +13,7 @@ export default async (req, res) => {
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
     const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
-    const client = await clientPromise;
+    const client = await getMongoClientPromise();
     const db = client.db(dbName);
 
     const fileName = `./data/${industry}/products.json`;

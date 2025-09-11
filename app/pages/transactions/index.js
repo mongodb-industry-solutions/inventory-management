@@ -1,4 +1,4 @@
-import { clientPromise } from "../../lib/mongodb";
+import getMongoClientPromise from "../../lib/mongodb";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useUser } from "../../context/UserContext";
@@ -8,14 +8,18 @@ import Sidebar from "../../components/Sidebar";
 import { facetsTransactionsPipeline } from "../../data/aggregations/facets";
 import { fetchTransactionsPipeline } from "../../data/aggregations/fetch";
 
-export default function Transactions({ orders, facets }) {
+export default function Transactions({
+  orders,
+  facets,
+  industry: propsIndustry,
+}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [displayOrders, setDisplayOrders] = useState(orders);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Set the number of items per page
   const [currentPage, setCurrentPage] = useState(1); // Set the initial current page to 1
-  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
+  const industry = propsIndustry || "retail";
 
   const lightColors = [
     "#B1FF05",
@@ -263,7 +267,12 @@ export default function Transactions({ orders, facets }) {
   return (
     <>
       <div className="content">
-        <Sidebar facets={facets} filterOrders={filterOrders} page="orders" />
+        <Sidebar
+          facets={facets}
+          filterOrders={filterOrders}
+          page="orders"
+          industry={industry}
+        />
         <div className="search-bar">
           <input
             ref={inputRef} // Attach the ref to the input element
@@ -468,7 +477,7 @@ export async function getServerSideProps(context) {
     const type = query.type;
     const location = query.location;
 
-    const client = await clientPromise;
+    const client = await getMongoClientPromise();
     const db = client.db(dbName);
 
     // Fetch transactions
@@ -491,6 +500,7 @@ export async function getServerSideProps(context) {
       props: {
         orders: JSON.parse(JSON.stringify(transactions)),
         facets: JSON.parse(JSON.stringify(facets)),
+        industry,
       },
     };
   } catch (e) {

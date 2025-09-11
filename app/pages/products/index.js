@@ -1,4 +1,4 @@
-import { clientPromise } from "../../lib/mongodb";
+import getMongoClientPromise from "../../lib/mongodb";
 import { useCallback, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { FaSearch } from "react-icons/fa";
@@ -8,7 +8,7 @@ import { ObjectId } from "mongodb";
 import { toast } from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 
-export default function Products({ products, facets }) {
+export default function Products({ products, facets, industry }) {
   // State variables
   const [searchQuery, setSearchQuery] = useState("");
   const [displayProducts, setDisplayProducts] = useState(products);
@@ -293,6 +293,7 @@ export default function Products({ products, facets }) {
           facets={facets}
           filterProducts={filterProducts}
           page="products"
+          industry={industry}
         />
         <div className="search-bar">
           <input
@@ -376,7 +377,7 @@ export async function getServerSideProps({ query }) {
 
     const dbName = process.env.MONGODB_DATABASE_NAME;
     const locationId = query.location;
-    const client = await clientPromise;
+    const client = await getMongoClientPromise();
     const db = client.db(dbName);
     const collectionName = locationId ? "products" : "products_area_view";
     const productsFilter = locationId
@@ -417,10 +418,13 @@ export async function getServerSideProps({ query }) {
 
     facets = await db.collection("products").aggregate(agg).toArray();
 
+    const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
+
     return {
       props: {
         products: JSON.parse(JSON.stringify(products)),
         facets: JSON.parse(JSON.stringify(facets)),
+        industry,
       },
     };
   } catch (e) {

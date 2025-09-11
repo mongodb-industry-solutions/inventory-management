@@ -1,4 +1,4 @@
-import { clientPromise } from "../../lib/mongodb";
+import getMongoClientPromise from "../../lib/mongodb";
 import { ObjectId } from "mongodb";
 
 let client = null;
@@ -25,7 +25,7 @@ export default async (req, res) => {
     }
 
     if (!client) {
-      client = await clientPromise;
+      client = await getMongoClientPromise();
     }
     const db = client.db(database);
 

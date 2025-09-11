@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/router";
-import { clientPromise } from "../lib/mongodb";
+import getMongoClientPromise from "../lib/mongodb";
 import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
 import { toast } from "react-hot-toast";
@@ -515,7 +515,7 @@ export async function getServerSideProps({ query }) {
 
     const locationId = query.location;
 
-    const client = await clientPromise;
+    const client = await getMongoClientPromise();
     const db = client.db(dbName);
 
     const productsFilter = locationId

@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from "react";
 import { useRouter } from "next/router";
-import { clientPromise } from "../../lib/mongodb";
+import getMongoClientPromise from "../../lib/mongodb";
 import { ObjectId } from "mongodb";
 import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
 import { FaTshirt, FaWhmcs } from "react-icons/fa";
@@ -501,7 +501,7 @@ export async function getServerSideProps(context) {
     const { params, query } = context;
     const locationId = query.location;
 
-    const client = await clientPromise;
+    const client = await getMongoClientPromise();
     const db = client.db(dbName);
 
     const collectionName = locationId ? "products" : "products_area_view";
