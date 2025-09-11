@@ -97,3 +97,15 @@
   .user-list li:hover {
     background-color: #f0f0f0;
   }
+
+  .action-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .action-text {
+    font-size: 13px;
+  }

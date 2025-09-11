@@ -1,4 +1,7 @@
 import getMongoClientPromise from "../../lib/mongodb";
+import retail from "../../config/retail";
+import manufacturing from "../../config/manufacturing";
+import { resolveIndustryFromRequest } from "../../lib/industryConfig";
 import {
   searchProductsPipeline,
   searchTransactionsPipeline,
@@ -8,13 +11,9 @@ let client = null;
 
 export default async (req, res) => {
   try {
-    if (!process.env.MONGODB_DATABASE_NAME) {
-      throw new Error(
-        'Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"'
-      );
-    }
-
-    const dbName = process.env.MONGODB_DATABASE_NAME;
+    const industry = resolveIndustryFromRequest(req);
+    const dbName = (industry === "manufacturing" ? manufacturing : retail)
+      .mongodbDatabaseName;
 
     if (!client) {
       client = await getMongoClientPromise();
@@ -22,7 +21,7 @@ export default async (req, res) => {
     const db = client.db(dbName);
 
     // Validate input parameters
-    const { collection, type, industry, location } = req.query;
+    const { collection, type, location } = req.query;
     const searchQuery = req.body;
 
     if (

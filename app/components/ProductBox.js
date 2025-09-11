@@ -9,8 +9,12 @@ const ProductBox = ({ product }) => {
   const [imageError, setImageError] = useState(false);
 
   const router = useRouter();
-  const { location } = router.query;
-  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
+  const { location, industry: industryParam } = router.query;
+  const industry =
+    industryParam === "manufacturing" || industryParam === "retail"
+      ? industryParam
+      : "retail";
+  const prefix = industry ? `/${industry}` : "";
 
   const lightColors = [
     "#B1FF05",
@@ -84,8 +88,8 @@ const ProductBox = ({ product }) => {
         <a
           href={
             location
-              ? `/products/${product._id}?location=${location}`
-              : `/products/${product._id}`
+              ? `${prefix}/products/${product._id}?location=${location}`
+              : `${prefix}/products/${product._id}`
           }
           className={styles["product-link"]}
         >

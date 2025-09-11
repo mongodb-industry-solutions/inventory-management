@@ -1,4 +1,7 @@
 import getMongoClientPromise from "../../lib/mongodb";
+import retail from "../../config/retail";
+import manufacturing from "../../config/manufacturing";
+import { resolveIndustryFromRequest } from "../../lib/industryConfig";
 import { ObjectId } from "mongodb";
 
 let client = null;
@@ -17,12 +20,9 @@ export default async (req, res) => {
         .json({ error: "Missing required fields in request body" });
     }
 
-    const database = process.env.MONGODB_DATABASE_NAME;
-    if (!database) {
-      return res.status(500).json({
-        error: "Missing database name in environment variables",
-      });
-    }
+    const industry = resolveIndustryFromRequest(req);
+    const database = (industry === "manufacturing" ? manufacturing : retail)
+      .mongodbDatabaseName;
 
     if (!client) {
       client = await getMongoClientPromise();

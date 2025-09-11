@@ -1,4 +1,6 @@
 import getMongoClientPromise from "../../lib/mongodb";
+import retail from "../../config/retail";
+import manufacturing from "../../config/manufacturing";
 import { useCallback, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { FaSearch } from "react-icons/fa";
@@ -24,7 +26,11 @@ export default function Products({ products, facets, industry }) {
   const collection = "products";
 
   const router = useRouter();
-  const { location } = router.query;
+  const { location, industry: industryParam } = router.query;
+  const runtimeIndustry =
+    industryParam === "manufacturing" || industryParam === "retail"
+      ? industryParam
+      : industry;
   // Refs
   const inputRef = useRef(null);
 
@@ -293,7 +299,7 @@ export default function Products({ products, facets, industry }) {
           facets={facets}
           filterProducts={filterProducts}
           page="products"
-          industry={industry}
+          industry={runtimeIndustry}
         />
         <div className="search-bar">
           <input
@@ -367,15 +373,17 @@ export default function Products({ products, facets, industry }) {
   );
 }
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ query, resolvedUrl }) {
   try {
-    if (!process.env.MONGODB_DATABASE_NAME) {
-      throw new Error(
-        'Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"'
-      );
-    }
-
-    const dbName = process.env.MONGODB_DATABASE_NAME;
+    const industryFromQuery = query.industry;
+    const match = resolvedUrl.match(/^\/(retail|manufacturing)(?:\/|\?|$)/);
+    const industryFromPath = match ? match[1] : null;
+    const industry =
+      industryFromQuery === "manufacturing" || industryFromQuery === "retail"
+        ? industryFromQuery
+        : industryFromPath || "retail";
+    const dbName = (industry === "manufacturing" ? manufacturing : retail)
+      .mongodbDatabaseName;
     const locationId = query.location;
     const client = await getMongoClientPromise();
     const db = client.db(dbName);
@@ -417,8 +425,6 @@ export async function getServerSideProps({ query }) {
     ];
 
     facets = await db.collection("products").aggregate(agg).toArray();
-
-    const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
 
     return {
       props: {

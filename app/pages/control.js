@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/router";
 import getMongoClientPromise from "../lib/mongodb";
+import retail from "../config/retail";
+import manufacturing from "../config/manufacturing";
 import ProductBox from "../components/ProductBox";
 import StockLevelBar from "../components/StockLevelBar";
 import { toast } from "react-hot-toast";
@@ -16,7 +18,11 @@ export default function Control({ preloadedProducts, locations }) {
   const [onlineToInPersonRatio, setOnlineToInPersonRatio] = useState(0.5);
   const [isSaving, setIsSaving] = useState(false);
 
-  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
+  const { industry: industryParam } = useRouter().query;
+  const industry =
+    industryParam === "manufacturing" || industryParam === "retail"
+      ? industryParam
+      : "retail";
   const keyword = industry === "retail" ? "Selling" : "Production";
 
   const router = useRouter();
@@ -291,11 +297,12 @@ export default function Control({ preloadedProducts, locations }) {
 
   const handleResetDemo = async () => {
     try {
-      const response = await fetch("/api/resetDemo", {
+      const response = await fetch(`/api/resetDemo?industry=${industry}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ industry }),
       });
       if (response.ok) {
         console.log("Product reset successfully");
@@ -503,15 +510,16 @@ export default function Control({ preloadedProducts, locations }) {
   );
 }
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ query, resolvedUrl }) {
   try {
-    if (!process.env.MONGODB_DATABASE_NAME) {
-      throw new Error(
-        'Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"'
-      );
-    }
-
-    const dbName = process.env.MONGODB_DATABASE_NAME;
+    const industryFromQuery = query.industry;
+    const match = resolvedUrl.match(/^\/(retail|manufacturing)(?:\/|\?|$)/);
+    const industry =
+      industryFromQuery === "manufacturing" || industryFromQuery === "retail"
+        ? industryFromQuery
+        : match?.[1] || "retail";
+    const dbName = (industry === "manufacturing" ? manufacturing : retail)
+      .mongodbDatabaseName;
 
     const locationId = query.location;
 

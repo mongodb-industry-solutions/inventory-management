@@ -6,10 +6,9 @@ let clientPromise;
 const changeStreams = new Map();
 
 function loadMongoEnv() {
-  const { MONGODB_URI, MONGODB_DATABASE_NAME } = process.env;
+  const { MONGODB_URI } = process.env;
   const missing = [];
   if (!MONGODB_URI) missing.push("MONGODB_URI");
-  if (!MONGODB_DATABASE_NAME) missing.push("MONGODB_DATABASE_NAME");
   if (missing.length) {
     throw new Error(
       `Missing required MongoDB environment variables at runtime: ${missing.join(
@@ -17,7 +16,7 @@ function loadMongoEnv() {
       )}`
     );
   }
-  return { MONGODB_URI, MONGODB_DATABASE_NAME };
+  return { MONGODB_URI };
 }
 
 function createMongoClient() {
@@ -44,9 +43,17 @@ function getMongoClientPromise() {
 
 async function getChangeStream(filter, key) {
   if (!changeStreams.has(key)) {
-    const { MONGODB_DATABASE_NAME } = loadMongoEnv();
+    throw new Error(
+      "getChangeStream requires a database name. Use getChangeStreamForDb(filter, key, databaseName)."
+    );
+  }
+  return changeStreams.get(key);
+}
+
+async function getChangeStreamForDb(filter, key, databaseName) {
+  if (!changeStreams.has(key)) {
     const client = await getMongoClientPromise();
-    const db = client.db(MONGODB_DATABASE_NAME);
+    const db = client.db(databaseName);
 
     const filterEJSON = EJSON.parse(JSON.stringify(filter));
 
@@ -68,5 +75,5 @@ async function getChangeStream(filter, key) {
   return changeStreams.get(key);
 }
 
-export { getMongoClientPromise, getChangeStream };
+export { getMongoClientPromise, getChangeStream, getChangeStreamForDb };
 export default getMongoClientPromise;
