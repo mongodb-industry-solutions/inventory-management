@@ -4,22 +4,28 @@
  * @param {string} location - The location ID to filter by (optional)
  * @returns {Array} - Aggregation pipeline for searching products
  */
+import { ObjectId } from "mongodb";
+
 export const searchProductsPipeline = (searchQuery, location) => {
-  if (!searchQuery || typeof searchQuery !== 'string' || searchQuery.trim() === '') {
+  if (
+    !searchQuery ||
+    typeof searchQuery !== "string" ||
+    searchQuery.trim() === ""
+  ) {
     throw new Error("'searchQuery' must be a non-empty string");
   }
 
   const pipeline = [
     {
       $search: {
-        index: 'default',
+        index: "default",
         compound: {
           must: [
             {
               text: {
                 query: searchQuery.trim(),
                 path: {
-                  wildcard: '*', // Search across all fields
+                  wildcard: "*", // Search across all fields
                 },
                 fuzzy: {
                   maxEdits: 2, // Allows minor typos
@@ -37,8 +43,8 @@ export const searchProductsPipeline = (searchQuery, location) => {
   if (location) {
     pipeline[0].$search.compound.filter.push({
       equals: {
-        path: 'total_stock_sum.location.id',
-        value: { $oid: location }, // Filter by specific location
+        path: "total_stock_sum.location.id",
+        value: ObjectId.createFromHexString(location), // Filter by specific location
       },
     });
   } else {
@@ -46,19 +52,19 @@ export const searchProductsPipeline = (searchQuery, location) => {
     pipeline.push(
       {
         $lookup: {
-          from: 'products_area_view',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'result',
+          from: "products_area_view",
+          localField: "_id",
+          foreignField: "_id",
+          as: "result",
         },
       },
       {
         $set: {
-          result: { $arrayElemAt: ['$result', 0] }, // Extract the first matching document
+          result: { $arrayElemAt: ["$result", 0] }, // Extract the first matching document
         },
       },
       {
-        $replaceRoot: { newRoot: '$result' }, // Replace the root document with the result
+        $replaceRoot: { newRoot: "$result" }, // Replace the root document with the result
       }
     );
   }
@@ -74,21 +80,25 @@ export const searchProductsPipeline = (searchQuery, location) => {
  * @returns {Array} - Aggregation pipeline for searching transactions
  */
 export const searchTransactionsPipeline = (searchQuery, location, type) => {
-  if (!searchQuery || typeof searchQuery !== 'string' || searchQuery.trim() === '') {
+  if (
+    !searchQuery ||
+    typeof searchQuery !== "string" ||
+    searchQuery.trim() === ""
+  ) {
     throw new Error("'searchQuery' must be a non-empty string");
   }
 
   const pipeline = [
     {
       $search: {
-        index: 'default',
+        index: "default",
         compound: {
           should: [
             {
               text: {
                 query: searchQuery.trim(),
                 path: {
-                  wildcard: '*', // Search across all fields
+                  wildcard: "*", // Search across all fields
                 },
                 fuzzy: {
                   maxEdits: 2, // Allows minor typos
@@ -102,7 +112,7 @@ export const searchTransactionsPipeline = (searchQuery, location, type) => {
                   {
                     text: {
                       query: type, // Filter by transaction type
-                      path: 'type',
+                      path: "type",
                     },
                   },
                 ]
@@ -113,7 +123,7 @@ export const searchTransactionsPipeline = (searchQuery, location, type) => {
     },
     {
       $unwind: {
-        path: '$items', // Unwind items array for detailed processing
+        path: "$items", // Unwind items array for detailed processing
       },
     },
     { $limit: 20 }, // Limit the number of results
@@ -122,8 +132,9 @@ export const searchTransactionsPipeline = (searchQuery, location, type) => {
   if (location) {
     pipeline[0].$search.compound.filter.push({
       equals: {
-        path: type === 'inbound' ? 'location.destination.id' : 'location.origin.id',
-        value: { $oid: location }, // Filter by specific location
+        path:
+          type === "inbound" ? "location.destination.id" : "location.origin.id",
+        value: ObjectId.createFromHexString(location), // Filter by specific location
       },
     });
   }

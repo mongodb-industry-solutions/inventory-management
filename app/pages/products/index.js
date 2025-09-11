@@ -124,7 +124,12 @@ export default function Products({ products, facets, industry }) {
     if (searchQuery.trim().length > 0) {
       // Avoid empty space triggering a fetch
       try {
-        const response = await fetch("/api/search?collection=products", {
+        const qs = new URLSearchParams({
+          collection: "products",
+          industry: runtimeIndustry,
+          ...(location ? { location } : {}),
+        }).toString();
+        const response = await fetch(`/api/search?${qs}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -152,7 +157,12 @@ export default function Products({ products, facets, industry }) {
     if (searchValue.trim().length > 0) {
       // Avoid spaces triggering a fetch
       try {
-        const response = await fetch("/api/autocomplete?collection=products", {
+        const qs = new URLSearchParams({
+          collection: "products",
+          industry: runtimeIndustry,
+          ...(location ? { location } : {}),
+        }).toString();
+        const response = await fetch(`/api/autocomplete?${qs}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

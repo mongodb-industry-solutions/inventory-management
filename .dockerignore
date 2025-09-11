@@ -16,6 +16,11 @@ node_modules/
 *.tsbuildinfo
 next-env.d.ts
 
+utils/
+external/
+environments/
+README.md
+
 # Ignore deployment/config files
 policy.json
 task-def.json
