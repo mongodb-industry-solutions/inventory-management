@@ -37,7 +37,8 @@ export default function Products({ products, facets, industry }) {
   // Function to add a new alert to the list
   const addAlert = (item) => {
     const queryParameters = new URLSearchParams(router.query).toString();
-    const href = `/products/${item.product_id}?${queryParameters}`;
+    const prefix = runtimeIndustry ? `/${runtimeIndustry}` : "";
+    const href = `${prefix}/products/${item.product_id}?${queryParameters}`;
 
     toast(() => (
       <span>
