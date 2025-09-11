@@ -1,19 +1,28 @@
-import { clientPromise } from "../../lib/mongodb";
+import getMongoClientPromise from "../../lib/mongodb";
+import retail from "../../config/retail";
+import manufacturing from "../../config/manufacturing";
+import { resolveIndustryFromRequest } from "../../lib/industryConfig";
 import fs from "fs";
 import path from "path";
 import { EJSON } from "bson";
 
 export default async (req, res) => {
   try {
-    if (!process.env.MONGODB_DATABASE_NAME) {
-      throw new Error(
-        'Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"'
-      );
-    }
-
-    const dbName = process.env.MONGODB_DATABASE_NAME;
-    const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
-    const client = await clientPromise;
+    const industryParam = (
+      req.query.industry ||
+      req.body?.industry ||
+      ""
+    ).toString();
+    const fallback = resolveIndustryFromRequest(req);
+    const industry =
+      industryParam === "manufacturing" || industryParam === "retail"
+        ? industryParam
+        : fallback;
+    const dbName =
+      industry === "manufacturing"
+        ? manufacturing.mongodbDatabaseName
+        : retail.mongodbDatabaseName;
+    const client = await getMongoClientPromise();
     const db = client.db(dbName);
 
     const fileName = `./data/${industry}/products.json`;

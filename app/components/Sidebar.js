@@ -5,13 +5,20 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 import styles from "../styles/sidebar.module.css";
 
-function Sidebar({ facets, filterProducts, filterOrders, filterSales, page }) {
+function Sidebar({
+  facets,
+  filterProducts,
+  filterOrders,
+  filterSales,
+  page,
+  industry,
+}) {
   const [isShrunk, setIsShrunk] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [numColorsToShow, setNumColorsToShow] = useState(10);
   const [numItemsToShow, setNumItemsToShow] = useState(10); // State for "Items" list
-  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
+  const resolvedIndustry = industry || "retail";
 
   const handleItemChange = (event) => {
     const item = event;
@@ -99,7 +106,7 @@ function Sidebar({ facets, filterProducts, filterOrders, filterSales, page }) {
       {!isShrunk && (
         <>
           <div className={styles["size-filters"]}>
-            <h3>{industry == "manufacturing" ? "Items" : "Size"}</h3>
+            <h3>{resolvedIndustry == "manufacturing" ? "Items" : "Size"}</h3>
             <div className={styles["item-list"]}>
               {facets?.[0]?.facet?.itemsFacet.buckets
                 .sort((a, b) => {
@@ -134,7 +141,9 @@ function Sidebar({ facets, filterProducts, filterOrders, filterSales, page }) {
           </div>
 
           <div className={styles["color-filters"]}>
-            <h3>{industry == "manufacturing" ? "Category" : "Color"}</h3>
+            <h3>
+              {resolvedIndustry == "manufacturing" ? "Category" : "Color"}
+            </h3>
             <div className={styles["color-list"]}>
               {facets?.[0]?.facet?.productsFacet.buckets
                 .slice(0, numColorsToShow)

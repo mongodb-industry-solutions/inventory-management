@@ -6,7 +6,9 @@ import React, {
   useMemo,
 } from "react";
 import { useRouter } from "next/router";
-import { clientPromise } from "../../lib/mongodb";
+import getMongoClientPromise from "../../lib/mongodb";
+import retail from "../../config/retail";
+import manufacturing from "../../config/manufacturing";
 import { ObjectId } from "mongodb";
 import ChartsEmbedSDK from "@mongodb-js/charts-embed-dom";
 import { FaTshirt, FaWhmcs } from "react-icons/fa";
@@ -28,7 +30,6 @@ export default function Product({ preloadedProduct }) {
   const [editableField, setEditableField] = useState(null);
   const [editedValue, setEditedValue] = useState("");
   const [imageError, setImageError] = useState(false);
-  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
 
   const dashboardDiv = useRef(null);
   const router = useRouter();
@@ -36,7 +37,11 @@ export default function Product({ preloadedProduct }) {
   const sessionId = useRef(
     `session_${Math.random().toString(36).substr(2, 9)}`
   );
-  const { location } = router.query;
+  const { location, industry: industryParam } = router.query;
+  const industry =
+    industryParam === "manufacturing" || industryParam === "retail"
+      ? industryParam
+      : "retail";
 
   // Define light colors for dynamic leaf URL logic
   const lightColors = [
@@ -490,18 +495,20 @@ export default function Product({ preloadedProduct }) {
 
 export async function getServerSideProps(context) {
   try {
-    if (!process.env.MONGODB_DATABASE_NAME) {
-      throw new Error(
-        'Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"'
-      );
-    }
+    const { resolvedUrl, query } = context;
+    const industryFromQuery = query.industry;
+    const match = resolvedUrl.match(/^\/(retail|manufacturing)(?:\/|\?|$)/);
+    const industry =
+      industryFromQuery === "manufacturing" || industryFromQuery === "retail"
+        ? industryFromQuery
+        : match?.[1] || "retail";
+    const dbName = (industry === "manufacturing" ? manufacturing : retail)
+      .mongodbDatabaseName;
 
-    const dbName = process.env.MONGODB_DATABASE_NAME;
-
-    const { params, query } = context;
+    const { params } = context;
     const locationId = query.location;
 
-    const client = await clientPromise;
+    const client = await getMongoClientPromise();
     const db = client.db(dbName);
 
     const collectionName = locationId ? "products" : "products_area_view";

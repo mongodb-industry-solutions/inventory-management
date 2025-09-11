@@ -1,4 +1,6 @@
-import { clientPromise } from "../../lib/mongodb";
+import getMongoClientPromise from "../../lib/mongodb";
+import retail from "../../config/retail";
+import manufacturing from "../../config/manufacturing";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useUser } from "../../context/UserContext";
@@ -8,14 +10,23 @@ import Sidebar from "../../components/Sidebar";
 import { facetsTransactionsPipeline } from "../../data/aggregations/facets";
 import { fetchTransactionsPipeline } from "../../data/aggregations/fetch";
 
-export default function Transactions({ orders, facets }) {
+export default function Transactions({
+  orders,
+  facets,
+  industry: propsIndustry,
+}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [displayOrders, setDisplayOrders] = useState(orders);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Set the number of items per page
   const [currentPage, setCurrentPage] = useState(1); // Set the initial current page to 1
-  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
+  const router = useRouter();
+  const { industry: industryParam } = router.query;
+  const industry =
+    industryParam === "manufacturing" || industryParam === "retail"
+      ? industryParam
+      : propsIndustry || "retail";
 
   const lightColors = [
     "#B1FF05",
@@ -35,7 +46,6 @@ export default function Transactions({ orders, facets }) {
 
   const { selectedUser } = useUser();
 
-  const router = useRouter();
   const { location, type } = router.query;
 
   useEffect(() => {
@@ -263,7 +273,12 @@ export default function Transactions({ orders, facets }) {
   return (
     <>
       <div className="content">
-        <Sidebar facets={facets} filterOrders={filterOrders} page="orders" />
+        <Sidebar
+          facets={facets}
+          filterOrders={filterOrders}
+          page="orders"
+          industry={industry}
+        />
         <div className="search-bar">
           <input
             ref={inputRef} // Attach the ref to the input element
@@ -455,20 +470,20 @@ export default function Transactions({ orders, facets }) {
 
 export async function getServerSideProps(context) {
   try {
-    if (!process.env.MONGODB_DATABASE_NAME) {
-      throw new Error(
-        'Invalid/Missing environment variables: "MONGODB_DATABASE_NAME"'
-      );
-    }
+    const { query, resolvedUrl } = context;
+    const industryFromQuery = query.industry;
+    const match = resolvedUrl.match(/^\/(retail|manufacturing)(?:\/|\?|$)/);
+    const industry =
+      industryFromQuery === "manufacturing" || industryFromQuery === "retail"
+        ? industryFromQuery
+        : match?.[1] || "retail";
+    const dbName = (industry === "manufacturing" ? manufacturing : retail)
+      .mongodbDatabaseName;
 
-    const dbName = process.env.MONGODB_DATABASE_NAME;
-    const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
-
-    const { query } = context;
     const type = query.type;
     const location = query.location;
 
-    const client = await clientPromise;
+    const client = await getMongoClientPromise();
     const db = client.db(dbName);
 
     // Fetch transactions
@@ -491,6 +506,7 @@ export async function getServerSideProps(context) {
       props: {
         orders: JSON.parse(JSON.stringify(transactions)),
         facets: JSON.parse(JSON.stringify(facets)),
+        industry,
       },
     };
   } catch (e) {

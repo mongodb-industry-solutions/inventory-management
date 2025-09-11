@@ -1,0 +1,32 @@
+.env
+.env.*
+*.env
+*.env.*
+**/.env
+**/.env.*
+
+
+node_modules/
+.next/
+.out/
+.build/
+.coverage/
+.DS_Store
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+utils/
+external/
+environments/
+README.md
+
+# Ignore deployment/config files
+policy.json
+task-def.json
+Makefile
+
+# Ignore CI/CD and legal files
+.drone.yml
+LICENSE
+THIRD-PARTY-NOTICES.md

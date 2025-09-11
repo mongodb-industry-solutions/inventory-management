@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useUser } from "../context/UserContext";
 import { MongoDBLogoMark } from "@leafygreen-ui/logo";
 import Icon from "@leafygreen-ui/icon";
-import IconButton from "@leafygreen-ui/icon-button";
 import { H2 } from "@leafygreen-ui/typography";
 import styles from "../styles/header.module.css";
 import InfoWizard from "./InfoWizard";
@@ -14,9 +13,12 @@ function Header() {
   const [usersList, setUsersList] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [openHelpModal, setOpenHelpModal] = useState(false);
-  const industry = process.env.NEXT_PUBLIC_DEMO_INDUSTRY || "retail";
-
   const router = useRouter();
+  const { industry: industryParam } = router.query;
+  const industry =
+    industryParam === "manufacturing" || industryParam === "retail"
+      ? industryParam
+      : "retail";
   const { location, ...otherQueryParams } = router.query;
 
   const { selectedUser, setSelectedUser } = useUser();
@@ -47,13 +49,14 @@ function Header() {
   useEffect(() => {
     if (selectedUser) {
       const defaultLocation = selectedUser.permissions.locations?.[0]?.id;
-      router.push({
-        pathname: router.pathname === "/" ? "/products" : router.pathname,
-        query: {
-          ...otherQueryParams,
-          location: defaultLocation,
-        },
-      });
+      const prefix = industry ? `/${industry}` : "";
+      const nextPath =
+        router.pathname === "/" ? `${prefix}/products` : router.asPath;
+      const url = new URL(nextPath, window.location.origin);
+      const params = new URLSearchParams(url.search);
+      params.set("location", defaultLocation);
+      params.set("industry", industry);
+      router.push(`${url.pathname}?${params.toString()}`);
     }
   }, [selectedUser]);
 
@@ -117,13 +120,27 @@ function Header() {
                   </li>
                 ))}
             </ul>
-            <IconButton
-              aria-label="Control Panel"
-              href={`/control?${new URLSearchParams(router.query).toString()}`}
-              target="_blank"
-            >
-              <Icon glyph="Settings" />
-            </IconButton>
+            <ul className={styles["user-list"]}>
+              <li>
+                <a
+                  className={styles["action-link"]}
+                  href={`/${industry}/control?${new URLSearchParams(
+                    router.query
+                  ).toString()}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon glyph="Settings" />
+                  <span className={styles["action-text"]}>Control Panel</span>
+                </a>
+              </li>
+              <li>
+                <a className={styles["action-link"]} href="/">
+                  <Icon glyph="Home" />
+                  <span className={styles["action-text"]}>Select Industry</span>
+                </a>
+              </li>
+            </ul>
           </div>
         )}
       </div>

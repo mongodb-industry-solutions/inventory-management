@@ -1,27 +1,27 @@
 import Head from "next/head";
-import { clientPromise } from "../lib/mongodb";
+import { useRouter } from "next/router";
+import IndustrySelector from "../components/IndustrySelector";
 
-export const getServerSideProps = async () => {
-  try {
-    await clientPromise;
-
+export const getServerSideProps = async ({ query }) => {
+  const { industry } = query;
+  if (industry === "retail" || industry === "manufacturing") {
     return {
-      props: { isConnected: true },
-    };
-  } catch (e) {
-    console.error(e);
-    return {
-      props: { isConnected: false },
+      redirect: {
+        destination: `/${industry}/products`,
+        permanent: false,
+      },
     };
   }
+  return { props: {} };
 };
 
-export default function Home({ isConnected }) {
+export default function Home() {
   return (
     <div>
       <Head>
-        <title>Redirecting...</title>
+        <title>Select Industry</title>
       </Head>
+      <IndustrySelector />
     </div>
   );
 }
