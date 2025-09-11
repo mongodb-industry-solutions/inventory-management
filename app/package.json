@@ -1,9 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 8080",
     "build": "next build",
-    "start": "next start"
+    "start": "next start --port 8080"
   },
   "dependencies": {
     "@leafygreen-ui/button": "^23.1.2",
