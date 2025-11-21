@@ -119,21 +119,14 @@ function Navbar() {
               )}
             </button>
           </a>
-          <a
-            href={
-              selectedLocationId
-                ? `${prefix}/dashboard?location=${selectedLocationId}`
-                : `${prefix}/dashboard`
-            }
-          >
+          <span>
             <button
-              className={`${styles["mongodb-button"]} ${
-                router.pathname === "/dashboard" ? styles["bold-text"] : ""
-              }`}
+              className={`${styles["mongodb-button"]} ${styles["disabled"]}`}
+              disabled
             >
               Analytics
             </button>
-          </a>
+          </span>
         </div>
       </div>
     </div>
