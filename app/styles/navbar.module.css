@@ -151,6 +151,15 @@
     position: relative;
   
   }
+
+    .mongodb-button.disabled,
+    .mongodb-button:disabled {
+      color: #bdbdbd;
+      /* background-color: #f5f5f5; */
+      cursor: not-allowed;
+      pointer-events: none;
+      text-decoration: none;
+    }
   /*
   .mongodb-button:hover {
     text-decoration: underline;
@@ -167,6 +176,12 @@
     height: 1px;
     background-color: black; 
   }
+
+    .mongodb-button.disabled:hover::after,
+    .mongodb-button:disabled:hover::after {
+      background-color: transparent;
+      content: none;
+    }
 
   .toggle-button:hover {
     background-color: #ddd;
