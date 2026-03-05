@@ -12,8 +12,8 @@ function loadMongoEnv() {
   if (missing.length) {
     throw new Error(
       `Missing required MongoDB environment variables at runtime: ${missing.join(
-        ", "
-      )}`
+        ", ",
+      )}`,
     );
   }
   return { MONGODB_URI };
@@ -21,7 +21,7 @@ function loadMongoEnv() {
 
 function createMongoClient() {
   const { MONGODB_URI } = loadMongoEnv();
-  const options = { appName: "automotive-acoustic-diagnostics" };
+  const options = { appName: "inventory-management" };
   return new MongoClient(MONGODB_URI, options);
 }
 
@@ -44,7 +44,7 @@ function getMongoClientPromise() {
 async function getChangeStream(filter, key) {
   if (!changeStreams.has(key)) {
     throw new Error(
-      "getChangeStream requires a database name. Use getChangeStreamForDb(filter, key, databaseName)."
+      "getChangeStream requires a database name. Use getChangeStreamForDb(filter, key, databaseName).",
     );
   }
   return changeStreams.get(key);
