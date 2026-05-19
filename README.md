@@ -1,4 +1,4 @@
-# Inventory Management App using MongoDB Atlas
+# Inventory Management App using MongoDB Atlas.
 
 ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
